@@ -1,0 +1,34 @@
+/control/verbose 1
+/run/verbose 1
+/event/verbose 0
+
+# here we define branching ratios of decay modes of eta meson
+# 0 - gamma gamma       (original 0.3942)
+# 1 - pi0 pi0 pi0       (original 0.3256)
+# 2 - pi0 pi+ pi-       (original 0.226)
+# 3 - gamma pi+ pi-     (original 0.0468)
+/particle/select eta
+/particle/property/decay/select 0
+/particle/property/decay/br 1
+/particle/property/decay/select 1
+/particle/property/decay/br 0
+/particle/property/decay/select 2
+/particle/property/decay/br 0
+/particle/property/decay/select 3
+/particle/property/decay/br 0
+/particle/property/decay/dump
+
+/gun/position 0 0 -36 cm
+/gun/direction 0 0 1
+/gun/momentumAmp 700 MeV
+/gun/particle pi-
+
+/cexmc/gun/fwhmPosX 3.5 cm
+/cexmc/gun/fwhmPosY 3.0 cm
+/cexmc/gun/fwhmAngleX 1.35 deg
+/cexmc/gun/fwhmAngleY 1.12 deg
+/cexmc/gun/fwhmMomentumAmp 0.015
+
+/cexmc/physics/applyFermiMotionInTarget true
+
+#/run/beamOn 9
