@@ -36,19 +36,19 @@ extern "C"
     extern int  genbod_( void );
 }
 
-extern struct
+extern struct  genbod_in_data
 {
     int    np;
     float  tecm;
     float  amass[ 18 ];
     int    kgenev;
-} genin_;
+}  genin_;
 
-extern struct
+extern struct  genbod_out_data
 {
     float  pcm[ 18 ][ 5 ];
     float  wt;
-} genout_;
+}  genout_;
 
 
 template  < typename  OutputParticle >
