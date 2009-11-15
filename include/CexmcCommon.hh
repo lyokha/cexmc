@@ -21,6 +21,8 @@
 
 #include <G4String.hh>
 
+#define CEXMC_LINE_START  "--- Cexmc ---  "
+
 
 const G4String  CexmcStudiedProcessFirstName( "studiedPhysics_" );
 const G4String  CexmcStudiedProcessLastName( "studiedChargeExchange" );

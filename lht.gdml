@@ -7,9 +7,6 @@
     <!-- geometry of liquid hydrogen target -->
 
     <define> 
-        <variable name="nX" value="0"/>
-        <variable name="nY" value="0"/>
-
         <!-- all length values in cm and angles in deg! -->
         <constant name="FullCircle" value="360.0"/>
         <!-- we define EPSILON to struggle with Geant4 -->
@@ -20,6 +17,11 @@
         <constant name="NCrystalsHor" value="6"/>
         <constant name="NCrystalsVert" value="4"/>
 
+        <!-- sensitive detector types -->
+        <constant name="SDMonitor" value="0"/>
+        <constant name="SDVetoCounter" value="1"/>
+        <constant name="SDCrystal" value="2"/>
+
 
         <!-- these values are supposed to be changed -->
         <constant name="MonitorPosZ" value="-34.0"/>
@@ -28,7 +30,7 @@
         <constant name="TargetColumn2Angle" value="-45.0"/>
         <constant name="TargetColumn3Angle" value="120.0"/>
         <constant name="CalorimeterLeftDistance" value="120.0"/>
-        <constant name="CalorimeterLeftAngle" value="120.0"/>
+        <constant name="CalorimeterLeftAngle" value="0.0"/>
         <constant name="CalorimeterLeftVertShift" value="0.0"/>
         <constant name="CalorimeterRightDistance" value="80.0"/>
         <constant name="CalorimeterRightAngle" value="60.0"/>
@@ -280,6 +282,8 @@
             rmax="InnerCuprumRingInnerRadius + InnerCuprumRingThickness"
             z="InnerCuprumRingHeight" deltaphi="FullCircle" aunit="deg"
             lunit="cm"/>
+        <box name="sCrystalRow" x="CrystalWidth*NCrystalsHor" y="CrystalHeight"
+            z="CrystalLength" lunit="cm"/>
         <box name="sCrystal" x="CrystalWidth" y="CrystalHeight"
             z="CrystalLength" lunit="cm"/>
         <box name="sCalorimeter" x="CalorimeterWidth" y="CalorimeterHeight"
@@ -351,6 +355,7 @@
         <volume name="vMonitor">
             <materialref ref="Scintillator"/>
             <solidref ref="sMonitor"/>
+            <auxiliary auxtype="sensDet" auxvalue="SDMonitor"/>
         </volume>
         <volume name="vTarget">
             <materialref ref="G4_lH2"/>
@@ -391,25 +396,36 @@
         <volume name="vCrystal">
             <materialref ref="CsI_Crystal"/>
             <solidref ref="sCrystal"/>
+            <auxiliary auxtype="sensDet" auxvalue="SDCrystal"/>
+        </volume>
+        <volume name="vCrystalRow">
+            <materialref ref="G4_AIR"/>
+            <solidref ref="sCrystalRow"/>
+            <replicavol number="NCrystalsHor">
+                <volumeref ref="vCrystal"/>
+                <replicate_along_axis>
+                    <direction x="1"/>
+                    <width value="CrystalWidth" unit="cm"/>
+                    <offset value="0" unit="cm"/>
+                </replicate_along_axis>
+            </replicavol>
         </volume>
         <volume name="vCalorimeter">
             <materialref ref="G4_AIR"/>
             <solidref ref="sCalorimeter"/>
-            <loop for="nX" from="0" to="NCrystalsHor - 1" step="1">
-                <loop for="nY" from="0" to="NCrystalsVert - 1" step="1">
-                    <physvol name="Crystal">
-                        <volumeref ref="vCrystal"/>
-                        <position
-                            x="-CalorimeterWidth/2 + CrystalWidth/2 + nX*CrystalWidth"
-                            y="-CalorimeterHeight/2 + CrystalHeight/2 + nY*CrystalHeight"
-                            z="0" unit="cm"/>
-                    </physvol>
-                </loop>
-            </loop>
+            <replicavol number="NCrystalsVert">
+                <volumeref ref="vCrystalRow"/>
+                <replicate_along_axis>
+                    <direction y="1"/>
+                    <width value="CrystalHeight" unit="cm"/>
+                    <offset value="0" unit="cm"/>
+                </replicate_along_axis>
+            </replicavol>
         </volume>
         <volume name="vVetoCounter">
             <materialref ref="Scintillator"/>
             <solidref ref="sVetoCounter"/>
+            <auxiliary auxtype="sensDet" auxvalue="SDVetoCounter"/>
         </volume>
         <volume name="vOuterFerrumRing">
             <materialref ref="G4_Fe"/>

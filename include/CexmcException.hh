@@ -20,6 +20,7 @@
 #define CEXMC_EXCEPTION_HH
 
 #include <stdexcept>
+#include "CexmcCommon.hh"
 
 
 enum  CexmcExceptionType
@@ -59,10 +60,10 @@ inline const char *  CexmcException::what( void ) const throw()
     switch ( type )
     {
     case CexmcPreinitException :
-        return "--Cexmc-- Exception in PreInit phase. "
+        return CEXMC_LINE_START "Exception in PreInit phase. "
                "Check your preinit macro validity.";
     default :
-        return "--Cexmc-- Unknown exception";
+        return CEXMC_LINE_START "Unknown exception";
     }
 }
 

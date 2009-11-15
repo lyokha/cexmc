@@ -21,15 +21,18 @@
 
 #include <G4VUserDetectorConstruction.hh>
 
+class  G4GDMLParser;
+
 
 class  CexmcSetup : public G4VUserDetectorConstruction
 {
     public:
-        CexmcSetup( const G4String &  gdmlFile = "default.gdml" ) :
-            world( 0 ), gdmlFile( gdmlFile )
-        {}
+        explicit CexmcSetup( const G4String &  gdmlFile = "default.gdml" );
 
         G4VPhysicalVolume *  Construct( void );
+
+    private:
+        void  SetupSensitiveVolumes( G4GDMLParser &  gdmlParser );
 
     private:
         G4VPhysicalVolume *  world;

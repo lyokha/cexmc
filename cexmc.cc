@@ -33,6 +33,7 @@
 #include "CexmcStudiedPhysicsChargeExchange.hh"
 #include "CexmcChargeExchangeProductionModel.hh"
 #include "CexmcProductionModelFactory.hh"
+#include "CexmcMessenger.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
@@ -71,18 +72,21 @@ int  main( int  argc, char **  argv )
 
     CexmcRunManager *  runManager( NULL );
     G4VisManager *     visManager( NULL );
+    CexmcMessenger *   messenger( NULL );
+
+    messenger = CexmcMessenger::Instance();
 
     try
     {
         runManager = new CexmcRunManager;
 
-        G4UImanager *      uiManager( G4UImanager::GetUIpointer() );
+        G4UImanager *  uiManager( G4UImanager::GetUIpointer() );
 
         uiManager->ApplyCommand( "/control/execute " + preinitMacroFile );
 
-        G4String           gdmlFile( runManager->GetGdmlFileName() );
+        CexmcSetup *   setup( new CexmcSetup( runManager->GetGdmlFileName() ) );
 
-        runManager->SetUserInitialization( new CexmcSetup( gdmlFile ) );
+        runManager->SetUserInitialization( setup );
 
         CexmcProductionModelType  productionModelType(
                                         runManager->GetProductionModelType() );

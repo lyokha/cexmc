@@ -23,6 +23,7 @@
 #include <G4ParticleDefinition.hh>
 #include <G4ProcessManager.hh>
 #include <G4ProcessVector.hh>
+#include <G4VTouchable.hh>
 #include "CexmcSteppingAction.hh"
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
@@ -39,7 +40,8 @@ CexmcSteppingAction::CexmcSteppingAction(
 void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
 {
     G4StepPoint *           postStepPoint( step->GetPostStepPoint() );
-    G4VPhysicalVolume *     volume( postStepPoint-> GetPhysicalVolume() );
+    const G4VTouchable *    touchable( postStepPoint->GetTouchable() );
+    G4VPhysicalVolume *     volume( touchable->GetVolume() );
     G4Track *               track( step->GetTrack() );
     G4ParticleDefinition *  particle( track->GetDefinition() );
     G4ProcessManager *      processManager( particle->GetProcessManager() );

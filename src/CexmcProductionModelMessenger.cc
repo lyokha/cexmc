@@ -19,6 +19,7 @@
 #include <G4UIcmdWithABool.hh>
 #include "CexmcProductionModel.hh"
 #include "CexmcProductionModelMessenger.hh"
+#include "CexmcMessenger.hh"
 
 
 CexmcProductionModelMessenger::CexmcProductionModelMessenger(
@@ -26,7 +27,8 @@ CexmcProductionModelMessenger::CexmcProductionModelMessenger(
     productionModel( productionModel )
 {
     applyFermiMotion = new G4UIcmdWithABool(
-                            "/cexmc/physics/applyFermiMotionInTarget", this );
+        ( CexmcMessenger::physicsDirName + "applyFermiMotionInTarget" ).c_str(),
+        this );
     applyFermiMotion->SetGuidance( "Switch on/off fermi motion in target "
                                    "nuclei" );
     applyFermiMotion->SetParameterName( "ApplyFermiMotionInTarget", false );

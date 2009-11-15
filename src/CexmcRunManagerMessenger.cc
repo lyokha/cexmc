@@ -19,6 +19,7 @@
 #include <G4UIcmdWithAString.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
+#include "CexmcMessenger.hh"
 
 
 CexmcRunManagerMessenger::CexmcRunManagerMessenger(
@@ -26,13 +27,14 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
-                                    "/cexmc/physics/productionModel", this );
+        ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
     setProductionModel->SetGuidance( "Set production model (e.g. pi0 or eta)" );
     setProductionModel->SetParameterName( "ProductionModel", false );
     setProductionModel->SetCandidates( "pi0 eta" );
     setProductionModel->AvailableForStates( G4State_PreInit );
 
-    setGdmlFile = new G4UIcmdWithAString( "/cexmc/geometry/gdmlFile", this );
+    setGdmlFile = new G4UIcmdWithAString(
+        ( CexmcMessenger::geometryDirName + "gdmlFile" ).c_str(), this );
     setGdmlFile->SetGuidance( "GDML file to read geometry from" );
     setGdmlFile->SetParameterName( "GdmlFile", false );
     setGdmlFile->AvailableForStates( G4State_PreInit );
