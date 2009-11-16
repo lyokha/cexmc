@@ -22,6 +22,9 @@
 #include <G4SDManager.hh>
 #include <G4LogicalVolumeStore.hh>
 #include "CexmcSetup.hh"
+#include "CexmcTrackPoints.hh"
+#include "CexmcTargetTrackPointsFilter.hh"
+#include "CexmcOriginalParticleEntryPointFilter.hh"
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
@@ -73,21 +76,36 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
                 G4MultiFunctionalDetector *  detector(
                                 new G4MultiFunctionalDetector( detectorName ) );
 
-                G4VPrimitiveScorer *  scorer;
+                G4VPrimitiveScorer *  scorer( NULL );
+                G4VPrimitiveScorer *  scorer1( NULL );
                 do
                 {
                     if ( pair->value < 0.5 )
                     {
-                        scorer = new CexmcSimpleEnergyDeposit( "Monitor/ED/" );
+                        CexmcTargetTrackPointsFilter *  filter(
+                                    new CexmcTargetTrackPointsFilter(
+                                                            "targetTracks" ) );
+                        scorer = new CexmcTrackPoints( "Target/Hits/" );
+                        scorer->SetFilter( filter );
                         break;
                     }
                     if ( pair->value < 1.5 )
+                    {
+                        scorer = new CexmcSimpleEnergyDeposit( "Monitor/ED/" );
+                        CexmcOriginalParticleEntryPointFilter *  filter(
+                                    new CexmcOriginalParticleEntryPointFilter(
+                                                    "originalParticleEntry" ) );
+                        scorer1 = new CexmcTrackPoints( "Monitor/Hits/" );
+                        scorer1->SetFilter( filter );
+                        break;
+                    }
+                    if ( pair->value < 2.5 )
                     {
                         scorer = new CexmcEnergyDepositInLeftRightSet(
                                                             "VetoCounter/ED/" );
                         break;
                     }
-                    if ( pair->value < 2.5 )
+                    if ( pair->value < 3.5 )
                     {
                         scorer = new CexmcEnergyDepositInCalorimeter(
                                                             "Calorimeter/ED/" );
@@ -95,7 +113,10 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
                     }
                 } while ( false );
 
-                detector->RegisterPrimitive( scorer );
+                if ( scorer )
+                    detector->RegisterPrimitive( scorer );
+                if ( scorer1 )
+                    detector->RegisterPrimitive( scorer1 );
 
                 G4SDManager::GetSDMpointer()->AddNewDetector( detector );
                 ( *lvIter )->SetSensitiveDetector( detector );

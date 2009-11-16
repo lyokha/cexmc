@@ -18,7 +18,6 @@
 
 #include <G4UnitsTable.hh>
 #include <G4HCofThisEvent.hh>
-#include <G4VHitsCollection.hh>
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcSensitiveDetectorMessenger.hh"
 
@@ -48,25 +47,25 @@ G4bool  CexmcSimpleEnergyDeposit::ProcessHits( G4Step *  step,
     G4double  energyDeposit( step->GetTotalEnergyDeposit() );
 
     if ( energyDeposit == 0. )
-        return FALSE;
+        return false;
 
     energyDeposit *= step->GetPreStepPoint()->GetWeight();
 
     eventMap->add( GetIndex( step ), energyDeposit ); 
 
-    return TRUE; 
+    return true; 
 }
 
 
 void  CexmcSimpleEnergyDeposit::Initialize( G4HCofThisEvent *  hcOfEvent )
 {
     eventMap = new G4THitsMap< G4double >(
-                          GetMultiFunctionalDetector()->GetName(), GetName());
+                          GetMultiFunctionalDetector()->GetName(), GetName() );
     if( hcId < 0 )
     {
         hcId = GetCollectionID( 0 );
     }
-    hcOfEvent->AddHitsCollection( hcId, ( G4VHitsCollection* )eventMap );
+    hcOfEvent->AddHitsCollection( hcId, eventMap );
 }
 
 
@@ -100,7 +99,7 @@ void  CexmcSimpleEnergyDeposit::PrintAll( void )
          itr != eventMap->GetMap()->end(); ++itr )
     {
         G4cout << "  energy deposit: " <<
-                G4BestUnit( *( itr->second ),"Energy" ) << G4endl;
+                G4BestUnit( *( itr->second ), "Energy" ) << G4endl;
     }
 }
 

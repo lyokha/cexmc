@@ -1,12 +1,12 @@
 /*
  * =============================================================================
  *
- *       Filename:  CexmcSimpleEnergyDeposit.hh
+ *       Filename:  CexmcTrackPoints.hh
  *
- *    Description:  simple energy deposit scorer
+ *    Description:  track points collection
  *
  *        Version:  1.0
- *        Created:  14.11.2009 12:45:53
+ *        Created:  16.11.2009 12:41:54
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,23 +16,24 @@
  * =============================================================================
  */
 
-#ifndef CEXMC_SIMPLE_ENERGY_DEPOSIT_HH
-#define CEXMC_SIMPLE_ENERGY_DEPOSIT_HH
+#ifndef CEXMC_TRACK_POINTS_HH
+#define CEXMC_TRACK_POINTS_HH
 
 #include <G4VPrimitiveScorer.hh>
 #include <G4THitsMap.hh>
+#include "CexmcTrackPointInfo.hh"
 
 class  G4HCofThisEvent;
 class  G4Step;
 class  CexmcSensitiveDetectorMessenger;
 
 
-class  CexmcSimpleEnergyDeposit : public G4VPrimitiveScorer
+class  CexmcTrackPoints : public G4VPrimitiveScorer
 {
     public:
-        explicit CexmcSimpleEnergyDeposit( const G4String &  name );
+        explicit CexmcTrackPoints( const G4String &  name );
 
-        virtual ~CexmcSimpleEnergyDeposit();
+        virtual ~CexmcTrackPoints();
 
     public:
         void   Initialize( G4HCofThisEvent *  hcOfThisEvent );
@@ -51,12 +52,12 @@ class  CexmcSimpleEnergyDeposit : public G4VPrimitiveScorer
         G4bool  ProcessHits( G4Step *  step, G4TouchableHistory *  tHistory );
 
     protected:
-        G4THitsMap< G4double > *           eventMap;
+        G4THitsMap< CexmcTrackPointInfo > *  eventMap;
 
     private:
-        CexmcSensitiveDetectorMessenger *  messenger;
+        CexmcSensitiveDetectorMessenger *    messenger;
 
-        G4int                              hcId;
+        G4int                                hcId;
 };
 
 

@@ -18,9 +18,10 @@
         <constant name="NCrystalsVert" value="4"/>
 
         <!-- sensitive detector types -->
-        <constant name="SDMonitor" value="0"/>
-        <constant name="SDVetoCounter" value="1"/>
-        <constant name="SDCrystal" value="2"/>
+        <constant name="SDTarget" value="0"/>
+        <constant name="SDMonitor" value="1"/>
+        <constant name="SDVetoCounter" value="2"/>
+        <constant name="SDCrystal" value="3"/>
 
 
         <!-- these values are supposed to be changed -->
@@ -360,6 +361,7 @@
         <volume name="vTarget">
             <materialref ref="G4_lH2"/>
             <solidref ref="sTarget"/>
+            <auxiliary auxtype="sensDet" auxvalue="SDTarget"/>
         </volume>
         <volume name="vTargetInnerCover">
             <materialref ref="G4_Al"/>

@@ -94,13 +94,11 @@ int  main( int  argc, char **  argv )
         if ( productionModelType == CexmcUnknownProductionModel )
             throw CexmcException( CexmcPreinitException );
 
-        CexmcProductionModelFactory< CexmcBasePhysics,
-                                     CexmcStudiedPhysicsStarterParticle,
-                                     CexmcStudiedPhysicsChargeExchange >
-                                  productionModelFactory;
-
-        G4VUserPhysicsList *  physicsList( productionModelFactory.Create(
-                                                        productionModelType ) );
+        G4VUserPhysicsList *  physicsList(
+            CexmcProductionModelFactory< CexmcBasePhysics,
+                                         CexmcStudiedPhysicsStarterParticle,
+                                         CexmcStudiedPhysicsChargeExchange >::
+                                    Create( productionModelType ) );
 
         runManager->SetUserInitialization( physicsList );
 

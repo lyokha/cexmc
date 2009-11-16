@@ -32,8 +32,10 @@ template  < typename  BasePhysics, typename  Particle,
 class  CexmcProductionModelFactory
 {
     public:
-        G4VUserPhysicsList *  Create(
+        static G4VUserPhysicsList *  Create(
                                 CexmcProductionModelType  productionModelType );
+    private:
+        CexmcProductionModelFactory();
 };
 
 
