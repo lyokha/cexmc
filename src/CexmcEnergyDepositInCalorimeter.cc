@@ -48,9 +48,14 @@ G4int  CexmcEnergyDepositInCalorimeter::GetIndex( G4Step *  step )
 
 void  CexmcEnergyDepositInCalorimeter::PrintAll( void )
 {
-    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-    G4cout << " PrimitiveScorer " << GetName() << G4endl;
-    G4cout << " Number of entries " << eventMap->entries() << G4endl;
+    G4int   nmbOfEntries( eventMap->entries() );
+
+    if ( nmbOfEntries == 0 )
+        return;
+
+    G4cout << " --- MultiFunctionalDet " << detector->GetName() << G4endl;
+    G4cout << "     PrimitiveScorer " << GetName() << G4endl;
+    G4cout << "     Number of entries " << nmbOfEntries << G4endl;
 
     for( std::map< G4int, G4double* >::iterator
                                      itr( eventMap->GetMap()->begin() );
@@ -65,8 +70,9 @@ void  CexmcEnergyDepositInCalorimeter::PrintAll( void )
                             ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) |
                               ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) - 1 ) ) );
         const G4String  detectorSide( isRightDetector ? "right" : "left" );
-        G4cout << "  " << detectorSide << " detector, row " << copyDepth1 <<
-                ", column " << copyDepth0 << ", energy deposit " <<
+        G4cout << "       " << detectorSide << " detector, row " << copyDepth1 <<
+                ", column " << copyDepth0 << G4endl;
+        G4cout << "         , energy deposit " <<
                 G4BestUnit( *( itr->second ), "Energy" ) << G4endl;
     }
 }

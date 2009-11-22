@@ -97,15 +97,21 @@ void  CexmcTrackPoints::DrawAll( void )
 
 void  CexmcTrackPoints::PrintAll( void )
 {
-    G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl;
-    G4cout << " PrimitiveScorer " << GetName() << G4endl;
-    G4cout << " Number of entries " << eventMap->entries() << G4endl;
+    G4int   nmbOfEntries( eventMap->entries() );
+
+    if ( nmbOfEntries == 0 )
+        return;
+
+    G4cout << " --- MultiFunctionalDet " << detector->GetName() << G4endl;
+    G4cout << "     PrimitiveScorer " << GetName() << G4endl;
+    G4cout << "     Number of entries " << nmbOfEntries << G4endl;
 
     for( std::map< G4int, CexmcTrackPointInfo* >::iterator
                                      itr( eventMap->GetMap()->begin() );
          itr != eventMap->GetMap()->end(); ++itr )
     {
-        G4cout << "  track " << itr->first << ", position: " <<
+        G4cout << "       track id " << itr->first << G4endl;
+        G4cout << "         , position: " <<
                 G4BestUnit( itr->second->position, "Length" ) << G4endl;
         G4cout << "         , direction: " << itr->second->direction << G4endl;
         G4cout << "         , momentum: " <<

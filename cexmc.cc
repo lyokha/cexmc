@@ -28,10 +28,10 @@
 #include "CexmcPhysicsList.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcPrimaryGeneratorAction.hh"
+#include "CexmcTrackingAction.hh"
 #include "CexmcSteppingAction.hh"
 #include "CexmcEventAction.hh"
 #include "CexmcStudiedPhysicsChargeExchange.hh"
-#include "CexmcChargeExchangeProductionModel.hh"
 #include "CexmcProductionModelFactory.hh"
 #include "CexmcMessenger.hh"
 #include "CexmcException.hh"
@@ -40,6 +40,10 @@
 
 typedef QGSP_BERT    CexmcBasePhysics;
 typedef G4PionMinus  CexmcStudiedPhysicsStarterParticle;
+typedef CexmcProductionModelFactory< CexmcBasePhysics,
+                                     CexmcStudiedPhysicsStarterParticle,
+                                     CexmcStudiedPhysicsChargeExchange >
+                     CexmcChargeExchangePMFactory;
 
 
 namespace
@@ -94,11 +98,8 @@ int  main( int  argc, char **  argv )
         if ( productionModelType == CexmcUnknownProductionModel )
             throw CexmcException( CexmcPreinitException );
 
-        G4VUserPhysicsList *  physicsList(
-            CexmcProductionModelFactory< CexmcBasePhysics,
-                                         CexmcStudiedPhysicsStarterParticle,
-                                         CexmcStudiedPhysicsChargeExchange >::
-                                    Create( productionModelType ) );
+        G4VUserPhysicsList *  physicsList( CexmcChargeExchangePMFactory::
+                                                Create( productionModelType ) );
 
         runManager->SetUserInitialization( physicsList );
 
@@ -110,6 +111,12 @@ int  main( int  argc, char **  argv )
                         dynamic_cast< CexmcPhysicsManager * >( physicsList ) );
 
         runManager->SetUserAction( new CexmcEventAction( physicsManager ) );
+
+        runManager->SetUserAction( new CexmcTrackingAction(
+                        CexmcChargeExchangePMFactory::GetOutputParticle(
+                                                    productionModelType),
+                        CexmcChargeExchangePMFactory::GetNucleusParticle(
+                                                    productionModelType) ) );
 
         runManager->SetUserAction( new CexmcSteppingAction( physicsManager ) );
 

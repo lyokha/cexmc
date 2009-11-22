@@ -23,8 +23,9 @@
 #include <G4LogicalVolumeStore.hh>
 #include "CexmcSetup.hh"
 #include "CexmcTrackPoints.hh"
-#include "CexmcTargetTrackPointsFilter.hh"
-#include "CexmcOriginalParticleEntryPointFilter.hh"
+#include "CexmcTrackPointsInLeftRightSet.hh"
+#include "CexmcTrackPointsInCalorimeter.hh"
+#include "CexmcTrackPointsFilter.hh"
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
@@ -60,67 +61,98 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
     for( std::vector< G4LogicalVolume * >::const_iterator
                         lvIter( lvs->begin() ); lvIter != lvs->end(); ++lvIter )
     {
-        G4GDMLAuxListType
-                auxInfo( gdmlParser.GetVolumeAuxiliaryInformation( *lvIter ) );
+        G4MultiFunctionalDetector *  detector( NULL );
+        G4String                     detectorName( G4String( ( *lvIter )->
+                                                             GetName() ) );
+        G4GDMLAuxListType            auxInfo(
+                        gdmlParser.GetVolumeAuxiliaryInformation( *lvIter ) );
         std::vector< G4GDMLAuxPairType >::const_iterator
-                pair( auxInfo.begin() );
+                                     pair( auxInfo.begin() );
+
         for( pair = auxInfo.begin(); pair != auxInfo.end(); ++pair )
         {
-            if ( pair->type == "sensDet" )
+            G4VPrimitiveScorer *  scorer( NULL );
+            do
             {
-                G4String  detectorName( G4String( ( *lvIter )->GetName() ) +
-                                        "_sensDet" );
-
-                G4cout << CEXMC_LINE_START "Sensitive Detector '" <<
-                                                  detectorName << "'" << G4endl;
-                G4MultiFunctionalDetector *  detector(
-                                new G4MultiFunctionalDetector( detectorName ) );
-
-                G4VPrimitiveScorer *  scorer( NULL );
-                G4VPrimitiveScorer *  scorer1( NULL );
-                do
+                if ( pair->type == "EnergyDepositDetector" )
                 {
-                    if ( pair->value < 0.5 )
+                    G4cout << CEXMC_LINE_START "Energy Deposit Scorer for "
+                               "detector '" << detectorName << "'" << G4endl;
+                    do
                     {
-                        CexmcTargetTrackPointsFilter *  filter(
-                                    new CexmcTargetTrackPointsFilter(
-                                                            "targetTracks" ) );
-                        scorer = new CexmcTrackPoints( "Target/Hits/" );
-                        scorer->SetFilter( filter );
-                        break;
-                    }
-                    if ( pair->value < 1.5 )
-                    {
-                        scorer = new CexmcSimpleEnergyDeposit( "Monitor/ED/" );
-                        CexmcOriginalParticleEntryPointFilter *  filter(
-                                    new CexmcOriginalParticleEntryPointFilter(
-                                                    "originalParticleEntry" ) );
-                        scorer1 = new CexmcTrackPoints( "Monitor/Hits/" );
-                        scorer1->SetFilter( filter );
-                        break;
-                    }
-                    if ( pair->value < 2.5 )
-                    {
-                        scorer = new CexmcEnergyDepositInLeftRightSet(
+                        if ( pair->value < 0.5 )
+                        {
+                            scorer = new CexmcSimpleEnergyDeposit(
+                                                            "Monitor/ED/" );
+                            break;
+                        }
+                        if ( pair->value < 1.5 )
+                        {
+                            scorer = new CexmcEnergyDepositInLeftRightSet(
                                                             "VetoCounter/ED/" );
-                        break;
-                    }
-                    if ( pair->value < 3.5 )
-                    {
-                        scorer = new CexmcEnergyDepositInCalorimeter(
+                            break;
+                        }
+                        if ( pair->value < 2.5 )
+                        {
+                            scorer = new CexmcEnergyDepositInCalorimeter(
                                                             "Calorimeter/ED/" );
-                        break;
+                            break;
+                        }
+                    } while ( false );
+                    break;
+                }
+                if ( pair->type == "TrackPointsDetector" )
+                {
+                    G4cout << CEXMC_LINE_START "Track Points Scorer for "
+                               "detector '" << detectorName << "'" << G4endl;
+                    do
+                    {
+                        if ( pair->value < 0.5 )
+                        {
+                            scorer = new CexmcTrackPoints( "Target/TP/" );
+                            break;
+                        }
+                        if ( pair->value < 1.5 )
+                        {
+                            scorer = new CexmcTrackPoints( "Monitor/TP/" );
+                            break;
+                        }
+                        if ( pair->value < 2.5 )
+                        {
+                            scorer = new CexmcTrackPointsInLeftRightSet(
+                                                         "VetoCounter/TP/" );
+                            break;
+                        }
+                        if ( pair->value < 3.5 )
+                        {
+                            scorer = new CexmcTrackPointsInCalorimeter(
+                                                         "Calorimeter/TP/" );
+                            break;
+                        }
+                    } while ( false );
+                    if ( scorer )
+                    {
+                        CexmcTrackPointsFilter *  filter(
+                                 new CexmcTrackPointsFilter( "trackPoints" ) );
+                        scorer->SetFilter( filter );
                     }
-                } while ( false );
-
-                if ( scorer )
-                    detector->RegisterPrimitive( scorer );
-                if ( scorer1 )
-                    detector->RegisterPrimitive( scorer1 );
-
-                G4SDManager::GetSDMpointer()->AddNewDetector( detector );
-                ( *lvIter )->SetSensitiveDetector( detector );
+                    break;
+                }
             }
+            while ( false );
+
+            if ( scorer )
+            {
+                if ( ! detector )
+                    detector = new G4MultiFunctionalDetector( detectorName );
+                detector->RegisterPrimitive( scorer );
+            }
+        }
+
+        if ( detector )
+        {
+            G4SDManager::GetSDMpointer()->AddNewDetector( detector );
+            ( *lvIter )->SetSensitiveDetector( detector );
         }
     }
 }

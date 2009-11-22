@@ -1,9 +1,9 @@
 /*
  * =============================================================================
  *
- *       Filename:  CexmcGammaEntryPointFilter.hh
+ *       Filename:  CexmcTrackPointsFilter.hh
  *
- *    Description:  gamma entry points on veto counters and calorimeters
+ *    Description:  track points of interest
  *
  *        Version:  1.0
  *        Created:  16.11.2009 22:23:00
@@ -16,8 +16,8 @@
  * =============================================================================
  */
 
-#ifndef CEXMC_GAMMA_ENTRY_POINT_FILTER_HH
-#define CEXMC_GAMMA_ENTRY_POINT_FILTER_HH
+#ifndef CEXMC_TRACK_POINTS_FILTER_HH
+#define CEXMC_TRACK_POINTS_FILTER_HH
 
 #include <G4VSDFilter.hh>
 
@@ -25,10 +25,10 @@ class  G4String;
 class  G4Step;
 
 
-class  CexmcGammaEntryPointFilter : public G4VSDFilter
+class  CexmcTrackPointsFilter : public G4VSDFilter
 {
     public:
-        explicit CexmcGammaEntryPointFilter( const G4String &  name );
+        explicit CexmcTrackPointsFilter( const G4String &  name );
 
     public:
         G4bool  Accept( const G4Step *  step ) const;

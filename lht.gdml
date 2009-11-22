@@ -18,10 +18,13 @@
         <constant name="NCrystalsVert" value="4"/>
 
         <!-- sensitive detector types -->
-        <constant name="SDTarget" value="0"/>
-        <constant name="SDMonitor" value="1"/>
-        <constant name="SDVetoCounter" value="2"/>
-        <constant name="SDCrystal" value="3"/>
+        <constant name="MonitorED" value="0"/>
+        <constant name="VetoCounterED" value="1"/>
+        <constant name="CalorimeterED" value="2"/>
+        <constant name="TargetTP" value="0"/>
+        <constant name="MonitorTP" value="1"/>
+        <constant name="VetoCounterTP" value="2"/>
+        <constant name="CalorimeterTP" value="3"/>
 
 
         <!-- these values are supposed to be changed -->
@@ -31,10 +34,10 @@
         <constant name="TargetColumn2Angle" value="-45.0"/>
         <constant name="TargetColumn3Angle" value="120.0"/>
         <constant name="CalorimeterLeftDistance" value="120.0"/>
-        <constant name="CalorimeterLeftAngle" value="0.0"/>
+        <constant name="CalorimeterLeftAngle" value="60.0"/>
         <constant name="CalorimeterLeftVertShift" value="0.0"/>
         <constant name="CalorimeterRightDistance" value="80.0"/>
-        <constant name="CalorimeterRightAngle" value="60.0"/>
+        <constant name="CalorimeterRightAngle" value="0.0"/>
         <constant name="CalorimeterRightVertShift" value="0.0"/>
 
 
@@ -356,12 +359,13 @@
         <volume name="vMonitor">
             <materialref ref="Scintillator"/>
             <solidref ref="sMonitor"/>
-            <auxiliary auxtype="sensDet" auxvalue="SDMonitor"/>
+            <auxiliary auxtype="EnergyDepositDetector" auxvalue="MonitorED"/>
+            <auxiliary auxtype="TrackPointsDetector" auxvalue="MonitorTP"/>
         </volume>
         <volume name="vTarget">
             <materialref ref="G4_lH2"/>
             <solidref ref="sTarget"/>
-            <auxiliary auxtype="sensDet" auxvalue="SDTarget"/>
+            <auxiliary auxtype="TrackPointsDetector" auxvalue="TargetTP"/>
         </volume>
         <volume name="vTargetInnerCover">
             <materialref ref="G4_Al"/>
@@ -398,7 +402,9 @@
         <volume name="vCrystal">
             <materialref ref="CsI_Crystal"/>
             <solidref ref="sCrystal"/>
-            <auxiliary auxtype="sensDet" auxvalue="SDCrystal"/>
+            <auxiliary auxtype="EnergyDepositDetector"
+                       auxvalue="CalorimeterED"/>
+            <auxiliary auxtype="TrackPointsDetector" auxvalue="CalorimeterTP"/>
         </volume>
         <volume name="vCrystalRow">
             <materialref ref="G4_AIR"/>
@@ -427,7 +433,9 @@
         <volume name="vVetoCounter">
             <materialref ref="Scintillator"/>
             <solidref ref="sVetoCounter"/>
-            <auxiliary auxtype="sensDet" auxvalue="SDVetoCounter"/>
+            <auxiliary auxtype="EnergyDepositDetector"
+                       auxvalue="VetoCounterED"/>
+            <auxiliary auxtype="TrackPointsDetector" auxvalue="VetoCounterTP"/>
         </volume>
         <volume name="vOuterFerrumRing">
             <materialref ref="G4_Fe"/>

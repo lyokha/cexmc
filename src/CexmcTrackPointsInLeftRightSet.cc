@@ -1,13 +1,13 @@
 /*
  * ============================================================================
  *
- *       Filename:  CexmcEnergyDepositInLeftRightSet.cc
+ *       Filename:  CexmcTrackPointsInLeftRightSet.cc
  *
- *    Description:  energy deposit scorer in left/right detector sets
+ *    Description:  track points in left/right detector sets
  *                  (e.g. veto counters and calorimeters)
  *
  *        Version:  1.0
- *        Created:  14.11.2009 12:48:22
+ *        Created:  22.11.2009 21:15:57
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -21,22 +21,22 @@
 #include <G4StepPoint.hh>
 #include <G4VTouchable.hh>
 #include <G4UnitsTable.hh>
-#include "CexmcEnergyDepositInLeftRightSet.hh"
+#include "CexmcTrackPointsInLeftRightSet.hh"
 
 
-G4int  CexmcEnergyDepositInLeftRightSet::leftRightBitsOffset( 16 );
+G4int  CexmcTrackPointsInLeftRightSet::leftRightBitsOffset( 24 );
 
 
-CexmcEnergyDepositInLeftRightSet::CexmcEnergyDepositInLeftRightSet(
+CexmcTrackPointsInLeftRightSet::CexmcTrackPointsInLeftRightSet(
                             const G4String &  name ) :
-    CexmcSimpleEnergyDeposit( name  )
+    CexmcTrackPoints( name  )
 {
 }
 
 
-G4int  CexmcEnergyDepositInLeftRightSet::GetIndex( G4Step *  step )
+G4int  CexmcTrackPointsInLeftRightSet::GetIndex( G4Step *  step )
 {
-    G4int                        ret( 0 );
+    G4int                        ret( step->GetTrack()->GetTrackID() );
     G4StepPoint *                preStep( step->GetPreStepPoint() );
     const G4VTouchable *         touchable( preStep->GetTouchable() );
     const G4NavigationHistory *  navigationHistory( touchable->GetHistory() );
@@ -49,7 +49,7 @@ G4int  CexmcEnergyDepositInLeftRightSet::GetIndex( G4Step *  step )
 }
 
 
-void  CexmcEnergyDepositInLeftRightSet::PrintAll( void )
+void  CexmcTrackPointsInLeftRightSet::PrintAll( void )
 {
     G4int   nmbOfEntries( eventMap->entries() );
 
@@ -60,15 +60,24 @@ void  CexmcEnergyDepositInLeftRightSet::PrintAll( void )
     G4cout << "     PrimitiveScorer " << GetName() << G4endl;
     G4cout << "     Number of entries " << nmbOfEntries << G4endl;
 
-    for( std::map< G4int, G4double* >::iterator
+    for( std::map< G4int, CexmcTrackPointInfo* >::iterator
                                      itr( eventMap->GetMap()->begin() );
          itr != eventMap->GetMap()->end(); ++itr )
     {
         G4bool  isRightDetector( itr->first >> leftRightBitsOffset );
         const G4String  detectorSide( isRightDetector ? "right" : "left" );
+        G4int   trackId( itr->first &
+                            ( ( 1 << ( leftRightBitsOffset - 1 ) ) |
+                              ( ( 1 << ( leftRightBitsOffset - 1 ) ) - 1 ) ) );
         G4cout << "       " << detectorSide << " detector" << G4endl;
-        G4cout << "         , energy deposit " <<
-                G4BestUnit( *( itr->second ), "Energy" ) << G4endl;
+        G4cout << "         , track id " << trackId << G4endl;
+        G4cout << "         , position: " <<
+                G4BestUnit( itr->second->position, "Length" ) << G4endl;
+        G4cout << "         , direction: " << itr->second->direction << G4endl;
+        G4cout << "         , momentum: " <<
+                G4BestUnit( itr->second->momentumAmp, "Energy" ) << G4endl;
+        G4cout << "         , particle: " << itr->second->particleName <<
+                G4endl;
     }
 }
 

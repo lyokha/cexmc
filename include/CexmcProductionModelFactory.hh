@@ -32,8 +32,15 @@ template  < typename  BasePhysics, typename  Particle,
 class  CexmcProductionModelFactory
 {
     public:
-        static G4VUserPhysicsList *  Create(
+        static G4VUserPhysicsList *    Create(
                                 CexmcProductionModelType  productionModelType );
+
+        static G4ParticleDefinition *  GetOutputParticle(
+                                CexmcProductionModelType  productionModelType );
+
+        static G4ParticleDefinition *  GetNucleusParticle(
+                                CexmcProductionModelType  productionModelType );
+
     private:
         CexmcProductionModelFactory();
 };
@@ -53,6 +60,45 @@ G4VUserPhysicsList *
     case CexmcEtaProduction :
         return new CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
                             CexmcChargeExchangeProductionModel< G4Eta > >;
+    default:
+        return NULL;
+    }
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics >
+G4ParticleDefinition *
+    CexmcProductionModelFactory< BasePhysics, Particle, StudiedPhysics >::
+            GetOutputParticle( CexmcProductionModelType  productionModelType )
+{
+    switch ( productionModelType )
+    {
+    case CexmcPionZeroProduction :
+        return CexmcChargeExchangeProductionModel< G4PionZero >::
+                                                            GetOutputParticle();
+    case CexmcEtaProduction :
+        return CexmcChargeExchangeProductionModel< G4Eta >::GetOutputParticle();
+    default:
+        return NULL;
+    }
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics >
+G4ParticleDefinition *
+    CexmcProductionModelFactory< BasePhysics, Particle, StudiedPhysics >::
+            GetNucleusParticle( CexmcProductionModelType  productionModelType )
+{
+    switch ( productionModelType )
+    {
+    case CexmcPionZeroProduction :
+        return CexmcChargeExchangeProductionModel< G4PionZero >::
+                                                        GetNucleusParticle();
+    case CexmcEtaProduction :
+        return CexmcChargeExchangeProductionModel< G4Eta >::
+                                                        GetNucleusParticle();
     default:
         return NULL;
     }

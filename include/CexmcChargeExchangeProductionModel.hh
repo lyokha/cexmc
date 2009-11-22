@@ -63,6 +63,11 @@ class  CexmcChargeExchangeProductionModel :
         G4HadFinalState *  ApplyYourself( const G4HadProjectile &  projectile,
                                           G4Nucleus &  targetNucleus );
 
+    public:
+        static G4ParticleDefinition *  GetOutputParticle( void );
+
+        static G4ParticleDefinition *  GetNucleusParticle( void );
+
     private:
         G4ParticleDefinition *  theProton;
 
@@ -154,6 +159,24 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     theParticleChange.AddSecondary( secNeutron );
 
     return &theParticleChange;
+}
+
+
+template  < typename  OutputParticle >
+inline G4ParticleDefinition *
+    CexmcChargeExchangeProductionModel< OutputParticle >::
+                                        GetOutputParticle( void )
+{
+    return OutputParticle::Definition();
+}
+
+
+template  < typename  OutputParticle >
+inline G4ParticleDefinition *
+    CexmcChargeExchangeProductionModel< OutputParticle >::
+                                        GetNucleusParticle( void )
+{
+    return G4Neutron::Definition();
 }
 
 

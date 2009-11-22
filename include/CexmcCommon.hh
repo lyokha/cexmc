@@ -40,5 +40,15 @@ enum  CexmcProductionModelType
 };
 
 
+enum  CexmcTrackType
+{
+    CexmcInsipidTrack,
+    CexmcIncidentParticleTrack,
+    CexmcOutputParticleTrack,
+    CexmcNucleusParticleTrack,
+    CexmcOutputParticleDecayProductTrack
+};
+
+
 #endif
 
