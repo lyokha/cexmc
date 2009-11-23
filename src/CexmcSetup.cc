@@ -83,19 +83,19 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
                         if ( pair->value < 0.5 )
                         {
                             scorer = new CexmcSimpleEnergyDeposit(
-                                                            "Monitor/ED/" );
+                                                            "Monitor/ED" );
                             break;
                         }
                         if ( pair->value < 1.5 )
                         {
                             scorer = new CexmcEnergyDepositInLeftRightSet(
-                                                            "VetoCounter/ED/" );
+                                                            "VetoCounter/ED" );
                             break;
                         }
                         if ( pair->value < 2.5 )
                         {
                             scorer = new CexmcEnergyDepositInCalorimeter(
-                                                            "Calorimeter/ED/" );
+                                                            "Calorimeter/ED" );
                             break;
                         }
                     } while ( false );
@@ -109,24 +109,24 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
                     {
                         if ( pair->value < 0.5 )
                         {
-                            scorer = new CexmcTrackPoints( "Target/TP/" );
+                            scorer = new CexmcTrackPoints( "Target/TP" );
                             break;
                         }
                         if ( pair->value < 1.5 )
                         {
-                            scorer = new CexmcTrackPoints( "Monitor/TP/" );
+                            scorer = new CexmcTrackPoints( "Monitor/TP" );
                             break;
                         }
                         if ( pair->value < 2.5 )
                         {
                             scorer = new CexmcTrackPointsInLeftRightSet(
-                                                         "VetoCounter/TP/" );
+                                                         "VetoCounter/TP" );
                             break;
                         }
                         if ( pair->value < 3.5 )
                         {
                             scorer = new CexmcTrackPointsInCalorimeter(
-                                                         "Calorimeter/TP/" );
+                                                         "Calorimeter/TP" );
                             break;
                         }
                     } while ( false );

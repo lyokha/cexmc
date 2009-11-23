@@ -27,6 +27,9 @@ class  G4Step;
 class  CexmcSensitiveDetectorMessenger;
 
 
+typedef G4THitsMap< G4double >  CexmcEnergyDepositCollection;
+
+
 class  CexmcSimpleEnergyDeposit : public G4VPrimitiveScorer
 {
     public:
@@ -51,7 +54,7 @@ class  CexmcSimpleEnergyDeposit : public G4VPrimitiveScorer
         G4bool  ProcessHits( G4Step *  step, G4TouchableHistory *  tHistory );
 
     protected:
-        G4THitsMap< G4double > *           eventMap;
+        CexmcEnergyDepositCollection *     eventMap;
 
     private:
         CexmcSensitiveDetectorMessenger *  messenger;

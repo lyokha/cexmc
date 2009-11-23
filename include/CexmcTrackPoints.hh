@@ -28,6 +28,9 @@ class  G4Step;
 class  CexmcSensitiveDetectorMessenger;
 
 
+typedef G4THitsMap< CexmcTrackPointInfo >  CexmcTrackPointsCollection;
+
+
 class  CexmcTrackPoints : public G4VPrimitiveScorer
 {
     public:
@@ -52,12 +55,12 @@ class  CexmcTrackPoints : public G4VPrimitiveScorer
         G4bool  ProcessHits( G4Step *  step, G4TouchableHistory *  tHistory );
 
     protected:
-        G4THitsMap< CexmcTrackPointInfo > *  eventMap;
+        CexmcTrackPointsCollection *       eventMap;
 
     private:
-        CexmcSensitiveDetectorMessenger *    messenger;
+        CexmcSensitiveDetectorMessenger *  messenger;
 
-        G4int                                hcId;
+        G4int                              hcId;
 };
 
 

@@ -67,7 +67,7 @@ G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step,
 
 void  CexmcTrackPoints::Initialize( G4HCofThisEvent *  hcOfEvent )
 {
-    eventMap = new G4THitsMap< CexmcTrackPointInfo >(
+    eventMap = new CexmcTrackPointsCollection(
                           GetMultiFunctionalDetector()->GetName(), GetName() );
     if( hcId < 0 )
     {

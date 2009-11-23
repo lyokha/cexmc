@@ -50,5 +50,12 @@ enum  CexmcTrackType
 };
 
 
+enum  CexmcSide
+{
+    CexmcLeft,
+    CexmcRight
+};
+
+
 #endif
 

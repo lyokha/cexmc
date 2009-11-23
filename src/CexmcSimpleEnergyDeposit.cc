@@ -59,7 +59,7 @@ G4bool  CexmcSimpleEnergyDeposit::ProcessHits( G4Step *  step,
 
 void  CexmcSimpleEnergyDeposit::Initialize( G4HCofThisEvent *  hcOfEvent )
 {
-    eventMap = new G4THitsMap< G4double >(
+    eventMap = new CexmcEnergyDepositCollection(
                           GetMultiFunctionalDetector()->GetName(), GetName() );
     if( hcId < 0 )
     {

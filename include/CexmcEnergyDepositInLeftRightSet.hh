@@ -21,6 +21,7 @@
 #define CEXMC_ENERGY_DEPOSIT_IN_LEFT_RIGHT_SET_HH
 
 #include "CexmcSimpleEnergyDeposit.hh"
+#include "CexmcCommon.hh"
 
 
 class  CexmcEnergyDepositInLeftRightSet : public CexmcSimpleEnergyDeposit
@@ -34,9 +35,21 @@ class  CexmcEnergyDepositInLeftRightSet : public CexmcSimpleEnergyDeposit
     protected:
         G4int  GetIndex( G4Step *  step );
 
+    public:
+        static CexmcSide  GetSide( G4int  index );
+
     protected:
         static G4int  leftRightBitsOffset;
 };
+
+
+inline CexmcSide  CexmcEnergyDepositInLeftRightSet::GetSide( G4int  index )
+{
+    if ( index >> leftRightBitsOffset == 1 )
+        return CexmcRight;
+
+    return CexmcLeft;
+}
 
 
 #endif

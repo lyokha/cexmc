@@ -28,7 +28,7 @@ CexmcSensitiveDetectorMessenger::CexmcSensitiveDetectorMessenger(
     scorer( scorer ), detectorPath( NULL ), setVerboseLevel( NULL )
 {
     G4String  detectorFullPath(
-                ( CexmcMessenger::detectorDirName + detectorName ).c_str() );
+            ( CexmcMessenger::detectorDirName + detectorName + "/" ).c_str() );
     detectorPath = new G4UIdirectory( detectorFullPath.c_str() );
     detectorPath->SetGuidance( "Setting for given sensitive detector" );
     setVerboseLevel = new G4UIcmdWithAnInteger(

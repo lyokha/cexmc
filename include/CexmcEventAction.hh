@@ -33,6 +33,8 @@ class  CexmcEventAction : public G4UserEventAction
     public:
         void      BeginOfEventAction( const G4Event *  event );
 
+        void      EndOfEventAction( const G4Event *  event );
+
     private:
         CexmcPhysicsManager *  physicsManager;
 };
