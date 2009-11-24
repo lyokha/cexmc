@@ -36,12 +36,10 @@ CexmcTrackPointsInLeftRightSet::CexmcTrackPointsInLeftRightSet(
 
 G4int  CexmcTrackPointsInLeftRightSet::GetIndex( G4Step *  step )
 {
-    G4int                        ret( step->GetTrack()->GetTrackID() );
-    G4StepPoint *                preStep( step->GetPreStepPoint() );
-    const G4VTouchable *         touchable( preStep->GetTouchable() );
-    const G4NavigationHistory *  navigationHistory( touchable->GetHistory() );
-    G4String                     volumeName(
-                                navigationHistory->GetVolume( 2 )->GetName() );
+    G4int          ret( 0 );
+    G4StepPoint *  preStep( step->GetPreStepPoint() );
+    G4String       volumeName( preStep->GetPhysicalVolume()->GetName() );
+
     if ( volumeName.contains( "Right" ) )
         ret |= 1 << leftRightBitsOffset;
 

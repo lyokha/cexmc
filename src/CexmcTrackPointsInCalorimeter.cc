@@ -19,6 +19,7 @@
 #include <G4Step.hh>
 #include <G4StepPoint.hh>
 #include <G4VTouchable.hh>
+#include <G4NavigationHistory.hh>
 #include <G4UnitsTable.hh>
 #include "CexmcTrackPointsInCalorimeter.hh"
 
@@ -36,10 +37,16 @@ CexmcTrackPointsInCalorimeter::CexmcTrackPointsInCalorimeter(
 
 G4int  CexmcTrackPointsInCalorimeter::GetIndex( G4Step *  step )
 {
-    G4int  ret( CexmcTrackPointsInLeftRightSet::GetIndex( step ) );
-
+    G4int                        ret( 0 );
     G4StepPoint *                preStep( step->GetPreStepPoint() );
     const G4VTouchable *         touchable( preStep->GetTouchable() );
+    const G4NavigationHistory *  navHistory( touchable->GetHistory() );
+    G4int                        navDepth( navHistory->GetDepth() );
+    G4String                     volumeName( navHistory->GetVolume(
+                                                    navDepth - 2 )->GetName() );
+    if ( volumeName.contains( "Right" ) )
+        ret |= 1 << leftRightBitsOffset;
+
     ret |= touchable->GetReplicaNumber( 0 ) << copyDepth0BitsOffset;
     ret |= touchable->GetReplicaNumber( 1 ) << copyDepth1BitsOffset;
 

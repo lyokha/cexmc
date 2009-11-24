@@ -22,17 +22,26 @@
 #include <G4ThreeVector.hh>
 #include <G4String.hh>
 #include <G4Types.hh>
+#include <G4UnitsTable.hh>
+#include "CexmcCommon.hh"
 
 
 struct  CexmcTrackPointInfo
 {
-    G4ThreeVector  position;
+    CexmcTrackPointInfo() : trackId( -1 )
+    {}
 
-    G4ThreeVector  direction;
+    G4ThreeVector   position;
 
-    G4double       momentumAmp;
+    G4ThreeVector   direction;
 
-    G4String       particleName;
+    G4double        momentumAmp;
+
+    G4String        particleName;
+
+    G4int           trackId;
+
+    CexmcTrackType  trackType;
 
     // following type cast operator is only needed by G4THitsMap template
     // (in PrintAll()), it has no actual use
@@ -41,6 +50,51 @@ struct  CexmcTrackPointInfo
         return 0;
     }
 };
+
+
+inline G4bool  IsTPValid( const CexmcTrackPointInfo &  tp )
+{
+    return tp.trackId != -1;
+}
+
+
+inline std::ostream &  operator<<( std::ostream &  out,
+                                const CexmcTrackPointInfo &  trackPointInfo )
+{
+    if ( ! IsTPValid( trackPointInfo ) )
+        return out << "tp is not valid";
+
+    const char *  trackTypeInfo = "???";
+
+    switch ( trackPointInfo.trackType )
+    {
+    case CexmcIncidentParticleTrack:
+        trackTypeInfo = "ip";
+        break;
+    case CexmcOutputParticleTrack:
+        trackTypeInfo = "op";
+        break;
+    case CexmcNucleusParticleTrack:
+        trackTypeInfo = "np";
+        break;
+    case CexmcOutputParticleDecayProductTrack:
+        trackTypeInfo = "opdp";
+        break;
+    default:
+        break;
+    }
+
+    out.precision( 5 );
+    out << trackPointInfo.particleName << " [" <<
+           trackPointInfo.trackId << "," << trackTypeInfo << "] " <<
+           G4BestUnit( trackPointInfo.momentumAmp, "Energy" ) << " :  " <<
+           G4BestUnit( trackPointInfo.position, "Length" ) << " [" <<
+           trackPointInfo.direction.x() << ", " <<
+           trackPointInfo.direction.y() << ", " <<
+           trackPointInfo.direction.z() << "]";
+
+    return out;
+}
 
 
 #endif

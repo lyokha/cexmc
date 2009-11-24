@@ -85,7 +85,7 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
 }
 
 
-void  CexmcEnergyDepositDigitizer::Digitize( void )
+void  CexmcEnergyDepositDigitizer::InitializeData( void )
 {
     monitorED = 0;
     vetoCounterEDLeft = 0;
@@ -114,6 +114,12 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             *l = 0;
         }
     }
+}
+
+
+void  CexmcEnergyDepositDigitizer::Digitize( void )
+{
+    InitializeData();
 
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
     G4int            hcId( digiManager->GetHitsCollectionID(

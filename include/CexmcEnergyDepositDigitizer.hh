@@ -20,7 +20,6 @@
 #define CEXMC_ENERGY_DEPOSIT_DIGITIZER_HH
 
 #include <G4VDigitizerModule.hh>
-#include <G4TDigiCollection.hh>
 
 class  G4String;
 
@@ -57,6 +56,9 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
 
     public:
         G4bool    HasTriggered( void ) const;
+
+    private:
+        void      InitializeData( void );
 
     private:
         G4double                                 monitorED;
@@ -130,7 +132,7 @@ inline G4bool  CexmcEnergyDepositDigitizer::HasTriggered( void ) const
 
 
 inline std::ostream &  operator<<( std::ostream &  out,
-                const CexmcEnergyDepositCalorimeterCollection & edCollection )
+                const CexmcEnergyDepositCalorimeterCollection &  edCollection )
 {
     out << std::endl;
     for ( CexmcEnergyDepositCalorimeterCollection::const_reverse_iterator

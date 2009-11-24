@@ -16,10 +16,12 @@
  * ============================================================================
  */
 
-#include <G4UnitsTable.hh>
 #include <G4HCofThisEvent.hh>
+#include <G4AffineTransform.hh>
+#include <G4UnitsTable.hh>
 #include "CexmcTrackPoints.hh"
 #include "CexmcSensitiveDetectorMessenger.hh"
+#include "CexmcTrackInfo.hh"
 
 
 CexmcTrackPoints::CexmcTrackPoints( const G4String &  name ) :
@@ -44,20 +46,31 @@ G4int  CexmcTrackPoints::GetIndex( G4Step *  step )
 G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step,
                                                G4TouchableHistory * )
 {
-    G4int                   index( GetIndex( step ) );
+    G4int  index( GetIndex( step ) );
 
     if ( ( *eventMap )[ index ] )
         return false;
 
     G4Track *               track( step->GetTrack() );
     G4ParticleDefinition *  particle( track->GetDefinition() );
+    CexmcTrackType          trackType( CexmcInsipidTrack );
 
-    G4StepPoint *  preStepPoint( step->GetPreStepPoint() );
+    G4StepPoint *              preStepPoint( step->GetPreStepPoint() );
+    G4ThreeVector              position( preStepPoint->GetPosition() );
+    const G4AffineTransform &  transform( preStepPoint->GetTouchable()->
+                                          GetHistory()->GetTopTransform() );
     CexmcTrackPointInfo  trackPointInfo;
-    trackPointInfo.position = preStepPoint->GetPosition();
+    trackPointInfo.position = transform.TransformPoint( position );
     trackPointInfo.direction = preStepPoint->GetMomentumDirection();
     trackPointInfo.momentumAmp = preStepPoint->GetMomentum().mag();
     trackPointInfo.particleName = particle->GetParticleName();
+    trackPointInfo.trackId = index;
+    CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
+                                                track->GetUserInformation() ) );
+    if ( trackInfo )
+        trackType = trackInfo->GetTrackType();
+
+    trackPointInfo.trackType = trackType;
 
     eventMap->set( index, trackPointInfo );
 
