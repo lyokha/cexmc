@@ -40,6 +40,8 @@ class  CexmcMessenger
 
         static G4String  detectorDirName;
 
+        static G4String  eventDirName;
+
     protected:
         CexmcMessenger();
 
@@ -58,6 +60,8 @@ class  CexmcMessenger
         G4UIdirectory *  gunDir;
 
         G4UIdirectory *  detectorDir;
+
+        G4UIdirectory *  eventDir;
 };
 
 

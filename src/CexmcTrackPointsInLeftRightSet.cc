@@ -36,7 +36,7 @@ CexmcTrackPointsInLeftRightSet::CexmcTrackPointsInLeftRightSet(
 
 G4int  CexmcTrackPointsInLeftRightSet::GetIndex( G4Step *  step )
 {
-    G4int          ret( 0 );
+    G4int          ret( step->GetTrack()->GetTrackID() );
     G4StepPoint *  preStep( step->GetPreStepPoint() );
     G4String       volumeName( preStep->GetPhysicalVolume()->GetName() );
 
@@ -70,8 +70,9 @@ void  CexmcTrackPointsInLeftRightSet::PrintAll( void )
         G4cout << "       " << detectorSide << " detector" << G4endl;
         G4cout << "         , track id " << trackId << G4endl;
         G4cout << "         , position: " <<
-                G4BestUnit( itr->second->position, "Length" ) << G4endl;
-        G4cout << "         , direction: " << itr->second->direction << G4endl;
+                G4BestUnit( itr->second->positionLocal, "Length" ) << G4endl;
+        G4cout << "         , direction: " <<
+                itr->second->directionLocal << G4endl;
         G4cout << "         , momentum: " <<
                 G4BestUnit( itr->second->momentumAmp, "Energy" ) << G4endl;
         G4cout << "         , particle: " << itr->second->particleName <<

@@ -39,3 +39,5 @@
 /cexmc/gun/fwhmMomentumAmp 0.015
 
 /cexmc/physics/applyFermiMotionInTarget true
+
+/cexmc/event/verbose 3

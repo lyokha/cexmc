@@ -24,6 +24,9 @@
 #include <G4ProcessManager.hh>
 #include <G4ProcessVector.hh>
 #include <G4VTouchable.hh>
+#include <G4NavigationHistory.hh>
+#include <G4AffineTransform.hh>
+#include <G4UnitsTable.hh>
 #include "CexmcSteppingAction.hh"
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
@@ -74,10 +77,18 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
             if ( ( *processVector )[ i ]->GetProcessName() ==
                                                 CexmcStudiedProcessFullName )
             {
-                distanceInTarget = targetSolid->
-                        DistanceToOut( postStepPoint->GetPosition(),
+                const G4AffineTransform &  transform(
+                                            postStepPoint->GetTouchable()->
+                                            GetHistory()->GetTopTransform() );
+                G4ThreeVector  position( transform.Inverse().TransformPoint(
+                                                G4ThreeVector( 0, 0, 0 ) ) );
+                position = postStepPoint->GetPosition() - position;
+                distanceInTarget = targetSolid->DistanceToOut( position,
                                        postStepPoint->GetMomentumDirection() );
-                G4cout << "DISTANCE = " << distanceInTarget << G4endl;
+                G4cout << "POSITION = " << G4BestUnit(
+                                        position, "Length" ) << G4endl;
+                G4cout << "DISTANCE = " << G4BestUnit(
+                                        distanceInTarget, "Length" ) << G4endl;
                 if ( distanceInTarget > 0. )
                     activateProcess = true;
                 break;

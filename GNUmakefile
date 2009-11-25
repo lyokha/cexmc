@@ -7,6 +7,8 @@ ifndef G4INSTALL
   G4INSTALL = ../../..
 endif
 
+CPPFLAGS += -DCEXMC_DEBUG_TP
+
 EXTRALIBS = `cernlib-g77 geant321 phtools packlib kernlib`
 EXTRALIBS += -L/usr/lib/gcc/x86_64-redhat-linux/3.4.6 -lg2c
 

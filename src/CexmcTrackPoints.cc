@@ -43,8 +43,7 @@ G4int  CexmcTrackPoints::GetIndex( G4Step *  step )
 }
 
 
-G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step,
-                                               G4TouchableHistory * )
+G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step, G4TouchableHistory * )
 {
     G4int  index( GetIndex( step ) );
 
@@ -55,16 +54,21 @@ G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step,
     G4ParticleDefinition *  particle( track->GetDefinition() );
     CexmcTrackType          trackType( CexmcInsipidTrack );
 
-    G4StepPoint *              preStepPoint( step->GetPreStepPoint() );
-    G4ThreeVector              position( preStepPoint->GetPosition() );
+    G4StepPoint *           preStepPoint( step->GetPreStepPoint() );
+    G4ThreeVector           position( preStepPoint->GetPosition() );
+    G4ThreeVector           direction( preStepPoint->GetMomentumDirection() );
+
     const G4AffineTransform &  transform( preStepPoint->GetTouchable()->
                                           GetHistory()->GetTopTransform() );
+
     CexmcTrackPointInfo  trackPointInfo;
-    trackPointInfo.position = transform.TransformPoint( position );
-    trackPointInfo.direction = preStepPoint->GetMomentumDirection();
+    trackPointInfo.positionWorld = position;
+    trackPointInfo.positionLocal = transform.TransformPoint( position );
+    trackPointInfo.directionWorld = direction;
+    trackPointInfo.directionLocal = transform.TransformAxis( direction );
     trackPointInfo.momentumAmp = preStepPoint->GetMomentum().mag();
     trackPointInfo.particleName = particle->GetParticleName();
-    trackPointInfo.trackId = index;
+    trackPointInfo.trackId = track->GetTrackID();
     CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
                                                 track->GetUserInformation() ) );
     if ( trackInfo )
@@ -125,8 +129,9 @@ void  CexmcTrackPoints::PrintAll( void )
     {
         G4cout << "       track id " << itr->first << G4endl;
         G4cout << "         , position: " <<
-                G4BestUnit( itr->second->position, "Length" ) << G4endl;
-        G4cout << "         , direction: " << itr->second->direction << G4endl;
+                G4BestUnit( itr->second->positionLocal, "Length" ) << G4endl;
+        G4cout << "         , direction: " <<
+                itr->second->directionLocal << G4endl;
         G4cout << "         , momentum: " <<
                 G4BestUnit( itr->second->momentumAmp, "Energy" ) << G4endl;
         G4cout << "         , particle: " << itr->second->particleName <<

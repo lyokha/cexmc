@@ -132,6 +132,7 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                 if ( k->second->trackType == CexmcOutputParticleTrack )
                 {
                     targetTPOutputParticle = *k->second;
+                    hasTriggered = true;
                     break;
                 }
                 if ( k->second->trackType == CexmcNucleusParticleTrack )
@@ -207,17 +208,17 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
             {
             case CexmcLeft:
                 calorimeterTPLeft = *k->second;
-                calorimeterTPLeft.position.setX( xInCalorimeterOffset +
-                                            calorimeterTPLeft.position.x() );
-                calorimeterTPLeft.position.setY( yInCalorimeterOffset +
-                                            calorimeterTPLeft.position.y() );
+                calorimeterTPLeft.positionLocal.setX( xInCalorimeterOffset +
+                                        calorimeterTPLeft.positionLocal.x() );
+                calorimeterTPLeft.positionLocal.setY( yInCalorimeterOffset +
+                                        calorimeterTPLeft.positionLocal.y() );
                 break;
             case CexmcRight:
                 calorimeterTPRight = *k->second;
-                calorimeterTPRight.position.setX( xInCalorimeterOffset +
-                                            calorimeterTPRight.position.x() );
-                calorimeterTPRight.position.setY( yInCalorimeterOffset +
-                                            calorimeterTPRight.position.y() );
+                calorimeterTPRight.positionLocal.setX( xInCalorimeterOffset +
+                                        calorimeterTPRight.positionLocal.x() );
+                calorimeterTPRight.positionLocal.setY( yInCalorimeterOffset +
+                                        calorimeterTPRight.positionLocal.y() );
                 break;
             default:
                 break;
