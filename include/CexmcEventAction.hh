@@ -58,6 +58,9 @@ class  CexmcEventAction : public G4UserEventAction
 
         void  PrintTrackPoints( const CexmcTrackPointsStore *  tpStore ) const;
 
+        void  FillEnergyDepositHisto( const CexmcEnergyDepositStore *  edStore )
+                                                                        const;
+
     private:
         CexmcPhysicsManager *  physicsManager;
 

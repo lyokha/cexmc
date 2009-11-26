@@ -23,6 +23,7 @@
 #include <G4Event.hh>
 #include "CexmcEventAction.hh"
 #include "CexmcEventActionMessenger.hh"
+#include "CexmcHistoManager.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositStore.hh"
@@ -190,6 +191,49 @@ void  CexmcEventAction::PrintTrackPoints(
 }
 
 
+void  CexmcEventAction::FillEnergyDepositHisto(
+                                const CexmcEnergyDepositStore *  edStore ) const
+{
+    CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
+
+    G4int  i( 0 );
+
+    for ( CexmcEnergyDepositCalorimeterCollection::const_iterator
+            k( edStore->calorimeterEDLeftCollection.begin() );
+            k != edStore->calorimeterEDLeftCollection.end(); ++k )
+    {
+        G4int  j( 0 );
+        for ( CexmcEnergyDepositCrystalRowCollection::const_reverse_iterator
+                l( k->rbegin() ); l != k->rend(); ++l )
+        {
+            if ( *l > 0 )
+                histoManager->Add( CexmcEnergyDepositInLeftCalorimeter,
+                                   j, i, *l );
+            ++j;
+        }
+        ++i;
+    }
+
+    i = 0;
+
+    for ( CexmcEnergyDepositCalorimeterCollection::const_iterator
+            k( edStore->calorimeterEDRightCollection.begin() );
+            k != edStore->calorimeterEDRightCollection.end(); ++k )
+    {
+        G4int  j( 0 );
+        for ( CexmcEnergyDepositCrystalRowCollection::const_reverse_iterator
+                l( k->rbegin() ); l != k->rend(); ++l )
+        {
+            if ( *l > 0 )
+                histoManager->Add( CexmcEnergyDepositInRightCalorimeter,
+                                   j, i, *l );
+            ++j;
+        }
+        ++i;
+    }
+}
+
+
 void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 {
     G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
@@ -220,6 +264,8 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( printTrackPoints )
             PrintTrackPoints( tpStore );
     }
+
+    FillEnergyDepositHisto( edStore );
 
     delete edStore;
     delete tpStore;

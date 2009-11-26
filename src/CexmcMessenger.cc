@@ -37,9 +37,17 @@ G4String  CexmcMessenger::eventDirName( CexmcMessenger::mainDirName +
 
 CexmcMessenger *  CexmcMessenger::Instance( void )
 {
-    instance = instance == NULL ? new CexmcMessenger : NULL;
+    if ( instance == NULL )
+        instance = new CexmcMessenger;
 
     return instance;
+}
+
+
+void  CexmcMessenger::Destroy( void )
+{
+    delete instance;
+    instance = NULL;
 }
 
 

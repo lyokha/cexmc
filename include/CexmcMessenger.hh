@@ -29,6 +29,13 @@ class  CexmcMessenger
     public:
         static CexmcMessenger *  Instance( void );
 
+        static void              Destroy( void );
+
+    private:
+        CexmcMessenger();
+
+        ~CexmcMessenger();
+
     public:
         static G4String  mainDirName;
 
@@ -41,11 +48,6 @@ class  CexmcMessenger
         static G4String  detectorDirName;
 
         static G4String  eventDirName;
-
-    protected:
-        CexmcMessenger();
-
-        virtual ~CexmcMessenger();
 
     private:
         static CexmcMessenger *  instance;

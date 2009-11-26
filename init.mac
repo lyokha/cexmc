@@ -40,4 +40,4 @@
 
 /cexmc/physics/applyFermiMotionInTarget true
 
-/cexmc/event/verbose 3
+/cexmc/event/verbose 4

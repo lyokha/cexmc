@@ -24,6 +24,7 @@
 #include <QGSP_BERT.hh>
 #include <G4PionMinus.hh>
 #include "CexmcRunManager.hh"
+#include "CexmcHistoManager.hh"
 #include "CexmcSetup.hh"
 #include "CexmcPhysicsList.hh"
 #include "CexmcPhysicsManager.hh"
@@ -76,9 +77,9 @@ int  main( int  argc, char **  argv )
 
     CexmcRunManager *  runManager( NULL );
     G4VisManager *     visManager( NULL );
-    CexmcMessenger *   messenger( NULL );
 
-    messenger = CexmcMessenger::Instance();
+    CexmcMessenger::Instance();
+    CexmcHistoManager::Instance();
 
     try
     {
@@ -120,6 +121,8 @@ int  main( int  argc, char **  argv )
 
         runManager->SetUserAction( new CexmcSteppingAction( physicsManager ) );
 
+        CexmcHistoManager::Initialize();
+
         visManager = new G4VisExecutive;
         visManager->Initialize();
 
@@ -142,6 +145,8 @@ int  main( int  argc, char **  argv )
     delete visManager;
     delete runManager;
     delete session;
+    CexmcHistoManager::Destroy();
+    CexmcMessenger::Destroy();
 
     return 0;
 }
