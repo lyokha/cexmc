@@ -80,11 +80,12 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
                 const G4AffineTransform &  transform(
                                             postStepPoint->GetTouchable()->
                                             GetHistory()->GetTopTransform() );
-                G4ThreeVector  position( transform.Inverse().TransformPoint(
-                                                G4ThreeVector( 0, 0, 0 ) ) );
-                position = postStepPoint->GetPosition() - position;
+                G4ThreeVector  position( transform.TransformPoint(
+                                    postStepPoint->GetPosition() ) );
+                G4ThreeVector  direction( transform.TransformAxis(
+                                    postStepPoint->GetMomentumDirection() ) );
                 distanceInTarget = targetSolid->DistanceToOut( position,
-                                       postStepPoint->GetMomentumDirection() );
+                                                               direction );
                 G4cout << "POSITION = " << G4BestUnit(
                                         position, "Length" ) << G4endl;
                 G4cout << "DISTANCE = " << G4BestUnit(
