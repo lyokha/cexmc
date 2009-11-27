@@ -49,6 +49,8 @@ class  CexmcMessenger
 
         static G4String  eventDirName;
 
+        static G4String  runDirName;
+
     private:
         static CexmcMessenger *  instance;
 
@@ -64,6 +66,8 @@ class  CexmcMessenger
         G4UIdirectory *  detectorDir;
 
         G4UIdirectory *  eventDir;
+
+        G4UIdirectory *  runDir;
 };
 
 

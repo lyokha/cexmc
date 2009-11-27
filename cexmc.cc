@@ -132,6 +132,9 @@ int  main( int  argc, char **  argv )
         {
             session->SessionStart();
         }
+
+        CexmcHistoManager::Destroy();
+        CexmcMessenger::Destroy();
     }
     catch ( CexmcException &  e )
     {
@@ -145,8 +148,6 @@ int  main( int  argc, char **  argv )
     delete visManager;
     delete runManager;
     delete session;
-    CexmcHistoManager::Destroy();
-    CexmcMessenger::Destroy();
 
     return 0;
 }

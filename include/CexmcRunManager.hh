@@ -37,14 +37,32 @@ class  CexmcRunManager : public G4RunManager
 
         void  SetGdmlFileName( const G4String &  gdmlFileName_ );
 
+        void  SaveResults( G4bool  saveResults_ );
+
+        void  SetResultsDir( const G4String &  resultsDir_ );
+
+        void  SetRunId( const G4String &  runId_ );
+
         CexmcProductionModelType  GetProductionModelType( void ) const;
 
         G4String                  GetGdmlFileName( void ) const;
+
+        G4bool                    ResultsAreSaved( void ) const;
+
+        G4String                  GetResultsDir( void ) const;
+
+        G4String                  GetRunId( void ) const;
 
     private:
         CexmcProductionModelType  productionModelType;
 
         G4String                  gdmlFileName;
+
+        G4bool                    saveResults;
+
+        G4String                  resultsDir;
+
+        G4String                  runId;
 
     private:
         CexmcRunManagerMessenger *  messenger;
@@ -77,6 +95,24 @@ inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
 }
 
 
+inline void  CexmcRunManager::SaveResults( G4bool  saveResults_ )
+{
+    saveResults = saveResults_;
+}
+
+
+inline void  CexmcRunManager::SetResultsDir( const G4String &  resultsDir_ )
+{
+    resultsDir = resultsDir_;
+}
+
+
+inline void  CexmcRunManager::SetRunId( const G4String &  runId_ )
+{
+    runId = runId_;
+}
+
+
 inline CexmcProductionModelType
                         CexmcRunManager::GetProductionModelType( void ) const
 {
@@ -87,6 +123,24 @@ inline CexmcProductionModelType
 inline G4String  CexmcRunManager::GetGdmlFileName( void ) const
 {
     return gdmlFileName;
+}
+
+
+inline G4bool  CexmcRunManager::ResultsAreSaved( void ) const
+{
+    return saveResults;
+}
+
+
+inline G4String  CexmcRunManager::GetResultsDir( void ) const
+{
+    return resultsDir;
+}
+
+
+inline G4String  CexmcRunManager::GetRunId( void ) const
+{
+    return runId;
 }
 
 

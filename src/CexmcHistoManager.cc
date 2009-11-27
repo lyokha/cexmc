@@ -22,6 +22,7 @@
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
 #include "CexmcHistoManager.hh"
+#include "CexmcRunManager.hh"
 
 
 CexmcHistoManager *  CexmcHistoManager::instance( NULL );
@@ -82,7 +83,15 @@ void  CexmcHistoManager::Initialize( void )
         }
     }
 
-    instance->outFile = new TFile( "hists.root", "recreate" );
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    if ( runManager->ResultsAreSaved() )
+    {
+        G4String  resultsDir( runManager->GetResultsDir() );
+        G4String  resultsFile( resultsDir + "/" + runManager->GetRunId() +
+                               ".root" );
+        instance->outFile = new TFile( resultsFile, "recreate" );
+    }
     instance->edInLeftCalorimeter = new TH2F( "edlc",
             "Energy Deposit (lc)", nCrystalsInRow, 0, nCrystalsInRow,
                                    nCrystalsInColumn, 0, nCrystalsInColumn );
@@ -109,8 +118,11 @@ CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
 
 CexmcHistoManager::~CexmcHistoManager()
 {
-    outFile->Write();
-    outFile->Close();
+    if ( outFile )
+    {
+        outFile->Write();
+        outFile->Close();
+    }
 
     /* all histograms will be deleted by outFile destructor! */
     delete outFile;
@@ -124,6 +136,7 @@ void  CexmcHistoManager::Add( CexmcHistoType  histoType,
     ++binX;
     ++binY;
     Double_t  curValue( ( *histos )[ histoType ]->GetBinContent( binX, binY ) );
-    ( *histos )[ histoType ]->SetBinContent( binX, binY, curValue + value );
+    ( *histos )[ histoType ]->SetBinContent( binX, binY,
+                                             curValue + value / GeV );
 }
 

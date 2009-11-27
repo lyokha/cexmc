@@ -22,7 +22,8 @@
 
 CexmcRunManager::CexmcRunManager() :
     productionModelType( CexmcUnknownProductionModel ),
-    gdmlFileName( "default.gdml" ), messenger( NULL )
+    gdmlFileName( "default.gdml" ), saveResults( false ), resultsDir( "." ),
+    runId( "trash" ), messenger( NULL )
 {
     messenger = new CexmcRunManagerMessenger( this );
 }

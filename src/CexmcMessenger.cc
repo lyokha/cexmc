@@ -33,6 +33,8 @@ G4String  CexmcMessenger::detectorDirName( CexmcMessenger::mainDirName +
                                            "detector/" );
 G4String  CexmcMessenger::eventDirName( CexmcMessenger::mainDirName +
                                            "event/" );
+G4String  CexmcMessenger::runDirName( CexmcMessenger::mainDirName +
+                                           "run/" );
 
 
 CexmcMessenger *  CexmcMessenger::Instance( void )
@@ -52,7 +54,8 @@ void  CexmcMessenger::Destroy( void )
 
 
 CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
-    physicsDir( NULL ), gunDir( NULL ), detectorDir( NULL ), eventDir( NULL )
+    physicsDir( NULL ), gunDir( NULL ), detectorDir( NULL ), eventDir( NULL ),
+    runDir( NULL )
 {
     mainDir = new G4UIdirectory( mainDirName );
     mainDir->SetGuidance( "Cexmc settings." );
@@ -65,8 +68,10 @@ CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
     gunDir->SetGuidance( "Gun settings (different FWHMs etc.)" );
     detectorDir = new G4UIdirectory( detectorDirName );
     detectorDir->SetGuidance( "Sensitive detectors settings" );
-    detectorDir = new G4UIdirectory( eventDirName );
-    detectorDir->SetGuidance( "Event settings (verbose level etc.)" );
+    eventDir = new G4UIdirectory( eventDirName );
+    eventDir->SetGuidance( "Event settings (verbose level etc.)" );
+    runDir = new G4UIdirectory( runDirName );
+    runDir->SetGuidance( "Run settings (results directory etc.)" );
 }
 
 
@@ -78,5 +83,6 @@ CexmcMessenger::~CexmcMessenger()
     delete gunDir;
     delete detectorDir;
     delete eventDir;
+    delete runDir;
 }
 
