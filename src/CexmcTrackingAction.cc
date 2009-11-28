@@ -21,14 +21,12 @@
 #include <G4Track.hh>
 #include "CexmcTrackingAction.hh"
 #include "CexmcTrackInfo.hh"
+#include "CexmcRunManager.hh"
+#include "CexmcBasicPhysicsSettings.hh"
 #include "CexmcCommon.hh"
 
 
-CexmcTrackingAction::CexmcTrackingAction(
-                             const G4ParticleDefinition *  outputParticle,
-                             const G4ParticleDefinition *  nucleusParticle ) :
-    outputParticle( outputParticle ), nucleusParticle( nucleusParticle ),
-    outputParticleTrackId( -1 )
+CexmcTrackingAction::CexmcTrackingAction() : outputParticleTrackId( -1 )
 {
 }
 
@@ -53,6 +51,17 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
         if ( track->GetCreatorProcess()->GetProcessName() ==
              CexmcStudiedProcessFullName )
         {
+            CexmcRunManager *         runManager(
+                                        static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+            CexmcProductionModelType  productionModelType(
+                                        runManager->GetProductionModelType() );
+            G4ParticleDefinition *    outputParticle(
+                        CexmcChargeExchangePMFactory::GetOutputParticle(
+                                                        productionModelType ) );
+            G4ParticleDefinition *    nucleusParticle(
+                        CexmcChargeExchangePMFactory::GetNucleusParticle(
+                                                        productionModelType ) );
             do
             {
                 if ( track->GetDefinition()->GetParticleName() ==

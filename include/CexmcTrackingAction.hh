@@ -28,17 +28,12 @@ class  G4Track;
 class CexmcTrackingAction : public G4UserTrackingAction
 {
     public:
-        CexmcTrackingAction( const G4ParticleDefinition *  outputParticle,
-                             const G4ParticleDefinition *  nucleusParticle );
+        CexmcTrackingAction();
 
     public:
         void  PreUserTrackingAction( const G4Track *  track );
 
     private:
-        const G4ParticleDefinition *  outputParticle;
-
-        const G4ParticleDefinition *  nucleusParticle;
-
         G4int                         outputParticleTrackId;
 };
 

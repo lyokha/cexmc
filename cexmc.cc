@@ -21,8 +21,6 @@
 #include <G4UIterminal.hh>
 #include <G4UItcsh.hh>
 #include <G4VisExecutive.hh>
-#include <QGSP_BERT.hh>
-#include <G4PionMinus.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcHistoManager.hh"
 #include "CexmcSetup.hh"
@@ -32,19 +30,10 @@
 #include "CexmcTrackingAction.hh"
 #include "CexmcSteppingAction.hh"
 #include "CexmcEventAction.hh"
-#include "CexmcStudiedPhysicsChargeExchange.hh"
-#include "CexmcProductionModelFactory.hh"
 #include "CexmcMessenger.hh"
 #include "CexmcException.hh"
+#include "CexmcBasicPhysicsSettings.hh"
 #include "CexmcCommon.hh"
-
-
-typedef QGSP_BERT    CexmcBasePhysics;
-typedef G4PionMinus  CexmcStudiedPhysicsStarterParticle;
-typedef CexmcProductionModelFactory< CexmcBasePhysics,
-                                     CexmcStudiedPhysicsStarterParticle,
-                                     CexmcStudiedPhysicsChargeExchange >
-                     CexmcChargeExchangePMFactory;
 
 
 namespace
@@ -113,11 +102,7 @@ int  main( int  argc, char **  argv )
 
         runManager->SetUserAction( new CexmcEventAction( physicsManager ) );
 
-        runManager->SetUserAction( new CexmcTrackingAction(
-                        CexmcChargeExchangePMFactory::GetOutputParticle(
-                                                    productionModelType),
-                        CexmcChargeExchangePMFactory::GetNucleusParticle(
-                                                    productionModelType) ) );
+        runManager->SetUserAction( new CexmcTrackingAction );
 
         runManager->SetUserAction( new CexmcSteppingAction( physicsManager ) );
 
