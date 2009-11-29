@@ -22,17 +22,27 @@
 #include <G4VDigitizerModule.hh>
 
 class  G4String;
+class  CexmcEnergyDepositDigitizerMessenger;
 
 
 typedef std::vector< G4double >  CexmcEnergyDepositCrystalRowCollection;
 typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
                                  CexmcEnergyDepositCalorimeterCollection;
 
+enum  CexmcOuterCrystalsVetoAlgorithm
+{
+    CexmcNoOuterCrystalsVeto,
+    CexmcMaximumEDInASingleOuterCrystalVeto,
+    CexmcFractionOfEDInOuterCrystalsVeto
+};
+
 
 class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
 {
     public:
         explicit CexmcEnergyDepositDigitizer( const G4String &  name );
+
+        ~CexmcEnergyDepositDigitizer();
 
     public:
         void  Digitize( void );
@@ -57,6 +67,28 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
     public:
         G4bool    HasTriggered( void ) const;
 
+    public:
+        void      SetMonitorThreshold( G4double  value );
+
+        void      SetVetoCounterLeftThreshold( G4double  value );
+
+        void      SetVetoCounterRightThreshold( G4double  value );
+
+        void      SetVetoCountersThreshold( G4double  value );
+
+        void      SetCalorimeterLeftThreshold( G4double  value );
+
+        void      SetCalorimeterRightThreshold( G4double  value );
+
+        void      SetCalorimetersThreshold( G4double  value );
+
+        void      SetOuterCrystalsVetoAlgorithm( G4int  value );
+
+        void      SetOuterCrystalsVetoFraction( G4double  value );
+
+    public:
+        G4bool    IsOuterCrystal( G4int  column, G4int  row );
+
     private:
         void      InitializeData( void );
 
@@ -76,6 +108,29 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4double                                 calorimeterEDRight;
 
         G4bool                                   hasTriggered;
+
+    private:
+        G4double                                 monitorEDThreshold;
+
+        G4double                                 vetoCounterEDLeftThreshold;
+
+        G4double                                 vetoCounterEDRightThreshold;
+
+        G4double                                 calorimeterEDLeftThreshold;
+
+        G4double                                 calorimeterEDRightThreshold;
+
+        CexmcOuterCrystalsVetoAlgorithm          outerCrystalsVetoAlgorithm;
+
+        G4double                                 outerCrystalsVetoFraction;
+
+    private:
+        G4int                                    nCrystalsInColumn;
+
+        G4int                                    nCrystalsInRow;
+
+    private:
+        CexmcEnergyDepositDigitizerMessenger *   messenger;
 };
 
 
@@ -128,6 +183,91 @@ inline const CexmcEnergyDepositCalorimeterCollection &
 inline G4bool  CexmcEnergyDepositDigitizer::HasTriggered( void ) const
 {
     return hasTriggered;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetMonitorThreshold( G4double  value )
+{
+    monitorEDThreshold = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetVetoCounterLeftThreshold(
+                                                            G4double  value )
+{
+    vetoCounterEDLeftThreshold = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetVetoCounterRightThreshold(
+                                                            G4double  value )
+{
+    vetoCounterEDRightThreshold = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetVetoCountersThreshold(
+                                                            G4double  value )
+{
+    vetoCounterEDLeftThreshold = value;
+    vetoCounterEDRightThreshold = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetCalorimeterLeftThreshold(
+                                                            G4double  value )
+{
+    calorimeterEDLeftThreshold = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetCalorimeterRightThreshold(
+                                                            G4double  value )
+{
+    calorimeterEDRightThreshold = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetCalorimetersThreshold(
+                                                            G4double  value )
+{
+    calorimeterEDLeftThreshold = value;
+    calorimeterEDRightThreshold = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoAlgorithm(
+                                                            G4int  value )
+{
+    switch ( value )
+    {
+    case 0 :
+        outerCrystalsVetoAlgorithm = CexmcNoOuterCrystalsVeto;
+        break;
+    case 1 :
+        outerCrystalsVetoAlgorithm = CexmcMaximumEDInASingleOuterCrystalVeto;
+        break;
+    case 2 :
+        outerCrystalsVetoAlgorithm = CexmcFractionOfEDInOuterCrystalsVeto;
+        break;
+    default :
+        break;
+    }
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoFraction(
+                                                            G4double  value )
+{
+    outerCrystalsVetoFraction = value;
+}
+
+
+inline G4bool  CexmcEnergyDepositDigitizer::IsOuterCrystal( G4int  column,
+                                                            G4int  row )
+{
+    return column == 0 || column == nCrystalsInColumn - 1 ||
+           row == 0 || row == nCrystalsInRow - 1;
 }
 
 

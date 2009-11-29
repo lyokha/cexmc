@@ -169,13 +169,13 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                                                                    index ) );
             switch ( side )
             {
-            case CexmcLeft:
+            case CexmcLeft :
                 vetoCounterTPLeft = *k->second;
                 break;
-            case CexmcRight:
+            case CexmcRight :
                 vetoCounterTPRight = *k->second;
                 break;
-            default:
+            default :
                 break;
             }
             break;
@@ -206,21 +206,21 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                                         crystalHeight + crystalHeight / 2 );
             switch ( side )
             {
-            case CexmcLeft:
+            case CexmcLeft :
                 calorimeterTPLeft = *k->second;
                 calorimeterTPLeft.positionLocal.setX( xInCalorimeterOffset +
                                         calorimeterTPLeft.positionLocal.x() );
                 calorimeterTPLeft.positionLocal.setY( yInCalorimeterOffset +
                                         calorimeterTPLeft.positionLocal.y() );
                 break;
-            case CexmcRight:
+            case CexmcRight :
                 calorimeterTPRight = *k->second;
                 calorimeterTPRight.positionLocal.setX( xInCalorimeterOffset +
                                         calorimeterTPRight.positionLocal.x() );
                 calorimeterTPRight.positionLocal.setY( yInCalorimeterOffset +
                                         calorimeterTPRight.positionLocal.y() );
                 break;
-            default:
+            default :
                 break;
             }
             break;

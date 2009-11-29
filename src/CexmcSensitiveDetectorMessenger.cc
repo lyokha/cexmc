@@ -17,6 +17,8 @@
  */
 
 #include <G4UIdirectory.hh>
+#include <G4UImanager.hh>
+#include <G4UIcommandTree.hh>
 #include <G4UIcmdWithAnInteger.hh>
 #include <G4VPrimitiveScorer.hh>
 #include "CexmcSensitiveDetectorMessenger.hh"
@@ -27,10 +29,14 @@ CexmcSensitiveDetectorMessenger::CexmcSensitiveDetectorMessenger(
             G4VPrimitiveScorer *  scorer, const G4String &  detectorName ) :
     scorer( scorer ), detectorPath( NULL ), setVerboseLevel( NULL )
 {
-    G4String  detectorFullPath(
+    G4String       detectorFullPath(
             ( CexmcMessenger::detectorDirName + detectorName + "/" ).c_str() );
-    detectorPath = new G4UIdirectory( detectorFullPath.c_str() );
-    detectorPath->SetGuidance( "Setting for given sensitive detector" );
+    G4UImanager *  uiManager( G4UImanager::GetUIpointer() );
+    if ( ! uiManager->GetTree()->FindCommandTree( detectorFullPath.c_str() ) )
+    {
+        detectorPath = new G4UIdirectory( detectorFullPath.c_str() );
+        detectorPath->SetGuidance( "Settings for given sensitive detector" );
+    }
     setVerboseLevel = new G4UIcmdWithAnInteger(
                             ( detectorFullPath + "verbose" ).c_str(), this );
     setVerboseLevel->SetGuidance( "0 - do not print messages, "

@@ -27,6 +27,10 @@
 /cexmc/detector/VetoCounter/TP/verbose 1
 /cexmc/detector/Calorimeter/TP/verbose 1
 
+/cexmc/detector/Monitor/ED/threshold 500 keV
+/cexmc/detector/VetoCounter/ED/threshold 500 keV
+/cexmc/detector/Calorimeter/ED/threshold 40 MeV
+
 /gun/position 0 0 -36 cm
 /gun/direction 0 0 1
 /gun/momentumAmp 700 MeV

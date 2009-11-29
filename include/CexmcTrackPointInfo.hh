@@ -74,19 +74,19 @@ inline std::ostream &  operator<<( std::ostream &  out,
 
     switch ( trackPointInfo.trackType )
     {
-    case CexmcIncidentParticleTrack:
+    case CexmcIncidentParticleTrack :
         trackTypeInfo = "ip";
         break;
-    case CexmcOutputParticleTrack:
+    case CexmcOutputParticleTrack :
         trackTypeInfo = "op";
         break;
-    case CexmcNucleusParticleTrack:
+    case CexmcNucleusParticleTrack :
         trackTypeInfo = "np";
         break;
-    case CexmcOutputParticleDecayProductTrack:
+    case CexmcOutputParticleDecayProductTrack :
         trackTypeInfo = "opdp";
         break;
-    default:
+    default :
         break;
     }
 

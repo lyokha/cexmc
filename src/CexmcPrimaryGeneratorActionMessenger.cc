@@ -33,6 +33,7 @@ CexmcPrimaryGeneratorActionMessenger::CexmcPrimaryGeneratorActionMessenger(
                 ( CexmcMessenger::gunDirName + "fwhmPosX" ).c_str(), this );
     fwhmPosX->SetGuidance( "Set positional fwhm of the beam along X axis" );
     fwhmPosX->SetParameterName( "FwhmPosX", false );
+    fwhmPosX->SetDefaultValue( 0 );
     fwhmPosX->SetDefaultUnit( "cm" );
     fwhmPosX->SetUnitCandidates( "mm cm m" );
     fwhmPosX->AvailableForStates( G4State_PreInit, G4State_Idle );
@@ -41,6 +42,7 @@ CexmcPrimaryGeneratorActionMessenger::CexmcPrimaryGeneratorActionMessenger(
                 ( CexmcMessenger::gunDirName + "fwhmPosY" ).c_str(), this );
     fwhmPosY->SetGuidance( "Set positional fwhm of the beam along Y axis" );
     fwhmPosY->SetParameterName( "FwhmPosY", false );
+    fwhmPosY->SetDefaultValue( 0 );
     fwhmPosY->SetDefaultUnit( "cm" );
     fwhmPosY->SetUnitCandidates( "mm cm m" );
     fwhmPosY->AvailableForStates( G4State_PreInit, G4State_Idle );
@@ -49,6 +51,7 @@ CexmcPrimaryGeneratorActionMessenger::CexmcPrimaryGeneratorActionMessenger(
                 ( CexmcMessenger::gunDirName + "fwhmAngleX" ).c_str(), this );
     fwhmAngleX->SetGuidance( "Set angular fwhm of the beam along X axis" );
     fwhmAngleX->SetParameterName( "FwhmAngleX", false );
+    fwhmAngleX->SetDefaultValue( 0 );
     fwhmAngleX->SetDefaultUnit( "deg" );
     fwhmAngleX->SetUnitCandidates( "deg rad" );
     fwhmAngleX->AvailableForStates( G4State_PreInit, G4State_Idle );
@@ -57,6 +60,7 @@ CexmcPrimaryGeneratorActionMessenger::CexmcPrimaryGeneratorActionMessenger(
                 ( CexmcMessenger::gunDirName + "fwhmAngleY" ).c_str(), this );
     fwhmAngleY->SetGuidance( "Set angular fwhm of the beam along Y axis" );
     fwhmAngleY->SetParameterName( "FwhmAngleY", false );
+    fwhmAngleY->SetDefaultValue( 0 );
     fwhmAngleY->SetDefaultUnit( "deg" );
     fwhmAngleY->SetUnitCandidates( "deg rad" );
     fwhmAngleY->AvailableForStates( G4State_PreInit, G4State_Idle );
@@ -65,6 +69,7 @@ CexmcPrimaryGeneratorActionMessenger::CexmcPrimaryGeneratorActionMessenger(
             ( CexmcMessenger::gunDirName + "fwhmMomentumAmp" ).c_str(), this );
     fwhmMomentumAmp->SetGuidance( "Set fwhm of the beam momentum as fraction "
                                   "of its value" );
+    fwhmMomentumAmp->SetDefaultValue( 0 );
     fwhmMomentumAmp->SetParameterName( "FwhmMomentumAmp", false );
     fwhmMomentumAmp->AvailableForStates( G4State_PreInit, G4State_Idle );
 }

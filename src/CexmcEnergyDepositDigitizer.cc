@@ -21,6 +21,7 @@
 #include <G4LogicalVolumeStore.hh>
 #include <G4String.hh>
 #include "CexmcEnergyDepositDigitizer.hh"
+#include "CexmcEnergyDepositDigitizerMessenger.hh"
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
@@ -31,7 +32,13 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
                                                     const G4String &  name ) :
     G4VDigitizerModule( name ), monitorED( 0 ),
     vetoCounterEDLeft( 0 ), vetoCounterEDRight( 0 ),
-    calorimeterEDLeft( 0 ), calorimeterEDRight( 0 ), hasTriggered( false )
+    calorimeterEDLeft( 0 ), calorimeterEDRight( 0 ), hasTriggered( false ),
+    monitorEDThreshold( 0 ), vetoCounterEDLeftThreshold( 0 ),
+    vetoCounterEDRightThreshold( 0 ), calorimeterEDLeftThreshold( 0 ),
+    calorimeterEDRightThreshold( 0 ),
+    outerCrystalsVetoAlgorithm( CexmcNoOuterCrystalsVeto ),
+    outerCrystalsVetoFraction( 0 ), nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ),
+    messenger( NULL )
 {
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
     EAxis                         axis;
@@ -54,6 +61,7 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
             calorimeterEDLeftCollection.resize( nReplicas );
             calorimeterEDRightCollection.resize( nReplicas );
         }
+        nCrystalsInColumn = nReplicas;
     }
 
     lVolume = lvs->GetVolume( "vCrystalRow" );
@@ -81,7 +89,16 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
                 k->resize( nReplicas );
             }
         }
+        nCrystalsInRow = nReplicas;
     }
+
+    messenger = new CexmcEnergyDepositDigitizerMessenger( this );
+}
+
+
+CexmcEnergyDepositDigitizer::~CexmcEnergyDepositDigitizer()
+{
+    delete messenger;
 }
 
 
@@ -149,17 +166,26 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                                                                    index ) );
             switch ( side )
             {
-            case CexmcLeft:
+            case CexmcLeft :
                 vetoCounterEDLeft = *k->second;
                 break;
-            case CexmcRight:
+            case CexmcRight :
                 vetoCounterEDRight = *k->second;
                 break;
-            default:
+            default :
                 break;
             }
         }
     }
+
+    G4double  maxEDCrystalLeft( 0 );
+    G4double  maxEDCrystalRight( 0 );
+    G4int     maxEDCrystalLeftX( 0 );
+    G4int     maxEDCrystalLeftY( 0 );
+    G4int     maxEDCrystalRightX( 0 );
+    G4int     maxEDCrystalRightY( 0 );
+    G4double  outerCrystalsEDLeft( 0 );
+    G4double  outerCrystalsEDRight( 0 );
 
     hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/ED" );
     hitsCollection = static_cast< const CexmcEnergyDepositCollection* >(
@@ -178,17 +204,65 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                                                                    index ) );
             switch ( side )
             {
-            case CexmcLeft:
+            case CexmcLeft :
+                if ( *k->second > maxEDCrystalLeft )
+                {
+                    maxEDCrystalLeftX = column;
+                    maxEDCrystalLeftY = row;
+                }
+                if ( IsOuterCrystal( column, row ) )
+                {
+                    outerCrystalsEDLeft += *k->second;
+                }
                 calorimeterEDLeft += *k->second;
                 calorimeterEDLeftCollection[ row ][ column ] = *k->second;
                 break;
-            case CexmcRight:
+            case CexmcRight :
+                if ( *k->second > maxEDCrystalRight )
+                {
+                    maxEDCrystalRightX = column;
+                    maxEDCrystalRightY = row;
+                }
+                if ( IsOuterCrystal( column, row ) )
+                {
+                    outerCrystalsEDRight += *k->second;
+                }
                 calorimeterEDRight += *k->second;
                 calorimeterEDRightCollection[ row ][ column ] = *k->second;
                 break;
-            default:
+            default :
                 break;
             }
+        }
+    }
+
+    hasTriggered = monitorED >= monitorEDThreshold &&
+                   vetoCounterEDLeft < vetoCounterEDLeftThreshold &&
+                   vetoCounterEDRight < vetoCounterEDRightThreshold &&
+                   calorimeterEDLeft >= calorimeterEDLeftThreshold &&
+                   calorimeterEDRight >= calorimeterEDRightThreshold;
+
+    /* event won't trigger if outer crystals veto triggered */
+    if ( hasTriggered )
+    {
+        switch ( outerCrystalsVetoAlgorithm )
+        {
+        case CexmcNoOuterCrystalsVeto :
+            break;
+        case CexmcMaximumEDInASingleOuterCrystalVeto :
+            hasTriggered =
+                    ! IsOuterCrystal( maxEDCrystalLeftX, maxEDCrystalLeftY ) &&
+                    ! IsOuterCrystal( maxEDCrystalRightX, maxEDCrystalRightY );
+            break;
+        case CexmcFractionOfEDInOuterCrystalsVeto :
+            hasTriggered =
+                    ! ( ( outerCrystalsEDLeft / calorimeterEDLeft ) >
+                                                outerCrystalsVetoFraction ) &&
+                    ! ( ( outerCrystalsEDLeft / calorimeterEDLeft ) >
+                                                outerCrystalsVetoFraction );
+            break;
+        default :
+            break;
         }
     }
 }

@@ -60,7 +60,7 @@ G4VUserPhysicsList *
     case CexmcEtaProduction :
         return new CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
                             CexmcChargeExchangeProductionModel< G4Eta > >;
-    default:
+    default :
         return NULL;
     }
 }
@@ -79,7 +79,7 @@ G4ParticleDefinition *
                                                             GetOutputParticle();
     case CexmcEtaProduction :
         return CexmcChargeExchangeProductionModel< G4Eta >::GetOutputParticle();
-    default:
+    default :
         return NULL;
     }
 }
@@ -99,7 +99,7 @@ G4ParticleDefinition *
     case CexmcEtaProduction :
         return CexmcChargeExchangeProductionModel< G4Eta >::
                                                         GetNucleusParticle();
-    default:
+    default :
         return NULL;
     }
 }
