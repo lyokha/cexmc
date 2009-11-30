@@ -66,7 +66,9 @@ void  CexmcStudiedPhysicsChargeExchange< Particle, ProductionModel >::
                     ApplyInteractionModel( G4HadronicProcess *  process )
 {
     productionModel = new ProductionModel;
-    process->RegisterMe( productionModel );
+    CexmcChargeExchangeProcess *  chargeExchangeProcess(
+                    static_cast< CexmcChargeExchangeProcess * >( process ) );
+    chargeExchangeProcess->RegisterProductionModel( productionModel );
 }
 
 

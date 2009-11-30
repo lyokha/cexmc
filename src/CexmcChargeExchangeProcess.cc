@@ -22,8 +22,16 @@
 
 CexmcChargeExchangeProcess::CexmcChargeExchangeProcess(
                                                     const G4String &  name ) :
-    G4HadronicProcess( name )
+    G4HadronicProcess( name ), productionModel( NULL )
 {
     AddDataSet( new G4HadronElasticDataSet );
+}
+
+
+void  CexmcChargeExchangeProcess::RegisterProductionModel(
+                                    G4HadronicInteraction *  productionModel_ )
+{
+    productionModel = productionModel_;
+    G4HadronicProcess::RegisterMe( productionModel_ );
 }
 

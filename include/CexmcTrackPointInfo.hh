@@ -90,6 +90,8 @@ inline std::ostream &  operator<<( std::ostream &  out,
         break;
     }
 
+    std::ostream::fmtflags  savedFlags( out.flags() );
+
     out.precision( 5 );
     out << trackPointInfo.particleName << " [" <<
            trackPointInfo.trackId << "," << trackTypeInfo << "] " <<
@@ -105,6 +107,8 @@ inline std::ostream &  operator<<( std::ostream &  out,
            trackPointInfo.directionWorld.y() << ", " <<
            trackPointInfo.directionWorld.z() << "] >";
 #endif
+
+    out.flags( savedFlags );
 
     return out;
 }

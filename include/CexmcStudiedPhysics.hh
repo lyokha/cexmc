@@ -29,6 +29,9 @@ template  < typename  Particle, typename  Process >
 class  CexmcStudiedPhysics : public G4VPhysicsConstructor
 {
     public:
+        typedef Process  ProcessType;
+
+    public:
         CexmcStudiedPhysics();
 
         virtual ~CexmcStudiedPhysics();

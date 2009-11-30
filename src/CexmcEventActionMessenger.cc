@@ -28,11 +28,12 @@ CexmcEventActionMessenger::CexmcEventActionMessenger(
 {
     setVerboseLevel = new G4UIcmdWithAnInteger(
                ( CexmcMessenger::eventDirName + "verbose" ).c_str() , this );
-    setVerboseLevel->SetGuidance( "0 - do not print messages,\n"
-                        "  1 - print messages if studied process triggered,\n"
-                        "  2 - print messages on event trigger,\n"
-                        "  3 - print messages on any triggered event,\n"
-                        "  4 - print messages on every event" );
+    setVerboseLevel->SetGuidance( "\n    0 - do not print messages,\n"
+                        "    1 - print messages if studied process triggered,\n"
+                        "    2 - print messages on event trigger,\n"
+                        "    3 - print messages if studied process or event "
+                               " triggered,\n"
+                        "    4 - print messages on every event" );
     setVerboseLevel->SetParameterName( "Verbose", true );
     setVerboseLevel->SetDefaultValue( 0 );
     setVerboseLevel->SetRange( "Verbose >= 0 && Verbose <= 4" );

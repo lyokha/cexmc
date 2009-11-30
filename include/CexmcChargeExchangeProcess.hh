@@ -28,7 +28,23 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
     public:
         explicit CexmcChargeExchangeProcess(
                         const G4String &  name = CexmcStudiedProcessLastName );
+
+    public:
+        void  RegisterProductionModel( G4HadronicInteraction *  model );
+
+    public:
+        G4HadronicInteraction *  GetProductionModel( void );
+
+    private:
+        G4HadronicInteraction *  productionModel;
 };
+
+
+inline G4HadronicInteraction *
+                        CexmcChargeExchangeProcess::GetProductionModel( void )
+{
+    return productionModel;
+}
 
 
 #endif

@@ -113,6 +113,15 @@ int  main( int  argc, char **  argv )
 
         uiManager->ApplyCommand( "/control/execute " + initMacroFile );
 
+        CexmcProductionModel *  productionModel(
+                    dynamic_cast< CexmcProductionModel * >(
+                                    physicsManager->GetProductionModel() ) );
+
+        if ( ! productionModel )
+            throw CexmcException( CexmcWeirdException );
+
+        productionModel->PrintInitialData();
+
         if ( session )
         {
             session->SessionStart();

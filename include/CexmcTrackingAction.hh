@@ -25,7 +25,7 @@ class  G4ParticleDefinition;
 class  G4Track;
 
 
-class CexmcTrackingAction : public G4UserTrackingAction
+class  CexmcTrackingAction : public G4UserTrackingAction
 {
     public:
         CexmcTrackingAction();

@@ -6,4 +6,4 @@
 
 /cexmc/run/saveResults true
 /cexmc/run/resultsDir ~/opt/cexmc/results
-/cexmc/run/id trash
+/cexmc/run/runId trash

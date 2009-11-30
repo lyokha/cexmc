@@ -20,6 +20,7 @@
 #define CEXMC_PHYSICS_LIST_HH
 
 #include <G4VModularPhysicsList.hh>
+#include <G4HadronicInteraction.hh>
 #include "CexmcStudiedPhysics.hh"
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
@@ -39,6 +40,8 @@ class  CexmcPhysicsList : virtual public BasePhysics,
         const G4ParticleDefinition *  GetIncidentParticleType( void ) const;
 
         void  ActivateStudiedProcess( G4bool  on, G4double  maxStep = DBL_MAX );
+
+        G4HadronicInteraction *  GetProductionModel( void );
 };
 
 
@@ -95,6 +98,43 @@ void  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
             break;
         }
     }
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics,
+            typename  ProductionModel >
+G4HadronicInteraction *  CexmcPhysicsList< BasePhysics, Particle,
+                                           StudiedPhysics, ProductionModel >::
+                GetProductionModel( void )
+{
+    G4ParticleDefinition *  particle( Particle::Definition() );
+    G4ProcessManager *      processManager( particle->GetProcessManager() );
+    G4ProcessVector *       processVector( processManager->GetProcessList() );
+    G4int                   processVectorSize(
+                                    processManager->GetProcessListLength() );
+
+    for ( int  i( 0 ); i < processVectorSize; ++i )
+    {
+        if ( ( *processVector )[ i ]->GetProcessName() ==
+                                                CexmcStudiedProcessFullName )
+        {
+            G4WrapperProcess *  studiedProcess(
+                                    static_cast< G4WrapperProcess * >(
+                                                    ( *processVector )[ i ] ) );
+            if ( ! studiedProcess )
+                break;
+
+            G4VProcess *  process( const_cast< G4VProcess * >(
+                                    studiedProcess->GetRegisteredProcess() ) );
+            if ( process )
+                return ( static_cast< typename StudiedPhysics< Particle,
+                            ProductionModel >::ProcessType * >( process ) )->
+                                                        GetProductionModel();
+        }
+    }
+
+    return NULL;
 }
 
 

@@ -26,7 +26,8 @@
 enum  CexmcExceptionType
 {
     CexmcUnknownException,
-    CexmcPreinitException
+    CexmcPreinitException,
+    CexmcWeirdException
 };
 
 
@@ -62,8 +63,10 @@ inline const char *  CexmcException::what( void ) const throw()
     case CexmcPreinitException :
         return CEXMC_LINE_START "Exception in PreInit phase. "
                "Check your preinit macro validity.";
+    case CexmcWeirdException :
+        return CEXMC_LINE_START "A weird exception. The world must fall now.";
     default :
-        return CEXMC_LINE_START "Unknown exception";
+        return CEXMC_LINE_START "Unknown exception.";
     }
 }
 

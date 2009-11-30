@@ -43,5 +43,8 @@
 /cexmc/gun/fwhmMomentumAmp 0.015
 
 /cexmc/physics/applyFermiMotionInTarget true
+/cexmc/physics/setAngularRange 1.0 0.0 10
+/cexmc/physics/addAngularRange 0.0 -0.4 1
+/cexmc/physics/addAngularRange -0.5 -1.0 2
 
 /cexmc/event/verbose 4

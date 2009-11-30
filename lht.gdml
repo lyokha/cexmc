@@ -33,11 +33,11 @@
         <constant name="TargetColumn1Angle" value="30.0"/>
         <constant name="TargetColumn2Angle" value="-45.0"/>
         <constant name="TargetColumn3Angle" value="120.0"/>
-        <constant name="CalorimeterLeftDistance" value="120.0"/>
+        <constant name="CalorimeterLeftDistance" value="60.0"/>
         <constant name="CalorimeterLeftAngle" value="60.0"/>
         <constant name="CalorimeterLeftVertShift" value="0.0"/>
-        <constant name="CalorimeterRightDistance" value="80.0"/>
-        <constant name="CalorimeterRightAngle" value="0.0"/>
+        <constant name="CalorimeterRightDistance" value="60.0"/>
+        <constant name="CalorimeterRightAngle" value="60.0"/>
         <constant name="CalorimeterRightVertShift" value="0.0"/>
 
 

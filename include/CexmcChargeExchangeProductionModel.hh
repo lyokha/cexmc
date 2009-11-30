@@ -99,15 +99,16 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     G4double         protonMass( theProton->GetPDGMass() );
     G4double         neutronMass( theNeutron->GetPDGMass() );
     G4double         outputParticleMass( theOutputParticle->GetPDGMass() );
-    G4ThreeVector    targetNucleusMomentum( targetNucleus.GetFermiMomentum() );
-    G4double         targetNucleusEnergy(
-                        std::sqrt( targetNucleusMomentum.mag2() +
-                                   protonMass * protonMass ) );
 
     G4LorentzVector  lVecProj( projectile.Get4Momentum() );
     G4LorentzVector  lVecTargNucl( 0., 0., 0., protonMass );
     if ( fermiMotionIsOn )
     {
+        G4ThreeVector  targetNucleusMomentum(
+                                        targetNucleus.GetFermiMomentum() );
+        G4double       targetNucleusEnergy(
+                            std::sqrt( targetNucleusMomentum.mag2() +
+                                                protonMass * protonMass ) );
         lVecTargNucl = G4LorentzVector( targetNucleusMomentum,
                                         targetNucleusEnergy );
     }

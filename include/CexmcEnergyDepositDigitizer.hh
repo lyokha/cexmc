@@ -274,6 +274,8 @@ inline G4bool  CexmcEnergyDepositDigitizer::IsOuterCrystal( G4int  column,
 inline std::ostream &  operator<<( std::ostream &  out,
                 const CexmcEnergyDepositCalorimeterCollection &  edCollection )
 {
+    std::ostream::fmtflags  savedFlags( out.flags() );
+
     out << std::endl;
     for ( CexmcEnergyDepositCalorimeterCollection::const_reverse_iterator
             k( edCollection.rbegin() ); k != edCollection.rend(); ++k )
@@ -287,6 +289,8 @@ inline std::ostream &  operator<<( std::ostream &  out,
         }
         out << std::endl;
     }
+
+    out.flags( savedFlags );
 
     return out;
 }

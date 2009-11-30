@@ -21,9 +21,10 @@
 
 #include <G4UImessenger.hh>
 
-class CexmcProductionModel;
-class G4UIcommand;
-class G4UIcmdWithABool;
+class  G4UIcommand;
+class  G4UIcmdWithABool;
+class  G4UIcmdWith3Vector;
+class  CexmcProductionModel;
 
 
 class  CexmcProductionModelMessenger : public G4UImessenger
@@ -41,6 +42,10 @@ class  CexmcProductionModelMessenger : public G4UImessenger
         CexmcProductionModel *  productionModel;
 
         G4UIcmdWithABool *      applyFermiMotion;
+
+        G4UIcmdWith3Vector *    setAngularRange;
+
+        G4UIcmdWith3Vector *    addAngularRange;
 };
 
 

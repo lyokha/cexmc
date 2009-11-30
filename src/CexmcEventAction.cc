@@ -17,6 +17,7 @@
  */
 
 #include <G4ParticleDefinition.hh>
+#include <G4HadronicInteraction.hh>
 #include <G4ProcessManager.hh>
 #include <G4ProcessVector.hh>
 #include <G4DigiManager.hh>
@@ -25,11 +26,13 @@
 #include "CexmcEventActionMessenger.hh"
 #include "CexmcHistoManager.hh"
 #include "CexmcPhysicsManager.hh"
+#include "CexmcProductionModel.hh"
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcTrackPointsDigitizer.hh"
 #include "CexmcTrackPointsStore.hh"
 #include "CexmcTrackPointInfo.hh"
+#include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 
@@ -61,24 +64,7 @@ CexmcEventAction::~CexmcEventAction()
 
 void  CexmcEventAction::BeginOfEventAction( const G4Event * )
 {
-    const G4ParticleDefinition *  particle(
-                                    physicsManager->GetIncidentParticleType() );
-    G4ProcessManager *            processManager(
-                                    particle->GetProcessManager() );
-    G4ProcessVector *             processVector(
-                                    processManager->GetProcessList() );
-    G4int                         processVectorSize(
-                                    processManager->GetProcessListLength() );
-
-    for ( int  i( 0 ); i < processVectorSize; ++i )
-    {
-        if ( ( *processVector )[ i ]->GetProcessName() ==
-                                                CexmcStudiedProcessFullName )
-        {
-            physicsManager->ActivateStudiedProcess( false );
-            break;
-        }
-    }
+    physicsManager->ActivateStudiedProcess( false );
 }
 
 
@@ -265,7 +251,25 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
             PrintTrackPoints( tpStore );
     }
 
-    FillEnergyDepositHisto( edStore );
+    try
+    {
+        CexmcProductionModel *  productionModel(
+                    dynamic_cast< CexmcProductionModel * >(
+                                    physicsManager->GetProductionModel() ) );
+
+        if ( ! productionModel )
+            throw CexmcException( CexmcWeirdException );
+
+        FillEnergyDepositHisto( edStore );
+    }
+    catch ( CexmcException &  e )
+    {
+        G4cout << e.what() << G4endl;
+    }
+    catch ( ... )
+    {
+        G4cout << "Unknown exception caught" << G4endl;
+    }
 
     delete edStore;
     delete tpStore;
