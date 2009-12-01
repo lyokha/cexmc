@@ -114,8 +114,7 @@ int  main( int  argc, char **  argv )
         uiManager->ApplyCommand( "/control/execute " + initMacroFile );
 
         CexmcProductionModel *  productionModel(
-                    dynamic_cast< CexmcProductionModel * >(
-                                    physicsManager->GetProductionModel() ) );
+                                        physicsManager->GetProductionModel() );
 
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );

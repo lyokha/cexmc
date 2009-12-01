@@ -90,8 +90,8 @@ void  CexmcTrackPointsInCalorimeter::PrintAll( void )
                 itr->second->directionLocal << G4endl;
         G4cout << "         , momentum: " <<
                 G4BestUnit( itr->second->momentumAmp, "Energy" ) << G4endl;
-        G4cout << "         , particle: " << itr->second->particleName <<
-                G4endl;
+        G4cout << "         , particle: "
+                << itr->second->particle->GetParticleName() << G4endl;
     }
 }
 

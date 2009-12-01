@@ -64,7 +64,8 @@ inline const char *  CexmcException::what( void ) const throw()
         return CEXMC_LINE_START "Exception in PreInit phase. "
                "Check your preinit macro validity.";
     case CexmcWeirdException :
-        return CEXMC_LINE_START "A weird exception. The world must fall now.";
+        return CEXMC_LINE_START "A weird exception occured. "
+                                "The world must collapse now.";
     default :
         return CEXMC_LINE_START "Unknown exception.";
     }

@@ -67,7 +67,7 @@ G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step, G4TouchableHistory * )
     trackPointInfo.directionWorld = direction;
     trackPointInfo.directionLocal = transform.TransformAxis( direction );
     trackPointInfo.momentumAmp = preStepPoint->GetMomentum().mag();
-    trackPointInfo.particleName = particle->GetParticleName();
+    trackPointInfo.particle = particle;
     trackPointInfo.trackId = track->GetTrackID();
     CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
                                                 track->GetUserInformation() ) );
@@ -134,8 +134,8 @@ void  CexmcTrackPoints::PrintAll( void )
                 itr->second->directionLocal << G4endl;
         G4cout << "         , momentum: " <<
                 G4BestUnit( itr->second->momentumAmp, "Energy" ) << G4endl;
-        G4cout << "         , particle: " << itr->second->particleName <<
-                G4endl;
+        G4cout << "         , particle: " <<
+                itr->second->particle->GetParticleName() << G4endl;
     }
 }
 

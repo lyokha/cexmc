@@ -22,6 +22,8 @@
 #include <G4HadronicProcess.hh>
 #include "CexmcCommon.hh"
 
+class  CexmcProductionModel;
+
 
 class  CexmcChargeExchangeProcess : public G4HadronicProcess
 {
@@ -33,14 +35,14 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
         void  RegisterProductionModel( G4HadronicInteraction *  model );
 
     public:
-        G4HadronicInteraction *  GetProductionModel( void );
+        CexmcProductionModel *  GetProductionModel( void );
 
     private:
-        G4HadronicInteraction *  productionModel;
+        CexmcProductionModel *  productionModel;
 };
 
 
-inline G4HadronicInteraction *
+inline CexmcProductionModel *
                         CexmcChargeExchangeProcess::GetProductionModel( void )
 {
     return productionModel;

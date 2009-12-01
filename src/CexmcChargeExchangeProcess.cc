@@ -18,6 +18,7 @@
 
 #include <G4HadronElasticDataSet.hh>
 #include "CexmcChargeExchangeProcess.hh"
+#include "CexmcProductionModel.hh"
 
 
 CexmcChargeExchangeProcess::CexmcChargeExchangeProcess(
@@ -31,7 +32,7 @@ CexmcChargeExchangeProcess::CexmcChargeExchangeProcess(
 void  CexmcChargeExchangeProcess::RegisterProductionModel(
                                     G4HadronicInteraction *  productionModel_ )
 {
-    productionModel = productionModel_;
+    productionModel = dynamic_cast< CexmcProductionModel *>( productionModel_ );
     G4HadronicProcess::RegisterMe( productionModel_ );
 }
 

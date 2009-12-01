@@ -23,7 +23,7 @@
 #include <templates.hh>
 
 class  G4ParticleDefinition;
-class  G4HadronicInteraction;
+class  CexmcProductionModel;
 
 
 class  CexmcPhysicsManager
@@ -40,7 +40,7 @@ class  CexmcPhysicsManager
         virtual void  ActivateStudiedProcess( G4bool  on,
                                               G4double  maxStep = DBL_MAX ) = 0;
 
-        virtual G4HadronicInteraction *  GetProductionModel( void ) = 0;
+        virtual CexmcProductionModel *  GetProductionModel( void ) = 0;
 
         virtual void  CalculateProposedMaxIL( G4double  targetRadius );
 

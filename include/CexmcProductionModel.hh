@@ -22,26 +22,11 @@
 #include <vector>
 #include <G4Types.hh>
 #include <G4ios.hh>
+#include "CexmcAngularRange.hh"
+#include "CexmcProductionModelData.hh"
 #include "CexmcCommon.hh"
 
 class  CexmcProductionModelMessenger;
-
-
-struct  CexmcAngularRange
-{
-    CexmcAngularRange( G4double  top, G4double  bottom, G4int  index ) :
-        top( top ), bottom( bottom ), index( index )
-    {}
-
-    G4double  top;
-
-    G4double  bottom;
-
-    G4int     index;
-};
-
-
-typedef std::vector< CexmcAngularRange >  CexmcAngularRangeList;
 
 
 class  CexmcProductionModel
@@ -62,10 +47,18 @@ class  CexmcProductionModel
 
         void  PrintInitialData( void ) const;
 
-    protected:
-        G4bool                 fermiMotionIsOn;
+        const CexmcAngularRangeList &  GetTriggeredAngularRanges( void ) const;
 
-        CexmcAngularRangeList  angularRanges;
+        const CexmcProductionModelData &  GetProductionModelData( void ) const;
+
+    protected:
+        G4bool                    fermiMotionIsOn;
+
+        CexmcAngularRangeList     angularRanges;
+
+        CexmcAngularRangeList     triggeredAngularRanges;
+
+        CexmcProductionModelData  productionModelData;
 
     private:
         CexmcProductionModelMessenger *  messenger;
@@ -115,27 +108,6 @@ inline void  CexmcProductionModel::AddAngularRange( G4double  top,
 }
 
 
-inline std::ostream &  operator<<( std::ostream &  out,
-                                const CexmcAngularRangeList &  angularRanges )
-{
-    std::ostream::fmtflags  savedFlags( out.flags() );
-
-    out.precision( 4 );
-    out << std::endl << std::fixed;
-    for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
-                                                k != angularRanges.end(); ++k )
-    {
-        out << "                 " << k->index  + 1 << " [" << k->top << ", " <<
-               k->bottom << ")";
-        out << std::endl;
-    }
-
-    out.flags( savedFlags );
-
-    return out;
-}
-
-
 inline void  CexmcProductionModel::PrintInitialData( void ) const
 {
     const char *  fermiMotionMsg(
@@ -144,7 +116,21 @@ inline void  CexmcProductionModel::PrintInitialData( void ) const
         fermiMotionMsg = "Fermi Motion in the target is applied.";
 
     G4cout << CEXMC_LINE_START << fermiMotionMsg << G4endl;
-    G4cout << CEXMC_LINE_START << "Angular ranges:" << angularRanges << G4endl;
+    G4cout << CEXMC_LINE_START << "Angular ranges:" << angularRanges;
+}
+
+
+inline const CexmcAngularRangeList &
+                CexmcProductionModel::GetTriggeredAngularRanges( void ) const
+{
+    return triggeredAngularRanges;
+}
+
+
+inline const CexmcProductionModelData &
+                CexmcProductionModel::GetProductionModelData( void ) const
+{
+    return productionModelData;
 }
 
 

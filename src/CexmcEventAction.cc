@@ -27,6 +27,7 @@
 #include "CexmcHistoManager.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
+#include "CexmcProductionModelData.hh"
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcTrackPointsDigitizer.hh"
@@ -177,6 +178,15 @@ void  CexmcEventAction::PrintTrackPoints(
 }
 
 
+void  CexmcEventAction::PrintProductionModelData(
+                            const CexmcAngularRangeList &  angularRanges,
+                            const CexmcProductionModelData &  pmData ) const
+{
+    G4cout << " --- Triggered angular ranges: " << angularRanges;
+    G4cout << " --- Production model data: " << pmData;
+}
+
+
 void  CexmcEventAction::FillEnergyDepositHisto(
                                 const CexmcEnergyDepositStore *  edStore ) const
 {
@@ -238,27 +248,33 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
     CexmcTrackPointsStore *    tpStore( MakeTrackPointsStore(
                                                     trackPointsDigitizer ) );
 
-    if ( verbose > 0 )
-    {
-        G4bool  printEnergyDeposit( ( ( verbose == 1 || verbose == 3 ) &&
-                      energyDepositDigitizer->HasTriggered() ) || verbose > 3 );
-        G4bool  printTrackPoints( ( ( verbose == 2 || verbose == 3 ) &&
-                      trackPointsDigitizer->HasTriggered() ) || verbose > 3 );
-        G4cout << "Event " << event->GetEventID() << G4endl;
-        if ( printEnergyDeposit )
-            PrintEnergyDeposit( edStore );
-        if ( printTrackPoints )
-            PrintTrackPoints( tpStore );
-    }
-
     try
     {
         CexmcProductionModel *  productionModel(
-                    dynamic_cast< CexmcProductionModel * >(
-                                    physicsManager->GetProductionModel() ) );
+                                        physicsManager->GetProductionModel() );
 
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );
+
+        const CexmcAngularRangeList &  triggeredAngularRanges(
+                                productionModel->GetTriggeredAngularRanges() );
+        const CexmcProductionModelData &  pmData(
+                                productionModel->GetProductionModelData() );
+
+        if ( verbose > 0 )
+        {
+            G4bool  printEnergyDeposit( ( ( verbose == 1 || verbose == 3 ) &&
+                      energyDepositDigitizer->HasTriggered() ) || verbose > 3 );
+            G4bool  printTrackPoints( ( ( verbose == 2 || verbose == 3 ) &&
+                      trackPointsDigitizer->HasTriggered() ) || verbose > 3 );
+            G4cout << "Event " << event->GetEventID() << G4endl;
+            if ( printEnergyDeposit )
+                PrintEnergyDeposit( edStore );
+            if ( printTrackPoints )
+                PrintTrackPoints( tpStore );
+            if ( trackPointsDigitizer->HasTriggered() )
+                PrintProductionModelData( triggeredAngularRanges, pmData );
+        }
 
         FillEnergyDepositHisto( edStore );
     }

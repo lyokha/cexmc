@@ -20,6 +20,7 @@
 #define CEXMC_EVENT_ACTION_HH
 
 #include <G4UserEventAction.hh>
+#include "CexmcAngularRange.hh"
 
 class  G4Event;
 class  CexmcPhysicsManager;
@@ -28,6 +29,7 @@ class  CexmcEnergyDepositStore;
 class  CexmcTrackPointsDigitizer;
 class  CexmcTrackPointsStore;
 class  CexmcEventActionMessenger;
+class  CexmcProductionModelData;
 
 
 class  CexmcEventAction : public G4UserEventAction
@@ -57,6 +59,10 @@ class  CexmcEventAction : public G4UserEventAction
                                                                         const;
 
         void  PrintTrackPoints( const CexmcTrackPointsStore *  tpStore ) const;
+
+        void  PrintProductionModelData(
+                            const CexmcAngularRangeList &  angularRanges,
+                            const CexmcProductionModelData &  pmData ) const;
 
         void  FillEnergyDepositHisto( const CexmcEnergyDepositStore *  edStore )
                                                                         const;

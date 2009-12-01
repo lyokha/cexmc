@@ -19,10 +19,8 @@
 #ifndef CEXMC_TRACK_POINT_INFO_HH
 #define CEXMC_TRACK_POINT_INFO_HH
 
-//#define CEXMC_DEBUG_TP
-
 #include <G4ThreeVector.hh>
-#include <G4String.hh>
+#include <G4ParticleDefinition.hh>
 #include <G4Types.hh>
 #include <G4UnitsTable.hh>
 #include "CexmcCommon.hh"
@@ -33,21 +31,21 @@ struct  CexmcTrackPointInfo
     CexmcTrackPointInfo() : trackId( -1 )
     {}
 
-    G4ThreeVector   positionLocal;
+    G4ThreeVector           positionLocal;
 
-    G4ThreeVector   positionWorld;
+    G4ThreeVector           positionWorld;
 
-    G4ThreeVector   directionLocal;
+    G4ThreeVector           directionLocal;
 
-    G4ThreeVector   directionWorld;
+    G4ThreeVector           directionWorld;
 
-    G4double        momentumAmp;
+    G4double                momentumAmp;
 
-    G4String        particleName;
+    G4ParticleDefinition *  particle;
 
-    G4int           trackId;
+    G4int                   trackId;
 
-    CexmcTrackType  trackType;
+    CexmcTrackType          trackType;
 
     // following type cast operator is only needed by G4THitsMap template
     // (in PrintAll()), it has no actual use here
@@ -93,7 +91,7 @@ inline std::ostream &  operator<<( std::ostream &  out,
     std::ostream::fmtflags  savedFlags( out.flags() );
 
     out.precision( 5 );
-    out << trackPointInfo.particleName << " [" <<
+    out << trackPointInfo.particle->GetParticleName() << " [" <<
            trackPointInfo.trackId << "," << trackTypeInfo << "] " <<
            G4BestUnit( trackPointInfo.momentumAmp, "Energy" ) << " :  " <<
            G4BestUnit( trackPointInfo.positionLocal, "Length" ) << " [" <<
