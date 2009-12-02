@@ -164,6 +164,9 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
+            if ( k->second->trackType != CexmcOutputParticleDecayProductTrack )
+                continue;
+
             G4int  index( k->first );
             CexmcSide  side( CexmcTrackPointsInLeftRightSet::GetSide(
                                                                    index ) );
@@ -192,6 +195,9 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
+            if ( k->second->trackType != CexmcOutputParticleDecayProductTrack )
+                continue;
+
             G4int  index( k->first );
             CexmcSide  side( CexmcTrackPointsInLeftRightSet::GetSide(
                                                                    index ) );
