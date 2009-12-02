@@ -24,6 +24,7 @@
 #include <G4Event.hh>
 #include "CexmcEventAction.hh"
 #include "CexmcEventActionMessenger.hh"
+#include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcHistoManager.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
@@ -46,19 +47,22 @@ namespace
 
 CexmcEventAction::CexmcEventAction( CexmcPhysicsManager *  physicsManager,
                                     G4int  verbose ) :
-    physicsManager( physicsManager ), verbose( verbose ), messenger( NULL )
+    physicsManager( physicsManager ), reconstructor( NULL ), verbose( verbose ),
+    messenger( NULL )
 {
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
     digiManager->AddNewModule( new CexmcEnergyDepositDigitizer(
                                                 energyDepositDigitizerName ) );
     digiManager->AddNewModule( new CexmcTrackPointsDigitizer(
                                                 trackPointsDigitizerName ) );
+    reconstructor = new CexmcChargeExchangeReconstructor;
     messenger = new CexmcEventActionMessenger( this );
 }
 
 
 CexmcEventAction::~CexmcEventAction()
 {
+    delete reconstructor;
     delete messenger;
 }
 
@@ -260,6 +264,12 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                                 productionModel->GetTriggeredAngularRanges() );
         const CexmcProductionModelData &  pmData(
                                 productionModel->GetProductionModelData() );
+
+        if ( energyDepositDigitizer->HasTriggered() )
+        {
+            reconstructor->Reconstruct( edStore->calorimeterEDLeftCollection,
+                                        edStore->calorimeterEDRightCollection );
+        }
 
         if ( verbose > 0 )
         {

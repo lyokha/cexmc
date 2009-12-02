@@ -17,14 +17,13 @@
  */
 
 #include <G4DigiManager.hh>
-#include <G4LogicalVolume.hh>
-#include <G4LogicalVolumeStore.hh>
 #include <G4String.hh>
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositDigitizerMessenger.hh"
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
+#include "CexmcCalorimeterGeometry.hh"
 #include "CexmcCommon.hh"
 
 
@@ -40,56 +39,33 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     outerCrystalsVetoFraction( 0 ), nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ),
     messenger( NULL )
 {
-    const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
-    EAxis                         axis;
-    G4int                         nReplicas( 0 );
-    G4double                      width;
-    G4double                      offset;
-    G4bool                        consuming;
+    G4double  crystalWidth;
+    G4double  crystalHeight;
+    G4double  crystalLength;
 
-    G4LogicalVolume *             lVolume( lvs->GetVolume( "vCalorimeter" ) );
-    if ( lVolume )
+    CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
+                nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );
+
+    if ( nCrystalsInColumn > 0 )
     {
-        G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
-        if ( pVolume && pVolume->IsReplicated() )
-        {
-            pVolume->GetReplicationData( axis, nReplicas, width, offset,
-                                         consuming );
-        }
-        if ( nReplicas > 0 )
-        {
-            calorimeterEDLeftCollection.resize( nReplicas );
-            calorimeterEDRightCollection.resize( nReplicas );
-        }
-        nCrystalsInColumn = nReplicas;
+        calorimeterEDLeftCollection.resize( nCrystalsInColumn );
+        calorimeterEDRightCollection.resize( nCrystalsInColumn );
     }
 
-    lVolume = lvs->GetVolume( "vCrystalRow" );
-    if ( lVolume )
+    if ( nCrystalsInRow > 0 )
     {
-        nReplicas = 0;
-        G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
-        if ( pVolume && pVolume->IsReplicated() )
+        for ( CexmcEnergyDepositCalorimeterCollection::iterator
+                k( calorimeterEDLeftCollection.begin() );
+                    k != calorimeterEDLeftCollection.end(); ++k )
         {
-            pVolume->GetReplicationData( axis, nReplicas, width, offset,
-                                         consuming );
+            k->resize( nCrystalsInRow );
         }
-        if ( nReplicas > 0 )
+        for ( CexmcEnergyDepositCalorimeterCollection::iterator
+                k( calorimeterEDRightCollection.begin() );
+                    k != calorimeterEDRightCollection.end(); ++k )
         {
-            for ( CexmcEnergyDepositCalorimeterCollection::iterator
-                    k( calorimeterEDLeftCollection.begin() );
-                        k != calorimeterEDLeftCollection.end(); ++k )
-            {
-                k->resize( nReplicas );
-            }
-            for ( CexmcEnergyDepositCalorimeterCollection::iterator
-                    k( calorimeterEDRightCollection.begin() );
-                        k != calorimeterEDRightCollection.end(); ++k )
-            {
-                k->resize( nReplicas );
-            }
+            k->resize( nCrystalsInRow );
         }
-        nCrystalsInRow = nReplicas;
     }
 
     messenger = new CexmcEnergyDepositDigitizerMessenger( this );

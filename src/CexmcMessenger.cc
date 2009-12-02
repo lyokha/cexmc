@@ -71,6 +71,8 @@ G4String  CexmcMessenger::calorimeterLeftEDDirName(
                             CexmcMessenger::calorimeterLeftDirName + ed );
 G4String  CexmcMessenger::calorimeterRightEDDirName(
                             CexmcMessenger::calorimeterRightDirName + ed );
+G4String  CexmcMessenger::reconstructorDirName(
+                            CexmcMessenger::mainDirName + "reconstructor/" );
 
 
 CexmcMessenger *  CexmcMessenger::Instance( void )
@@ -98,7 +100,7 @@ CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
     monitorEDDir( NULL ), vetoCounterEDDir( NULL ),
     vetoCounterLeftEDDir( NULL ), vetoCounterRightEDDir( NULL ),
     calorimeterEDDir( NULL ), calorimeterLeftEDDir( NULL ),
-    calorimeterRightEDDir( NULL )
+    calorimeterRightEDDir( NULL ), reconstructorDir( NULL )
 {
     mainDir = new G4UIdirectory( mainDirName );
     mainDir->SetGuidance( "Cexmc settings." );
@@ -160,6 +162,8 @@ CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
     calorimeterRightEDDir->SetGuidance(
             "Energy deposit settings in the right calorimeter "
             "(thresholds etc.)" );
+    reconstructorDir = new G4UIdirectory( reconstructorDirName );
+    reconstructorDir->SetGuidance( "Reconstructor settings" );
 }
 
 
@@ -187,5 +191,6 @@ CexmcMessenger::~CexmcMessenger()
     delete calorimeterEDDir;
     delete calorimeterLeftEDDir;
     delete calorimeterRightEDDir;
+    delete reconstructorDir;
 }
 

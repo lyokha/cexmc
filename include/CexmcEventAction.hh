@@ -30,6 +30,7 @@ class  CexmcTrackPointsDigitizer;
 class  CexmcTrackPointsStore;
 class  CexmcEventActionMessenger;
 class  CexmcProductionModelData;
+class  CexmcReconstructor;
 
 
 class  CexmcEventAction : public G4UserEventAction
@@ -68,7 +69,10 @@ class  CexmcEventAction : public G4UserEventAction
                                                                         const;
 
     private:
-        CexmcPhysicsManager *  physicsManager;
+        CexmcPhysicsManager *        physicsManager;
+
+    private:
+        CexmcReconstructor *         reconstructor;
 
     private:
         G4int                        verbose;

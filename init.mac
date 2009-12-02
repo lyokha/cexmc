@@ -45,4 +45,7 @@
 /cexmc/physics/applyFermiMotionInTarget true
 /cexmc/physics/setAngularRange 1.0 -1.0 20
 
+/cexmc/reconstructor/entryPointDefAlgo 2
+/cexmc/reconstructor/crystalSelectionAlgo 0
+
 /cexmc/event/verbose 4

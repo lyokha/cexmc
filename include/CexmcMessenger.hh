@@ -81,6 +81,8 @@ class  CexmcMessenger
 
         static G4String  calorimeterRightEDDirName;
 
+        static G4String  reconstructorDirName;
+
     private:
         static CexmcMessenger *  instance;
 
@@ -128,6 +130,8 @@ class  CexmcMessenger
         G4UIdirectory *  calorimeterLeftEDDir;
 
         G4UIdirectory *  calorimeterRightEDDir;
+
+        G4UIdirectory *  reconstructorDir;
 };
 
 

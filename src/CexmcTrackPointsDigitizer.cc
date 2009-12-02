@@ -17,14 +17,12 @@
  */
 
 #include <G4DigiManager.hh>
-#include <G4LogicalVolume.hh>
-#include <G4LogicalVolumeStore.hh>
-#include <G4Box.hh>
 #include <G4String.hh>
 #include "CexmcTrackPointsDigitizer.hh"
 #include "CexmcTrackPoints.hh"
 #include "CexmcTrackPointsInLeftRightSet.hh"
 #include "CexmcTrackPointsInCalorimeter.hh"
+#include "CexmcCalorimeterGeometry.hh"
 #include "CexmcCommon.hh"
 
 
@@ -32,45 +30,9 @@ CexmcTrackPointsDigitizer::CexmcTrackPointsDigitizer( const G4String &  name ) :
     G4VDigitizerModule( name ), hasTriggered( false ), nCrystalsInColumn( 1 ),
     nCrystalsInRow( 1 ), crystalWidth( 0 ), crystalHeight( 0 )
 {
-    const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
-    EAxis                         axis;
-    G4int                         nReplicas( 0 );
-    G4double                      width;
-    G4double                      offset;
-    G4bool                        consuming;
-
-    G4LogicalVolume *             lVolume( lvs->GetVolume( "vCalorimeter" ) );
-    if ( lVolume )
-    {
-        G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
-        if ( pVolume && pVolume->IsReplicated() )
-        {
-            pVolume->GetReplicationData( axis, nReplicas, width, offset,
-                                         consuming );
-        }
-        nCrystalsInColumn = nReplicas;
-    }
-
-    lVolume = lvs->GetVolume( "vCrystalRow" );
-    if ( lVolume )
-    {
-        nReplicas = 0;
-        G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
-        if ( pVolume && pVolume->IsReplicated() )
-        {
-            pVolume->GetReplicationData( axis, nReplicas, width, offset,
-                                         consuming );
-        }
-        nCrystalsInRow = nReplicas;
-    }
-
-    lVolume = lvs->GetVolume( "vCrystal" );
-    if ( lVolume )
-    {
-        G4Box *  crystalBox( static_cast< G4Box * >( lVolume->GetSolid() ) );
-        crystalWidth = crystalBox->GetXHalfLength() * 2;
-        crystalHeight = crystalBox->GetYHalfLength() * 2;
-    }
+    G4double  crystalLength;
+    CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
+                nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );
 }
 
 

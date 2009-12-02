@@ -37,7 +37,7 @@
         <constant name="CalorimeterLeftAngle" value="60.0"/>
         <constant name="CalorimeterLeftVertShift" value="0.0"/>
         <constant name="CalorimeterRightDistance" value="60.0"/>
-        <constant name="CalorimeterRightAngle" value="60.0"/>
+        <constant name="CalorimeterRightAngle" value="0.0"/>
         <constant name="CalorimeterRightVertShift" value="0.0"/>
 
 

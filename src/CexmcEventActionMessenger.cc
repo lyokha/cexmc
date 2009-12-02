@@ -23,8 +23,8 @@
 
 
 CexmcEventActionMessenger::CexmcEventActionMessenger(
-                                    CexmcEventAction *  eventAction ) :
-    eventAction( eventAction )
+                                            CexmcEventAction *  eventAction ) :
+    eventAction( eventAction ), setVerboseLevel( NULL )
 {
     setVerboseLevel = new G4UIcmdWithAnInteger(
                ( CexmcMessenger::eventDirName + "verbose" ).c_str() , this );
@@ -34,7 +34,7 @@ CexmcEventActionMessenger::CexmcEventActionMessenger(
                         "    3 - print messages if studied process or event "
                                " triggered,\n"
                         "    4 - print messages on every event" );
-    setVerboseLevel->SetParameterName( "Verbose", true );
+    setVerboseLevel->SetParameterName( "Verbose", false );
     setVerboseLevel->SetDefaultValue( 0 );
     setVerboseLevel->SetRange( "Verbose >= 0 && Verbose <= 4" );
     setVerboseLevel->AvailableForStates( G4State_PreInit, G4State_Idle );
