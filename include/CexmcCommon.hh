@@ -20,6 +20,7 @@
 #define CEXMC_COMMON_HH
 
 #include <G4String.hh>
+#include <G4Types.hh>
 
 #define CEXMC_LINE_START  "--- Cexmc ---  "
 

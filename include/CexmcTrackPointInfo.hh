@@ -21,8 +21,9 @@
 
 #include <G4ThreeVector.hh>
 #include <G4ParticleDefinition.hh>
-#include <G4Types.hh>
+#include <G4Allocator.hh>
 #include <G4UnitsTable.hh>
+#include <G4Types.hh>
 #include "CexmcCommon.hh"
 
 
@@ -31,21 +32,43 @@ struct  CexmcTrackPointInfo
     CexmcTrackPointInfo() : trackId( -1 )
     {}
 
-    G4ThreeVector           positionLocal;
+    CexmcTrackPointInfo( const G4ThreeVector &  positionLocal,
+                         const G4ThreeVector &  positionWorld,
+                         const G4ThreeVector &  directionLocal,
+                         const G4ThreeVector &  directionWorld,
+                         G4double  momentumAmp,
+                         const G4ParticleDefinition *  particle,
+                         G4int  trackId, CexmcTrackType  trackType ) :
+        positionLocal( positionLocal ), positionWorld( positionWorld ),
+        directionLocal( directionLocal ), directionWorld( directionWorld ),
+        momentumAmp( momentumAmp ), particle( particle ), trackId( trackId ),
+        trackType( trackType )
+    {}
 
-    G4ThreeVector           positionWorld;
+    G4bool  IsValid( void ) const
+    {
+        return trackId != -1;
+    }
 
-    G4ThreeVector           directionLocal;
+    void *  operator new( size_t  size );
 
-    G4ThreeVector           directionWorld;
+    void    operator delete( void *  obj );
 
-    G4double                momentumAmp;
+    G4ThreeVector                 positionLocal;
 
-    G4ParticleDefinition *  particle;
+    G4ThreeVector                 positionWorld;
 
-    G4int                   trackId;
+    G4ThreeVector                 directionLocal;
 
-    CexmcTrackType          trackType;
+    G4ThreeVector                 directionWorld;
+
+    G4double                      momentumAmp;
+
+    const G4ParticleDefinition *  particle;
+
+    G4int                         trackId;
+
+    CexmcTrackType                trackType;
 
     // following type cast operator is only needed by G4THitsMap template
     // (in PrintAll()), it has no actual use here
@@ -56,16 +79,26 @@ struct  CexmcTrackPointInfo
 };
 
 
-inline G4bool  IsTPValid( const CexmcTrackPointInfo &  tp )
+extern G4Allocator< CexmcTrackPointInfo >  trackPointInfoAllocator;
+
+
+inline void *  CexmcTrackPointInfo::operator new( size_t )
 {
-    return tp.trackId != -1;
+  return trackPointInfoAllocator.MallocSingle();
+}
+
+
+inline void  CexmcTrackPointInfo::operator delete( void *  obj )
+{
+    trackPointInfoAllocator.FreeSingle(
+                            reinterpret_cast< CexmcTrackPointInfo * >( obj ) );
 }
 
 
 inline std::ostream &  operator<<( std::ostream &  out,
                                 const CexmcTrackPointInfo &  trackPointInfo )
 {
-    if ( ! IsTPValid( trackPointInfo ) )
+    if ( ! trackPointInfo.IsValid() )
         return out << "tp is not valid";
 
     const char *  trackTypeInfo = "???";

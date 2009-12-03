@@ -19,7 +19,10 @@
 #ifndef CEXMC_CALORIMETER_GEOMETRY_HH
 #define CEXMC_CALORIMETER_GEOMETRY_HH
 
+#include <G4ThreeVector.hh>
 #include <G4Types.hh>
+
+class  G4AffineTransform;
 
 
 class  CexmcCalorimeterGeometry
@@ -30,6 +33,12 @@ class  CexmcCalorimeterGeometry
                                       G4double &  crystalWidth,
                                       G4double &  crystalHeight,
                                       G4double &  crystalLength );
+
+        static void  GetCalorimeterLeftTransform(
+                                            G4AffineTransform &  transform );
+
+        static void  GetCalorimeterRightTransform(
+                                            G4AffineTransform &  transform );
 
     private:
         CexmcCalorimeterGeometry();

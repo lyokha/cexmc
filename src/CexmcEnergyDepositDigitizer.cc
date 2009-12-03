@@ -31,10 +31,12 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
                                                     const G4String &  name ) :
     G4VDigitizerModule( name ), monitorED( 0 ),
     vetoCounterEDLeft( 0 ), vetoCounterEDRight( 0 ),
-    calorimeterEDLeft( 0 ), calorimeterEDRight( 0 ), hasTriggered( false ),
-    monitorEDThreshold( 0 ), vetoCounterEDLeftThreshold( 0 ),
-    vetoCounterEDRightThreshold( 0 ), calorimeterEDLeftThreshold( 0 ),
-    calorimeterEDRightThreshold( 0 ),
+    calorimeterEDLeft( 0 ), calorimeterEDRight( 0 ),
+    calorimeterEDLeftMaxX( 0 ), calorimeterEDLeftMaxY( 0 ),
+    calorimeterEDRightMaxX( 0 ), calorimeterEDRightMaxY( 0 ),
+    hasTriggered( false ), monitorEDThreshold( 0 ),
+    vetoCounterEDLeftThreshold( 0 ), vetoCounterEDRightThreshold( 0 ),
+    calorimeterEDLeftThreshold( 0 ), calorimeterEDRightThreshold( 0 ),
     outerCrystalsVetoAlgorithm( CexmcNoOuterCrystalsVeto ),
     outerCrystalsVetoFraction( 0 ), nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ),
     messenger( NULL )
@@ -85,6 +87,10 @@ void  CexmcEnergyDepositDigitizer::InitializeData( void )
     vetoCounterEDRight = 0;
     calorimeterEDLeft = 0;
     calorimeterEDRight = 0;
+    calorimeterEDLeftMaxX = 0;
+    calorimeterEDLeftMaxY = 0;
+    calorimeterEDRightMaxX = 0;
+    calorimeterEDRightMaxY = 0;
     hasTriggered = false;
 
     for ( CexmcEnergyDepositCalorimeterCollection::iterator
@@ -156,10 +162,6 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
 
     G4double  maxEDCrystalLeft( 0 );
     G4double  maxEDCrystalRight( 0 );
-    G4int     maxEDCrystalLeftX( 0 );
-    G4int     maxEDCrystalLeftY( 0 );
-    G4int     maxEDCrystalRightX( 0 );
-    G4int     maxEDCrystalRightY( 0 );
     G4double  outerCrystalsEDLeft( 0 );
     G4double  outerCrystalsEDRight( 0 );
 
@@ -183,8 +185,9 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             case CexmcLeft :
                 if ( *k->second > maxEDCrystalLeft )
                 {
-                    maxEDCrystalLeftX = column;
-                    maxEDCrystalLeftY = row;
+                    calorimeterEDLeftMaxX = column;
+                    calorimeterEDLeftMaxY = row;
+                    maxEDCrystalLeft = *k->second;
                 }
                 if ( IsOuterCrystal( column, row ) )
                 {
@@ -196,8 +199,9 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             case CexmcRight :
                 if ( *k->second > maxEDCrystalRight )
                 {
-                    maxEDCrystalRightX = column;
-                    maxEDCrystalRightY = row;
+                    calorimeterEDRightMaxX = column;
+                    calorimeterEDRightMaxY = row;
+                    maxEDCrystalRight = *k->second;
                 }
                 if ( IsOuterCrystal( column, row ) )
                 {
@@ -227,8 +231,10 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             break;
         case CexmcMaximumEDInASingleOuterCrystalVeto :
             hasTriggered =
-                    ! IsOuterCrystal( maxEDCrystalLeftX, maxEDCrystalLeftY ) &&
-                    ! IsOuterCrystal( maxEDCrystalRightX, maxEDCrystalRightY );
+                    ! IsOuterCrystal( calorimeterEDLeftMaxX,
+                                      calorimeterEDLeftMaxY ) &&
+                    ! IsOuterCrystal( calorimeterEDRightMaxX,
+                                      calorimeterEDRightMaxY );
             break;
         case CexmcFractionOfEDInOuterCrystalsVeto :
             hasTriggered =

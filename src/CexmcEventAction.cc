@@ -81,6 +81,10 @@ CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
     G4double  vetoCounterEDRight( digitizer->GetVetoCounterEDRight() );
     G4double  calorimeterEDLeft( digitizer->GetCalorimeterEDLeft() );
     G4double  calorimeterEDRight( digitizer->GetCalorimeterEDRight() );
+    G4int     calorimeterEDLeftMaxX( digitizer->GetCalorimeterEDLeftMaxX() );
+    G4int     calorimeterEDLeftMaxY( digitizer->GetCalorimeterEDLeftMaxY() );
+    G4int     calorimeterEDRightMaxX( digitizer->GetCalorimeterEDRightMaxX() );
+    G4int     calorimeterEDRightMaxY( digitizer->GetCalorimeterEDRightMaxY() );
     const CexmcEnergyDepositCalorimeterCollection &
                 calorimeterEDLeftCollection(
                             digitizer->GetCalorimeterEDLeftCollection() );
@@ -91,6 +95,8 @@ CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
     /* ATTENTION: return object in heap - must be freed by caller! */
     return new CexmcEnergyDepositStore( monitorED, vetoCounterEDLeft,
                     vetoCounterEDRight, calorimeterEDLeft, calorimeterEDRight,
+                    calorimeterEDLeftMaxX, calorimeterEDLeftMaxY,
+                    calorimeterEDRightMaxX, calorimeterEDRightMaxY,
                     calorimeterEDLeftCollection, calorimeterEDRightCollection );
 }
 
@@ -191,6 +197,16 @@ void  CexmcEventAction::PrintProductionModelData(
 }
 
 
+void  CexmcEventAction::PrintReconstructedData( void ) const
+{
+    G4cout << " --- Reconstructed entry points: " << G4endl;
+    G4cout << "        left: " << G4BestUnit(
+        reconstructor->GetCalorimeterEPLeftPosition(), "Length" ) << G4endl;
+    G4cout << "       right: " << G4BestUnit(
+        reconstructor->GetCalorimeterEPRightPosition(), "Length" ) << G4endl;
+}
+
+
 void  CexmcEventAction::FillEnergyDepositHisto(
                                 const CexmcEnergyDepositStore *  edStore ) const
 {
@@ -265,11 +281,8 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         const CexmcProductionModelData &  pmData(
                                 productionModel->GetProductionModelData() );
 
-        if ( energyDepositDigitizer->HasTriggered() )
-        {
-            reconstructor->Reconstruct( edStore->calorimeterEDLeftCollection,
-                                        edStore->calorimeterEDRightCollection );
-        }
+        //if ( energyDepositDigitizer->HasTriggered() )
+            reconstructor->Reconstruct( edStore );
 
         if ( verbose > 0 )
         {
@@ -284,6 +297,8 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                 PrintTrackPoints( tpStore );
             if ( trackPointsDigitizer->HasTriggered() )
                 PrintProductionModelData( triggeredAngularRanges, pmData );
+            //if ( energyDepositDigitizer->HasTriggered() )
+                PrintReconstructedData();
         }
 
         FillEnergyDepositHisto( edStore );

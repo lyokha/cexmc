@@ -65,6 +65,8 @@ class  CexmcEventAction : public G4UserEventAction
                             const CexmcAngularRangeList &  angularRanges,
                             const CexmcProductionModelData &  pmData ) const;
 
+        void  PrintReconstructedData( void ) const;
+
         void  FillEnergyDepositHisto( const CexmcEnergyDepositStore *  edStore )
                                                                         const;
 

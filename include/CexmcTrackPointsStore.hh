@@ -19,6 +19,7 @@
 #ifndef CEXMC_TRACK_POINTS_STORE_HH
 #define CEXMC_TRACK_POINTS_STORE_HH
 
+#include <G4Allocator.hh>
 #include "CexmcTrackPointInfo.hh"
 
 
@@ -48,6 +49,10 @@ struct  CexmcTrackPointsStore
         calorimeterTPRight( calorimeterTPRight )
     {}
 
+    void *  operator new( size_t  size );
+
+    void    operator delete( void *  obj );
+
     const CexmcTrackPointInfo &  monitorTP;
     
     const CexmcTrackPointInfo &  targetTPIncidentParticle;
@@ -68,6 +73,22 @@ struct  CexmcTrackPointsStore
 
     const CexmcTrackPointInfo &  calorimeterTPRight;
 };
+
+
+extern G4Allocator< CexmcTrackPointsStore >  trackPointsStoreAllocator;
+
+
+inline void *  CexmcTrackPointsStore::operator new( size_t )
+{
+  return trackPointsStoreAllocator.MallocSingle();
+}
+
+
+inline void  CexmcTrackPointsStore::operator delete( void *  obj )
+{
+    trackPointsStoreAllocator.FreeSingle(
+                        reinterpret_cast< CexmcTrackPointsStore * >( obj ) );
+}
 
 
 #endif

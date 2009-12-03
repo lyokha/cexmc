@@ -20,8 +20,15 @@
 #ifndef CEXMC_ENERGY_DEPOSIT_STORE_HH
 #define CEXMC_ENERGY_DEPOSIT_STORE_HH
 
+#include <vector>
+#include <G4Allocator.hh>
 #include <G4Types.hh>
+#include "CexmcCommon.hh"
 
+
+typedef std::vector< G4double >  CexmcEnergyDepositCrystalRowCollection;
+typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
+                                 CexmcEnergyDepositCalorimeterCollection;
 
 struct  CexmcEnergyDepositStore
 {
@@ -30,6 +37,10 @@ struct  CexmcEnergyDepositStore
                              G4double  vetoCounterEDRight,
                              G4double  calorimeterEDLeft,
                              G4double  calorimeterEDRight,
+                             G4int     calorimeterEDLeftMaxX,
+                             G4int     calorimeterEDLeftMaxY,
+                             G4int     calorimeterEDRightMaxX,
+                             G4int     calorimeterEDRightMaxY,
                              const CexmcEnergyDepositCalorimeterCollection &
                                        calorimeterEDLeftCollection,
                              const CexmcEnergyDepositCalorimeterCollection &
@@ -38,9 +49,17 @@ struct  CexmcEnergyDepositStore
         vetoCounterEDRight( vetoCounterEDRight ),
         calorimeterEDLeft( calorimeterEDLeft ),
         calorimeterEDRight( calorimeterEDRight ),
+        calorimeterEDLeftMaxX( calorimeterEDLeftMaxX ),
+        calorimeterEDLeftMaxY( calorimeterEDLeftMaxY ),
+        calorimeterEDRightMaxX( calorimeterEDRightMaxX ),
+        calorimeterEDRightMaxY( calorimeterEDRightMaxY ),
         calorimeterEDLeftCollection( calorimeterEDLeftCollection ),
         calorimeterEDRightCollection( calorimeterEDRightCollection )
     {}
+
+    void *  operator new( size_t  size );
+
+    void    operator delete( void *  obj );
 
     G4double  monitorED;
 
@@ -52,12 +71,36 @@ struct  CexmcEnergyDepositStore
 
     G4double  calorimeterEDRight;
 
+    G4int     calorimeterEDLeftMaxX;
+
+    G4int     calorimeterEDLeftMaxY;
+
+    G4int     calorimeterEDRightMaxX;
+
+    G4int     calorimeterEDRightMaxY;
+
     const CexmcEnergyDepositCalorimeterCollection &
               calorimeterEDLeftCollection;
 
     const CexmcEnergyDepositCalorimeterCollection &
               calorimeterEDRightCollection;
 };
+
+
+extern G4Allocator< CexmcEnergyDepositStore >  energyDepositStoreAllocator;
+
+
+inline void *  CexmcEnergyDepositStore::operator new( size_t )
+{
+  return energyDepositStoreAllocator.MallocSingle();
+}
+
+
+inline void  CexmcEnergyDepositStore::operator delete( void *  obj )
+{
+    energyDepositStoreAllocator.FreeSingle(
+                        reinterpret_cast< CexmcEnergyDepositStore * >( obj ) );
+}
 
 
 #endif

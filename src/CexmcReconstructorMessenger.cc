@@ -17,6 +17,7 @@
  */
 
 #include <G4UIcmdWithAnInteger.hh>
+#include <G4UIcmdWithADoubleAndUnit.hh>
 #include "CexmcReconstructorMessenger.hh"
 #include "CexmcReconstructor.hh"
 #include "CexmcMessenger.hh"
@@ -25,7 +26,8 @@
 CexmcReconstructorMessenger::CexmcReconstructorMessenger(
                                         CexmcReconstructor *  reconstructor ) :
     reconstructor( reconstructor ),
-    setCalorimeterEntryPointDefinitionAlgorithm( NULL )
+    setCalorimeterEntryPointDefinitionAlgorithm( NULL ),
+    setCrystalSelectionAlgorithm( NULL ), setCalorimeterEntryPointDepth( NULL )
 {
     setCalorimeterEntryPointDefinitionAlgorithm = new G4UIcmdWithAnInteger(
         ( CexmcMessenger::reconstructorDirName + "entryPointDefAlgo" ).c_str(),
@@ -35,15 +37,17 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "products\n    in calorimeter"
         " (none of the following algorithms reconstruct directions)\n"
         "    0 - entry points defined in the center of the calorimeters,\n"
-        "    1 - entry points defined by linear weights of energy deposit in "
+        "    1 - entry points defined in the center of the crystal that \n"
+        "        has maximum energy deposit value,\n"
+        "    2 - entry points defined by linear weights of energy deposit in "
         "crystals,\n"
-        "    2 - entry points defined by square root weights ofenergy deposit "
+        "    3 - entry points defined by square root weights of energy deposit "
         "in crystals" );
-    setCalorimeterEntryPointDefinitionAlgorithm->SetDefaultValue( 2 );
+    setCalorimeterEntryPointDefinitionAlgorithm->SetDefaultValue( 3 );
     setCalorimeterEntryPointDefinitionAlgorithm->SetParameterName(
                                                 "EntryPointDefAlgo", false );
     setCalorimeterEntryPointDefinitionAlgorithm->SetRange(
-                        "EntryPointDefAlgo >= 0 && EntryPointDefAlgo <= 2" );
+                        "EntryPointDefAlgo >= 0 && EntryPointDefAlgo <= 3" );
     setCalorimeterEntryPointDefinitionAlgorithm->AvailableForStates(
                                                 G4State_PreInit, G4State_Idle );
 
@@ -61,6 +65,19 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
                         "CrystalSelAlgo >= 0 && CrystalSelAlgo <= 1" );
     setCrystalSelectionAlgorithm->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
+
+    setCalorimeterEntryPointDepth = new G4UIcmdWithADoubleAndUnit(
+        ( CexmcMessenger::reconstructorDirName + "entryPointDepth" ).c_str(),
+        this );
+    setCalorimeterEntryPointDepth->SetGuidance(
+        "\n    Depth of entry point used in reconstruction of angle between "
+        "output particle decay products" );
+    setCalorimeterEntryPointDepth->SetParameterName( "EntryPointDepth", false );
+    setCalorimeterEntryPointDepth->SetDefaultValue( 0 );
+    setCalorimeterEntryPointDepth->SetDefaultUnit( "cm" );
+    setCalorimeterEntryPointDepth->SetUnitCandidates( "mm cm m" );
+    setCalorimeterEntryPointDepth->AvailableForStates( G4State_PreInit,
+                                                       G4State_Idle );
 }
 
 
@@ -68,6 +85,7 @@ CexmcReconstructorMessenger::~CexmcReconstructorMessenger()
 {
     delete setCalorimeterEntryPointDefinitionAlgorithm;
     delete setCrystalSelectionAlgorithm;
+    delete setCalorimeterEntryPointDepth;
 }
 
 
@@ -79,13 +97,19 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
         if ( cmd == setCalorimeterEntryPointDefinitionAlgorithm )
         {
             reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm(
-                                G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+                        G4UIcmdWithAnInteger::GetNewIntValue( value ) );
             break;
         }
         if ( cmd == setCrystalSelectionAlgorithm )
         {
             reconstructor->SetCrystalSelectionAlgorithm(
-                                G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+                        G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+            break;
+        }
+        if ( cmd == setCalorimeterEntryPointDepth )
+        {
+            reconstructor->SetCalorimeterEntryPointDepth(
+                        G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
             break;
         }
     } while ( false );

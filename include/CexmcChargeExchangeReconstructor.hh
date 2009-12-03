@@ -19,16 +19,24 @@
 #ifndef CEXMC_CHARGE_EXCHANGE_RECONSTRUCTOR_HH
 #define CEXMC_CHARGE_EXCHANGE_RECONSTRUCTOR_HH
 
+#include <G4AffineTransform.hh>
 #include "CexmcReconstructor.hh"
 
 
 class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 {
     public:
-        void  Reconstruct( const CexmcEnergyDepositCalorimeterCollection &
-                                                calorimeterEDLeftCollection,
-                           const CexmcEnergyDepositCalorimeterCollection &
-                                                calorimeterEDRightCollection );
+        CexmcChargeExchangeReconstructor();
+
+    public:
+        void  Reconstruct( const CexmcEnergyDepositStore *  edStore );
+
+    private:
+        G4AffineTransform  calorimeterLeftTransform;
+        
+        G4AffineTransform  calorimeterRightTransform;
+
+        G4AffineTransform  targetTransform;
 };
 
 

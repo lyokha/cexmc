@@ -18,7 +18,10 @@
 
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
+#include <G4VPhysicalVolume.hh>
+#include <G4PhysicalVolumeStore.hh>
 #include <G4Box.hh>
+#include <G4AffineTransform.hh>
 #include "CexmcCalorimeterGeometry.hh"
 #include "CexmcException.hh"
 
@@ -65,5 +68,41 @@ void  CexmcCalorimeterGeometry::GetGeometryData( G4int &  nCrystalsInColumn,
     crystalWidth = crystalBox->GetXHalfLength() * 2;
     crystalHeight = crystalBox->GetYHalfLength() * 2;
     crystalLength = crystalBox->GetZHalfLength() * 2;
+}
+
+
+void  CexmcCalorimeterGeometry::GetCalorimeterLeftTransform(
+                                                G4AffineTransform &  transform )
+{
+    /* we suppose that transformation only occurs in 'CalorimeterLeft'
+     * physical volume! */
+    const G4PhysicalVolumeStore *  pvs( G4PhysicalVolumeStore::GetInstance() );
+    G4VPhysicalVolume *            pVolume( pvs->GetVolume(
+                                                        "CalorimeterLeft" ) );
+    if ( ! pVolume )
+        throw CexmcException( CexmcWeirdException );
+
+    transform.SetNetTranslation( pVolume->GetTranslation() );
+    G4RotationMatrix *  rm( pVolume->GetRotation() );
+    if ( rm )
+        transform.SetNetRotation( *rm );
+}
+
+
+void  CexmcCalorimeterGeometry::GetCalorimeterRightTransform(
+                                                G4AffineTransform &  transform )
+{
+    /* we suppose that transformation only occurs in 'CalorimeterRight'
+     * physical volume! */
+    const G4PhysicalVolumeStore *  pvs( G4PhysicalVolumeStore::GetInstance() );
+    G4VPhysicalVolume *            pVolume( pvs->GetVolume(
+                                                        "CalorimeterRight" ) );
+    if ( ! pVolume )
+        throw CexmcException( CexmcWeirdException );
+
+    transform.SetNetTranslation( pVolume->GetTranslation() );
+    G4RotationMatrix *  rm( pVolume->GetRotation() );
+    if ( rm )
+        transform.SetNetRotation( *rm );
 }
 

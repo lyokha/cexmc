@@ -61,20 +61,18 @@ G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step, G4TouchableHistory * )
     const G4AffineTransform &  transform( preStepPoint->GetTouchable()->
                                           GetHistory()->GetTopTransform() );
 
-    CexmcTrackPointInfo  trackPointInfo;
-    trackPointInfo.positionWorld = position;
-    trackPointInfo.positionLocal = transform.TransformPoint( position );
-    trackPointInfo.directionWorld = direction;
-    trackPointInfo.directionLocal = transform.TransformAxis( direction );
-    trackPointInfo.momentumAmp = preStepPoint->GetMomentum().mag();
-    trackPointInfo.particle = particle;
-    trackPointInfo.trackId = track->GetTrackID();
     CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
                                                 track->GetUserInformation() ) );
     if ( trackInfo )
         trackType = trackInfo->GetTrackType();
 
-    trackPointInfo.trackType = trackType;
+    CexmcTrackPointInfo  trackPointInfo( transform.TransformPoint( position ),
+                                         position,
+                                         transform.TransformAxis( direction ),
+                                         direction,
+                                         preStepPoint->GetMomentum().mag(),
+                                         particle, track->GetTrackID(),
+                                         trackType );
 
     eventMap->set( index, trackPointInfo );
 

@@ -20,14 +20,15 @@
 #define CEXMC_RECONSTRUCTOR_HH
 
 #include <G4ThreeVector.hh>
-#include "CexmcEnergyDepositDigitizer.hh"
 
 class  CexmcReconstructorMessenger;
+class  CexmcEnergyDepositStore;
 
 
 enum  CexmcCalorimeterEntryPointDefinitionAlgorithm
 {
     CexmcEntryPointInTheCenter,
+    CexmcEntryPointInTheCenterOfCrystalWithMaxED,
     CexmcEntryPointByLinearEDWeights,
     CexmcEntryPointBySqrtEDWeights
 };
@@ -48,24 +49,34 @@ class  CexmcReconstructor
         virtual ~CexmcReconstructor();
 
     public:
-        virtual void  Reconstruct(
-                                const CexmcEnergyDepositCalorimeterCollection &
-                                            calorimeterEDLeftCollection,
-                                const CexmcEnergyDepositCalorimeterCollection &
-                                            calorimeterEDRightCollection );
+        virtual void  Reconstruct( const CexmcEnergyDepositStore *  edStore );
 
     public:
         void  SetCalorimeterEntryPointDefinitionAlgorithm( G4int  algorithm );
 
         void  SetCrystalSelectionAlgorithm( G4int  algorithm );
 
-    protected:
-        virtual void  ReconstructEntryPoints( void );
+        void  SetCalorimeterEntryPointDepth( G4double  depth );
+
+    public:
+        const G4ThreeVector &  GetCalorimeterEPLeftPosition( void ) const;
+
+        const G4ThreeVector &  GetCalorimeterEPRightPosition( void ) const;
+
+        const G4ThreeVector &  GetCalorimeterEPLeftDirection( void ) const;
+
+        const G4ThreeVector &  GetCalorimeterEPRightDirection( void ) const;
 
     protected:
-        CexmcCalorimeterEntryPointDefinitionAlgorithm  epdAlgorithm;
+        virtual void  ReconstructEntryPoints( const CexmcEnergyDepositStore *
+                                              edStore );
+
+    protected:
+        CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
 
         CexmcCrystalSelectionAlgorithm                 csAlgorithm;
+
+        G4double                                       epDepth;
 
     protected:
         G4ThreeVector  calorimeterEPLeftPosition;
@@ -75,6 +86,17 @@ class  CexmcReconstructor
         G4ThreeVector  calorimeterEPLeftDirection;
 
         G4ThreeVector  calorimeterEPRightDirection;
+
+    private:
+        G4int          nCrystalsInColumn;
+
+        G4int          nCrystalsInRow;
+
+        G4double       crystalWidth;
+
+        G4double       crystalHeight;
+
+        G4double       crystalLength;
 
     private:
         CexmcReconstructorMessenger *  messenger;
@@ -87,13 +109,16 @@ inline void  CexmcReconstructor::SetCalorimeterEntryPointDefinitionAlgorithm(
     switch ( algorithm )
     {
     case 0 :
-        epdAlgorithm = CexmcEntryPointInTheCenter;
+        epDefinitionAlgorithm = CexmcEntryPointInTheCenter;
         break;
     case 1 :
-        epdAlgorithm = CexmcEntryPointByLinearEDWeights;
+        epDefinitionAlgorithm = CexmcEntryPointInTheCenterOfCrystalWithMaxED;
         break;
     case 2 :
-        epdAlgorithm = CexmcEntryPointBySqrtEDWeights;
+        epDefinitionAlgorithm = CexmcEntryPointByLinearEDWeights;
+        break;
+    case 3 :
+        epDefinitionAlgorithm = CexmcEntryPointBySqrtEDWeights;
         break;
     default :
         break;
@@ -115,6 +140,41 @@ inline void  CexmcReconstructor::SetCrystalSelectionAlgorithm(
     default :
         break;
     }
+}
+
+
+inline void  CexmcReconstructor::SetCalorimeterEntryPointDepth(
+                                                            G4double  depth )
+{
+    epDepth = depth;
+}
+
+
+inline const G4ThreeVector &
+                CexmcReconstructor::GetCalorimeterEPLeftPosition( void ) const
+{
+    return calorimeterEPLeftPosition;
+}
+
+
+inline const G4ThreeVector &
+                CexmcReconstructor::GetCalorimeterEPRightPosition( void ) const
+{
+    return calorimeterEPRightPosition;
+}
+
+
+inline const G4ThreeVector &
+                CexmcReconstructor::GetCalorimeterEPLeftDirection( void ) const
+{
+    return calorimeterEPLeftDirection;
+}
+
+
+inline const G4ThreeVector &
+                CexmcReconstructor::GetCalorimeterEPRightDirection( void ) const
+{
+    return calorimeterEPRightDirection;
 }
 
 
