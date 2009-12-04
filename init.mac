@@ -43,10 +43,12 @@
 /cexmc/gun/fwhmMomentumAmp 0.015
 
 /cexmc/physics/applyFermiMotionInTarget true
-/cexmc/physics/setAngularRange 1.0 -1.0 20
+/cexmc/physics/setAngularRange 1.0 0.9 10
 
-/cexmc/reconstructor/entryPointDefAlgo 3
-/cexmc/reconstructor/crystalSelectionAlgo 0
+/cexmc/reconstructor/entryPointDefinitionAlgo sqrt
+/cexmc/reconstructor/crystalSelectionAlgo all
 /cexmc/reconstructor/entryPointDepth 7 cm
 
-/cexmc/event/verbose 4
+/cexmc/run/eventCountPolicy trigger
+
+/cexmc/event/verbose 2

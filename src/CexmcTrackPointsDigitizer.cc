@@ -143,7 +143,6 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
             default :
                 break;
             }
-            break;
         }
     }
 
@@ -191,7 +190,6 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
             default :
                 break;
             }
-            break;
         }
     }
 }

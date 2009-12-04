@@ -49,6 +49,10 @@ class  CexmcEventAction : public G4UserEventAction
     public:
         void      SetVerboseOnCexmcLevel( G4int  verbose_ );
 
+        void      SetVerboseDrawLevel( G4int  verboseDraw_ );
+
+        void      DrawTrajectoryMarkers( G4bool  on );
+
     private:
         CexmcEnergyDepositStore *  MakeEnergyDepositStore(
                         const CexmcEnergyDepositDigitizer *  digitizer ) const;
@@ -70,6 +74,12 @@ class  CexmcEventAction : public G4UserEventAction
         void  FillEnergyDepositHisto( const CexmcEnergyDepositStore *  edStore )
                                                                         const;
 
+        void  DrawTrajectories( const G4Event *  event );
+
+        void  DrawTrackPoints( const CexmcTrackPointsStore *  tpStore ) const;
+
+        void  DrawReconstructionData( void );
+
     private:
         CexmcPhysicsManager *        physicsManager;
 
@@ -79,6 +89,10 @@ class  CexmcEventAction : public G4UserEventAction
     private:
         G4int                        verbose;
 
+        G4int                        verboseDraw;
+
+        G4bool                       drawTrajectoryMarkers;
+
         CexmcEventActionMessenger *  messenger;
 };
 
@@ -86,6 +100,18 @@ class  CexmcEventAction : public G4UserEventAction
 inline void  CexmcEventAction::SetVerboseOnCexmcLevel( G4int  verbose_ )
 {
     verbose = verbose_;
+}
+
+
+inline void  CexmcEventAction::SetVerboseDrawLevel( G4int  verboseDraw_ )
+{
+    verboseDraw = verboseDraw_;
+}
+
+
+inline void  CexmcEventAction::DrawTrajectoryMarkers( G4bool  on )
+{
+    drawTrajectoryMarkers = on;
 }
 
 

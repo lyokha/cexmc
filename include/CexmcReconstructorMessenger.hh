@@ -22,7 +22,7 @@
 #include <G4UImessenger.hh>
 
 class  G4UIcommand;
-class  G4UIcmdWithAnInteger;
+class  G4UIcmdWithAString;
 class  G4UIcmdWithADoubleAndUnit;
 class  G4String;
 class  CexmcReconstructor;
@@ -42,9 +42,9 @@ class  CexmcReconstructorMessenger : public G4UImessenger
     private:
         CexmcReconstructor *         reconstructor;
 
-        G4UIcmdWithAnInteger *  setCalorimeterEntryPointDefinitionAlgorithm;
+        G4UIcmdWithAString *        setCalorimeterEntryPointDefinitionAlgorithm;
 
-        G4UIcmdWithAnInteger *       setCrystalSelectionAlgorithm;
+        G4UIcmdWithAString *         setCrystalSelectionAlgorithm;
 
         G4UIcmdWithADoubleAndUnit *  setCalorimeterEntryPointDepth;
 };

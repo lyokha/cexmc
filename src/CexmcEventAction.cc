@@ -22,8 +22,14 @@
 #include <G4ProcessVector.hh>
 #include <G4DigiManager.hh>
 #include <G4Event.hh>
+#include <G4VVisManager.hh>
+#include <G4Circle.hh>
+#include <G4VisAttributes.hh>
+#include <G4VTrajectory.hh>
+#include <G4TrajectoryContainer.hh>
 #include "CexmcEventAction.hh"
 #include "CexmcEventActionMessenger.hh"
+#include "CexmcEventInfo.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcHistoManager.hh"
 #include "CexmcPhysicsManager.hh"
@@ -48,7 +54,7 @@ namespace
 CexmcEventAction::CexmcEventAction( CexmcPhysicsManager *  physicsManager,
                                     G4int  verbose ) :
     physicsManager( physicsManager ), reconstructor( NULL ), verbose( verbose ),
-    messenger( NULL )
+    verboseDraw( 4 ), messenger( NULL )
 {
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
     digiManager->AddNewModule( new CexmcEnergyDepositDigitizer(
@@ -250,6 +256,66 @@ void  CexmcEventAction::FillEnergyDepositHisto(
 }
 
 
+void  CexmcEventAction::DrawTrajectories( const G4Event *  event )
+{
+    if ( ! G4VVisManager::GetConcreteInstance() )
+        return;
+
+    G4int                    nTraj( 0 );
+    G4TrajectoryContainer *  trajContainer( event->GetTrajectoryContainer() );
+
+    if ( ! trajContainer )
+        return;
+
+    nTraj = trajContainer->entries();
+
+    G4int  drawMode( drawTrajectoryMarkers ? 1000 : 0 );
+
+    for ( int  i( 0 ); i < nTraj; ++i )
+    {
+        G4VTrajectory *  traj( ( *trajContainer )[ i ] );
+        traj->DrawTrajectory( drawMode );
+    }
+}
+
+
+void  CexmcEventAction::DrawTrackPoints(
+                                const CexmcTrackPointsStore *  tpStore ) const
+{
+    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
+
+    if ( ! visManager )
+        return;
+
+    G4Circle  circle( tpStore->targetTPIncidentParticle.positionWorld );
+    circle.SetScreenSize( 5.0 );
+    circle.SetFillStyle( G4Circle::filled );
+    G4VisAttributes  visAttributes( G4Color( 0.0, 1.0, 0.4 ) );
+    circle.SetVisAttributes( visAttributes );
+    visManager->Draw( circle );
+
+    circle.SetPosition( tpStore->targetTPOutputParticle.positionWorld );
+    visManager->Draw( circle );
+
+    circle.SetPosition( tpStore->vetoCounterTPLeft.positionWorld );
+    visManager->Draw( circle );
+
+    circle.SetPosition( tpStore->vetoCounterTPRight.positionWorld );
+    visManager->Draw( circle );
+
+    circle.SetPosition( tpStore->calorimeterTPLeft.positionWorld );
+    visManager->Draw( circle );
+
+    circle.SetPosition( tpStore->calorimeterTPRight.positionWorld );
+    visManager->Draw( circle );
+}
+
+
+void  CexmcEventAction::DrawReconstructionData( void )
+{
+}
+
+
 void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 {
     G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
@@ -262,6 +328,10 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 
     energyDepositDigitizer->Digitize();
     trackPointsDigitizer->Digitize();
+
+    G4bool  edDigitizerHasTriggered( energyDepositDigitizer->HasTriggered() );
+    G4bool  tpDigitizerHasTriggered( trackPointsDigitizer->HasTriggered() );
+    G4bool  reconstructorHasTriggered( false );
 
     CexmcEnergyDepositStore *  edStore( MakeEnergyDepositStore(
                                                     energyDepositDigitizer ) );
@@ -281,27 +351,59 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         const CexmcProductionModelData &  pmData(
                                 productionModel->GetProductionModelData() );
 
-        //if ( energyDepositDigitizer->HasTriggered() )
+        if ( edDigitizerHasTriggered )
+        {
             reconstructor->Reconstruct( edStore );
+            reconstructorHasTriggered = reconstructor->HasTriggered();
+        }
 
         if ( verbose > 0 )
         {
-            G4bool  printEnergyDeposit( ( ( verbose == 1 || verbose == 3 ) &&
-                      energyDepositDigitizer->HasTriggered() ) || verbose > 3 );
-            G4bool  printTrackPoints( ( ( verbose == 2 || verbose == 3 ) &&
-                      trackPointsDigitizer->HasTriggered() ) || verbose > 3 );
-            G4cout << "Event " << event->GetEventID() << G4endl;
-            if ( printEnergyDeposit )
-                PrintEnergyDeposit( edStore );
-            if ( printTrackPoints )
-                PrintTrackPoints( tpStore );
-            if ( trackPointsDigitizer->HasTriggered() )
-                PrintProductionModelData( triggeredAngularRanges, pmData );
-            //if ( energyDepositDigitizer->HasTriggered() )
-                PrintReconstructedData();
+            G4bool  printMessages( verbose > 3 ||
+                        ( ( verbose == 1 ) && tpDigitizerHasTriggered ) ||
+                        ( ( verbose == 2 ) && edDigitizerHasTriggered ) ||
+                        ( ( verbose == 3 ) && ( tpDigitizerHasTriggered ||
+                                                edDigitizerHasTriggered ) ) );
+            if ( printMessages )
+            {
+                G4cout << "Event " << event->GetEventID() << G4endl;
+                if ( tpDigitizerHasTriggered )
+                {
+                    PrintTrackPoints( tpStore );
+                    PrintProductionModelData( triggeredAngularRanges, pmData );
+                }
+                if ( edDigitizerHasTriggered )
+                    PrintEnergyDeposit( edStore );
+                if ( reconstructorHasTriggered )
+                    PrintReconstructedData();
+            }
         }
 
-        FillEnergyDepositHisto( edStore );
+        if ( verboseDraw > 0 )
+        {
+            G4bool  drawTrajectories( verboseDraw > 3 ||
+                        ( ( verboseDraw == 1 ) && tpDigitizerHasTriggered ) ||
+                        ( ( verboseDraw == 2 ) && edDigitizerHasTriggered ) ||
+                        ( ( verboseDraw == 3 ) && ( tpDigitizerHasTriggered ||
+                                                edDigitizerHasTriggered ) ) );
+            if ( drawTrajectories )
+            {
+                DrawTrajectories( event );
+                if ( tpDigitizerHasTriggered )
+                    DrawTrackPoints( tpStore );
+                if ( reconstructorHasTriggered )
+                    DrawReconstructionData();
+            }
+        }
+
+        if ( edDigitizerHasTriggered )
+            FillEnergyDepositHisto( edStore );
+
+        G4Event *  theEvent( const_cast< G4Event * >( event ) );
+        theEvent->SetUserInformation( new CexmcEventInfo(
+                                                edDigitizerHasTriggered,
+                                                tpDigitizerHasTriggered,
+                                                reconstructorHasTriggered ) );
     }
     catch ( CexmcException &  e )
     {

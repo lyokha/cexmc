@@ -35,11 +35,13 @@
 /vis/modeling/trajectories/drawByParticleID-0/setRGBA e- 0.3 0.3 0.8 1
 /vis/modeling/trajectories/drawByParticleID-0/setRGBA e+ 0.8 0.3 0.3 1
 
-/vis/scene/add/trajectories
-/vis/scene/add/hits
+#/vis/scene/add/trajectories
+#/vis/scene/add/hits
 #/vis/scene/add/axes
+
+/cexmc/vis/verbose 2
+/cexmc/vis/drawTrajMarkers false
 
 /vis/viewer/flush
 
-# (if you prefer not refreshing each event, uncomment next line)
-/vis/scene/endOfEventAction accumulate
+/vis/scene/endOfEventAction accumulate 10

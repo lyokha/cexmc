@@ -16,7 +16,7 @@
  * ============================================================================
  */
 
-#include <G4UIcmdWithAnInteger.hh>
+#include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
 #include "CexmcReconstructorMessenger.hh"
 #include "CexmcReconstructor.hh"
@@ -29,40 +29,40 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
     setCalorimeterEntryPointDefinitionAlgorithm( NULL ),
     setCrystalSelectionAlgorithm( NULL ), setCalorimeterEntryPointDepth( NULL )
 {
-    setCalorimeterEntryPointDefinitionAlgorithm = new G4UIcmdWithAnInteger(
-        ( CexmcMessenger::reconstructorDirName + "entryPointDefAlgo" ).c_str(),
-        this );
+    setCalorimeterEntryPointDefinitionAlgorithm = new G4UIcmdWithAString(
+        ( CexmcMessenger::reconstructorDirName + "entryPointDefinitionAlgo" ).
+                c_str(), this );
     setCalorimeterEntryPointDefinitionAlgorithm->SetGuidance(
         "\n    Algorithm to reconstruct entry point of output particle decay "
         "products\n    in calorimeter"
         " (none of the following algorithms reconstruct directions)\n"
-        "    0 - entry points defined in the center of the calorimeters,\n"
-        "    1 - entry points defined in the center of the crystal that \n"
-        "        has maximum energy deposit value,\n"
-        "    2 - entry points defined by linear weights of energy deposit in "
-        "crystals,\n"
-        "    3 - entry points defined by square root weights of energy deposit "
-        "in crystals" );
-    setCalorimeterEntryPointDefinitionAlgorithm->SetDefaultValue( 3 );
+        "    center - entry points defined in the center of the calorimeters,\n"
+        "    simple - entry points defined in the center of the crystal that \n"
+        "             has maximum energy deposit value,\n"
+        "    linear - entry points defined by linear weights of energy deposit "
+                     "in crystals,\n"
+        "    sqrt - entry points defined by square root weights of energy "
+                     "deposit in crystals" );
+    setCalorimeterEntryPointDefinitionAlgorithm->SetDefaultValue( "sqrt" );
     setCalorimeterEntryPointDefinitionAlgorithm->SetParameterName(
-                                                "EntryPointDefAlgo", false );
-    setCalorimeterEntryPointDefinitionAlgorithm->SetRange(
-                        "EntryPointDefAlgo >= 0 && EntryPointDefAlgo <= 3" );
+                                            "EntryPointDefinitionAlgo", false );
+    setCalorimeterEntryPointDefinitionAlgorithm->SetCandidates(
+                                            "center simple linear sqrt" );
     setCalorimeterEntryPointDefinitionAlgorithm->AvailableForStates(
-                                                G4State_PreInit, G4State_Idle );
+                                            G4State_PreInit, G4State_Idle );
 
-    setCrystalSelectionAlgorithm = new G4UIcmdWithAnInteger(
+    setCrystalSelectionAlgorithm = new G4UIcmdWithAString(
         ( CexmcMessenger::reconstructorDirName + "crystalSelectionAlgo" ).
                 c_str(), this );
     setCrystalSelectionAlgorithm->SetGuidance(
         "\n    Choose which crystals will be selected in entry point "
-        "reconstruction algorithm\n"
-        "    0 - all,\n"
-        "    1 - crystal with maximum energy deposit and adjacent crystals" );
-    setCrystalSelectionAlgorithm->SetDefaultValue( 0 );
+              "reconstruction algorithm\n"
+        "    all - all,\n"
+        "    adjacent - crystal with maximum energy deposit and adjacent "
+            "crystals" );
+    setCrystalSelectionAlgorithm->SetDefaultValue( "all" );
     setCrystalSelectionAlgorithm->SetParameterName( "CrystalSelAlgo", false );
-    setCrystalSelectionAlgorithm->SetRange(
-                        "CrystalSelAlgo >= 0 && CrystalSelAlgo <= 1" );
+    setCrystalSelectionAlgorithm->SetCandidates( "all adjacent" );
     setCrystalSelectionAlgorithm->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
@@ -96,14 +96,12 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
     {
         if ( cmd == setCalorimeterEntryPointDefinitionAlgorithm )
         {
-            reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm(
-                        G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+            reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm( value );
             break;
         }
         if ( cmd == setCrystalSelectionAlgorithm )
         {
-            reconstructor->SetCrystalSelectionAlgorithm(
-                        G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+            reconstructor->SetCrystalSelectionAlgorithm( value );
             break;
         }
         if ( cmd == setCalorimeterEntryPointDepth )

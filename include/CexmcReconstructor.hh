@@ -52,9 +52,10 @@ class  CexmcReconstructor
         virtual void  Reconstruct( const CexmcEnergyDepositStore *  edStore );
 
     public:
-        void  SetCalorimeterEntryPointDefinitionAlgorithm( G4int  algorithm );
+        void  SetCalorimeterEntryPointDefinitionAlgorithm(
+                                                const G4String &  algorithm );
 
-        void  SetCrystalSelectionAlgorithm( G4int  algorithm );
+        void  SetCrystalSelectionAlgorithm( const G4String &  algorithm );
 
         void  SetCalorimeterEntryPointDepth( G4double  depth );
 
@@ -67,9 +68,15 @@ class  CexmcReconstructor
 
         const G4ThreeVector &  GetCalorimeterEPRightDirection( void ) const;
 
+    public:
+        G4bool  HasTriggered( void ) const;
+
     protected:
         virtual void  ReconstructEntryPoints( const CexmcEnergyDepositStore *
                                               edStore );
+
+    protected:
+        G4bool  hasTriggered;
 
     protected:
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
@@ -104,42 +111,50 @@ class  CexmcReconstructor
 
 
 inline void  CexmcReconstructor::SetCalorimeterEntryPointDefinitionAlgorithm(
-                                                            G4int  algorithm )
+                                                const G4String &  algorithm )
 {
-    switch ( algorithm )
+    do
     {
-    case 0 :
-        epDefinitionAlgorithm = CexmcEntryPointInTheCenter;
-        break;
-    case 1 :
-        epDefinitionAlgorithm = CexmcEntryPointInTheCenterOfCrystalWithMaxED;
-        break;
-    case 2 :
-        epDefinitionAlgorithm = CexmcEntryPointByLinearEDWeights;
-        break;
-    case 3 :
-        epDefinitionAlgorithm = CexmcEntryPointBySqrtEDWeights;
-        break;
-    default :
-        break;
-    }
+        if ( algorithm  == "center" )
+        {
+            epDefinitionAlgorithm = CexmcEntryPointInTheCenter;
+            break;
+        }
+        if ( algorithm  == "simple" )
+        {
+            epDefinitionAlgorithm = CexmcEntryPointInTheCenterOfCrystalWithMaxED;
+            break;
+        }
+        if ( algorithm  == "linear" )
+        {
+            epDefinitionAlgorithm = CexmcEntryPointByLinearEDWeights;
+            break;
+        }
+        if ( algorithm  == "sqrt" )
+        {
+            epDefinitionAlgorithm = CexmcEntryPointBySqrtEDWeights;
+            break;
+        }
+    } while ( false );
 }
 
 
 inline void  CexmcReconstructor::SetCrystalSelectionAlgorithm(
-                                                            G4int  algorithm )
+                                                const G4String &  algorithm )
 {
-    switch ( algorithm )
+    do
     {
-    case 0 :
-        csAlgorithm = CexmcSelectAllCrystals;
-        break;
-    case 1 :
-        csAlgorithm = CexmcSelectAdjacentCrystals;
-        break;
-    default :
-        break;
-    }
+        if ( algorithm  == "all" )
+        {
+            csAlgorithm = CexmcSelectAllCrystals;
+            break;
+        }
+        if ( algorithm  == "adjacent" )
+        {
+            csAlgorithm = CexmcSelectAdjacentCrystals;
+            break;
+        }
+    } while ( false );
 }
 
 
@@ -175,6 +190,12 @@ inline const G4ThreeVector &
                 CexmcReconstructor::GetCalorimeterEPRightDirection( void ) const
 {
     return calorimeterEPRightDirection;
+}
+
+
+inline G4bool  CexmcReconstructor::HasTriggered( void ) const
+{
+    return hasTriggered;
 }
 
 

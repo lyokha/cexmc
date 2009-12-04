@@ -25,6 +25,14 @@
 class  CexmcRunManagerMessenger;
 
 
+enum  CexmcEventCountPolicy
+{
+    CexmcCountAllEvents,
+    CexmcCountEventsWithInteraction,
+    CexmcCountEventsWithTrigger
+};
+
+
 class  CexmcRunManager : public G4RunManager
 {
     public:
@@ -43,6 +51,9 @@ class  CexmcRunManager : public G4RunManager
 
         void  SetRunId( const G4String &  runId_ );
 
+        void  SetEventCountPolicy( const G4String &  eventCountPolicy_ );
+
+    public:
         CexmcProductionModelType  GetProductionModelType( void ) const;
 
         G4String                  GetGdmlFileName( void ) const;
@@ -52,6 +63,13 @@ class  CexmcRunManager : public G4RunManager
         G4String                  GetResultsDir( void ) const;
 
         G4String                  GetRunId( void ) const;
+
+    protected:
+        void  DoEventLoop( G4int  nEvent, const char *  macroFile,
+                           G4int  nSelect );
+
+    private:
+        void  UpdateScoringMy( void );
 
     private:
         CexmcProductionModelType  productionModelType;
@@ -63,6 +81,8 @@ class  CexmcRunManager : public G4RunManager
         G4String                  resultsDir;
 
         G4String                  runId;
+
+        CexmcEventCountPolicy     eventCountPolicy;
 
     private:
         CexmcRunManagerMessenger *  messenger;
@@ -110,6 +130,30 @@ inline void  CexmcRunManager::SetResultsDir( const G4String &  resultsDir_ )
 inline void  CexmcRunManager::SetRunId( const G4String &  runId_ )
 {
     runId = runId_;
+}
+
+
+inline void  CexmcRunManager::SetEventCountPolicy(
+                                        const G4String & eventCountPolicy_ )
+{
+    do
+    {
+        if ( eventCountPolicy_ == "all" )
+        {
+            eventCountPolicy = CexmcCountAllEvents;
+            break;
+        }
+        if ( eventCountPolicy_ == "interaction" )
+        {
+            eventCountPolicy = CexmcCountEventsWithInteraction;
+            break;
+        }
+        if ( eventCountPolicy_ == "trigger" )
+        {
+            eventCountPolicy = CexmcCountEventsWithTrigger;
+            break;
+        }
+    } while ( false );
 }
 
 

@@ -23,6 +23,7 @@
 
 
 CexmcReconstructor::CexmcReconstructor() :
+    hasTriggered( false ),
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
     csAlgorithm( CexmcSelectAllCrystals ), epDepth( 0 ), nCrystalsInColumn( 1 ),
     nCrystalsInRow( 1 ), crystalWidth( 0 ), crystalHeight( 0 ),
@@ -258,5 +259,7 @@ void  CexmcReconstructor::ReconstructEntryPoints(
     default :
         break;
     }
+
+    hasTriggered = true;
 }
 

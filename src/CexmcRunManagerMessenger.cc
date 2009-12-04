@@ -26,7 +26,8 @@
 CexmcRunManagerMessenger::CexmcRunManagerMessenger(
                                 CexmcRunManager *  runManager ) :
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL ),
-    saveResults( NULL ), setResultsDir( NULL ), setRunId( NULL )
+    saveResults( NULL ), setResultsDir( NULL ), setRunId( NULL ),
+    setEventCountPolicy( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -61,6 +62,17 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     setRunId->SetParameterName( "RunId", false );
     setRunId->SetDefaultValue( "trash" );
     setRunId->AvailableForStates( G4State_PreInit );
+
+    setEventCountPolicy = new G4UIcmdWithAString(
+        ( CexmcMessenger::runDirName + "eventCountPolicy" ).c_str(), this );
+    setEventCountPolicy->SetGuidance( "How number of events is interpreted.\n"
+            "  all - all events are accounted,\n"
+            "  interaction - events with studied interaction triggered,\n"
+            "  trigger - only events with trigger" );
+    setEventCountPolicy->SetParameterName( "EventCountPolicy", false );
+    setEventCountPolicy->SetDefaultValue( "all" );
+    setEventCountPolicy->SetCandidates( "all interaction trigger" );
+    setEventCountPolicy->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
 
@@ -71,6 +83,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
     delete saveResults;
     delete setResultsDir;
     delete setRunId;
+    delete setEventCountPolicy;
 }
 
 
@@ -103,6 +116,11 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
         if ( cmd == setRunId )
         {
             runManager->SetRunId( value );
+            break;
+        }
+        if ( cmd == setEventCountPolicy )
+        {
+            runManager->SetEventCountPolicy( value );
             break;
         }
     } while ( false );

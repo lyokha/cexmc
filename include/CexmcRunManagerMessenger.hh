@@ -49,6 +49,8 @@ class  CexmcRunManagerMessenger : public G4UImessenger
         G4UIcmdWithAString *  setResultsDir;
 
         G4UIcmdWithAString *  setRunId;
+
+        G4UIcmdWithAString *  setEventCountPolicy;
 };
 
 
