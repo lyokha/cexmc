@@ -16,19 +16,11 @@
  * ============================================================================
  */
 
-#include <G4UnitsTable.hh>
 #include "CexmcChargeExchangeReconstructor.hh"
-#include "CexmcCalorimeterGeometry.hh"
-#include "CexmcTargetGeometry.hh"
 
 
 CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor()
 {
-    CexmcCalorimeterGeometry::GetCalorimeterLeftTransform(
-                                                    calorimeterLeftTransform );
-    CexmcCalorimeterGeometry::GetCalorimeterRightTransform(
-                                                    calorimeterRightTransform );
-    CexmcTargetGeometry::GetTargetTransform( targetTransform );
 }
 
 
@@ -36,17 +28,6 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
                                     const CexmcEnergyDepositStore *  edStore )
 {
     ReconstructEntryPoints( edStore );
-
-    G4ThreeVector  calorimeterEPLeftPositionInWorld(
-                        calorimeterLeftTransform.TransformPoint(
-                                                calorimeterEPLeftPosition ) );
-    G4ThreeVector  calorimeterEPRightPositionInWorld(
-                        calorimeterRightTransform.TransformPoint(
-                                                calorimeterEPRightPosition ) );
-    calorimeterRightTransform.TransformPoint( calorimeterEPRightPosition );
-    G4cout << " LEFT POINT: " << G4BestUnit( calorimeterEPLeftPositionInWorld,
-                                             "Length" ) << G4endl;
-    G4cout << "RIGHT POINT: " << G4BestUnit( calorimeterEPRightPositionInWorld,
-                                             "Length" ) << G4endl;
+    ReconstructTargetPoint();
 }
 

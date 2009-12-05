@@ -206,10 +206,12 @@ void  CexmcEventAction::PrintProductionModelData(
 void  CexmcEventAction::PrintReconstructedData( void ) const
 {
     G4cout << " --- Reconstructed entry points: " << G4endl;
-    G4cout << "        left: " << G4BestUnit(
+    G4cout << "         left: " << G4BestUnit(
         reconstructor->GetCalorimeterEPLeftPosition(), "Length" ) << G4endl;
-    G4cout << "       right: " << G4BestUnit(
+    G4cout << "        right: " << G4BestUnit(
         reconstructor->GetCalorimeterEPRightPosition(), "Length" ) << G4endl;
+    G4cout << "       target: " << G4BestUnit(
+        reconstructor->GetTargetEPPosition(), "Length" ) << G4endl;
 }
 
 
@@ -313,6 +315,24 @@ void  CexmcEventAction::DrawTrackPoints(
 
 void  CexmcEventAction::DrawReconstructionData( void )
 {
+    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
+
+    if ( ! visManager )
+        return;
+
+    G4Circle  circle( reconstructor->GetTargetEPWorldPosition() );
+    circle.SetScreenSize( 5.0 );
+    circle.SetFillStyle( G4Circle::filled );
+    G4VisAttributes  visAttributes( G4Color( 1.0, 0.4, 0.0 ) );
+    circle.SetVisAttributes( visAttributes );
+    visManager->Draw( circle );
+
+    circle.SetScreenSize( 10.0 );
+    circle.SetPosition( reconstructor->GetCalorimeterEPLeftWorldPosition() );
+    visManager->Draw( circle );
+
+    circle.SetPosition( reconstructor->GetCalorimeterEPRightWorldPosition() );
+    visManager->Draw( circle );
 }
 
 
@@ -372,10 +392,10 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                     PrintTrackPoints( tpStore );
                     PrintProductionModelData( triggeredAngularRanges, pmData );
                 }
-                if ( edDigitizerHasTriggered )
-                    PrintEnergyDeposit( edStore );
                 if ( reconstructorHasTriggered )
                     PrintReconstructedData();
+                if ( edDigitizerHasTriggered )
+                    PrintEnergyDeposit( edStore );
             }
         }
 

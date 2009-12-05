@@ -20,6 +20,7 @@
 #define CEXMC_RECONSTRUCTOR_HH
 
 #include <G4ThreeVector.hh>
+#include <G4AffineTransform.hh>
 
 class  CexmcReconstructorMessenger;
 class  CexmcEnergyDepositStore;
@@ -68,12 +69,31 @@ class  CexmcReconstructor
 
         const G4ThreeVector &  GetCalorimeterEPRightDirection( void ) const;
 
+        const G4ThreeVector &  GetTargetEPPosition( void ) const;
+
+        const G4ThreeVector &  GetTargetEPDirection( void ) const;
+
+        const G4ThreeVector &  GetCalorimeterEPLeftWorldPosition( void ) const;
+
+        const G4ThreeVector &  GetCalorimeterEPRightWorldPosition( void ) const;
+
+        const G4ThreeVector &  GetCalorimeterEPLeftWorldDirection( void ) const;
+
+        const G4ThreeVector &  GetCalorimeterEPRightWorldDirection( void )
+                                                                        const;
+
+        const G4ThreeVector &  GetTargetEPWorldPosition( void ) const;
+
+        const G4ThreeVector &  GetTargetEPWorldDirection( void ) const;
+
     public:
         G4bool  HasTriggered( void ) const;
 
     protected:
         virtual void  ReconstructEntryPoints( const CexmcEnergyDepositStore *
                                               edStore );
+
+        virtual void  ReconstructTargetPoint( void );
 
     protected:
         G4bool  hasTriggered;
@@ -94,6 +114,22 @@ class  CexmcReconstructor
 
         G4ThreeVector  calorimeterEPRightDirection;
 
+        G4ThreeVector  targetEPPosition;
+
+        G4ThreeVector  targetEPDirection;
+
+        G4ThreeVector  calorimeterEPLeftWorldPosition;
+
+        G4ThreeVector  calorimeterEPRightWorldPosition;
+
+        G4ThreeVector  calorimeterEPLeftWorldDirection;
+
+        G4ThreeVector  calorimeterEPRightWorldDirection;
+
+        G4ThreeVector  targetEPWorldPosition;
+
+        G4ThreeVector  targetEPWorldDirection;
+
     private:
         G4int          nCrystalsInColumn;
 
@@ -104,6 +140,13 @@ class  CexmcReconstructor
         G4double       crystalHeight;
 
         G4double       crystalLength;
+
+    private:
+        G4AffineTransform  calorimeterLeftTransform;
+        
+        G4AffineTransform  calorimeterRightTransform;
+
+        G4AffineTransform  targetTransform;
 
     private:
         CexmcReconstructorMessenger *  messenger;
@@ -190,6 +233,62 @@ inline const G4ThreeVector &
                 CexmcReconstructor::GetCalorimeterEPRightDirection( void ) const
 {
     return calorimeterEPRightDirection;
+}
+
+
+inline const G4ThreeVector &
+                CexmcReconstructor::GetTargetEPPosition( void ) const
+{
+    return targetEPPosition;
+}
+
+
+inline const G4ThreeVector &
+                CexmcReconstructor::GetTargetEPDirection( void ) const
+{
+    return targetEPDirection;
+}
+
+
+inline const G4ThreeVector &
+        CexmcReconstructor::GetCalorimeterEPLeftWorldPosition( void ) const
+{
+    return calorimeterEPLeftWorldPosition;
+}
+
+
+inline const G4ThreeVector &
+        CexmcReconstructor::GetCalorimeterEPRightWorldPosition( void ) const
+{
+    return calorimeterEPRightWorldPosition;
+}
+
+
+inline const G4ThreeVector &
+        CexmcReconstructor::GetCalorimeterEPLeftWorldDirection( void ) const
+{
+    return calorimeterEPLeftWorldDirection;
+}
+
+
+inline const G4ThreeVector &
+        CexmcReconstructor::GetCalorimeterEPRightWorldDirection( void ) const
+{
+    return calorimeterEPRightWorldDirection;
+}
+
+
+inline const G4ThreeVector &
+        CexmcReconstructor::GetTargetEPWorldPosition( void ) const
+{
+    return targetEPWorldPosition;
+}
+
+
+inline const G4ThreeVector &
+        CexmcReconstructor::GetTargetEPWorldDirection( void ) const
+{
+    return targetEPWorldDirection;
 }
 
 

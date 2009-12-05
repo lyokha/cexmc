@@ -20,6 +20,7 @@
 #include "CexmcReconstructorMessenger.hh"
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcCalorimeterGeometry.hh"
+#include "CexmcTargetGeometry.hh"
 
 
 CexmcReconstructor::CexmcReconstructor() :
@@ -31,6 +32,12 @@ CexmcReconstructor::CexmcReconstructor() :
 {
     CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
                 nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );
+
+    CexmcCalorimeterGeometry::GetCalorimeterLeftTransform(
+                                                    calorimeterLeftTransform );
+    CexmcCalorimeterGeometry::GetCalorimeterRightTransform(
+                                                    calorimeterRightTransform );
+    CexmcTargetGeometry::GetTargetTransform( targetTransform );
 
     messenger = new CexmcReconstructorMessenger( this );
 }
@@ -46,6 +53,7 @@ void  CexmcReconstructor::Reconstruct(
                                     const CexmcEnergyDepositStore * edStore )
 {
     ReconstructEntryPoints( edStore );
+    ReconstructTargetPoint();
 }
 
 
@@ -260,6 +268,30 @@ void  CexmcReconstructor::ReconstructEntryPoints(
         break;
     }
 
+    calorimeterEPLeftWorldPosition = calorimeterLeftTransform.TransformPoint(
+                                                 calorimeterEPLeftPosition );
+    calorimeterEPLeftWorldDirection = calorimeterLeftTransform.TransformAxis(
+                                                 calorimeterEPLeftDirection );
+    calorimeterEPRightWorldPosition = calorimeterRightTransform.TransformPoint(
+                                                 calorimeterEPRightPosition );
+    calorimeterEPRightWorldDirection = calorimeterRightTransform.TransformAxis(
+                                                 calorimeterEPRightDirection );
+
     hasTriggered = true;
+}
+
+
+void  CexmcReconstructor::ReconstructTargetPoint( void )
+{
+    targetEPWorldPosition = targetTransform.TransformPoint(
+                                                    G4ThreeVector( 0, 0, 0 ) );
+    targetEPWorldDirection.setX( 0 );
+    targetEPWorldDirection.setY( 0 );
+    targetEPWorldDirection.setZ( 0 );
+
+    targetEPPosition = targetTransform.Inverse().TransformPoint(
+                                                    targetEPWorldPosition );
+    targetEPDirection = targetTransform.Inverse().TransformAxis(
+                                                    targetEPWorldDirection );
 }
 
