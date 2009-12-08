@@ -240,7 +240,7 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             hasTriggered =
                     ! ( ( outerCrystalsEDLeft / calorimeterEDLeft ) >
                                                 outerCrystalsVetoFraction ) &&
-                    ! ( ( outerCrystalsEDLeft / calorimeterEDLeft ) >
+                    ! ( ( outerCrystalsEDRight / calorimeterEDRight ) >
                                                 outerCrystalsVetoFraction );
             break;
         default :
