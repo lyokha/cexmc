@@ -59,8 +59,8 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
             G4ParticleDefinition *    outputParticle(
                         CexmcChargeExchangePMFactory::GetOutputParticle(
                                                         productionModelType ) );
-            G4ParticleDefinition *    nucleusParticle(
-                        CexmcChargeExchangePMFactory::GetNucleusParticle(
+            G4ParticleDefinition *    nucleusOutputParticle(
+                        CexmcChargeExchangePMFactory::GetNucleusOutputParticle(
                                                         productionModelType ) );
             do
             {
@@ -72,7 +72,7 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
                     break;
                 }
                 if ( track->GetDefinition()->GetParticleName() ==
-                     nucleusParticle->GetParticleName() )
+                     nucleusOutputParticle->GetParticleName() )
                 {
                     trackInfo = new CexmcTrackInfo( CexmcNucleusParticleTrack );
                     break;

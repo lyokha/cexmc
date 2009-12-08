@@ -25,7 +25,7 @@ class  CexmcEnergyDepositDigitizer;
 class  G4UIcommand;
 class  G4UIcmdWithADouble;
 class  G4UIcmdWithADoubleAndUnit;
-class  G4UIcmdWithAnInteger;
+class  G4UIcmdWithAString;
 
 
 class  CexmcEnergyDepositDigitizerMessenger : public G4UImessenger
@@ -56,7 +56,7 @@ class  CexmcEnergyDepositDigitizerMessenger : public G4UImessenger
 
         G4UIcmdWithADoubleAndUnit *    setRightCalorimeterThreshold;
 
-        G4UIcmdWithAnInteger *         setOuterCrystalsVetoAlgorithm;
+        G4UIcmdWithAString *           setOuterCrystalsVetoAlgorithm;
 
         G4UIcmdWithADouble *           setOuterCrystalsVetoFraction;
 };

@@ -86,14 +86,18 @@ class  CexmcReconstructor
 
         const G4ThreeVector &  GetTargetEPWorldDirection( void ) const;
 
+        G4double               GetTheAngle( void ) const;
+
     public:
         G4bool  HasTriggered( void ) const;
 
     protected:
-        virtual void  ReconstructEntryPoints( const CexmcEnergyDepositStore *
-                                              edStore );
+        void  ReconstructEntryPoints(
+                                    const CexmcEnergyDepositStore *  edStore );
 
-        virtual void  ReconstructTargetPoint( void );
+        void  ReconstructTargetPoint( void );
+
+        void  ReconstructAngle( void );
 
     protected:
         G4bool  hasTriggered;
@@ -130,6 +134,8 @@ class  CexmcReconstructor
 
         G4ThreeVector  targetEPWorldDirection;
 
+        G4double       theAngle;
+
     private:
         G4int          nCrystalsInColumn;
 
@@ -165,7 +171,8 @@ inline void  CexmcReconstructor::SetCalorimeterEntryPointDefinitionAlgorithm(
         }
         if ( algorithm  == "simple" )
         {
-            epDefinitionAlgorithm = CexmcEntryPointInTheCenterOfCrystalWithMaxED;
+            epDefinitionAlgorithm =
+                            CexmcEntryPointInTheCenterOfCrystalWithMaxED;
             break;
         }
         if ( algorithm  == "linear" )
@@ -289,6 +296,12 @@ inline const G4ThreeVector &
         CexmcReconstructor::GetTargetEPWorldDirection( void ) const
 {
     return targetEPWorldDirection;
+}
+
+
+inline G4double  CexmcReconstructor::GetTheAngle( void ) const
+{
+    return theAngle;
 }
 
 

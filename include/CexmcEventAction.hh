@@ -30,7 +30,7 @@ class  CexmcTrackPointsDigitizer;
 class  CexmcTrackPointsStore;
 class  CexmcEventActionMessenger;
 class  CexmcProductionModelData;
-class  CexmcReconstructor;
+class  CexmcChargeExchangeReconstructor;
 
 
 class  CexmcEventAction : public G4UserEventAction
@@ -66,10 +66,11 @@ class  CexmcEventAction : public G4UserEventAction
         void  PrintTrackPoints( const CexmcTrackPointsStore *  tpStore ) const;
 
         void  PrintProductionModelData(
-                            const CexmcAngularRangeList &  angularRanges,
-                            const CexmcProductionModelData &  pmData ) const;
+                        const CexmcAngularRangeList &  angularRanges,
+                        const CexmcProductionModelData &  pmData ) const;
 
-        void  PrintReconstructedData( void ) const;
+        void  PrintReconstructedData(
+                        const CexmcAngularRangeList &  angularRanges ) const;
 
         void  FillEnergyDepositHisto( const CexmcEnergyDepositStore *  edStore )
                                                                         const;
@@ -81,19 +82,19 @@ class  CexmcEventAction : public G4UserEventAction
         void  DrawReconstructionData( void );
 
     private:
-        CexmcPhysicsManager *        physicsManager;
+        CexmcPhysicsManager *               physicsManager;
 
     private:
-        CexmcReconstructor *         reconstructor;
+        CexmcChargeExchangeReconstructor *  reconstructor;
 
     private:
-        G4int                        verbose;
+        G4int                               verbose;
 
-        G4int                        verboseDraw;
+        G4int                               verboseDraw;
 
-        G4bool                       drawTrajectoryMarkers;
+        G4bool                              drawTrajectoryMarkers;
 
-        CexmcEventActionMessenger *  messenger;
+        CexmcEventActionMessenger *         messenger;
 };
 
 

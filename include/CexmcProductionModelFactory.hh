@@ -35,10 +35,16 @@ class  CexmcProductionModelFactory
         static G4VUserPhysicsList *    Create(
                                 CexmcProductionModelType  productionModelType );
 
-        static G4ParticleDefinition *  GetOutputParticle(
+        static G4ParticleDefinition *  GetIncidentParticle(
                                 CexmcProductionModelType  productionModelType );
 
         static G4ParticleDefinition *  GetNucleusParticle(
+                                CexmcProductionModelType  productionModelType );
+
+        static G4ParticleDefinition *  GetOutputParticle(
+                                CexmcProductionModelType  productionModelType );
+
+        static G4ParticleDefinition *  GetNucleusOutputParticle(
                                 CexmcProductionModelType  productionModelType );
 
     private:
@@ -70,15 +76,16 @@ template  < typename  BasePhysics, typename  Particle,
             template  < typename, typename > class  StudiedPhysics >
 G4ParticleDefinition *
     CexmcProductionModelFactory< BasePhysics, Particle, StudiedPhysics >::
-            GetOutputParticle( CexmcProductionModelType  productionModelType )
+            GetIncidentParticle( CexmcProductionModelType  productionModelType )
 {
     switch ( productionModelType )
     {
     case CexmcPionZeroProduction :
         return CexmcChargeExchangeProductionModel< G4PionZero >::
-                                                            GetOutputParticle();
+                                                        GetIncidentParticle();
     case CexmcEtaProduction :
-        return CexmcChargeExchangeProductionModel< G4Eta >::GetOutputParticle();
+        return CexmcChargeExchangeProductionModel< G4Eta >::
+                                                        GetIncidentParticle();
     default :
         return NULL;
     }
@@ -99,6 +106,46 @@ G4ParticleDefinition *
     case CexmcEtaProduction :
         return CexmcChargeExchangeProductionModel< G4Eta >::
                                                         GetNucleusParticle();
+    default :
+        return NULL;
+    }
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics >
+G4ParticleDefinition *
+    CexmcProductionModelFactory< BasePhysics, Particle, StudiedPhysics >::
+            GetOutputParticle( CexmcProductionModelType  productionModelType )
+{
+    switch ( productionModelType )
+    {
+    case CexmcPionZeroProduction :
+        return CexmcChargeExchangeProductionModel< G4PionZero >::
+                                                            GetOutputParticle();
+    case CexmcEtaProduction :
+        return CexmcChargeExchangeProductionModel< G4Eta >::GetOutputParticle();
+    default :
+        return NULL;
+    }
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics >
+G4ParticleDefinition *
+    CexmcProductionModelFactory< BasePhysics, Particle, StudiedPhysics >::
+            GetNucleusOutputParticle(
+                                CexmcProductionModelType  productionModelType )
+{
+    switch ( productionModelType )
+    {
+    case CexmcPionZeroProduction :
+        return CexmcChargeExchangeProductionModel< G4PionZero >::
+                                                    GetNucleusOutputParticle();
+    case CexmcEtaProduction :
+        return CexmcChargeExchangeProductionModel< G4Eta >::
+                                                    GetNucleusOutputParticle();
     default :
         return NULL;
     }

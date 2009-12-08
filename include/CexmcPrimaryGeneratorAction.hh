@@ -35,7 +35,7 @@ class  CexmcPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         ~CexmcPrimaryGeneratorAction();
 
     public:
-        void  GeneratePrimaries( G4Event *  anEvent );
+        void  GeneratePrimaries( G4Event *  event );
 
     public:
         void  SetFwhmPosX( G4double  value );

@@ -88,7 +88,7 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
 
         void      SetCalorimetersThreshold( G4double  value );
 
-        void      SetOuterCrystalsVetoAlgorithm( G4int  value );
+        void      SetOuterCrystalsVetoAlgorithm( const G4String &  algo );
 
         void      SetOuterCrystalsVetoFraction( G4double  value );
 
@@ -279,22 +279,27 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimetersThreshold(
 
 
 inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoAlgorithm(
-                                                            G4int  value )
+                                                        const G4String &  algo )
 {
-    switch ( value )
+    do
     {
-    case 0 :
-        outerCrystalsVetoAlgorithm = CexmcNoOuterCrystalsVeto;
-        break;
-    case 1 :
-        outerCrystalsVetoAlgorithm = CexmcMaximumEDInASingleOuterCrystalVeto;
-        break;
-    case 2 :
-        outerCrystalsVetoAlgorithm = CexmcFractionOfEDInOuterCrystalsVeto;
-        break;
-    default :
-        break;
-    }
+        if ( algo == "none" )
+        {
+            outerCrystalsVetoAlgorithm = CexmcNoOuterCrystalsVeto;
+            break;
+        }
+        if ( algo == "max" )
+        {
+            outerCrystalsVetoAlgorithm =
+                                CexmcMaximumEDInASingleOuterCrystalVeto;
+            break;
+        }
+        if ( algo == "fraction" )
+        {
+            outerCrystalsVetoAlgorithm = CexmcFractionOfEDInOuterCrystalsVeto;
+            break;
+        }
+    } while ( false );
 }
 
 
@@ -308,8 +313,8 @@ inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoFraction(
 inline G4bool  CexmcEnergyDepositDigitizer::IsOuterCrystal( G4int  column,
                                                             G4int  row )
 {
-    return column == 0 || column == nCrystalsInColumn - 1 ||
-           row == 0 || row == nCrystalsInRow - 1;
+    return column == 0 || column == nCrystalsInRow - 1 ||
+           row == 0 || row == nCrystalsInColumn - 1;
 }
 
 

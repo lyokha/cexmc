@@ -24,12 +24,13 @@
 #include <Randomize.hh>
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcPrimaryGeneratorActionMessenger.hh"
+#include "CexmcPrimaryVertexInfo.hh"
 #include "CexmcCommon.hh"
 
 
 CexmcPrimaryGeneratorAction::CexmcPrimaryGeneratorAction() :
     wasActivated( false ), particleGun( NULL ),
-    origPos( 0., 0., 0. ), origAngle( 0., 0., 0. ), origMomentumAmp( 0. ),
+    origPos( 0, 0, 0 ), origAngle( 0, 0, 0 ), origMomentumAmp( 0 ),
     fwhmPosX( 0 ), fwhmPosY( 0 ), fwhmAngleX( 0 ), fwhmAngleY( 0 ),
     messenger( NULL )
 {
@@ -45,7 +46,7 @@ CexmcPrimaryGeneratorAction::~CexmcPrimaryGeneratorAction()
 }
 
 
-void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  anEvent )
+void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  event )
 {
     if ( wasActivated )
     {
@@ -83,8 +84,15 @@ void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  anEvent )
     particleGun->SetParticlePosition( newPos );
     particleGun->SetParticleMomentumDirection( newAngle );
     particleGun->SetParticleMomentum( newMomentumAmp );
-    G4cout << "NEW MOMENTUM = " << newMomentumAmp << G4endl;
 
-    particleGun->GeneratePrimaryVertex( anEvent );
+    particleGun->GeneratePrimaryVertex( event );
+
+    G4PrimaryVertex *  primaryVertex( event->GetPrimaryVertex() );
+    if ( primaryVertex )
+    {
+        CexmcPrimaryVertexInfo *  primaryVertexInfo( new CexmcPrimaryVertexInfo(
+                                        origPos, origAngle, origMomentumAmp ) );
+        primaryVertex->SetUserInformation( primaryVertexInfo );
+    }
 }
 

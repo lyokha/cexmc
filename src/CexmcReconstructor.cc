@@ -26,9 +26,9 @@
 CexmcReconstructor::CexmcReconstructor() :
     hasTriggered( false ),
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
-    csAlgorithm( CexmcSelectAllCrystals ), epDepth( 0 ), nCrystalsInColumn( 1 ),
-    nCrystalsInRow( 1 ), crystalWidth( 0 ), crystalHeight( 0 ),
-    crystalLength( 0 ), messenger( NULL )
+    csAlgorithm( CexmcSelectAllCrystals ), epDepth( 0 ), theAngle( 0 ),
+    nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ), crystalWidth( 0 ),
+    crystalHeight( 0 ), crystalLength( 0 ), messenger( NULL )
 {
     CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
                 nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );
@@ -53,7 +53,10 @@ void  CexmcReconstructor::Reconstruct(
                                     const CexmcEnergyDepositStore * edStore )
 {
     ReconstructEntryPoints( edStore );
-    ReconstructTargetPoint();
+    if ( hasTriggered )
+        ReconstructTargetPoint();
+    if ( hasTriggered )
+        ReconstructAngle();
 }
 
 
@@ -293,5 +296,19 @@ void  CexmcReconstructor::ReconstructTargetPoint( void )
                                                     targetEPWorldPosition );
     targetEPDirection = targetTransform.Inverse().TransformAxis(
                                                     targetEPWorldDirection );
+
+    hasTriggered = true;
+}
+
+
+void  CexmcReconstructor::ReconstructAngle( void )
+{
+    G4ThreeVector  epLeft( calorimeterEPLeftWorldPosition -
+                           targetEPWorldPosition );
+    G4ThreeVector  epRight( calorimeterEPRightWorldPosition -
+                            targetEPWorldPosition );
+    theAngle = epLeft.angle( epRight );
+
+    hasTriggered = true;
 }
 

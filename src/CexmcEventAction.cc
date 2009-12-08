@@ -191,6 +191,14 @@ void  CexmcEventAction::PrintTrackPoints(
     G4cout << "        vc (r) : " << tpStore->vetoCounterTPRight << G4endl;
     G4cout << "       cal (l) : " << tpStore->calorimeterTPLeft << G4endl;
     G4cout << "       cal (r) : " << tpStore->calorimeterTPRight << G4endl;
+    G4cout << "      ---" << G4endl;
+    G4cout << "      angle between the " <<
+        tpStore->targetTPOutputParticle.particle->GetParticleName() <<
+        " decay products : " <<
+        tpStore->targetTPOutputParticleDecayProductParticle1.directionWorld.
+            angle(
+        tpStore->targetTPOutputParticleDecayProductParticle2.directionWorld ) /
+            deg << " deg" << G4endl;
 }
 
 
@@ -203,15 +211,25 @@ void  CexmcEventAction::PrintProductionModelData(
 }
 
 
-void  CexmcEventAction::PrintReconstructedData( void ) const
+void  CexmcEventAction::PrintReconstructedData( const CexmcAngularRangeList &
+                                            triggeredRecAngularRanges ) const
 {
-    G4cout << " --- Reconstructed entry points: " << G4endl;
-    G4cout << "         left: " << G4BestUnit(
+    G4cout << " --- Reconstructed data: " << G4endl;
+    G4cout << "       entry points:" << G4endl;
+    G4cout << "           left: " << G4BestUnit(
         reconstructor->GetCalorimeterEPLeftPosition(), "Length" ) << G4endl;
-    G4cout << "        right: " << G4BestUnit(
+    G4cout << "          right: " << G4BestUnit(
         reconstructor->GetCalorimeterEPRightPosition(), "Length" ) << G4endl;
-    G4cout << "       target: " << G4BestUnit(
+    G4cout << "         target: " << G4BestUnit(
         reconstructor->GetTargetEPPosition(), "Length" ) << G4endl;
+    G4cout << "       the angle: " << reconstructor->GetTheAngle() / deg <<
+        " deg" << G4endl;
+    G4cout << "       mass of output particle: " << G4BestUnit(
+        reconstructor->GetOutputParticleMass(), "Energy" ) << G4endl;
+    const CexmcProductionModelData &  pmData(
+                                    reconstructor->GetProductionModelData() );
+    G4cout << "       production model data: " << pmData;
+    G4cout << "       triggered angular ranges: " << triggeredRecAngularRanges;
 }
 
 
@@ -366,6 +384,8 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );
 
+        const CexmcAngularRangeList &  angularRanges(
+                                productionModel->GetAngularRanges() );
         const CexmcAngularRangeList &  triggeredAngularRanges(
                                 productionModel->GetTriggeredAngularRanges() );
         const CexmcProductionModelData &  pmData(
@@ -375,6 +395,22 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         {
             reconstructor->Reconstruct( edStore );
             reconstructorHasTriggered = reconstructor->HasTriggered();
+        }
+
+        CexmcAngularRangeList  triggeredRecAngularRanges;
+
+        if ( reconstructorHasTriggered )
+        {
+            for ( CexmcAngularRangeList::const_iterator
+                  k( angularRanges.begin() ); k != angularRanges.end(); ++k )
+            {
+                G4double  cosTheta( reconstructor->GetProductionModelData().
+                                    outputParticleSCM.cosTheta() );
+                G4cout << "REC ANGLE COS: " << cosTheta << G4endl;
+                if ( cosTheta <= k->top && cosTheta > k->bottom )
+                    triggeredRecAngularRanges.push_back( CexmcAngularRange(
+                                                k->top, k->bottom, k->index ) );
+            }
         }
 
         if ( verbose > 0 )
@@ -393,7 +429,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                     PrintProductionModelData( triggeredAngularRanges, pmData );
                 }
                 if ( reconstructorHasTriggered )
-                    PrintReconstructedData();
+                    PrintReconstructedData( triggeredRecAngularRanges );
                 if ( edDigitizerHasTriggered )
                     PrintEnergyDeposit( edStore );
             }

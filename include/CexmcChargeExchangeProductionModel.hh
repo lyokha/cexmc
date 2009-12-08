@@ -26,6 +26,7 @@
 #include <G4Proton.hh>
 #include <G4Neutron.hh>
 #include "CexmcProductionModel.hh"
+#include "CexmcException.hh"
 
 /* Old Fortran routine GENBOD() is used here to sample kinematics in
  * CM system */
@@ -64,11 +65,17 @@ class  CexmcChargeExchangeProductionModel :
                                           G4Nucleus &  targetNucleus );
 
     public:
-        static G4ParticleDefinition *  GetOutputParticle( void );
+        static G4ParticleDefinition *  GetIncidentParticle( void );
 
         static G4ParticleDefinition *  GetNucleusParticle( void );
 
+        static G4ParticleDefinition *  GetOutputParticle( void );
+
+        static G4ParticleDefinition *  GetNucleusOutputParticle( void );
+
     private:
+        G4ParticleDefinition *  thePiMinus;
+
         G4ParticleDefinition *  theProton;
 
         G4ParticleDefinition *  theNeutron;
@@ -81,7 +88,8 @@ template  < typename  OutputParticle >
 CexmcChargeExchangeProductionModel< OutputParticle >::
                                         CexmcChargeExchangeProductionModel() :
     G4HadronicInteraction( "Studied Charge Exchange" ),
-    theProton( G4Proton::Proton() ), theNeutron( G4Neutron::Neutron() ),
+    thePiMinus( G4PionMinus::Definition() ),
+    theProton( G4Proton::Definition() ), theNeutron( G4Neutron::Definition() ),
     theOutputParticle( OutputParticle::Definition() )
 {
 }
@@ -92,6 +100,9 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
                             ApplyYourself( const G4HadProjectile &  projectile,
                                            G4Nucleus &  targetNucleus )
 {
+    if ( projectile.GetDefinition() != thePiMinus )
+        throw CexmcException( CexmcWeirdException );
+
     theParticleChange.Clear();
 
     G4double         kinEnergy( projectile.GetKineticEnergy() );
@@ -131,8 +142,11 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     G4double   totalEnergy( productionModelData.incidentParticleSCM.e() +
                             productionModelData.nucleusParticleSCM.e() );
 
+    /* introduced here to take into account weird run aborts on incorrect
+     * double <-> float casts */
+    G4double   epsilon( 0.0001 );
     /* kinematically impossible */
-    if ( totalEnergy < neutronMass + outputParticleMass )
+    if ( totalEnergy - epsilon < neutronMass + outputParticleMass )
     {
         G4cout << "KIN IMPOSSIBLE " << totalEnergy << " " <<
                   neutronMass + outputParticleMass << G4endl;
@@ -211,6 +225,24 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
 template  < typename  OutputParticle >
 inline G4ParticleDefinition *
     CexmcChargeExchangeProductionModel< OutputParticle >::
+                                        GetIncidentParticle( void )
+{
+    return G4PionMinus::Definition();
+}
+
+
+template  < typename  OutputParticle >
+inline G4ParticleDefinition *
+    CexmcChargeExchangeProductionModel< OutputParticle >::
+                                        GetNucleusParticle( void )
+{
+    return G4Proton::Definition();
+}
+
+
+template  < typename  OutputParticle >
+inline G4ParticleDefinition *
+    CexmcChargeExchangeProductionModel< OutputParticle >::
                                         GetOutputParticle( void )
 {
     return OutputParticle::Definition();
@@ -220,7 +252,7 @@ inline G4ParticleDefinition *
 template  < typename  OutputParticle >
 inline G4ParticleDefinition *
     CexmcChargeExchangeProductionModel< OutputParticle >::
-                                        GetNucleusParticle( void )
+                                        GetNucleusOutputParticle( void )
 {
     return G4Neutron::Definition();
 }

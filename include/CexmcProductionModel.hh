@@ -47,6 +47,8 @@ class  CexmcProductionModel
 
         void  PrintInitialData( void ) const;
 
+        const CexmcAngularRangeList &  GetAngularRanges( void ) const;
+
         const CexmcAngularRangeList &  GetTriggeredAngularRanges( void ) const;
 
         const CexmcProductionModelData &  GetProductionModelData( void ) const;
@@ -117,6 +119,13 @@ inline void  CexmcProductionModel::PrintInitialData( void ) const
 
     G4cout << CEXMC_LINE_START << fermiMotionMsg << G4endl;
     G4cout << CEXMC_LINE_START << "Angular ranges:" << angularRanges;
+}
+
+
+inline const CexmcAngularRangeList &
+                CexmcProductionModel::GetAngularRanges( void ) const
+{
+    return angularRanges;
 }
 
 

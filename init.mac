@@ -31,6 +31,9 @@
 /cexmc/detector/VetoCounter/ED/threshold 500 keV
 /cexmc/detector/Calorimeter/ED/threshold 40 MeV
 
+/cexmc/detector/outerCrystalsVetoAlgorithm max
+/cexmc/detector/outerCrystalsVetoFraction 0.4
+
 /gun/position 0 0 -36 cm
 /gun/direction 0 0 1
 /gun/momentumAmp 700 MeV
@@ -43,7 +46,7 @@
 /cexmc/gun/fwhmMomentumAmp 0.015
 
 /cexmc/physics/applyFermiMotionInTarget true
-/cexmc/physics/setAngularRange 1.0 0.9 10
+/cexmc/physics/setAngularRange 1.0 0.8 10
 
 /cexmc/reconstructor/entryPointDefinitionAlgo sqrt
 /cexmc/reconstructor/crystalSelectionAlgo all

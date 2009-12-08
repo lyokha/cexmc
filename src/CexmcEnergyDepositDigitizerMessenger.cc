@@ -18,7 +18,7 @@
 
 #include <G4UIcmdWithADouble.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
-#include <G4UIcmdWithAnInteger.hh>
+#include <G4UIcmdWithAString.hh>
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositDigitizerMessenger.hh"
 #include "CexmcMessenger.hh"
@@ -118,29 +118,31 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setRightCalorimeterThreshold->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
-    setOuterCrystalsVetoAlgorithm = new G4UIcmdWithAnInteger(
+    setOuterCrystalsVetoAlgorithm = new G4UIcmdWithAString(
             ( CexmcMessenger::detectorDirName +
               "outerCrystalsVetoAlgorithm" ).c_str(), this );
     setOuterCrystalsVetoAlgorithm->SetGuidance( "\n"
-                "    0 - no algorithm applied,\n"
-                "    1 - reject event trigger if maximum energy deposit value\n"
-                "        is in one of outer crystals,\n"
-                "    2 - reject event trigger if energy deposit fraction in\n"
-                "        outer crystals is more than value of "
-                "'outerCrystalsVetoFraction'." );
+                "    none - events will not be rejected by any algorithm,\n"
+                "    max - reject event trigger if crystal with maximum energy "
+                    "deposit\n          is one of outer crystals,\n"
+                "    fraction - reject event trigger if energy deposit "
+                    "fraction in\n               outer crystals is more than "
+                    "value of 'outerCrystalsVetoFraction'" );
     setOuterCrystalsVetoAlgorithm->SetParameterName(
                                         "OuterCrystalsVetoAlgorithm", true );
-    setOuterCrystalsVetoAlgorithm->SetDefaultValue( 0 );
+    setOuterCrystalsVetoAlgorithm->SetDefaultValue( "none" );
+    setOuterCrystalsVetoAlgorithm->SetCandidates( "none max fraction" );
     setOuterCrystalsVetoAlgorithm->AvailableForStates( G4State_PreInit,
                                                        G4State_Idle );
 
     setOuterCrystalsVetoFraction = new G4UIcmdWithADouble(
             ( CexmcMessenger::detectorDirName +
               "outerCrystalsVetoFraction" ).c_str(), this );
-    setOuterCrystalsVetoFraction->SetGuidance( "\n    fraction of full energy "
-            "deposit in one calorimeter that belongs to outer crystals.\n"
-            "    If 'outerCrystalsVetoAlgorithm' is 2 and the outer crystals "
-            "fraction\n    exceeds this value then event won't trigger." );
+    setOuterCrystalsVetoFraction->SetGuidance( "\n    fraction of whole energy "
+            "deposit in one calorimeter \n    that belongs to outer crystals.\n"
+            "    If 'outerCrystalsVetoAlgorithm' is 'fraction' and\n"
+            "    the outer crystals energy deposit fraction exceeds "
+                "this value\n    then event won't trigger" );
     setOuterCrystalsVetoFraction->SetParameterName(
                                         "OuterCrystalsVetoFraction", true );
     setOuterCrystalsVetoFraction->SetDefaultValue( 0 );
@@ -212,8 +214,7 @@ void  CexmcEnergyDepositDigitizerMessenger::SetNewValue( G4UIcommand *  cmd,
         }
         if ( cmd == setOuterCrystalsVetoAlgorithm )
         {
-            energyDepositDigitizer->SetOuterCrystalsVetoAlgorithm(
-                        G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+            energyDepositDigitizer->SetOuterCrystalsVetoAlgorithm( value );
             break;
         }
         if ( cmd == setOuterCrystalsVetoFraction )
