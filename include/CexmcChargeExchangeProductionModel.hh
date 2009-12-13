@@ -111,7 +111,13 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     G4double         neutronMass( theNeutron->GetPDGMass() );
     G4double         outputParticleMass( theOutputParticle->GetPDGMass() );
 
-    productionModelData.incidentParticleLAB = projectile.Get4Momentum();
+    G4HadProjectile &          theProjectile( const_cast< G4HadProjectile & >(
+                                                                projectile ) );
+    const G4LorentzRotation &  projToLab(
+                                    const_cast< const G4LorentzRotation & >(
+                                            theProjectile.GetTrafoToLab() ) );
+    productionModelData.incidentParticleLAB = theProjectile.Get4Momentum();
+    productionModelData.incidentParticleLAB.transform( projToLab );
     productionModelData.nucleusParticleLAB.setPx( 0 );
     productionModelData.nucleusParticleLAB.setPy( 0 );
     productionModelData.nucleusParticleLAB.setPz( 0 );
@@ -127,6 +133,7 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
         productionModelData.nucleusParticleLAB = G4LorentzVector(
                                 targetNucleusMomentum, targetNucleusEnergy );
     }
+    productionModelData.nucleusParticleLAB.transform( projToLab );
     G4LorentzVector  lVecSum( productionModelData.incidentParticleLAB +
                               productionModelData.nucleusParticleLAB );
     G4ThreeVector    boostVec( lVecSum.boostVector() );
@@ -200,11 +207,6 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     productionModelData.outputParticleLAB.boost( boostVec );
     productionModelData.nucleusOutputParticleLAB.boost( boostVec );
 
-    productionModelData.incidentParticle = projectile.GetDefinition();
-    productionModelData.nucleusParticle = theProton;
-    productionModelData.outputParticle = theOutputParticle;
-    productionModelData.nucleusOutputParticle = theNeutron;
-
     G4cout << "OUT EN: " << genout_.pcm[ 0 ][ 3 ] << G4endl;
     G4cout << "NEUT EN: " << genout_.pcm[ 1 ][ 3 ] << G4endl;
 
@@ -217,6 +219,11 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     G4DynamicParticle *  secNeutron( new G4DynamicParticle(
                 theNeutron, productionModelData.nucleusOutputParticleLAB ) );
     theParticleChange.AddSecondary( secNeutron );
+
+    productionModelData.incidentParticle = thePiMinus;
+    productionModelData.nucleusParticle = theProton;
+    productionModelData.outputParticle = theOutputParticle;
+    productionModelData.nucleusOutputParticle = theNeutron;
 
     return &theParticleChange;
 }

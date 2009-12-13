@@ -68,6 +68,8 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     G4double  cosTheAngle( std::cos( theAngle ) );
     G4double  calorimeterEDLeft( edStore->calorimeterEDLeft );
     G4double  calorimeterEDRight( edStore->calorimeterEDRight );
+    G4cout << "EDLeft: " << calorimeterEDLeft << ", EDRight: " << calorimeterEDRight << G4endl;
+    G4cout << "left: " << epLeft << ", right: " << epRight << G4endl;
 
     //G4double  cosOutputParticleLAB(
         //( calorimeterEDLeft * cosAngleLeft +
@@ -84,6 +86,7 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     G4ThreeVector    opdpRightMomentum( epRight );
     opdpRightMomentum.setMag( calorimeterEDRight );
     G4ThreeVector    opMomentum( opdpLeftMomentum + opdpRightMomentum );
+    G4cout << "left: " << opdpLeftMomentum << ", right: " << opdpRightMomentum << G4endl;
 
     G4double         opMass( useTableMass ?
                              productionModelData.outputParticle->GetPDGMass() :

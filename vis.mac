@@ -3,6 +3,7 @@
 ###################################################
 
 /tracking/storeTrajectory 1
+#/tracking/verbose 1
 
 /vis/enable
 

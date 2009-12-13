@@ -22,6 +22,9 @@
 #include <G4HadronicProcess.hh>
 #include "CexmcCommon.hh"
 
+class  G4ParticleChange;
+class  G4Track;
+class  G4Step;
 class  CexmcProductionModel;
 
 
@@ -31,6 +34,12 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
         explicit CexmcChargeExchangeProcess(
                         const G4String &  name = CexmcStudiedProcessLastName );
 
+        ~CexmcChargeExchangeProcess();
+
+    public:
+        G4ParticleChange *  PostStepDoIt( const G4Track &  track,
+                                          const G4Step &  step );
+
     public:
         void  RegisterProductionModel( G4HadronicInteraction *  model );
 
@@ -38,7 +47,14 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
         CexmcProductionModel *  GetProductionModel( void );
 
     private:
+        void  FillTotalResult( G4HadFinalState *  hadFinalState,
+                               const G4Track &  track );
+
+    private:
         CexmcProductionModel *  productionModel;
+
+    private:
+        G4ParticleChange *      theTotalResult;
 };
 
 
