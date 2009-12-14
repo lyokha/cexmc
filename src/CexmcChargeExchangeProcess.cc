@@ -181,16 +181,6 @@ G4ParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
         }
     } while( ! result );
 
-    // NOT USED ?? Projectile particle has changed character during interaction
-    if ( result->GetStatusChange() == isAlive && 
-         projectile.GetDefinition() != track.GetDefinition() )
-    {
-        G4DynamicParticle *  particle( const_cast< G4DynamicParticle * >(
-                                                track.GetDynamicParticle() ) );
-        particle->SetDefinition( const_cast< G4ParticleDefinition * >(
-                                                projectile.GetDefinition() ) );
-    }
-
     ClearNumberOfInteractionLengthLeft();
 
     FillTotalResult( result, track );

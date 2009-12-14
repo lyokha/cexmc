@@ -28,29 +28,30 @@
 #/cexmc/detector/Calorimeter/TP/verbose 1
 
 /cexmc/detector/Monitor/ED/threshold 500 keV
-/cexmc/detector/VetoCounter/ED/threshold 500 keV
+/cexmc/detector/VetoCounter/ED/threshold 250 keV
 /cexmc/detector/Calorimeter/ED/threshold 40 MeV
 
 /cexmc/detector/outerCrystalsVetoAlgorithm fraction
-/cexmc/detector/outerCrystalsVetoFraction 0.4
+/cexmc/detector/outerCrystalsVetoFraction 0.5
 
 /gun/position 0 0 -36 cm
 /gun/direction 0 0 1
-/gun/momentumAmp 700 MeV
+/gun/momentumAmp 730 MeV
 /gun/particle pi-
 
-/cexmc/gun/fwhmPosX 3.5 cm
-/cexmc/gun/fwhmPosY 3.0 cm
+/cexmc/gun/fwhmPosX 7.0 cm
+/cexmc/gun/fwhmPosY 4.6 cm
 /cexmc/gun/fwhmAngleX 1.35 deg
 /cexmc/gun/fwhmAngleY 1.12 deg
 /cexmc/gun/fwhmMomentumAmp 0.015
 
 /cexmc/physics/applyFermiMotionInTarget false
-/cexmc/physics/setAngularRange 1.0 -1.0 20
+/cexmc/physics/setAngularRange 1.0 -1.0 10
 
 /cexmc/reconstructor/entryPointDefinitionAlgo sqrt
 /cexmc/reconstructor/crystalSelectionAlgo all
 /cexmc/reconstructor/entryPointDepth 7 cm
+/cexmc/reconstructor/useTableMass false
 
 /cexmc/run/eventCountPolicy trigger
 

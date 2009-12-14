@@ -22,6 +22,7 @@
 #include "CexmcReconstructor.hh"
 #include "CexmcProductionModelData.hh"
 
+class  CexmcChargeExchangeReconstructorMessenger;
 class  CexmcEnergyDepositStore;
 
 
@@ -29,6 +30,8 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 {
     public:
         CexmcChargeExchangeReconstructor();
+
+        ~CexmcChargeExchangeReconstructor();
 
     public:
         void  Reconstruct( const CexmcEnergyDepositStore *  edStore );
@@ -38,24 +41,21 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 
         const CexmcProductionModelData &  GetProductionModelData( void ) const;
 
+        void      UseTableMass( G4bool  on );
+
     private:
         G4double  outputParticleMass;
 
         G4double  nucleusOutputParticleMass;
-
-        G4ParticleDefinition *  incidentParticle;
-
-        G4ParticleDefinition *  nucleusParticle;
-
-        G4ParticleDefinition *  outputParticle;
-
-        G4ParticleDefinition *  nucleusOutputParticle;
 
     private:
         CexmcProductionModelData  productionModelData;
 
     private:
         G4bool    useTableMass;
+
+    private:
+        CexmcChargeExchangeReconstructorMessenger *  messenger;
 };
 
 
@@ -70,6 +70,12 @@ inline const CexmcProductionModelData &
         CexmcChargeExchangeReconstructor::GetProductionModelData( void ) const
 {
     return productionModelData;
+}
+
+
+inline void  CexmcChargeExchangeReconstructor::UseTableMass( G4bool  on )
+{
+    useTableMass = on;
 }
 
 

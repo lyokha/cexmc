@@ -3,7 +3,7 @@
  *
  *       Filename:  CexmcPrimaryGeneratorAction.hh
  *
- *    Description:  
+ *    Description:  primary particle position, direction, energy etc.
  *
  *        Version:  1.0
  *        Created:  11.10.2009 14:54:27
@@ -22,8 +22,8 @@
 #include <G4VUserPrimaryGeneratorAction.hh>
 #include <G4ThreeVector.hh>
 
-class  G4ParticleGun;
 class  G4Event;
+class  CexmcParticleGun;
 class  CexmcPrimaryGeneratorActionMessenger;
 
 
@@ -49,25 +49,25 @@ class  CexmcPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         void  SetFwhmMomentumAmp( G4double  value );
 
     private:
-        G4bool           wasActivated;
+        G4bool              wasActivated;
 
-        G4ParticleGun *  particleGun;
+        CexmcParticleGun *  particleGun;
 
-        G4ThreeVector    origPos;
+        G4ThreeVector       origPos;
 
-        G4ThreeVector    origAngle;
+        G4ThreeVector       origAngle;
 
-        G4double         origMomentumAmp;
+        G4double            origMomentumAmp;
 
-        G4double         fwhmPosX;
+        G4double            fwhmPosX;
 
-        G4double         fwhmPosY;
+        G4double            fwhmPosY;
 
-        G4double         fwhmAngleX;
+        G4double            fwhmAngleX;
 
-        G4double         fwhmAngleY;
+        G4double            fwhmAngleY;
 
-        G4double         fwhmMomentumAmp;
+        G4double            fwhmMomentumAmp;
 
     private:
         CexmcPrimaryGeneratorActionMessenger *  messenger;

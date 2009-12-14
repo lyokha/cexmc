@@ -71,7 +71,7 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         this );
     setCalorimeterEntryPointDepth->SetGuidance(
         "\n    Depth of entry point used in reconstruction of angle between "
-        "output particle decay products" );
+        "output particle\n    decay products" );
     setCalorimeterEntryPointDepth->SetParameterName( "EntryPointDepth", false );
     setCalorimeterEntryPointDepth->SetDefaultValue( 0 );
     setCalorimeterEntryPointDepth->SetDefaultUnit( "cm" );
