@@ -20,7 +20,6 @@
 #define CEXMC_PRIMARY_GENERATOR_ACTION_HH
 
 #include <G4VUserPrimaryGeneratorAction.hh>
-#include <G4ThreeVector.hh>
 
 class  G4Event;
 class  CexmcParticleGun;
@@ -49,15 +48,7 @@ class  CexmcPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         void  SetFwhmMomentumAmp( G4double  value );
 
     private:
-        G4bool              wasActivated;
-
         CexmcParticleGun *  particleGun;
-
-        G4ThreeVector       origPos;
-
-        G4ThreeVector       origAngle;
-
-        G4double            origMomentumAmp;
 
         G4double            fwhmPosX;
 

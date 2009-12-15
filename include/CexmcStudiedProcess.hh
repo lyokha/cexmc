@@ -63,8 +63,6 @@ G4double  CexmcStudiedProcess< Particle >::
 
     *condition = NotForced;
     G4double  curStepSize( G4UniformRand() * stepSize );
-    G4cout << "STEP SIZE = " << stepSize << "; CUR STEP SIZE = " <<
-              curStepSize << G4endl;
     return curStepSize;
 }
 

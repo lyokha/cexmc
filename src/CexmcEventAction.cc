@@ -215,21 +215,31 @@ void  CexmcEventAction::PrintReconstructedData( const CexmcAngularRangeList &
                                             triggeredRecAngularRanges ) const
 {
     G4cout << " --- Reconstructed data: " << G4endl;
-    G4cout << "       entry points:" << G4endl;
-    G4cout << "           left: " << G4BestUnit(
+    G4cout << "       -- entry points:" << G4endl;
+    G4cout << "              left: " << G4BestUnit(
         reconstructor->GetCalorimeterEPLeftPosition(), "Length" ) << G4endl;
-    G4cout << "          right: " << G4BestUnit(
+    G4cout << "             right: " << G4BestUnit(
         reconstructor->GetCalorimeterEPRightPosition(), "Length" ) << G4endl;
-    G4cout << "         target: " << G4BestUnit(
+    G4cout << "            target: " << G4BestUnit(
         reconstructor->GetTargetEPPosition(), "Length" ) << G4endl;
-    G4cout << "       the angle: " << reconstructor->GetTheAngle() / deg <<
+    G4cout << "       -- the angle: " << reconstructor->GetTheAngle() / deg <<
         " deg" << G4endl;
-    G4cout << "       mass of output particle: " << G4BestUnit(
+    G4cout << "       -- mass of the output particle: " << G4BestUnit(
         reconstructor->GetOutputParticleMass(), "Energy" ) << G4endl;
+    G4cout << "       -- mass of the nucleus output particle: " << G4BestUnit(
+        reconstructor->GetNucleusOutputParticleMass(), "Energy" ) << G4endl;
+    if ( reconstructor->IsMassCutUsed() )
+    {
+        if ( reconstructor->HasMassCutTriggered() )
+            G4cout << "            < mass cut passed >" << G4endl;
+        else
+            G4cout << "            < mass cut failed >" << G4endl;
+    }
     const CexmcProductionModelData &  pmData(
                                     reconstructor->GetProductionModelData() );
-    G4cout << "       production model data: " << pmData;
-    G4cout << "       triggered angular ranges: " << triggeredRecAngularRanges;
+    G4cout << "       -- production model data: " << pmData;
+    G4cout << "       -- triggered angular ranges: " <<
+                                                    triggeredRecAngularRanges;
 }
 
 
@@ -406,7 +416,6 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
             {
                 G4double  cosTheta( reconstructor->GetProductionModelData().
                                     outputParticleSCM.cosTheta() );
-                G4cout << "REC ANGLE COS: " << cosTheta << G4endl;
                 if ( cosTheta <= k->top && cosTheta > k->bottom )
                     triggeredRecAngularRanges.push_back( CexmcAngularRange(
                                                 k->top, k->bottom, k->index ) );

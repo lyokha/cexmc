@@ -29,10 +29,8 @@
 
 
 CexmcPrimaryGeneratorAction::CexmcPrimaryGeneratorAction() :
-    wasActivated( false ), particleGun( NULL ),
-    origPos( 0, 0, 0 ), origAngle( 0, 0, 0 ), origMomentumAmp( 0 ),
-    fwhmPosX( 0 ), fwhmPosY( 0 ), fwhmAngleX( 0 ), fwhmAngleY( 0 ),
-    messenger( NULL )
+    particleGun( NULL ), fwhmPosX( 0 ), fwhmPosY( 0 ), fwhmAngleX( 0 ),
+    fwhmAngleY( 0 ), messenger( NULL )
 {
     particleGun = new CexmcParticleGun( 1 );
     messenger = new CexmcPrimaryGeneratorActionMessenger( this );
@@ -48,14 +46,11 @@ CexmcPrimaryGeneratorAction::~CexmcPrimaryGeneratorAction()
 
 void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  event )
 {
-    if ( ! wasActivated )
-    {
-        origPos = particleGun->GetParticlePosition();
-        origAngle = particleGun->GetParticleMomentumDirection();
-        origMomentumAmp = particleGun->GetParticleMomentum();
-        wasActivated = true;
-    }
     particleGun->PrepareForNewEvent();
+
+    const G4ThreeVector &  origPos( particleGun->GetOrigPosition() );
+    const G4ThreeVector &  origDir( particleGun->GetOrigDirection() );
+    G4double               origMomentumAmp( particleGun->GetOrigMomentumAmp() );
 
     G4double       randPosX( G4RandGauss::shoot( origPos.x(),
                                             fwhmPosX * CexmcFwhmToStddev ) );
@@ -63,11 +58,11 @@ void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  event )
                                             fwhmPosY * CexmcFwhmToStddev ) );
     G4ThreeVector  newPos( randPosX, randPosY, origPos.z() );
 
-    G4double       randAngleX( G4RandGauss::shoot( origAngle.x(),
+    G4double       randAngleX( G4RandGauss::shoot( origDir.x(),
                                             fwhmAngleX * CexmcFwhmToStddev ) );
-    G4double       randAngleY( G4RandGauss::shoot( origAngle.y(),
+    G4double       randAngleY( G4RandGauss::shoot( origDir.y(),
                                             fwhmAngleY * CexmcFwhmToStddev ) );
-    G4ThreeVector  newAngle( randAngleX, randAngleY, origAngle.z() );
+    G4ThreeVector  newAngle( randAngleX, randAngleY, origDir.z() );
 
     G4double       newMomentumAmp( G4RandGauss::shoot( origMomentumAmp,
                                             fwhmMomentumAmp * origMomentumAmp *
@@ -82,8 +77,8 @@ void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  event )
     G4PrimaryVertex *  primaryVertex( event->GetPrimaryVertex() );
     if ( primaryVertex )
     {
-        CexmcPrimaryVertexInfo *  primaryVertexInfo( new CexmcPrimaryVertexInfo(
-                                        origPos, origAngle, origMomentumAmp ) );
+        CexmcPrimaryVertexInfo *  primaryVertexInfo(
+                                    new CexmcPrimaryVertexInfo( particleGun ) );
         primaryVertex->SetUserInformation( primaryVertexInfo );
     }
 }

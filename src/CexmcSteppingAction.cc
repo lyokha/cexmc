@@ -86,10 +86,6 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
                                     postStepPoint->GetMomentumDirection() ) );
                 distanceInTarget = targetSolid->DistanceToOut( position,
                                                                direction );
-                G4cout << "POSITION = " << G4BestUnit(
-                                        position, "Length" ) << G4endl;
-                G4cout << "DISTANCE = " << G4BestUnit(
-                                        distanceInTarget, "Length" ) << G4endl;
                 if ( distanceInTarget > 0. )
                     activateProcess = true;
                 break;

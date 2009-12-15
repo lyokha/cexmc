@@ -1,5 +1,5 @@
 /control/verbose  1
-/run/verbose      1
+/run/verbose      0
 /event/verbose    0
 /hits/verbose     0
 
@@ -34,11 +34,11 @@
 /cexmc/detector/outerCrystalsVetoAlgorithm fraction
 /cexmc/detector/outerCrystalsVetoFraction 0.5
 
-/gun/position 0 0 -36 cm
-/gun/direction 0 0 1
-/gun/momentumAmp 730 MeV
 /gun/particle pi-
 
+/cexmc/gun/position 0 0 -36 cm
+/cexmc/gun/direction 0 0 1
+/cexmc/gun/momentumAmp 730 MeV
 /cexmc/gun/fwhmPosX 7.0 cm
 /cexmc/gun/fwhmPosY 4.6 cm
 /cexmc/gun/fwhmAngleX 1.35 deg
@@ -52,6 +52,13 @@
 /cexmc/reconstructor/crystalSelectionAlgo all
 /cexmc/reconstructor/entryPointDepth 7 cm
 /cexmc/reconstructor/useTableMass false
+
+/cexmc/reconstructor/useMassCut true
+/cexmc/reconstructor/mCutOPCenter 530 MeV
+/cexmc/reconstructor/mCutNOPCenter 950 MeV
+/cexmc/reconstructor/mCutOPWidth 50 MeV
+/cexmc/reconstructor/mCutNOPWidth 50 MeV
+/cexmc/reconstructor/mCutAngle 45 deg
 
 /cexmc/run/eventCountPolicy trigger
 

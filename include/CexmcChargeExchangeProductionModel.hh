@@ -155,8 +155,6 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     /* kinematically impossible */
     if ( totalEnergy - epsilon < neutronMass + outputParticleMass )
     {
-        G4cout << "KIN IMPOSSIBLE " << totalEnergy << " " <<
-                  neutronMass + outputParticleMass << G4endl;
         theParticleChange.SetEnergyChange( kinEnergy );
         theParticleChange.SetMomentumChange(
                                     projectile.Get4Momentum().vect().unit());
@@ -206,9 +204,6 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
 
     productionModelData.outputParticleLAB.boost( boostVec );
     productionModelData.nucleusOutputParticleLAB.boost( boostVec );
-
-    G4cout << "OUT EN: " << genout_.pcm[ 0 ][ 3 ] << G4endl;
-    G4cout << "NEUT EN: " << genout_.pcm[ 1 ][ 3 ] << G4endl;
 
     theParticleChange.SetStatusChange( stopAndKill );
     theParticleChange.SetEnergyChange( 0.0 );

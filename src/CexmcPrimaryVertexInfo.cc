@@ -19,9 +19,9 @@
 #include "CexmcPrimaryVertexInfo.hh"
 
 
-CexmcPrimaryVertexInfo::CexmcPrimaryVertexInfo( const G4ThreeVector &  position,
-                    const G4ThreeVector &  direction, G4double  momentumAmp ) :
-    position( position ), direction( direction ), momentumAmp( momentumAmp )
+CexmcPrimaryVertexInfo::CexmcPrimaryVertexInfo(
+                                    const CexmcParticleGun *  particleGun ) :
+    particleGun( particleGun )
 {
 }
 

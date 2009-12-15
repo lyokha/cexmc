@@ -20,50 +20,32 @@
 #define CEXMC_PRIMARY_VERTEX_INFO_HH
 
 #include <G4VUserPrimaryVertexInformation.hh>
-#include <G4ThreeVector.hh>
+#include "CexmcParticleGun.hh"
+
+class  CexmcParticleGun;
 
 
 class  CexmcPrimaryVertexInfo : public G4VUserPrimaryVertexInformation
 {
     public:
-        CexmcPrimaryVertexInfo( const G4ThreeVector &  position,
-                                const G4ThreeVector &  direction,
-                                G4double  momentumAmp );
+        explicit CexmcPrimaryVertexInfo(
+                                    const CexmcParticleGun *  particleGun );
 
     public:
         void  Print( void ) const;
 
     public:
-        const G4ThreeVector &  GetPosition( void ) const;
-
-        const G4ThreeVector &  GetDirection( void ) const;
-
-        G4double               GetMomentumAmp( void ) const;
+        const CexmcParticleGun *  GetParticleGun( void ) const;
 
     private:
-        G4ThreeVector  position;
-
-        G4ThreeVector  direction;
-
-        G4double       momentumAmp;
+        const CexmcParticleGun *  particleGun;
 };
 
 
-inline const G4ThreeVector &  CexmcPrimaryVertexInfo::GetPosition( void ) const
+inline const CexmcParticleGun *
+                            CexmcPrimaryVertexInfo::GetParticleGun( void ) const
 {
-    return position;
-}
-
-
-inline const G4ThreeVector &  CexmcPrimaryVertexInfo::GetDirection( void ) const
-{
-    return direction;
-}
-
-
-inline G4double  CexmcPrimaryVertexInfo::GetMomentumAmp( void ) const
-{
-    return momentumAmp;
+    return particleGun;
 }
 
 

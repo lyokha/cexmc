@@ -23,6 +23,7 @@
 
 class  G4UIcommand;
 class  G4UIcmdWithABool;
+class  G4UIcmdWithADoubleAndUnit;
 class  G4String;
 class  CexmcChargeExchangeReconstructor;
 
@@ -42,6 +43,18 @@ class  CexmcChargeExchangeReconstructorMessenger : public G4UImessenger
         CexmcChargeExchangeReconstructor *  reconstructor;
 
         G4UIcmdWithABool *                  useTableMass;
+
+        G4UIcmdWithABool *                  useMassCut;
+
+        G4UIcmdWithADoubleAndUnit *         mCutOPCenter;
+
+        G4UIcmdWithADoubleAndUnit *         mCutNOPCenter;
+
+        G4UIcmdWithADoubleAndUnit *         mCutOPWidth;
+
+        G4UIcmdWithADoubleAndUnit *         mCutNOPWidth;
+
+        G4UIcmdWithADoubleAndUnit *         mCutAngle;
 };
 
 

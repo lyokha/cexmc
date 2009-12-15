@@ -29,7 +29,9 @@
 
 CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor() :
     outputParticleMass( 0 ),  nucleusOutputParticleMass( 0 ),
-    useTableMass( false ), messenger( NULL )
+    useTableMass( false ), useMassCut( false ), massCutOPCenter( 0 ),
+    massCutNOPCenter( 0 ), massCutOPWidth( 0 ), massCutNOPWidth( 0 ),
+    massCutEllipseAngle( 0 ), hasMassCutTriggered( false ), messenger( NULL )
 {
     CexmcRunManager *         runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
@@ -110,16 +112,18 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
         throw CexmcException( CexmcWeirdException );
 
     G4ThreeVector  incidentParticleMomentum(
-                                        primaryVertexInfo->GetDirection() );
+                    primaryVertexInfo->GetParticleGun()->GetOrigDirection() );
     G4double       incidentParticleMomentumAmp(
-                                        primaryVertexInfo->GetMomentumAmp() );
+                    primaryVertexInfo->GetParticleGun()->GetOrigMomentumAmp() );
     incidentParticleMomentum *= incidentParticleMomentumAmp;
 
     G4double       incidentParticlePDGMass(
                         productionModelData.incidentParticle->GetPDGMass() );
+    G4double       incidentParticlePDGMass2( incidentParticlePDGMass *
+                                             incidentParticlePDGMass );
     G4double       incidentParticleEnergy(
         std::sqrt( incidentParticleMomentumAmp * incidentParticleMomentumAmp +
-                   incidentParticlePDGMass * incidentParticlePDGMass ) );
+                   incidentParticlePDGMass2 ) );
 
     productionModelData.incidentParticleLAB = G4LorentzVector(
                         incidentParticleMomentum, incidentParticleEnergy );
@@ -147,6 +151,40 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     productionModelData.nucleusParticleSCM.boost( -boostVec );
     productionModelData.outputParticleSCM.boost( -boostVec );
     productionModelData.nucleusOutputParticleSCM.boost( -boostVec );
+
+    G4double       edDelta2(
+                        std::pow( ( calorimeterEDLeft - calorimeterEDRight ) /
+                                  ( calorimeterEDLeft + calorimeterEDRight ),
+                                  2 ) );
+    G4double       outputParticleKinEnergy(
+                        std::sqrt( 2 * opMass * opMass / ( 1 - cosTheAngle ) /
+                                   ( 1 - edDelta2 ) ) - opMass );
+    G4ThreeVector  nopMomentum( incidentParticleMomentum - opMomentum );
+    G4double       nopEnergy(
+                        std::sqrt( incidentParticleMomentum.mag2() +
+                                   incidentParticlePDGMass2 ) +
+                        nucleusParticlePDGMass -
+                        ( outputParticleKinEnergy + opMass ) );
+    nucleusOutputParticleMass = std::sqrt( nopEnergy * nopEnergy -
+                                           nopMomentum.mag2() );
+
+    if ( useMassCut )
+    {
+        G4double  cosMassCutEllipseAngle( std::cos( massCutEllipseAngle ) );
+        G4double  sinMassCutEllipseAngle( std::sin( massCutEllipseAngle ) );
+        G4double  massCutOPWidth2( massCutOPWidth * massCutOPWidth );
+        G4double  massCutNOPWidth2( massCutNOPWidth * massCutNOPWidth );
+
+        hasMassCutTriggered =
+            std::pow( ( outputParticleMass - massCutOPCenter ) *
+                          cosMassCutEllipseAngle +
+                      ( nucleusOutputParticleMass - massCutNOPCenter ) *
+                          sinMassCutEllipseAngle, 2 ) / massCutOPWidth2 +
+            std::pow( - ( outputParticleMass - massCutOPCenter ) *
+                          sinMassCutEllipseAngle +
+                      ( nucleusOutputParticleMass - massCutNOPCenter ) *
+                          cosMassCutEllipseAngle, 2 ) / massCutNOPWidth2 < 1;
+    }
 
     hasTriggered = true;
 }
