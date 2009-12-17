@@ -85,6 +85,8 @@ class  CexmcMessenger
 
         static G4String  visDirName;
 
+        static G4String  histoDirName;
+
     private:
         static CexmcMessenger *  instance;
 
@@ -136,6 +138,8 @@ class  CexmcMessenger
         G4UIdirectory *  reconstructorDir;
 
         G4UIdirectory *  visDir;
+
+        G4UIdirectory *  histoDir;
 };
 
 

@@ -31,7 +31,7 @@
 /cexmc/detector/VetoCounter/ED/threshold 250 keV
 /cexmc/detector/Calorimeter/ED/threshold 40 MeV
 
-/cexmc/detector/outerCrystalsVetoAlgorithm fraction
+/cexmc/detector/outerCrystalsVetoAlgorithm none
 /cexmc/detector/outerCrystalsVetoFraction 0.5
 
 /gun/particle pi-

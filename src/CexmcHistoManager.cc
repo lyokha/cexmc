@@ -19,10 +19,14 @@
 #include <TH1.h>
 #include <TH2F.h>
 #include <TFile.h>
+#include <TDirectory.h>
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
 #include "CexmcHistoManager.hh"
+#include "CexmcHistoManagerMessenger.hh"
 #include "CexmcRunManager.hh"
+
+extern TDirectory *  gDirectory;
 
 
 CexmcHistoManager *  CexmcHistoManager::instance( NULL );
@@ -110,9 +114,12 @@ void  CexmcHistoManager::Initialize( void )
 
 
 CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
-    edInLeftCalorimeter( 0 ), edInRightCalorimeter( 0 ), histos( NULL )
+    edInLeftCalorimeter( 0 ), edInRightCalorimeter( 0 ), histos( NULL ),
+    messenger( NULL )
 {
     histos = new std::map< CexmcHistoType, TH1 * >;
+
+    messenger = new CexmcHistoManagerMessenger;
 }
 
 
@@ -127,6 +134,7 @@ CexmcHistoManager::~CexmcHistoManager()
     /* all histograms will be deleted by outFile destructor! */
     delete outFile;
     delete histos;
+    delete messenger;
 }
 
 
@@ -138,5 +146,25 @@ void  CexmcHistoManager::Add( CexmcHistoType  histoType,
     Double_t  curValue( ( *histos )[ histoType ]->GetBinContent( binX, binY ) );
     ( *histos )[ histoType ]->SetBinContent( binX, binY,
                                              curValue + value / GeV );
+}
+
+
+void  CexmcHistoManager::List( void ) const
+{
+    gDirectory->ls();
+}
+
+
+void  CexmcHistoManager::Print( const G4String &  value )
+{
+    TH1 *  histo( static_cast< TH1 * >(
+                                    gDirectory->FindObject( value.c_str() ) ) );
+    if ( ! histo )
+    {
+        G4cout << "Histogram '" << value << "' was not found" << G4endl;
+        return;
+    }
+
+    histo->Print( "range" );
 }
 

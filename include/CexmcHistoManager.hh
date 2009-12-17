@@ -19,9 +19,12 @@
 #ifndef CEXMC_HISTO_MANAGER_HH
 #define CEXMC_HISTO_MANAGER_HH
 
+#include <map>
+
 class  TFile;
 class  TH1;
 class  TH2F;
+class  CexmcHistoManagerMessenger;
 
 
 enum  CexmcHistoType
@@ -49,20 +52,27 @@ class  CexmcHistoManager
         void  Add( CexmcHistoType  histoType, G4int  binX, G4int  binY,
                    G4double  value );
 
+        void  List( void ) const;
+
+        void  Print( const G4String &  value );
+
     public:
-        TFile *  outFile;
+        TFile *                              outFile;
 
-        TH2F *   edInLeftCalorimeter;
+        TH2F *                               edInLeftCalorimeter;
 
-        TH2F *   edInRightCalorimeter;
+        TH2F *                               edInRightCalorimeter;
 
     private:
         std::map< CexmcHistoType, TH1 * > *  histos;
 
     private:
-        static CexmcHistoManager *  instance;
+        CexmcHistoManagerMessenger *         messenger;
 
-        static bool                 isInitialized;
+    private:
+        static CexmcHistoManager *           instance;
+
+        static bool                          isInitialized;
 };
 
 

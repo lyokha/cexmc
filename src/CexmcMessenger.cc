@@ -74,6 +74,8 @@ G4String  CexmcMessenger::calorimeterRightEDDirName(
 G4String  CexmcMessenger::reconstructorDirName(
                             CexmcMessenger::mainDirName + "reconstructor/" );
 G4String  CexmcMessenger::visDirName( CexmcMessenger::mainDirName + "vis/" );
+G4String  CexmcMessenger::histoDirName(
+                            CexmcMessenger::mainDirName + "histo/" );
 
 
 CexmcMessenger *  CexmcMessenger::Instance( void )
@@ -101,7 +103,8 @@ CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
     monitorEDDir( NULL ), vetoCounterEDDir( NULL ),
     vetoCounterLeftEDDir( NULL ), vetoCounterRightEDDir( NULL ),
     calorimeterEDDir( NULL ), calorimeterLeftEDDir( NULL ),
-    calorimeterRightEDDir( NULL ), reconstructorDir( NULL ), visDir( NULL )
+    calorimeterRightEDDir( NULL ), reconstructorDir( NULL ), visDir( NULL ),
+    histoDir( NULL )
 {
     mainDir = new G4UIdirectory( mainDirName );
     mainDir->SetGuidance( "Cexmc settings." );
@@ -167,6 +170,8 @@ CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
     reconstructorDir->SetGuidance( "Reconstructor settings" );
     visDir = new G4UIdirectory( visDirName );
     visDir->SetGuidance( "Visualization settings" );
+    histoDir = new G4UIdirectory( histoDirName );
+    histoDir->SetGuidance( "Commands to list and show histograms" );
 }
 
 
@@ -196,5 +201,6 @@ CexmcMessenger::~CexmcMessenger()
     delete calorimeterRightEDDir;
     delete reconstructorDir;
     delete visDir;
+    delete histoDir;
 }
 

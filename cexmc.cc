@@ -43,7 +43,7 @@ namespace
 }
 
 
-void printUsage( void )
+void  printUsage( void )
 {
     G4cout << "Usage: cexmc [init_macro_file] [preinit_macro_file]" << G4endl;
 }
