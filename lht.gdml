@@ -11,7 +11,8 @@
         <constant name="FullCircle" value="360.0"/>
         <!-- we define EPSILON to struggle with Geant4 -->
         <!-- geometry definition glitches. Use with care! -->
-        <constant name="EPSILON" value="0.02"/>
+        <!-- fixed in Geant 4.9.3 ? -->
+        <constant name="EPSILON" value="0.0"/>
         <constant name="LENGTHMAKER" value="2.0"/>
 
         <constant name="NCrystalsHor" value="6"/>

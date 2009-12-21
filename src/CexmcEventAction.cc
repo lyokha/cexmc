@@ -32,6 +32,8 @@
 #include "CexmcEventInfo.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcHistoManager.hh"
+#include "CexmcRunManager.hh"
+#include "CexmcRun.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcProductionModelData.hh"
@@ -364,6 +366,38 @@ void  CexmcEventAction::DrawReconstructionData( void )
 }
 
 
+void  CexmcEventAction::UpdateRunHits(
+                                    const CexmcAngularRangeList &  aRangesReal,
+                                    const CexmcAngularRangeList &  aRangesRec,
+                                    G4bool  tpDigitizerHasTriggered,
+                                    G4bool  edDigitizerHasTriggered,
+                                    G4bool  reconstructorHasTriggered )
+{
+    G4RunManager *    runManager( G4RunManager::GetRunManager() );
+    const CexmcRun *  run( static_cast< const CexmcRun * >(
+                                                runManager->GetCurrentRun() ) );
+    CexmcRun *        theRun( const_cast< CexmcRun * >( run ) );
+
+    for ( CexmcAngularRangeList::const_iterator  k( aRangesReal.begin() );
+                                                k != aRangesReal.end(); ++k )
+    {
+        if ( tpDigitizerHasTriggered )
+            theRun->IncrementNmbOfHitsSampled( k->index );
+        if ( edDigitizerHasTriggered )
+            theRun->IncrementNmbOfHitsTriggeredReal( k->index );
+    }
+
+    if ( reconstructorHasTriggered )
+    {
+        for ( CexmcAngularRangeList::const_iterator  k( aRangesRec.begin() );
+                                                k != aRangesRec.end(); ++k )
+        {
+            theRun->IncrementNmbOfHitsTriggeredRec( k->index );
+        }
+    }
+}
+
+
 void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 {
     G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
@@ -380,6 +414,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
     G4bool  edDigitizerHasTriggered( energyDepositDigitizer->HasTriggered() );
     G4bool  tpDigitizerHasTriggered( trackPointsDigitizer->HasTriggered() );
     G4bool  reconstructorHasTriggered( false );
+    G4bool  reconstructorHasFullTrigger( false );
 
     CexmcEnergyDepositStore *  edStore( MakeEnergyDepositStore(
                                                     energyDepositDigitizer ) );
@@ -405,6 +440,8 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         {
             reconstructor->Reconstruct( edStore );
             reconstructorHasTriggered = reconstructor->HasTriggered();
+            reconstructorHasFullTrigger = reconstructorHasTriggered &&
+                                          reconstructor->HasMassCutTriggered();
         }
 
         CexmcAngularRangeList  triggeredRecAngularRanges;
@@ -421,6 +458,10 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                                                 k->top, k->bottom, k->index ) );
             }
         }
+
+        UpdateRunHits( triggeredAngularRanges, triggeredRecAngularRanges,
+                       tpDigitizerHasTriggered, edDigitizerHasTriggered,
+                       reconstructorHasFullTrigger );
 
         if ( verbose > 0 )
         {

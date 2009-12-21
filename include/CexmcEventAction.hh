@@ -81,6 +81,12 @@ class  CexmcEventAction : public G4UserEventAction
 
         void  DrawReconstructionData( void );
 
+        void  UpdateRunHits( const CexmcAngularRangeList &  aRangesReal,
+                             const CexmcAngularRangeList &  aRangesRec,
+                             G4bool  tpDigitizerHasTriggered,
+                             G4bool  edDigitizerHasTriggered,
+                             G4bool  reconstructorHasTriggered );
+
     private:
         CexmcPhysicsManager *               physicsManager;
 

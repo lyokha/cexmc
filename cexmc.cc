@@ -30,6 +30,7 @@
 #include "CexmcTrackingAction.hh"
 #include "CexmcSteppingAction.hh"
 #include "CexmcEventAction.hh"
+#include "CexmcRunAction.hh"
 #include "CexmcMessenger.hh"
 #include "CexmcException.hh"
 #include "CexmcBasicPhysicsSettings.hh"
@@ -101,6 +102,8 @@ int  main( int  argc, char **  argv )
                         dynamic_cast< CexmcPhysicsManager * >( physicsList ) );
 
         runManager->SetUserAction( new CexmcEventAction( physicsManager ) );
+
+        runManager->SetUserAction( new CexmcRunAction( physicsManager ) );
 
         runManager->SetUserAction( new CexmcTrackingAction );
 
