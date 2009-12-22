@@ -74,31 +74,6 @@ CexmcRunManager::~CexmcRunManager()
 }
 
 
-void  CexmcRunManager::UpdateScoringMy( void )
-{
-    G4ScoringManager * scManager(
-                            G4ScoringManager::GetScoringManagerIfExist() );
-    if ( ! scManager )
-        return;
-
-    G4int  nPar( scManager->GetNumberOfMesh() );
-    if( nPar < 1 )
-        return;
-
-    G4HCofThisEvent *  hce( currentEvent->GetHCofThisEvent() );
-    if ( ! hce )
-        return;
-
-    G4int  nColl( hce->GetCapacity() );
-    for( G4int  i( 0 ); i < nColl; ++i )
-    {
-        G4VHitsCollection *  hc( hce->GetHC( i ) );
-        if ( hc )
-            scManager->Accumulate( hc );
-    }
-}
-
-
 /* mostly adopted from G4RunManager::DoEventLoop() */
 void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
                                     G4int  nSelect )
@@ -146,9 +121,7 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
             break;
         }
         AnalyzeEvent( currentEvent );
-        /* G4RunManager::UpdateScoring() is private, so we have to use
-         * own copy */
-        UpdateScoringMy();
+        UpdateScoring();
         if( iEvent < nSelect )
             G4UImanager::GetUIpointer()->ApplyCommand( msg );
         StackPreviousEvent( currentEvent );

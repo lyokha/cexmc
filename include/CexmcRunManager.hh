@@ -67,9 +67,6 @@ class  CexmcRunManager : public G4RunManager
                            G4int  nSelect );
 
     private:
-        void  UpdateScoringMy( void );
-
-    private:
         CexmcProductionModelType  productionModelType;
 
         G4String                  gdmlFileName;
