@@ -20,6 +20,7 @@
 #define CEXMC_RUN_MANAGER_HH
 
 #include <G4RunManager.hh>
+#include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 class  CexmcRunManagerMessenger;
@@ -36,7 +37,8 @@ enum  CexmcEventCountPolicy
 class  CexmcRunManager : public G4RunManager
 {
     public:
-        CexmcRunManager();
+        explicit CexmcRunManager( const G4String &  projectId = "",
+                                  const G4String &  rProject = "" );
 
         virtual ~CexmcRunManager();
 
@@ -45,12 +47,6 @@ class  CexmcRunManager : public G4RunManager
 
         void  SetGdmlFileName( const G4String &  gdmlFileName_ );
 
-        void  SaveResults( G4bool  saveResults_ );
-
-        void  SetResultsDir( const G4String &  resultsDir_ );
-
-        void  SetRunId( const G4String &  runId_ );
-
         void  SetEventCountPolicy( const G4String &  eventCountPolicy_ );
 
     public:
@@ -58,11 +54,13 @@ class  CexmcRunManager : public G4RunManager
 
         G4String                  GetGdmlFileName( void ) const;
 
-        G4bool                    ResultsAreSaved( void ) const;
+        G4bool                    ProjectIsSaved( void ) const;
 
-        G4String                  GetResultsDir( void ) const;
+        G4bool                    ProjectIsRead( void ) const;
 
-        G4String                  GetRunId( void ) const;
+        G4String                  GetProjectsDir( void ) const;
+
+        G4String                  GetProjectId( void ) const;
 
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
@@ -76,11 +74,13 @@ class  CexmcRunManager : public G4RunManager
 
         G4String                  gdmlFileName;
 
-        G4bool                    saveResults;
+        G4bool                    saveProject;
 
-        G4String                  resultsDir;
+        G4String                  projectsDir;
 
-        G4String                  runId;
+        G4String                  projectId;
+
+        G4String                  rProject;
 
         CexmcEventCountPolicy     eventCountPolicy;
 
@@ -111,25 +111,18 @@ inline void  CexmcRunManager::SetProductionModelType(
 
 inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
 {
+    if ( ProjectIsRead() )
+        return;
+
     gdmlFileName = gdmlFileName_;
-}
 
-
-inline void  CexmcRunManager::SaveResults( G4bool  saveResults_ )
-{
-    saveResults = saveResults_;
-}
-
-
-inline void  CexmcRunManager::SetResultsDir( const G4String &  resultsDir_ )
-{
-    resultsDir = resultsDir_;
-}
-
-
-inline void  CexmcRunManager::SetRunId( const G4String &  runId_ )
-{
-    runId = runId_;
+    if ( ProjectIsSaved() )
+    {
+        G4String  cmd( G4String( "bzip2 -c " ) + gdmlFileName + " > " +
+                       projectsDir + "/" + projectId + ".gdml.bz2" );
+        if ( system( cmd ) != 0 )
+            throw CexmcException( CexmcFileCompressException );
+    }
 }
 
 
@@ -170,21 +163,27 @@ inline G4String  CexmcRunManager::GetGdmlFileName( void ) const
 }
 
 
-inline G4bool  CexmcRunManager::ResultsAreSaved( void ) const
+inline G4bool  CexmcRunManager::ProjectIsSaved( void ) const
 {
-    return saveResults;
+    return projectId != "";
 }
 
 
-inline G4String  CexmcRunManager::GetResultsDir( void ) const
+inline G4bool  CexmcRunManager::ProjectIsRead( void ) const
 {
-    return resultsDir;
+    return rProject != "";
 }
 
 
-inline G4String  CexmcRunManager::GetRunId( void ) const
+inline G4String  CexmcRunManager::GetProjectsDir( void ) const
 {
-    return runId;
+    return projectsDir;
+}
+
+
+inline G4String  CexmcRunManager::GetProjectId( void ) const
+{
+    return projectId;
 }
 
 

@@ -37,16 +37,104 @@
 #include "CexmcCommon.hh"
 
 
-namespace
+struct  CexmcCmdLineData
 {
-    G4String  preinitMacroFile( "preinit.mac" );
-    G4String  initMacroFile( "init.mac" );
-}
+    CexmcCmdLineData() : isInteractive( false ), preinitMacro( "preinit.mac" ),
+                         initMacro( "init.mac" ), rProject( "" ), wProject( "" )
+    {}
+
+    G4bool    isInteractive;
+    G4String  preinitMacro;
+    G4String  initMacro;
+    G4String  rProject;
+    G4String  wProject;
+};
 
 
 void  printUsage( void )
 {
-    G4cout << "Usage: cexmc [init_macro_file] [preinit_macro_file]" << G4endl;
+    G4cout << "Usage: cexmc [-i] [-p preinit_macro] [-m init_macro] "
+                           "[-w project] [-r project]" << G4endl;
+    G4cout << "or     cexmc [--help | -h]" << G4endl;
+    G4cout << "           -i - run in interactive mode" << G4endl;
+    G4cout << "           -p - use specified preinit macro file "
+                     "(default is 'preinit.mac')" << G4endl;
+    G4cout << "           -m - use specified init macro file "
+                     "(default is 'init.mac')" << G4endl;
+    G4cout << "           -w - save data in specified project files " << G4endl;
+    G4cout << "           -r - read data from specified project files " <<
+              G4endl;
+    G4cout << "  --help | -h - print this message and exit " << G4endl;
+}
+
+
+G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
+{
+    for ( G4int  i( 1 ); i < argc; ++i )
+    {
+        do
+        {
+            if ( G4String( argv[ i ] ) == "--help" )
+            {
+                return false;
+            }
+            if ( G4String( argv[ i ] ) == "-h" )
+            {
+                return false;
+            }
+            if ( G4String( argv[ i ], 2 ) == "-i" )
+            {
+                cmdLineData.isInteractive = true;
+                break;
+            }
+            if ( G4String( argv[ i ], 2 ) == "-p" )
+            {
+                cmdLineData.preinitMacro = argv[ i ] + 2;
+                if ( cmdLineData.preinitMacro == "" )
+                {
+                    if ( ++i >= argc )
+                        throw CexmcException( CexmcCmdLineParseException );
+                    cmdLineData.preinitMacro = argv[ i ];
+                }
+                break;
+            }
+            if ( G4String( argv[ i ], 2 ) == "-m" )
+            {
+                cmdLineData.initMacro = argv[ i ] + 2;
+                if ( cmdLineData.initMacro == "" )
+                {
+                    if ( ++i >= argc )
+                        throw CexmcException( CexmcCmdLineParseException );
+                    cmdLineData.initMacro = argv[ i ];
+                }
+                break;
+            }
+            if ( G4String( argv[ i ], 2 ) == "-w" )
+            {
+                cmdLineData.wProject = argv[ i ] + 2;
+                if ( cmdLineData.wProject == "" )
+                {
+                    if ( ++i >= argc )
+                        throw CexmcException( CexmcCmdLineParseException );
+                    cmdLineData.wProject = argv[ i ];
+                }
+                break;
+            }
+            if ( G4String( argv[ i ], 2 ) == "-r" )
+            {
+                cmdLineData.rProject = argv[ i ] + 2;
+                if ( cmdLineData.rProject == "" )
+                {
+                    if ( ++i >= argc )
+                        throw CexmcException( CexmcCmdLineParseException );
+                    cmdLineData.rProject = argv[ i ];
+                }
+                break;
+            }
+        } while ( false );
+    }
+
+    return true;
 }
 
 
@@ -54,15 +142,33 @@ int  main( int  argc, char **  argv )
 {
     G4UIsession *  session( NULL );
 
-    if ( argc == 1 )
+    CexmcCmdLineData  cmdLineData;
+
+    try
+    {
+        if ( ! parseArgs( argc, argv, cmdLineData ) )
+        {
+            printUsage();
+            return 0;
+        }
+        if ( cmdLineData.rProject != "" &&
+             cmdLineData.rProject == cmdLineData.wProject )
+            throw CexmcException( CexmcCmdLineParseException );
+    }
+    catch ( CexmcException &  e )
+    {
+        G4cout << e.what() << G4endl;
+        return 1;
+    }
+    catch ( ... )
+    {
+        G4cout << "Unknown exception caught when parsing args" << G4endl;
+        return 1;
+    }
+
+    if ( cmdLineData.isInteractive )
     {
         session = new G4UIterminal( new G4UItcsh );
-    }
-    else
-    {
-        initMacroFile = argv[ 1 ];
-        if ( argc > 2 )
-            preinitMacroFile = argv[ 2 ];
     }
 
     CexmcRunManager *  runManager( NULL );
@@ -73,11 +179,13 @@ int  main( int  argc, char **  argv )
 
     try
     {
-        runManager = new CexmcRunManager;
+        runManager = new CexmcRunManager( cmdLineData.wProject,
+                                          cmdLineData.rProject );
 
         G4UImanager *  uiManager( G4UImanager::GetUIpointer() );
 
-        uiManager->ApplyCommand( "/control/execute " + preinitMacroFile );
+        uiManager->ApplyCommand( "/control/execute " +
+                                 cmdLineData.preinitMacro );
 
         CexmcSetup *   setup( new CexmcSetup( runManager->GetGdmlFileName() ) );
 
@@ -114,7 +222,7 @@ int  main( int  argc, char **  argv )
         visManager = new G4VisExecutive;
         visManager->Initialize();
 
-        uiManager->ApplyCommand( "/control/execute " + initMacroFile );
+        uiManager->ApplyCommand( "/control/execute " + cmdLineData.initMacro );
 
         CexmcProductionModel *  productionModel(
                                         physicsManager->GetProductionModel() );
@@ -128,9 +236,6 @@ int  main( int  argc, char **  argv )
         {
             session->SessionStart();
         }
-
-        CexmcHistoManager::Destroy();
-        CexmcMessenger::Destroy();
     }
     catch ( CexmcException &  e )
     {
@@ -140,6 +245,9 @@ int  main( int  argc, char **  argv )
     {
         G4cout << "Unknown exception caught" << G4endl;
     }
+
+    CexmcHistoManager::Destroy();
+    CexmcMessenger::Destroy();
 
     delete visManager;
     delete runManager;

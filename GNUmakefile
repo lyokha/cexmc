@@ -13,7 +13,7 @@ CPPFLAGS += -I`root-config --incdir`
 EXTRALIBS = `cernlib-g77 geant321 phtools packlib kernlib`
 EXTRALIBS += -L/usr/lib/gcc/x86_64-redhat-linux/3.4.6 -lg2c
 
-EXTRALIBS += `root-config --libs`
+EXTRALIBS += `root-config --libs` -lboost_serialization
 
 .PHONY: all
 all: lib bin

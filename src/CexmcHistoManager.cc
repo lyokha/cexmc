@@ -89,10 +89,10 @@ void  CexmcHistoManager::Initialize( void )
 
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
-    if ( runManager->ResultsAreSaved() )
+    if ( runManager->ProjectIsSaved() )
     {
-        G4String  resultsDir( runManager->GetResultsDir() );
-        G4String  resultsFile( resultsDir + "/" + runManager->GetRunId() +
+        G4String  projectsDir( runManager->GetProjectsDir() );
+        G4String  resultsFile( projectsDir + "/" + runManager->GetProjectId() +
                                ".root" );
         instance->outFile = new TFile( resultsFile, "recreate" );
     }

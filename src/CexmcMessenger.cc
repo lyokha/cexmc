@@ -120,7 +120,7 @@ CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
     eventDir = new G4UIdirectory( eventDirName );
     eventDir->SetGuidance( "Event settings (verbose level etc.)" );
     runDir = new G4UIdirectory( runDirName );
-    runDir->SetGuidance( "Run settings (results directory etc.)" );
+    runDir->SetGuidance( "Run settings (geometry file etc.)" );
     monitorDir = new G4UIdirectory( monitorDirName );
     monitorDir->SetGuidance( "Various settings for the monitor." );
     targetDir = new G4UIdirectory( targetDirName );

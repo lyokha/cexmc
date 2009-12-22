@@ -16,25 +16,60 @@
  * ============================================================================
  */
 
+#include <stdlib.h>
 #include <G4ScoringManager.hh>
 #include <G4UImanager.hh>
 #include <G4Timer.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
 #include "CexmcEventInfo.hh"
+#include "CexmcException.hh"
 
 
-CexmcRunManager::CexmcRunManager() :
+CexmcRunManager::CexmcRunManager( const G4String &  projectId,
+                                  const G4String &  rProject ) :
     productionModelType( CexmcUnknownProductionModel ),
-    gdmlFileName( "default.gdml" ), saveResults( false ), resultsDir( "." ),
-    runId( "trash" ), eventCountPolicy( CexmcCountAllEvents ), messenger( NULL )
+    gdmlFileName( "default.gdml" ), projectsDir( "." ), projectId( projectId ),
+    rProject( rProject ), eventCountPolicy( CexmcCountAllEvents ),
+    messenger( NULL )
 {
+    /* this exception must be caught before creating the object! */
+    if ( rProject != "" && rProject == projectId )
+        throw CexmcException( CexmcWeirdException );
+
+    const char *  projectsDirEnv( getenv( "CEXMC_PROJECTS_DIR" ) );
+
+    if ( projectsDirEnv )
+        projectsDir = projectsDirEnv;
+
+    if ( ProjectIsRead() )
+    {
+        G4String  cmd( G4String( "cp " ) + projectsDir + "/" + rProject +
+                       ".gdml.bz2 " + projectsDir + "/" + projectId +
+                       ".gdml.bz2" );
+        if ( system( cmd ) != 0 )
+            throw CexmcException( CexmcReadProjectIncompleteException );
+        cmd = G4String( "bunzip2 " ) + projectsDir + "/" + projectId +
+                ".gdml.bz2";
+        if ( system( cmd ) != 0 )
+            throw CexmcException( CexmcFileCompressException );
+        gdmlFileName = projectsDir + "/" + projectId + ".gdml";
+    }
+
     messenger = new CexmcRunManagerMessenger( this );
 }
 
 
 CexmcRunManager::~CexmcRunManager()
 {
+    if ( ProjectIsRead() )
+    {
+        G4String  cmd( G4String( "bzip2 " ) + projectsDir + "/" + projectId +
+                       ".gdml" );
+        if ( system( cmd ) != 0 )
+            G4cerr << "Failed to zip geometry data" << G4endl;
+    }
+
     delete messenger;
 }
 

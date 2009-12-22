@@ -24,7 +24,6 @@
 class  CexmcRunManager;
 class  G4UIcommand;
 class  G4UIcmdWithAString;
-class  G4UIcmdWithABool;
 
 
 class  CexmcRunManagerMessenger : public G4UImessenger
@@ -43,12 +42,6 @@ class  CexmcRunManagerMessenger : public G4UImessenger
         G4UIcmdWithAString *  setProductionModel;
 
         G4UIcmdWithAString *  setGdmlFile;
-
-        G4UIcmdWithABool *    saveResults;
-
-        G4UIcmdWithAString *  setResultsDir;
-
-        G4UIcmdWithAString *  setRunId;
 
         G4UIcmdWithAString *  setEventCountPolicy;
 };
