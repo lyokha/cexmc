@@ -24,6 +24,7 @@
 #include "CexmcCommon.hh"
 
 class  CexmcRunManagerMessenger;
+class  CexmcPhysicsManager;
 
 
 enum  CexmcEventCountPolicy
@@ -43,11 +44,17 @@ class  CexmcRunManager : public G4RunManager
         virtual ~CexmcRunManager();
 
     public:
+        void  SetPhysicsManager( CexmcPhysicsManager *  physicsManager_ );
+
         void  SetProductionModelType( const G4String &  productionModelType_ );
 
         void  SetGdmlFileName( const G4String &  gdmlFileName_ );
 
         void  SetEventCountPolicy( const G4String &  eventCountPolicy_ );
+
+        void  ReadProject( void );
+
+        void  SaveProject( void );
 
     public:
         CexmcProductionModelType  GetProductionModelType( void ) const;
@@ -67,28 +74,41 @@ class  CexmcRunManager : public G4RunManager
                            G4int  nSelect );
 
     private:
-        CexmcProductionModelType  productionModelType;
+        CexmcProductionModelType    productionModelType;
 
-        G4String                  gdmlFileName;
+        G4String                    gdmlFileName;
 
-        G4bool                    saveProject;
+        G4bool                      saveProject;
 
-        G4String                  projectsDir;
+        G4String                    projectsDir;
 
-        G4String                  projectId;
+        G4String                    projectId;
 
-        G4String                  rProject;
+        G4String                    rProject;
 
-        CexmcEventCountPolicy     eventCountPolicy;
+        CexmcEventCountPolicy       eventCountPolicy;
+
+    private:
+        CexmcPhysicsManager *       physicsManager;
 
     private:
         CexmcRunManagerMessenger *  messenger;
 };
 
 
+inline void  CexmcRunManager::SetPhysicsManager(
+                                        CexmcPhysicsManager *  physicsManager_ )
+{
+    physicsManager = physicsManager_;
+}
+
+
 inline void  CexmcRunManager::SetProductionModelType(
                                         const G4String &  productionModelType_ )
 {
+    if ( ProjectIsRead() )
+        return;
+
     do
     {
         if ( productionModelType_ == "pi0" )
@@ -112,20 +132,15 @@ inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
         return;
 
     gdmlFileName = gdmlFileName_;
-
-    if ( ProjectIsSaved() )
-    {
-        G4String  cmd( G4String( "bzip2 -c " ) + gdmlFileName + " > " +
-                       projectsDir + "/" + projectId + ".gdml.bz2" );
-        if ( system( cmd ) != 0 )
-            throw CexmcException( CexmcFileCompressException );
-    }
 }
 
 
 inline void  CexmcRunManager::SetEventCountPolicy(
                                         const G4String & eventCountPolicy_ )
 {
+    if ( ProjectIsRead() )
+        return;
+
     do
     {
         if ( eventCountPolicy_ == "all" )

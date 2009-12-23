@@ -26,6 +26,9 @@
 
 struct  CexmcAngularRange
 {
+    CexmcAngularRange()
+    {}
+
     CexmcAngularRange( G4double  top, G4double  bottom, G4int  index ) :
         top( top ), bottom( bottom ), index( index )
     {}
@@ -35,7 +38,20 @@ struct  CexmcAngularRange
     G4double  bottom;
 
     G4int     index;
+
+    template  < typename  Archive >
+    void  serialize( Archive &  archive, const unsigned int  version );
 };
+
+
+template  < typename  Archive >
+inline void  CexmcAngularRange::serialize( Archive &  archive,
+                                           const unsigned int )
+{
+    archive & top;
+    archive & bottom;
+    archive & index;
+}
 
 
 typedef std::vector< CexmcAngularRange >  CexmcAngularRangeList;

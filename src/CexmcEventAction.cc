@@ -319,11 +319,14 @@ void  CexmcEventAction::DrawTrackPoints(
     if ( ! visManager )
         return;
 
-    G4Circle  circle( tpStore->targetTPIncidentParticle.positionWorld );
+    G4Circle  circle( tpStore->monitorTP.positionWorld );
     circle.SetScreenSize( 5.0 );
     circle.SetFillStyle( G4Circle::filled );
     G4VisAttributes  visAttributes( G4Color( 0.0, 1.0, 0.4 ) );
     circle.SetVisAttributes( visAttributes );
+    visManager->Draw( circle );
+
+    circle.SetPosition( tpStore->targetTPIncidentParticle.positionWorld );
     visManager->Draw( circle );
 
     circle.SetPosition( tpStore->targetTPOutputParticle.positionWorld );

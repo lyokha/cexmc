@@ -16,6 +16,7 @@
  * =============================================================================
  */
 
+#include <boost/archive/archive_exception.hpp>
 #include <G4UImanager.hh>
 #include <G4UIsession.hh>
 #include <G4UIterminal.hh>
@@ -209,6 +210,8 @@ int  main( int  argc, char **  argv )
         CexmcPhysicsManager *  physicsManager(
                         dynamic_cast< CexmcPhysicsManager * >( physicsList ) );
 
+        runManager->SetPhysicsManager( physicsManager );
+
         runManager->SetUserAction( new CexmcEventAction( physicsManager ) );
 
         runManager->SetUserAction( new CexmcRunAction( physicsManager ) );
@@ -236,8 +239,13 @@ int  main( int  argc, char **  argv )
         {
             session->SessionStart();
         }
+        runManager->SaveProject();
     }
     catch ( CexmcException &  e )
+    {
+        G4cout << e.what() << G4endl;
+    }
+    catch ( boost::archive::archive_exception &  e )
     {
         G4cout << e.what() << G4endl;
     }

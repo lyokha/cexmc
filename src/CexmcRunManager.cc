@@ -17,11 +17,16 @@
  */
 
 #include <stdlib.h>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 #include <G4ScoringManager.hh>
 #include <G4UImanager.hh>
 #include <G4Timer.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
+#include "CexmcRunSObject.hh"
+#include "CexmcPhysicsManager.hh"
+#include "CexmcProductionModel.hh"
 #include "CexmcEventInfo.hh"
 #include "CexmcException.hh"
 
@@ -42,21 +47,10 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     if ( projectsDirEnv )
         projectsDir = projectsDirEnv;
 
-    if ( ProjectIsRead() )
-    {
-        G4String  cmd( G4String( "cp " ) + projectsDir + "/" + rProject +
-                       ".gdml.bz2 " + projectsDir + "/" + projectId +
-                       ".gdml.bz2" );
-        if ( system( cmd ) != 0 )
-            throw CexmcException( CexmcReadProjectIncompleteException );
-        cmd = G4String( "bunzip2 " ) + projectsDir + "/" + projectId +
-                ".gdml.bz2";
-        if ( system( cmd ) != 0 )
-            throw CexmcException( CexmcFileCompressException );
-        gdmlFileName = projectsDir + "/" + projectId + ".gdml";
-    }
-
     messenger = new CexmcRunManagerMessenger( this );
+
+    if ( ProjectIsRead() )
+        ReadProject();
 }
 
 
@@ -64,13 +58,75 @@ CexmcRunManager::~CexmcRunManager()
 {
     if ( ProjectIsRead() )
     {
-        G4String  cmd( G4String( "bzip2 " ) + projectsDir + "/" + projectId +
+        G4String  cmd( G4String( "bzip2 " ) + projectsDir + "/" + rProject +
                        ".gdml" );
         if ( system( cmd ) != 0 )
             G4cerr << "Failed to zip geometry data" << G4endl;
     }
 
     delete messenger;
+}
+
+
+void  CexmcRunManager::ReadProject( void )
+{
+    if ( ! ProjectIsRead() )
+        return;
+
+    /* read run data */
+    CexmcRunSObject  sObject;
+    std::ifstream    runDataFile( ( projectsDir + "/" + rProject + ".rdb" ).
+                                  c_str() );
+    if ( ! runDataFile )
+        throw CexmcException( CexmcReadProjectIncompleteException );
+
+    {
+        boost::archive::binary_iarchive  archive( runDataFile );
+        archive >> sObject;
+    }
+
+    productionModelType = sObject.productionModelType;
+    G4cout << "READ ARs: " << sObject.angularRanges << G4cout;
+
+    /* read gdml file */
+    G4String  cmd( G4String( "cp " ) + projectsDir + "/" + rProject +
+                   ".gdml.bz2 " + projectsDir + "/" + projectId +
+                   ".gdml.bz2" );
+    if ( ProjectIsSaved() && system( cmd ) != 0 )
+        throw CexmcException( CexmcReadProjectIncompleteException );
+
+    cmd = G4String( "bunzip2 " ) + projectsDir + "/" + rProject + ".gdml.bz2";
+    if ( system( cmd ) != 0 )
+        throw CexmcException( CexmcFileCompressException );
+
+    gdmlFileName = projectsDir + "/" + rProject + ".gdml";
+}
+
+
+void  CexmcRunManager::SaveProject( void )
+{
+    if ( ! ProjectIsSaved() )
+        return;
+
+    /* save run data */
+    if ( ! physicsManager )
+        throw CexmcException( CexmcWeirdException );
+
+    CexmcRunSObject  sObject( productionModelType,
+                    physicsManager->GetProductionModel()->GetAngularRanges() );
+    std::ofstream    runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
+                                  c_str() );
+
+    {
+        boost::archive::binary_oarchive  archive( runDataFile );
+        archive << sObject;
+    }
+
+    /* save gdml file */
+    G4String  cmd( G4String( "bzip2 -c " ) + gdmlFileName + " > " +
+                   projectsDir + "/" + projectId + ".gdml.bz2" );
+    if ( system( cmd ) != 0 )
+        throw CexmcException( CexmcFileCompressException );
 }
 
 

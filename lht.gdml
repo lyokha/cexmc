@@ -4,7 +4,7 @@
     "/usr/local/share/GDML_3_0_0/schema/gdml.xsd">
     <!--"http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">-->
 
-    <!-- geometry of liquid hydrogen target -->
+    <!-- id: 'lht.gdml', geometry of liquid hydrogen target -->
 
     <define> 
         <!-- all length values in cm and angles in deg! -->
