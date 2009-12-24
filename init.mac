@@ -34,8 +34,7 @@
 /cexmc/detector/outerCrystalsVetoAlgorithm none
 /cexmc/detector/outerCrystalsVetoFraction 0.5
 
-/gun/particle pi-
-
+/cexmc/gun/particle pi-
 /cexmc/gun/position 0 0 -36 cm
 /cexmc/gun/direction 0 0 1
 /cexmc/gun/momentumAmp 730 MeV

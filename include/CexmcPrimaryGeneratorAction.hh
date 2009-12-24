@@ -47,6 +47,9 @@ class  CexmcPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
         void  SetFwhmMomentumAmp( G4double  value );
 
+    public:
+        CexmcParticleGun *  GetParticleGun( void );
+
     private:
         CexmcParticleGun *  particleGun;
 

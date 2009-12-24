@@ -41,6 +41,14 @@ enum  CexmcProductionModelType
 };
 
 
+enum  CexmcEventCountPolicy
+{
+    CexmcCountAllEvents,
+    CexmcCountEventsWithInteraction,
+    CexmcCountEventsWithTrigger
+};
+
+
 enum  CexmcTrackType
 {
     CexmcInsipidTrack,

@@ -20,19 +20,12 @@
 #define CEXMC_RUN_MANAGER_HH
 
 #include <G4RunManager.hh>
+#include "CexmcRunSObject.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 class  CexmcRunManagerMessenger;
 class  CexmcPhysicsManager;
-
-
-enum  CexmcEventCountPolicy
-{
-    CexmcCountAllEvents,
-    CexmcCountEventsWithInteraction,
-    CexmcCountEventsWithTrigger
-};
 
 
 class  CexmcRunManager : public G4RunManager
@@ -56,6 +49,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  SaveProject( void );
 
+        void  PrintReadData( void ) const;
+
     public:
         CexmcProductionModelType  GetProductionModelType( void ) const;
 
@@ -74,6 +69,9 @@ class  CexmcRunManager : public G4RunManager
                            G4int  nSelect );
 
     private:
+        void  ReadPreinitProjectData( void );
+
+    private:
         CexmcProductionModelType    productionModelType;
 
         G4String                    gdmlFileName;
@@ -87,6 +85,8 @@ class  CexmcRunManager : public G4RunManager
         G4String                    rProject;
 
         CexmcEventCountPolicy       eventCountPolicy;
+
+        CexmcRunSObject             sObject;
 
     private:
         CexmcPhysicsManager *       physicsManager;

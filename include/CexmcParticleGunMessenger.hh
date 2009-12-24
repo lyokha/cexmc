@@ -22,6 +22,7 @@
 #include <G4UImessenger.hh>
 
 class  G4UIcommand;
+class  G4UIcmdWithAString;
 class  G4UIcmdWithADoubleAndUnit;
 class  G4UIcmdWith3Vector;
 class  G4UIcmdWith3VectorAndUnit;
@@ -40,6 +41,8 @@ class  CexmcParticleGunMessenger : public G4UImessenger
 
     private:
         CexmcParticleGun *           particleGun;
+
+        G4UIcmdWithAString *         setParticle;
 
         G4UIcmdWith3VectorAndUnit *  setOrigPosition;
 

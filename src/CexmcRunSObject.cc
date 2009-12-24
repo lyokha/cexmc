@@ -26,8 +26,19 @@ CexmcRunSObject::CexmcRunSObject()
 
 CexmcRunSObject::CexmcRunSObject(
         CexmcProductionModelType  productionModelType,
-        const CexmcAngularRangeList &  angularRanges ) :
-    productionModelType( productionModelType ), angularRanges( angularRanges )
+        const std::string &  gdmlFileName,
+        const CexmcSimpleDecayTableStore &  etaDecayTable,
+        const CexmcAngularRangeList &  angularRanges,
+        G4bool  fermiMotionIsOn, CexmcEventCountPolicy  eventCountPolicy,
+        const std::string &  incidentParticle,
+        const CexmcSimpleThreeVectorStore &  incidentParticlePos,
+        const CexmcSimpleThreeVectorStore &  incidentParticleDir ) :
+    productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
+    etaDecayTable( etaDecayTable ), angularRanges( angularRanges ),
+    fermiMotionIsOn( fermiMotionIsOn ), eventCountPolicy( eventCountPolicy ),
+    incidentParticle( incidentParticle ),
+    incidentParticlePos( incidentParticlePos ),
+    incidentParticleDir( incidentParticleDir )
 {
 }
 

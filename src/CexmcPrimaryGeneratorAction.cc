@@ -18,13 +18,11 @@
 
 #include <G4Event.hh>
 #include <G4ParticleTable.hh>
-#include <G4ParticleDefinition.hh>
 #include <globals.hh>
 #include <Randomize.hh>
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcPrimaryGeneratorActionMessenger.hh"
-#include <CexmcParticleGun.hh>
-#include "CexmcPrimaryVertexInfo.hh"
+#include "CexmcParticleGun.hh"
 #include "CexmcCommon.hh"
 
 
@@ -73,13 +71,11 @@ void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  event )
     particleGun->SetParticleMomentum( newMomentumAmp );
 
     particleGun->GeneratePrimaryVertex( event );
+}
 
-    G4PrimaryVertex *  primaryVertex( event->GetPrimaryVertex() );
-    if ( primaryVertex )
-    {
-        CexmcPrimaryVertexInfo *  primaryVertexInfo(
-                                    new CexmcPrimaryVertexInfo( particleGun ) );
-        primaryVertex->SetUserInformation( primaryVertexInfo );
-    }
+
+CexmcParticleGun *  CexmcPrimaryGeneratorAction::GetParticleGun( void )
+{
+    return particleGun;
 }
 

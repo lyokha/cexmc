@@ -40,8 +40,8 @@
 
 struct  CexmcCmdLineData
 {
-    CexmcCmdLineData() : isInteractive( false ), preinitMacro( "preinit.mac" ),
-                         initMacro( "init.mac" ), rProject( "" ), wProject( "" )
+    CexmcCmdLineData() : isInteractive( false ), preinitMacro( "" ),
+                         initMacro( "" ), rProject( "" ), wProject( "" )
     {}
 
     G4bool    isInteractive;
@@ -185,8 +185,9 @@ int  main( int  argc, char **  argv )
 
         G4UImanager *  uiManager( G4UImanager::GetUIpointer() );
 
-        uiManager->ApplyCommand( "/control/execute " +
-                                 cmdLineData.preinitMacro );
+        if ( cmdLineData.preinitMacro != "" )
+            uiManager->ApplyCommand( "/control/execute " +
+                                     cmdLineData.preinitMacro );
 
         CexmcSetup *   setup( new CexmcSetup( runManager->GetGdmlFileName() ) );
 
@@ -225,21 +226,33 @@ int  main( int  argc, char **  argv )
         visManager = new G4VisExecutive;
         visManager->Initialize();
 
-        uiManager->ApplyCommand( "/control/execute " + cmdLineData.initMacro );
-
         CexmcProductionModel *  productionModel(
                                         physicsManager->GetProductionModel() );
+
+        if ( runManager->ProjectIsRead() )
+        {
+            runManager->ReadProject();
+            runManager->PrintReadData();
+        }
 
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );
 
         productionModel->PrintInitialData();
 
+        if ( cmdLineData.initMacro != "" )
+            uiManager->ApplyCommand( "/control/execute " +
+                                     cmdLineData.initMacro );
+
         if ( session )
         {
             session->SessionStart();
         }
-        runManager->SaveProject();
+
+        if ( runManager->ProjectIsSaved() )
+        {
+            runManager->SaveProject();
+        }
     }
     catch ( CexmcException &  e )
     {

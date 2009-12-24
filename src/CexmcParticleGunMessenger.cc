@@ -16,19 +16,31 @@
  * ============================================================================
  */
 
+#include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
 #include <G4UIcmdWith3Vector.hh>
 #include <G4UIcmdWith3VectorAndUnit.hh>
+#include <G4ParticleDefinition.hh>
+#include <G4ParticleTable.hh>
 #include "CexmcParticleGun.hh"
 #include "CexmcParticleGunMessenger.hh"
+#include "CexmcException.hh"
 #include "CexmcMessenger.hh"
 
 
 CexmcParticleGunMessenger::CexmcParticleGunMessenger(
                                             CexmcParticleGun *  particleGun ) :
-    particleGun( particleGun ), setOrigPosition( NULL ),
+    particleGun( particleGun ), setParticle( NULL ), setOrigPosition( NULL ),
     setOrigDirection( NULL ), setOrigMomentumAmp( NULL )
 {
+    setParticle = new G4UIcmdWithAString(
+        ( CexmcMessenger::gunDirName + "particle" ).c_str(), this );
+    setParticle->SetGuidance( "Incident particle" );
+    setParticle->SetDefaultValue( "pi-" );
+    setParticle->SetParameterName( "IncidentParticle", false );
+    setParticle->SetCandidates( "pi-" );
+    setParticle->AvailableForStates( G4State_PreInit, G4State_Idle );
+
     setOrigPosition = new G4UIcmdWith3VectorAndUnit( 
         ( CexmcMessenger::gunDirName + "position" ).c_str(), this );
     setOrigPosition->SetGuidance( "Original position of the beam" );
@@ -62,6 +74,7 @@ CexmcParticleGunMessenger::CexmcParticleGunMessenger(
 
 CexmcParticleGunMessenger::~CexmcParticleGunMessenger()
 {
+    delete setParticle;
     delete setOrigPosition;
     delete setOrigDirection;
     delete setOrigMomentumAmp;
@@ -73,6 +86,17 @@ void CexmcParticleGunMessenger::SetNewValue( G4UIcommand *  cmd,
 {
     do
     {
+        if ( cmd == setParticle )
+        {
+            G4ParticleDefinition *  particleDefinition(
+                G4ParticleTable::GetParticleTable()->FindParticle( value ) );
+
+            if ( ! particleDefinition )
+                throw CexmcException( CexmcWeirdException );
+
+            particleGun->SetIncidentParticle( particleDefinition );
+            break;
+        }
         if ( cmd == setOrigPosition )
         {
             particleGun->SetOrigPosition(

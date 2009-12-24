@@ -48,6 +48,8 @@ class  CexmcParticleGun : public G4ParticleGun
 
         void  SetOrigMomentumAmp( G4double  momentumAmp );
 
+        void  SetIncidentParticle( G4ParticleDefinition *  particleDefinition );
+
     private:
         G4ThreeVector  origPos;
 
@@ -103,6 +105,13 @@ inline void  CexmcParticleGun::SetOrigDirection(
 inline void  CexmcParticleGun::SetOrigMomentumAmp( G4double  momentumAmp )
 {
     origMomentumAmp = momentumAmp;
+}
+
+
+inline void  CexmcParticleGun::SetIncidentParticle(
+                                    G4ParticleDefinition *  particleDefinition )
+{
+    SetParticleDefinition( particleDefinition );
 }
 
 

@@ -21,8 +21,11 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
-#include "CexmcCommon.hh"
+#include <boost/serialization/string.hpp>
+#include "CexmcSimpleDecayTableStore.hh"
+#include "CexmcSimpleThreeVectorStore.hh"
 #include "CexmcAngularRange.hh"
+#include "CexmcCommon.hh"
 
 
 class  CexmcRunSObject
@@ -34,16 +37,39 @@ class  CexmcRunSObject
         CexmcRunSObject();
 
         CexmcRunSObject( CexmcProductionModelType  productionModelType,
-                         const CexmcAngularRangeList &  angularRanges );
+                         const std::string &  gdmlFileName,
+                         const CexmcSimpleDecayTableStore &  etaDecayTable,
+                         const CexmcAngularRangeList &  angularRanges,
+                         G4bool  fermiMotionIsOn,
+                         CexmcEventCountPolicy  eventCountPolicy,
+                         const std::string &  incidentParticle,
+                         const CexmcSimpleThreeVectorStore &
+                                                        incidentParticlePos,
+                         const CexmcSimpleThreeVectorStore &
+                                                        incidentParticleDir );
 
     private:
         template  < typename  Archive >
         void  serialize( Archive &  archive, const unsigned int  version );
 
     private:
-        CexmcProductionModelType  productionModelType;
+        CexmcProductionModelType     productionModelType;
 
-        CexmcAngularRangeList     angularRanges;
+        std::string                  gdmlFileName;
+
+        CexmcSimpleDecayTableStore   etaDecayTable;
+
+        CexmcAngularRangeList        angularRanges;
+
+        G4bool                       fermiMotionIsOn;
+
+        CexmcEventCountPolicy        eventCountPolicy;
+
+        std::string                  incidentParticle;
+
+        CexmcSimpleThreeVectorStore  incidentParticlePos;
+
+        CexmcSimpleThreeVectorStore  incidentParticleDir;
 };
 
 
@@ -51,7 +77,14 @@ template  < typename  Archive >
 void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
 {
     archive & productionModelType;
+    archive & gdmlFileName;
+    archive & etaDecayTable;
     archive & angularRanges;
+    archive & fermiMotionIsOn;
+    archive & eventCountPolicy;
+    archive & incidentParticle;
+    archive & incidentParticlePos;
+    archive & incidentParticleDir;
 }
 
 

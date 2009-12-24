@@ -23,7 +23,8 @@
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcBasicPhysicsSettings.hh"
 #include "CexmcRunManager.hh"
-#include "CexmcPrimaryVertexInfo.hh"
+#include "CexmcPrimaryGeneratorAction.hh"
+#include "CexmcParticleGun.hh"
 #include "CexmcCommon.hh"
 
 
@@ -103,18 +104,20 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     productionModelData.outputParticleLAB = G4LorentzVector( opMomentum,
                                                              opEnergy );
 
-    G4EventManager *          eventManager( G4EventManager::GetEventManager() );
-    const G4Event *           event( eventManager->GetConstCurrentEvent() );
-    CexmcPrimaryVertexInfo *  primaryVertexInfo(
-            static_cast< CexmcPrimaryVertexInfo * >(
-                            event->GetPrimaryVertex()->GetUserInformation() ) );
-    if ( ! primaryVertexInfo )
-        throw CexmcException( CexmcWeirdException );
+    CexmcRunManager *              runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    const CexmcPrimaryGeneratorAction *  primaryGeneratorAction(
+                        static_cast< const CexmcPrimaryGeneratorAction * >(
+                                runManager->GetUserPrimaryGeneratorAction() ) );
+    CexmcPrimaryGeneratorAction *  thePrimaryGeneratorAction(
+                        const_cast< CexmcPrimaryGeneratorAction * >(
+                                primaryGeneratorAction ) );
+    CexmcParticleGun *  particleGun(
+                                thePrimaryGeneratorAction->GetParticleGun() );
 
-    G4ThreeVector  incidentParticleMomentum(
-                    primaryVertexInfo->GetParticleGun()->GetOrigDirection() );
+    G4ThreeVector  incidentParticleMomentum( particleGun->GetOrigDirection() );
     G4double       incidentParticleMomentumAmp(
-                    primaryVertexInfo->GetParticleGun()->GetOrigMomentumAmp() );
+                                            particleGun->GetOrigMomentumAmp() );
     incidentParticleMomentum *= incidentParticleMomentumAmp;
 
     G4double       incidentParticlePDGMass(
