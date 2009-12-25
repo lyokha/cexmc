@@ -68,7 +68,22 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
     {
         if ( cmd == setProductionModel )
         {
-            runManager->SetProductionModelType( value );
+            CexmcProductionModelType  productionModelType(
+                                                CexmcUnknownProductionModel );
+            do
+            {
+                if ( value == "pi0" )
+                {
+                    productionModelType = CexmcPionZeroProduction;
+                    break;
+                }
+                if ( value == "eta" )
+                {
+                    productionModelType = CexmcEtaProduction;
+                    break;
+                }
+            } while ( false );
+            runManager->SetProductionModelType( productionModelType );
             break;
         }
         if ( cmd == setGdmlFile )
@@ -78,7 +93,21 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
         }
         if ( cmd == setEventCountPolicy )
         {
-            runManager->SetEventCountPolicy( value );
+            CexmcEventCountPolicy  eventCountPolicy( CexmcCountAllEvents );
+            do
+            {
+                if ( value == "interaction" )
+                {
+                    eventCountPolicy = CexmcCountEventsWithInteraction;
+                    break;
+                }
+                if ( value == "trigger" )
+                {
+                    eventCountPolicy = CexmcCountEventsWithTrigger;
+                    break;
+                }
+            } while ( false );
+            runManager->SetEventCountPolicy( eventCountPolicy );
             break;
         }
     } while ( false );

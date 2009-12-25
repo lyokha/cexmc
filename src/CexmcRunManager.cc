@@ -20,7 +20,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <G4Eta.hh>
-#include <G4ScoringManager.hh>
+#include <G4DigiManager.hh>
 #include <G4DecayTable.hh>
 #include <G4ParticleDefinition.hh>
 #include <G4ParticleTable.hh>
@@ -32,6 +32,7 @@
 #include "CexmcProductionModel.hh"
 #include "CexmcSimpleDecayTableStore.hh"
 #include "CexmcPrimaryGeneratorAction.hh"
+#include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcParticleGun.hh"
 #include "CexmcEventInfo.hh"
 #include "CexmcException.hh"
@@ -144,8 +145,37 @@ void  CexmcRunManager::ReadProject( void )
         throw CexmcException( CexmcWeirdException );
 
     particleGun->SetParticleDefinition( particleDefinition );
-    particleGun->SetOrigPosition( sObject.incidentParticlePos );
-    particleGun->SetOrigDirection( sObject.incidentParticleDir );
+    particleGun->SetOrigPosition( sObject.beamPos );
+    particleGun->SetOrigDirection( sObject.beamDir );
+    particleGun->SetOrigMomentumAmp( sObject.beamMomentumAmp );
+
+    thePrimaryGeneratorAction->SetFwhmPosX( sObject.beamFwhmPosX );
+    thePrimaryGeneratorAction->SetFwhmPosY( sObject.beamFwhmPosY );
+    thePrimaryGeneratorAction->SetFwhmDirX( sObject.beamFwhmDirX );
+    thePrimaryGeneratorAction->SetFwhmDirY( sObject.beamFwhmDirY );
+    thePrimaryGeneratorAction->SetFwhmMomentumAmp(
+                                            sObject.beamFwhmMomentumAmp );
+
+    G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
+    CexmcEnergyDepositDigitizer *  edDigitizer(
+            static_cast< CexmcEnergyDepositDigitizer * >(
+                digiManager->FindDigitizerModule( CexmcEDDigitizerName ) ) );
+    if ( ! edDigitizer )
+        throw CexmcException( CexmcWeirdException );
+
+    edDigitizer->SetMonitorThreshold( sObject.monitorEDThreshold );
+    edDigitizer->SetVetoCounterLeftThreshold(
+                                        sObject.vetoCounterEDLeftThreshold );
+    edDigitizer->SetVetoCounterRightThreshold(
+                                        sObject.vetoCounterEDRightThreshold );
+    edDigitizer->SetCalorimeterLeftThreshold(
+                                        sObject.calorimeterEDLeftThreshold );
+    edDigitizer->SetCalorimeterRightThreshold(
+                                        sObject.calorimeterEDRightThreshold );
+    edDigitizer->SetOuterCrystalsVetoAlgorithm(
+                                        sObject.outerCrystalsVetoAlgorithm );
+    edDigitizer->SetOuterCrystalsVetoFraction(
+                                        sObject.outerCrystalsVetoFraction );
 }
 
 
@@ -168,13 +198,34 @@ void  CexmcRunManager::SaveProject( void )
                                             primaryGeneratorAction ) );
     CexmcParticleGun *  particleGun(
                             thePrimaryGeneratorAction->GetParticleGun() );
+
+    G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
+    CexmcEnergyDepositDigitizer *  edDigitizer(
+            static_cast< CexmcEnergyDepositDigitizer * >(
+                digiManager->FindDigitizerModule( CexmcEDDigitizerName ) ) );
+    if ( ! edDigitizer )
+        throw CexmcException( CexmcWeirdException );
+
     CexmcRunSObject             sObject(
         productionModelType, gdmlFileName, etaDecayTable,
         physicsManager->GetProductionModel()->GetAngularRanges(),
         physicsManager->GetProductionModel()->IsFermiMotionOn(),
         eventCountPolicy,
         particleGun->GetParticleDefinition()->GetParticleName(),
-        particleGun->GetOrigPosition(), particleGun->GetOrigDirection() );
+        particleGun->GetOrigPosition(), particleGun->GetOrigDirection(),
+        particleGun->GetOrigMomentumAmp(),
+        primaryGeneratorAction->GetFwhmPosX(),
+        primaryGeneratorAction->GetFwhmPosY(),
+        primaryGeneratorAction->GetFwhmDirX(),
+        primaryGeneratorAction->GetFwhmDirY(),
+        primaryGeneratorAction->GetFwhmMomentumAmp(),
+        edDigitizer->GetMonitorThreshold(),
+        edDigitizer->GetVetoCounterLeftThreshold(),
+        edDigitizer->GetVetoCounterRightThreshold(),
+        edDigitizer->GetCalorimeterLeftThreshold(),
+        edDigitizer->GetCalorimeterRightThreshold(),
+        edDigitizer->GetOuterCrystalsVetoAlgorithm(),
+        edDigitizer->GetOuterCrystalsVetoFraction() );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -275,22 +326,52 @@ void  CexmcRunManager::PrintReadData( void ) const
 
     G4cout << CEXMC_LINE_START << "Run data read from project '" << rProject <<
               "'" << G4endl;
-    G4cout << "  --- Production model (1 - pi0, 2 - eta): " <<
+    G4cout << "  -- Production model (1 - pi0, 2 - eta): " <<
               sObject.productionModelType << G4endl;
-    G4cout << "  --- Geometry definition file: " << sObject.gdmlFileName <<
+    G4cout << "  -- Geometry definition file: " << sObject.gdmlFileName <<
               G4endl;
-    G4cout << "  --- Angular ranges: " << sObject.angularRanges << G4endl;
-    G4cout << "  --- Eta decay modes: " << G4endl;
+    G4cout << "  -- Angular ranges: " << sObject.angularRanges << G4endl;
+    G4cout << "  -- Eta decay modes: " << G4endl;
     G4Eta::Definition()->GetDecayTable()->DumpInfo();
-    G4cout << "  --- Fermi motion status (0 - disabled, 1 - enabled): " <<
+    G4cout << "  -- Fermi motion status (0 - disabled, 1 - enabled): " <<
               sObject.fermiMotionIsOn << G4endl;
-    G4cout << "  --- Event count policy (0 - all, 1 - interaction, 2 - trigger)"
+    G4cout << "  -- Event count policy (0 - all, 1 - interaction, 2 - trigger)"
               ": " << sObject.eventCountPolicy << G4endl;
-    G4cout << "  --- Incident particle: " << sObject.incidentParticle << G4endl;
-    G4cout << "               position: " <<
-              G4BestUnit( sObject.incidentParticlePos, "Length" ) << G4endl;
-    G4cout << "              direction: " <<
-              G4ThreeVector( sObject.incidentParticleDir ) << G4endl;
+    G4cout << "  -- Incident particle: " << sObject.incidentParticle << G4endl;
+    G4cout << "              position: " <<
+              G4BestUnit( sObject.beamPos, "Length" ) << G4endl;
+    G4cout << "             direction: " << G4ThreeVector( sObject.beamDir ) <<
+              G4endl;
+    G4cout << "              momentum: " <<
+              G4BestUnit( sObject.beamMomentumAmp, "Energy" ) << G4endl;
+    G4cout << "         momentum fwhm: " << sObject.beamFwhmMomentumAmp <<
+              G4endl;
+    G4cout << "          pos fwhm (x): " <<
+              G4BestUnit( sObject.beamFwhmPosX, "Length" ) << G4endl;
+    G4cout << "          pos fwhm (y): " <<
+              G4BestUnit( sObject.beamFwhmPosY, "Length" ) << G4endl;
+    G4cout << "          dir fwhm (x): " << sObject.beamFwhmDirX / deg <<
+              " deg" << G4endl;
+    G4cout << "          dir fwhm (y): " << sObject.beamFwhmDirY / deg <<
+              " deg" << G4endl;
+    G4cout << "  -- Monitor ED threshold: " <<
+              G4BestUnit( sObject.monitorEDThreshold, "Energy" ) << G4endl;
+    G4cout << "  -- Veto counter (l/r) ED threshold: " <<
+              G4BestUnit( sObject.vetoCounterEDLeftThreshold, "Energy" ) <<
+              " / " <<
+              G4BestUnit( sObject.vetoCounterEDRightThreshold, "Energy" ) <<
+              G4endl;
+    G4cout << "  -- Calorimeter (l/r) ED threshold: " <<
+              G4BestUnit( sObject.calorimeterEDLeftThreshold, "Energy" ) <<
+              " / " <<
+              G4BestUnit( sObject.calorimeterEDRightThreshold, "Energy" ) <<
+              G4endl;
+    G4cout << "  -- Outer crystals veto alforithm "
+              "(0 - none, 1 - max, 2 - fraction): " <<
+               sObject.outerCrystalsVetoAlgorithm << G4endl;
+    G4cout << "  -- Outer crystals veto fraction: " <<
+              sObject.outerCrystalsVetoFraction << G4endl;
+
 
     G4cout << G4endl;
 }

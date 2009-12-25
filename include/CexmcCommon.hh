@@ -29,6 +29,8 @@ const G4String  CexmcStudiedProcessFirstName( "studiedPhysics_" );
 const G4String  CexmcStudiedProcessLastName( "studiedChargeExchange" );
 const G4String  CexmcStudiedProcessFullName( CexmcStudiedProcessFirstName +
                                              CexmcStudiedProcessLastName );
+const G4String  CexmcEDDigitizerName( "EDDig" );
+const G4String  CexmcTPDigitizerName( "TPDig" );
 
 const G4double  CexmcFwhmToStddev( 0.42466 );
 
@@ -63,6 +65,30 @@ enum  CexmcSide
 {
     CexmcLeft,
     CexmcRight
+};
+
+
+enum  CexmcOuterCrystalsVetoAlgorithm
+{
+    CexmcNoOuterCrystalsVeto,
+    CexmcMaximumEDInASingleOuterCrystalVeto,
+    CexmcFractionOfEDInOuterCrystalsVeto
+};
+
+
+enum  CexmcCalorimeterEntryPointDefinitionAlgorithm
+{
+    CexmcEntryPointInTheCenter,
+    CexmcEntryPointInTheCenterOfCrystalWithMaxED,
+    CexmcEntryPointByLinearEDWeights,
+    CexmcEntryPointBySqrtEDWeights
+};
+
+
+enum  CexmcCrystalSelectionAlgorithm
+{
+    CexmcSelectAllCrystals,
+    CexmcSelectAdjacentCrystals
 };
 
 

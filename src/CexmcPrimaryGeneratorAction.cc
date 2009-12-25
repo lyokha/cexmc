@@ -27,8 +27,8 @@
 
 
 CexmcPrimaryGeneratorAction::CexmcPrimaryGeneratorAction() :
-    particleGun( NULL ), fwhmPosX( 0 ), fwhmPosY( 0 ), fwhmAngleX( 0 ),
-    fwhmAngleY( 0 ), messenger( NULL )
+    particleGun( NULL ), fwhmPosX( 0 ), fwhmPosY( 0 ), fwhmDirX( 0 ),
+    fwhmDirY( 0 ), messenger( NULL )
 {
     particleGun = new CexmcParticleGun( 1 );
     messenger = new CexmcPrimaryGeneratorActionMessenger( this );
@@ -57,9 +57,9 @@ void  CexmcPrimaryGeneratorAction::GeneratePrimaries( G4Event *  event )
     G4ThreeVector  newPos( randPosX, randPosY, origPos.z() );
 
     G4double       randAngleX( G4RandGauss::shoot( origDir.x(),
-                                            fwhmAngleX * CexmcFwhmToStddev ) );
+                                            fwhmDirX * CexmcFwhmToStddev ) );
     G4double       randAngleY( G4RandGauss::shoot( origDir.y(),
-                                            fwhmAngleY * CexmcFwhmToStddev ) );
+                                            fwhmDirY * CexmcFwhmToStddev ) );
     G4ThreeVector  newAngle( randAngleX, randAngleY, origDir.z() );
 
     G4double       newMomentumAmp( G4RandGauss::shoot( origMomentumAmp,

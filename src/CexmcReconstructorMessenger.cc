@@ -21,6 +21,7 @@
 #include "CexmcReconstructorMessenger.hh"
 #include "CexmcReconstructor.hh"
 #include "CexmcMessenger.hh"
+#include "CexmcCommon.hh"
 
 
 CexmcReconstructorMessenger::CexmcReconstructorMessenger(
@@ -96,12 +97,44 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
     {
         if ( cmd == setCalorimeterEntryPointDefinitionAlgorithm )
         {
-            reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm( value );
+            CexmcCalorimeterEntryPointDefinitionAlgorithm
+                            epDefinitionAlgorithm( CexmcEntryPointInTheCenter );
+            do
+            {
+                if ( value  == "simple" )
+                {
+                    epDefinitionAlgorithm =
+                            CexmcEntryPointInTheCenterOfCrystalWithMaxED;
+                    break;
+                }
+                if ( value  == "linear" )
+                {
+                    epDefinitionAlgorithm = CexmcEntryPointByLinearEDWeights;
+                    break;
+                }
+                if ( value  == "sqrt" )
+                {
+                    epDefinitionAlgorithm = CexmcEntryPointBySqrtEDWeights;
+                    break;
+                }
+            } while ( false );
+            reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm(
+                                                        epDefinitionAlgorithm );
             break;
         }
         if ( cmd == setCrystalSelectionAlgorithm )
         {
-            reconstructor->SetCrystalSelectionAlgorithm( value );
+            CexmcCrystalSelectionAlgorithm
+                                        csAlgorithm( CexmcSelectAllCrystals );
+            do
+            {
+                if ( value  == "adjacent" )
+                {
+                    csAlgorithm = CexmcSelectAdjacentCrystals;
+                    break;
+                }
+            } while ( false );
+            reconstructor->SetCrystalSelectionAlgorithm( csAlgorithm );
             break;
         }
         if ( cmd == setCalorimeterEntryPointDepth )

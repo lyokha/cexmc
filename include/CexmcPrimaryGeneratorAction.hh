@@ -34,18 +34,28 @@ class  CexmcPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         ~CexmcPrimaryGeneratorAction();
 
     public:
-        void  GeneratePrimaries( G4Event *  event );
+        void      GeneratePrimaries( G4Event *  event );
 
     public:
-        void  SetFwhmPosX( G4double  value );
+        void      SetFwhmPosX( G4double  value );
 
-        void  SetFwhmPosY( G4double  value );
+        void      SetFwhmPosY( G4double  value );
 
-        void  SetFwhmAngleX( G4double  value );
+        void      SetFwhmDirX( G4double  value );
 
-        void  SetFwhmAngleY( G4double  value );
+        void      SetFwhmDirY( G4double  value );
 
-        void  SetFwhmMomentumAmp( G4double  value );
+        void      SetFwhmMomentumAmp( G4double  value );
+
+        G4double  GetFwhmPosX( void ) const;
+
+        G4double  GetFwhmPosY( void ) const;
+
+        G4double  GetFwhmDirX( void ) const;
+
+        G4double  GetFwhmDirY( void ) const;
+
+        G4double  GetFwhmMomentumAmp( void ) const;
 
     public:
         CexmcParticleGun *  GetParticleGun( void );
@@ -57,9 +67,9 @@ class  CexmcPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
         G4double            fwhmPosY;
 
-        G4double            fwhmAngleX;
+        G4double            fwhmDirX;
 
-        G4double            fwhmAngleY;
+        G4double            fwhmDirY;
 
         G4double            fwhmMomentumAmp;
 
@@ -80,21 +90,51 @@ inline void  CexmcPrimaryGeneratorAction::SetFwhmPosY( G4double  value )
 }
 
 
-inline void  CexmcPrimaryGeneratorAction::SetFwhmAngleX( G4double  value )
+inline void  CexmcPrimaryGeneratorAction::SetFwhmDirX( G4double  value )
 {
-    fwhmAngleX = value;
+    fwhmDirX = value;
 }
 
 
-inline void  CexmcPrimaryGeneratorAction::SetFwhmAngleY( G4double  value )
+inline void  CexmcPrimaryGeneratorAction::SetFwhmDirY( G4double  value )
 {
-    fwhmAngleY = value;
+    fwhmDirY = value;
 }
 
 
 inline void  CexmcPrimaryGeneratorAction::SetFwhmMomentumAmp( G4double  value )
 {
     fwhmMomentumAmp = value;
+}
+
+
+inline G4double  CexmcPrimaryGeneratorAction::GetFwhmPosX( void ) const
+{
+    return fwhmPosX;
+}
+
+
+inline G4double  CexmcPrimaryGeneratorAction::GetFwhmPosY( void ) const
+{
+    return fwhmPosY;
+}
+
+
+inline G4double  CexmcPrimaryGeneratorAction::GetFwhmDirX( void ) const
+{
+    return fwhmDirX;
+}
+
+
+inline G4double  CexmcPrimaryGeneratorAction::GetFwhmDirY( void ) const
+{
+    return fwhmDirY;
+}
+
+
+inline G4double  CexmcPrimaryGeneratorAction::GetFwhmMomentumAmp( void ) const
+{
+    return fwhmMomentumAmp;
 }
 
 

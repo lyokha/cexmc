@@ -45,9 +45,9 @@ class  CexmcPrimaryGeneratorActionMessenger : public G4UImessenger
 
         G4UIcmdWithADoubleAndUnit *    fwhmPosY;
 
-        G4UIcmdWithADoubleAndUnit *    fwhmAngleX;
+        G4UIcmdWithADoubleAndUnit *    fwhmDirX;
 
-        G4UIcmdWithADoubleAndUnit *    fwhmAngleY;
+        G4UIcmdWithADoubleAndUnit *    fwhmDirY;
 
         G4UIcmdWithADouble *           fwhmMomentumAmp;
 };

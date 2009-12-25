@@ -21,25 +21,10 @@
 
 #include <G4ThreeVector.hh>
 #include <G4AffineTransform.hh>
+#include "CexmcCommon.hh"
 
 class  CexmcReconstructorMessenger;
 class  CexmcEnergyDepositStore;
-
-
-enum  CexmcCalorimeterEntryPointDefinitionAlgorithm
-{
-    CexmcEntryPointInTheCenter,
-    CexmcEntryPointInTheCenterOfCrystalWithMaxED,
-    CexmcEntryPointByLinearEDWeights,
-    CexmcEntryPointBySqrtEDWeights
-};
-
-
-enum  CexmcCrystalSelectionAlgorithm
-{
-    CexmcSelectAllCrystals,
-    CexmcSelectAdjacentCrystals
-};
 
 
 class  CexmcReconstructor
@@ -54,9 +39,10 @@ class  CexmcReconstructor
 
     public:
         void  SetCalorimeterEntryPointDefinitionAlgorithm(
-                                                const G4String &  algorithm );
+                        CexmcCalorimeterEntryPointDefinitionAlgorithm  algo );
 
-        void  SetCrystalSelectionAlgorithm( const G4String &  algorithm );
+        void  SetCrystalSelectionAlgorithm(
+                        CexmcCrystalSelectionAlgorithm  algo );
 
         void  SetCalorimeterEntryPointDepth( G4double  depth );
 
@@ -160,51 +146,16 @@ class  CexmcReconstructor
 
 
 inline void  CexmcReconstructor::SetCalorimeterEntryPointDefinitionAlgorithm(
-                                                const G4String &  algorithm )
+                        CexmcCalorimeterEntryPointDefinitionAlgorithm  algo )
 {
-    do
-    {
-        if ( algorithm  == "center" )
-        {
-            epDefinitionAlgorithm = CexmcEntryPointInTheCenter;
-            break;
-        }
-        if ( algorithm  == "simple" )
-        {
-            epDefinitionAlgorithm =
-                            CexmcEntryPointInTheCenterOfCrystalWithMaxED;
-            break;
-        }
-        if ( algorithm  == "linear" )
-        {
-            epDefinitionAlgorithm = CexmcEntryPointByLinearEDWeights;
-            break;
-        }
-        if ( algorithm  == "sqrt" )
-        {
-            epDefinitionAlgorithm = CexmcEntryPointBySqrtEDWeights;
-            break;
-        }
-    } while ( false );
+    epDefinitionAlgorithm = algo;
 }
 
 
 inline void  CexmcReconstructor::SetCrystalSelectionAlgorithm(
-                                                const G4String &  algorithm )
+                                        CexmcCrystalSelectionAlgorithm  algo )
 {
-    do
-    {
-        if ( algorithm  == "all" )
-        {
-            csAlgorithm = CexmcSelectAllCrystals;
-            break;
-        }
-        if ( algorithm  == "adjacent" )
-        {
-            csAlgorithm = CexmcSelectAdjacentCrystals;
-            break;
-        }
-    } while ( false );
+    csAlgorithm = algo;
 }
 
 

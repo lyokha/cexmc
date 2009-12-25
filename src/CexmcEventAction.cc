@@ -46,13 +46,6 @@
 #include "CexmcCommon.hh"
 
 
-namespace
-{
-    const G4String  energyDepositDigitizerName( "EDDig" );
-    const G4String  trackPointsDigitizerName( "TPDig" );
-}
-
-
 CexmcEventAction::CexmcEventAction( CexmcPhysicsManager *  physicsManager,
                                     G4int  verbose ) :
     physicsManager( physicsManager ), reconstructor( NULL ), verbose( verbose ),
@@ -60,9 +53,9 @@ CexmcEventAction::CexmcEventAction( CexmcPhysicsManager *  physicsManager,
 {
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
     digiManager->AddNewModule( new CexmcEnergyDepositDigitizer(
-                                                energyDepositDigitizerName ) );
+                                                    CexmcEDDigitizerName ) );
     digiManager->AddNewModule( new CexmcTrackPointsDigitizer(
-                                                trackPointsDigitizerName ) );
+                                                    CexmcTPDigitizerName ) );
     reconstructor = new CexmcChargeExchangeReconstructor;
     messenger = new CexmcEventActionMessenger( this );
 }
@@ -406,10 +399,10 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
     G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
     CexmcEnergyDepositDigitizer *  energyDepositDigitizer(
             static_cast< CexmcEnergyDepositDigitizer* >( digiManager->
-                        FindDigitizerModule( energyDepositDigitizerName ) ) );
+                                FindDigitizerModule( CexmcEDDigitizerName ) ) );
     CexmcTrackPointsDigitizer *  trackPointsDigitizer(
             static_cast< CexmcTrackPointsDigitizer* >( digiManager->
-                        FindDigitizerModule( trackPointsDigitizerName ) ) );
+                                FindDigitizerModule( CexmcTPDigitizerName ) ) );
 
     energyDepositDigitizer->Digitize();
     trackPointsDigitizer->Digitize();

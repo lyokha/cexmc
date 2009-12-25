@@ -26,7 +26,7 @@
 CexmcPrimaryGeneratorActionMessenger::CexmcPrimaryGeneratorActionMessenger(
         CexmcPrimaryGeneratorAction *  primaryGeneratorAction ) :
     primaryGeneratorAction( primaryGeneratorAction ),
-    fwhmPosX( NULL ), fwhmPosY( NULL ), fwhmAngleX( NULL ), fwhmAngleY( NULL ),
+    fwhmPosX( NULL ), fwhmPosY( NULL ), fwhmDirX( NULL ), fwhmDirY( NULL ),
     fwhmMomentumAmp( NULL )
 {
     fwhmPosX = new G4UIcmdWithADoubleAndUnit(
@@ -47,23 +47,23 @@ CexmcPrimaryGeneratorActionMessenger::CexmcPrimaryGeneratorActionMessenger(
     fwhmPosY->SetUnitCandidates( "mm cm m" );
     fwhmPosY->AvailableForStates( G4State_PreInit, G4State_Idle );
 
-    fwhmAngleX = new G4UIcmdWithADoubleAndUnit(
-                ( CexmcMessenger::gunDirName + "fwhmAngleX" ).c_str(), this );
-    fwhmAngleX->SetGuidance( "Set angular fwhm of the beam along X axis" );
-    fwhmAngleX->SetParameterName( "FwhmAngleX", false );
-    fwhmAngleX->SetDefaultValue( 0 );
-    fwhmAngleX->SetDefaultUnit( "deg" );
-    fwhmAngleX->SetUnitCandidates( "deg rad" );
-    fwhmAngleX->AvailableForStates( G4State_PreInit, G4State_Idle );
+    fwhmDirX = new G4UIcmdWithADoubleAndUnit(
+                ( CexmcMessenger::gunDirName + "fwhmDirX" ).c_str(), this );
+    fwhmDirX->SetGuidance( "Set directional fwhm of the beam along X axis" );
+    fwhmDirX->SetParameterName( "FwhmDirX", false );
+    fwhmDirX->SetDefaultValue( 0 );
+    fwhmDirX->SetDefaultUnit( "deg" );
+    fwhmDirX->SetUnitCandidates( "deg rad" );
+    fwhmDirX->AvailableForStates( G4State_PreInit, G4State_Idle );
 
-    fwhmAngleY = new G4UIcmdWithADoubleAndUnit(
-                ( CexmcMessenger::gunDirName + "fwhmAngleY" ).c_str(), this );
-    fwhmAngleY->SetGuidance( "Set angular fwhm of the beam along Y axis" );
-    fwhmAngleY->SetParameterName( "FwhmAngleY", false );
-    fwhmAngleY->SetDefaultValue( 0 );
-    fwhmAngleY->SetDefaultUnit( "deg" );
-    fwhmAngleY->SetUnitCandidates( "deg rad" );
-    fwhmAngleY->AvailableForStates( G4State_PreInit, G4State_Idle );
+    fwhmDirY = new G4UIcmdWithADoubleAndUnit(
+                ( CexmcMessenger::gunDirName + "fwhmDirY" ).c_str(), this );
+    fwhmDirY->SetGuidance( "Set directional fwhm of the beam along Y axis" );
+    fwhmDirY->SetParameterName( "FwhmDirY", false );
+    fwhmDirY->SetDefaultValue( 0 );
+    fwhmDirY->SetDefaultUnit( "deg" );
+    fwhmDirY->SetUnitCandidates( "deg rad" );
+    fwhmDirY->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     fwhmMomentumAmp = new G4UIcmdWithADouble(
             ( CexmcMessenger::gunDirName + "fwhmMomentumAmp" ).c_str(), this );
@@ -79,8 +79,8 @@ CexmcPrimaryGeneratorActionMessenger::~CexmcPrimaryGeneratorActionMessenger()
 {
     delete fwhmPosX;
     delete fwhmPosY;
-    delete fwhmAngleX;
-    delete fwhmAngleY;
+    delete fwhmDirX;
+    delete fwhmDirY;
     delete fwhmMomentumAmp;
 }
 
@@ -102,15 +102,15 @@ void  CexmcPrimaryGeneratorActionMessenger::SetNewValue( G4UIcommand *  cmd,
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
             break;
         }
-        if ( cmd == fwhmAngleX )
+        if ( cmd == fwhmDirX )
         {
-            primaryGeneratorAction->SetFwhmAngleX(
+            primaryGeneratorAction->SetFwhmDirX(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
             break;
         }
-        if ( cmd == fwhmAngleY )
+        if ( cmd == fwhmDirY )
         {
-            primaryGeneratorAction->SetFwhmAngleY(
+            primaryGeneratorAction->SetFwhmDirY(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
             break;
         }

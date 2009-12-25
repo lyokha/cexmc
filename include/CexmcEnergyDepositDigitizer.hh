@@ -21,18 +21,11 @@
 
 #include <G4VDigitizerModule.hh>
 #include "CexmcEnergyDepositStore.hh"
+#include "CexmcCommon.hh"
 
 
 class  G4String;
 class  CexmcEnergyDepositDigitizerMessenger;
-
-
-enum  CexmcOuterCrystalsVetoAlgorithm
-{
-    CexmcNoOuterCrystalsVeto,
-    CexmcMaximumEDInASingleOuterCrystalVeto,
-    CexmcFractionOfEDInOuterCrystalsVeto
-};
 
 
 class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
@@ -88,9 +81,25 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
 
         void      SetCalorimetersThreshold( G4double  value );
 
-        void      SetOuterCrystalsVetoAlgorithm( const G4String &  algo );
+        void      SetOuterCrystalsVetoAlgorithm(
+                                    CexmcOuterCrystalsVetoAlgorithm  value );
 
         void      SetOuterCrystalsVetoFraction( G4double  value );
+
+        G4double  GetMonitorThreshold( void ) const;
+
+        G4double  GetVetoCounterLeftThreshold( void ) const;
+
+        G4double  GetVetoCounterRightThreshold( void ) const;
+
+        G4double  GetCalorimeterLeftThreshold( void ) const;
+
+        G4double  GetCalorimeterRightThreshold( void ) const;
+
+        CexmcOuterCrystalsVetoAlgorithm
+                  GetOuterCrystalsVetoAlgorithm( void ) const;
+
+        G4double  GetOuterCrystalsVetoFraction( void ) const;
 
     public:
         G4bool    IsOuterCrystal( G4int  column, G4int  row );
@@ -279,27 +288,9 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimetersThreshold(
 
 
 inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoAlgorithm(
-                                                        const G4String &  algo )
+                                        CexmcOuterCrystalsVetoAlgorithm  value )
 {
-    do
-    {
-        if ( algo == "none" )
-        {
-            outerCrystalsVetoAlgorithm = CexmcNoOuterCrystalsVeto;
-            break;
-        }
-        if ( algo == "max" )
-        {
-            outerCrystalsVetoAlgorithm =
-                                CexmcMaximumEDInASingleOuterCrystalVeto;
-            break;
-        }
-        if ( algo == "fraction" )
-        {
-            outerCrystalsVetoAlgorithm = CexmcFractionOfEDInOuterCrystalsVeto;
-            break;
-        }
-    } while ( false );
+    outerCrystalsVetoAlgorithm = value;
 }
 
 
@@ -315,6 +306,55 @@ inline G4bool  CexmcEnergyDepositDigitizer::IsOuterCrystal( G4int  column,
 {
     return column == 0 || column == nCrystalsInRow - 1 ||
            row == 0 || row == nCrystalsInColumn - 1;
+}
+
+
+inline G4double  CexmcEnergyDepositDigitizer::GetMonitorThreshold( void ) const
+{
+    return monitorEDThreshold;
+}
+
+
+inline G4double  CexmcEnergyDepositDigitizer::GetVetoCounterLeftThreshold(
+                                                                    void ) const
+{
+    return vetoCounterEDLeftThreshold;
+}
+
+
+inline G4double  CexmcEnergyDepositDigitizer::GetVetoCounterRightThreshold(
+                                                                    void ) const
+{
+    return vetoCounterEDRightThreshold;
+}
+
+
+inline G4double  CexmcEnergyDepositDigitizer::GetCalorimeterLeftThreshold(
+                                                                    void ) const
+{
+    return calorimeterEDLeftThreshold;
+}
+
+
+inline G4double  CexmcEnergyDepositDigitizer::GetCalorimeterRightThreshold(
+                                                                    void ) const
+{
+    return calorimeterEDRightThreshold;
+}
+
+
+inline  CexmcOuterCrystalsVetoAlgorithm
+                CexmcEnergyDepositDigitizer::GetOuterCrystalsVetoAlgorithm(
+                                                                    void ) const
+{
+    return outerCrystalsVetoAlgorithm;
+}
+
+
+inline G4double  CexmcEnergyDepositDigitizer::GetOuterCrystalsVetoFraction(
+                                                                    void ) const
+{
+    return outerCrystalsVetoFraction;
 }
 
 

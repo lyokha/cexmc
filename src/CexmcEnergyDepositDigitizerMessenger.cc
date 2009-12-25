@@ -22,6 +22,7 @@
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositDigitizerMessenger.hh"
 #include "CexmcMessenger.hh"
+#include "CexmcCommon.hh"
 
 
 CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
@@ -214,7 +215,25 @@ void  CexmcEnergyDepositDigitizerMessenger::SetNewValue( G4UIcommand *  cmd,
         }
         if ( cmd == setOuterCrystalsVetoAlgorithm )
         {
-            energyDepositDigitizer->SetOuterCrystalsVetoAlgorithm( value );
+            CexmcOuterCrystalsVetoAlgorithm outerCrystalsVetoAlgorithm(
+                                                    CexmcNoOuterCrystalsVeto );
+            do
+            {
+                if ( value == "max" )
+                {
+                    outerCrystalsVetoAlgorithm =
+                                        CexmcMaximumEDInASingleOuterCrystalVeto;
+                    break;
+                }
+                if ( value == "fraction" )
+                {
+                    outerCrystalsVetoAlgorithm =
+                                        CexmcFractionOfEDInOuterCrystalsVeto;
+                    break;
+                }
+            } while ( false );
+            energyDepositDigitizer->SetOuterCrystalsVetoAlgorithm(
+                                                outerCrystalsVetoAlgorithm );
             break;
         }
         if ( cmd == setOuterCrystalsVetoFraction )

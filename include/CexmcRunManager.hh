@@ -39,11 +39,12 @@ class  CexmcRunManager : public G4RunManager
     public:
         void  SetPhysicsManager( CexmcPhysicsManager *  physicsManager_ );
 
-        void  SetProductionModelType( const G4String &  productionModelType_ );
+        void  SetProductionModelType(
+                            CexmcProductionModelType  productionModelType_ );
 
         void  SetGdmlFileName( const G4String &  gdmlFileName_ );
 
-        void  SetEventCountPolicy( const G4String &  eventCountPolicy_ );
+        void  SetEventCountPolicy( CexmcEventCountPolicy  eventCountPolicy_ );
 
         void  ReadProject( void );
 
@@ -104,25 +105,12 @@ inline void  CexmcRunManager::SetPhysicsManager(
 
 
 inline void  CexmcRunManager::SetProductionModelType(
-                                        const G4String &  productionModelType_ )
+                                CexmcProductionModelType  productionModelType_ )
 {
     if ( ProjectIsRead() )
         return;
 
-    do
-    {
-        if ( productionModelType_ == "pi0" )
-        {
-            productionModelType = CexmcPionZeroProduction;
-            break;
-        }
-        if ( productionModelType_ == "eta" )
-        {
-            productionModelType = CexmcEtaProduction;
-            break;
-        }
-        productionModelType = CexmcUnknownProductionModel;
-    } while ( false );
+    productionModelType = productionModelType_;
 }
 
 
@@ -136,29 +124,9 @@ inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
 
 
 inline void  CexmcRunManager::SetEventCountPolicy(
-                                        const G4String & eventCountPolicy_ )
+                                CexmcEventCountPolicy  eventCountPolicy_ )
 {
-    if ( ProjectIsRead() )
-        return;
-
-    do
-    {
-        if ( eventCountPolicy_ == "all" )
-        {
-            eventCountPolicy = CexmcCountAllEvents;
-            break;
-        }
-        if ( eventCountPolicy_ == "interaction" )
-        {
-            eventCountPolicy = CexmcCountEventsWithInteraction;
-            break;
-        }
-        if ( eventCountPolicy_ == "trigger" )
-        {
-            eventCountPolicy = CexmcCountEventsWithTrigger;
-            break;
-        }
-    } while ( false );
+    eventCountPolicy = eventCountPolicy_;
 }
 
 

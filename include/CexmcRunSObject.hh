@@ -43,10 +43,20 @@ class  CexmcRunSObject
                          G4bool  fermiMotionIsOn,
                          CexmcEventCountPolicy  eventCountPolicy,
                          const std::string &  incidentParticle,
-                         const CexmcSimpleThreeVectorStore &
-                                                        incidentParticlePos,
-                         const CexmcSimpleThreeVectorStore &
-                                                        incidentParticleDir );
+                         const CexmcSimpleThreeVectorStore &  beamPos,
+                         const CexmcSimpleThreeVectorStore &  beamDir,
+                         G4double  beamMomentumAmp, G4double  beamFwhmPosX,
+                         G4double  beamFwhmPosY, G4double  beamFwhmDirX,
+                         G4double  beamFwhmDirY,
+                         G4double  beamFwhmMomentumAmp,
+                         G4double  monitorEDThreshold,
+                         G4double  vetoCounterEDLeftThreshold,
+                         G4double  vetoCounterEDRightThreshold,
+                         G4double  calorimeterEDLeftThreshold,
+                         G4double  calorimeterEDRightThreshold,
+                         CexmcOuterCrystalsVetoAlgorithm
+                                                    outerCrystalsVetoAlgorithm,
+                         G4double  outerCrystalsVetoFraction );
 
     private:
         template  < typename  Archive >
@@ -67,9 +77,35 @@ class  CexmcRunSObject
 
         std::string                  incidentParticle;
 
-        CexmcSimpleThreeVectorStore  incidentParticlePos;
+        CexmcSimpleThreeVectorStore  beamPos;
 
-        CexmcSimpleThreeVectorStore  incidentParticleDir;
+        CexmcSimpleThreeVectorStore  beamDir;
+
+        G4double                     beamMomentumAmp;
+
+        G4double                     beamFwhmPosX;
+
+        G4double                     beamFwhmPosY;
+
+        G4double                     beamFwhmDirX;
+
+        G4double                     beamFwhmDirY;
+
+        G4double                     beamFwhmMomentumAmp;
+
+        G4double                     monitorEDThreshold;
+
+        G4double                     vetoCounterEDLeftThreshold;
+
+        G4double                     vetoCounterEDRightThreshold;
+
+        G4double                     calorimeterEDLeftThreshold;
+
+        G4double                     calorimeterEDRightThreshold;
+
+        CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm;
+
+        G4double                     outerCrystalsVetoFraction;
 };
 
 
@@ -83,8 +119,21 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & fermiMotionIsOn;
     archive & eventCountPolicy;
     archive & incidentParticle;
-    archive & incidentParticlePos;
-    archive & incidentParticleDir;
+    archive & beamPos;
+    archive & beamDir;
+    archive & beamMomentumAmp;
+    archive & beamFwhmPosX;
+    archive & beamFwhmPosY;
+    archive & beamFwhmDirX;
+    archive & beamFwhmDirY;
+    archive & beamFwhmMomentumAmp;
+    archive & monitorEDThreshold;
+    archive & vetoCounterEDLeftThreshold;
+    archive & vetoCounterEDRightThreshold;
+    archive & calorimeterEDLeftThreshold;
+    archive & calorimeterEDRightThreshold;
+    archive & outerCrystalsVetoAlgorithm;
+    archive & outerCrystalsVetoFraction;
 }
 
 
