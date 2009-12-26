@@ -226,23 +226,23 @@ int  main( int  argc, char **  argv )
         visManager = new G4VisExecutive;
         visManager->Initialize();
 
-        CexmcProductionModel *  productionModel(
-                                        physicsManager->GetProductionModel() );
-
         if ( runManager->ProjectIsRead() )
         {
             runManager->ReadProject();
             runManager->PrintReadData();
         }
 
+        if ( cmdLineData.initMacro != "" )
+            uiManager->ApplyCommand( "/control/execute " +
+                                     cmdLineData.initMacro );
+
+        CexmcProductionModel *  productionModel(
+                                        physicsManager->GetProductionModel() );
+
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );
 
         productionModel->PrintInitialData();
-
-        if ( cmdLineData.initMacro != "" )
-            uiManager->ApplyCommand( "/control/execute " +
-                                     cmdLineData.initMacro );
 
         if ( session )
         {
