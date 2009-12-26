@@ -46,6 +46,14 @@ class  CexmcReconstructor
 
         void  SetCalorimeterEntryPointDepth( G4double  depth );
 
+        CexmcCalorimeterEntryPointDefinitionAlgorithm
+                    GetCalorimeterEntryPointDefinitionAlgorithm( void ) const;
+
+        CexmcCrystalSelectionAlgorithm
+                    GetCrystalSelectionAlgorithm( void ) const;
+
+        G4double  GetCalorimeterEntryPointDepth( void ) const;
+
     public:
         const G4ThreeVector &  GetCalorimeterEPLeftPosition( void ) const;
 
@@ -163,6 +171,27 @@ inline void  CexmcReconstructor::SetCalorimeterEntryPointDepth(
                                                             G4double  depth )
 {
     epDepth = depth;
+}
+
+
+inline CexmcCalorimeterEntryPointDefinitionAlgorithm
+        CexmcReconstructor::GetCalorimeterEntryPointDefinitionAlgorithm( void )
+                                                                        const
+{
+    return epDefinitionAlgorithm;
+}
+
+
+inline CexmcCrystalSelectionAlgorithm
+                CexmcReconstructor::GetCrystalSelectionAlgorithm( void ) const
+{
+    return csAlgorithm;
+}
+
+
+inline G4double  CexmcReconstructor::GetCalorimeterEntryPointDepth( void ) const
+{
+    return epDepth;
 }
 
 

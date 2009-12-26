@@ -40,8 +40,6 @@ void  CexmcRunAction::PrintResults(
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
                         const CexmcAngularRangeList &  angularRanges )
 {
-    G4cout << " --- Setup acceptances (real, rec):" << G4endl;
-
     std::ostream::fmtflags  savedFlags( G4cout.flags() );
 
     G4cout.precision( 4 );
@@ -95,8 +93,8 @@ void  CexmcRunAction::PrintResults(
 
 void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
 {
-    const CexmcRun *                theRun( static_cast< const CexmcRun * >(
-                                                                        run ) );
+    const CexmcRun *  theRun( static_cast< const CexmcRun * >( run ) );
+
     const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled(
                                         theRun->GetNmbOfHitsSampled() );
     const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal(
@@ -112,6 +110,7 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
     const CexmcAngularRangeList &  angularRanges(
                                         productionModel->GetAngularRanges() );
 
+    G4cout << " --- Setup acceptances (real, rec):" << G4endl;
     PrintResults( nmbOfHitsSampled, nmbOfHitsTriggeredReal,
                   nmbOfHitsTriggeredRec, angularRanges );
 }

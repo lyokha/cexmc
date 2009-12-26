@@ -36,8 +36,8 @@ class  CexmcRunAction : public G4UserRunAction
 
         void     EndOfRunAction( const G4Run *  run );
 
-    private:
-        void     PrintResults(
+    public:
+        static void  PrintResults(
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,

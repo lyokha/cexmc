@@ -21,10 +21,12 @@
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/map.hpp>
 #include <boost/serialization/string.hpp>
 #include "CexmcSimpleDecayTableStore.hh"
 #include "CexmcSimpleThreeVectorStore.hh"
 #include "CexmcAngularRange.hh"
+#include "CexmcRun.hh"
 #include "CexmcCommon.hh"
 
 
@@ -56,7 +58,20 @@ class  CexmcRunSObject
                          G4double  calorimeterEDRightThreshold,
                          CexmcOuterCrystalsVetoAlgorithm
                                                     outerCrystalsVetoAlgorithm,
-                         G4double  outerCrystalsVetoFraction );
+                         G4double  outerCrystalsVetoFraction,
+                         CexmcCalorimeterEntryPointDefinitionAlgorithm
+                                                    epDefinitionAlgorithm,
+                         CexmcCrystalSelectionAlgorithm  csAlgorithm,
+                         G4double  epDepth, G4bool  useTableMass,
+                         G4bool  useMassCut, G4double  mCutOPCenter,
+                         G4double  mCutNOPCenter, G4double  mCutOPWidth,
+                         G4double  mCutNOPWidth, G4double  mCutAngle,
+                         CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
+                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal,
+                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec,
+                         G4int  numberOfEventsProcessed,
+                         G4int  numberOfEventsProcessedEffective,
+                         G4int  numberOfEventsToBeProcessed );
 
     private:
         template  < typename  Archive >
@@ -106,6 +121,38 @@ class  CexmcRunSObject
         CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm;
 
         G4double                     outerCrystalsVetoFraction;
+
+        CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
+
+        CexmcCrystalSelectionAlgorithm  csAlgorithm;
+
+        G4double                     epDepth;
+
+        G4bool                       useTableMass;
+
+        G4bool                       useMassCut;
+
+        G4double                     mCutOPCenter;
+
+        G4double                     mCutNOPCenter;
+
+        G4double                     mCutOPWidth;
+
+        G4double                     mCutNOPWidth;
+
+        G4double                     mCutAngle;
+
+        CexmcNmbOfHitsInRanges       nmbOfHitsSampled;
+
+        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredReal;
+
+        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRec;
+
+        G4int                        numberOfEventsProcessed;
+
+        G4int                        numberOfEventsProcessedEffective;
+
+        G4int                        numberOfEventsToBeProcessed;
 };
 
 
@@ -134,6 +181,22 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & calorimeterEDRightThreshold;
     archive & outerCrystalsVetoAlgorithm;
     archive & outerCrystalsVetoFraction;
+    archive & epDefinitionAlgorithm;
+    archive & csAlgorithm;
+    archive & epDepth;
+    archive & useTableMass;
+    archive & useMassCut;
+    archive & mCutOPCenter;
+    archive & mCutNOPCenter;
+    archive & mCutOPWidth;
+    archive & mCutNOPWidth;
+    archive & mCutAngle;
+    archive & nmbOfHitsSampled;
+    archive & nmbOfHitsTriggeredReal;
+    archive & nmbOfHitsTriggeredRec;
+    archive & numberOfEventsProcessed;
+    archive & numberOfEventsProcessedEffective;
+    archive & numberOfEventsToBeProcessed;
 }
 
 

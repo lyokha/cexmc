@@ -28,11 +28,15 @@
 #include <G4Timer.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
+#include "CexmcRunAction.hh"
+#include "CexmcRun.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcSimpleDecayTableStore.hh"
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcEnergyDepositDigitizer.hh"
+#include "CexmcChargeExchangeReconstructor.hh"
+#include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
 #include "CexmcEventInfo.hh"
 #include "CexmcException.hh"
@@ -43,7 +47,8 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     productionModelType( CexmcUnknownProductionModel ),
     gdmlFileName( "default.gdml" ), projectsDir( "." ), projectId( projectId ),
     rProject( rProject ), eventCountPolicy( CexmcCountAllEvents ),
-    messenger( NULL )
+    numberOfEventsProcessed( 0 ), numberOfEventsProcessedEffective( 0 ),
+    physicsManager( NULL ), messenger( NULL )
 {
     /* this exception must be caught before creating the object! */
     if ( rProject != "" && rProject == projectId )
@@ -132,7 +137,7 @@ void  CexmcRunManager::ReadProject( void )
 
     const CexmcPrimaryGeneratorAction *  primaryGeneratorAction(
                             static_cast< const CexmcPrimaryGeneratorAction * >(
-                                            GetUserPrimaryGeneratorAction() ) );
+                                                userPrimaryGeneratorAction ) );
     CexmcPrimaryGeneratorAction *        thePrimaryGeneratorAction(
                             const_cast< CexmcPrimaryGeneratorAction * >(
                                             primaryGeneratorAction ) );
@@ -176,6 +181,30 @@ void  CexmcRunManager::ReadProject( void )
                                         sObject.outerCrystalsVetoAlgorithm );
     edDigitizer->SetOuterCrystalsVetoFraction(
                                         sObject.outerCrystalsVetoFraction );
+
+    const CexmcEventAction *  eventAction(
+                static_cast< const CexmcEventAction * >( userEventAction ) );
+    if ( ! eventAction )
+        throw CexmcException( CexmcWeirdException );
+
+    CexmcEventAction *        theEventAction( const_cast< CexmcEventAction * >(
+                                                                eventAction ) );
+    CexmcChargeExchangeReconstructor *  reconstructor(
+                                        theEventAction->GetReconstructor() );
+    if ( ! reconstructor )
+        throw CexmcException( CexmcWeirdException );
+
+    reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm(
+                                                sObject.epDefinitionAlgorithm );
+    reconstructor->SetCrystalSelectionAlgorithm( sObject.csAlgorithm );
+    reconstructor->SetCalorimeterEntryPointDepth( sObject.epDepth );
+    reconstructor->UseTableMass( sObject.useTableMass );
+    reconstructor->UseMassCut( sObject.useMassCut );
+    reconstructor->SetMassCutOPCenter( sObject.mCutOPCenter );
+    reconstructor->SetMassCutNOPCenter( sObject.mCutNOPCenter );
+    reconstructor->SetMassCutOPWidth( sObject.mCutOPWidth );
+    reconstructor->SetMassCutNOPWidth( sObject.mCutNOPWidth );
+    reconstructor->SetMassCutEllipseAngle( sObject.mCutAngle );
 }
 
 
@@ -192,7 +221,7 @@ void  CexmcRunManager::SaveProject( void )
                                     G4Eta::Definition()->GetDecayTable() );
     const CexmcPrimaryGeneratorAction *  primaryGeneratorAction(
                             static_cast< const CexmcPrimaryGeneratorAction * >(
-                                            GetUserPrimaryGeneratorAction() ) );
+                                                userPrimaryGeneratorAction ) );
     CexmcPrimaryGeneratorAction *  thePrimaryGeneratorAction(
                             const_cast< CexmcPrimaryGeneratorAction * >(
                                             primaryGeneratorAction ) );
@@ -205,6 +234,24 @@ void  CexmcRunManager::SaveProject( void )
                 digiManager->FindDigitizerModule( CexmcEDDigitizerName ) ) );
     if ( ! edDigitizer )
         throw CexmcException( CexmcWeirdException );
+
+    const CexmcEventAction *  eventAction(
+                static_cast< const CexmcEventAction * >( userEventAction ) );
+    CexmcEventAction *        theEventAction( const_cast< CexmcEventAction * >(
+                                                                eventAction ) );
+    CexmcChargeExchangeReconstructor *  reconstructor(
+                                        theEventAction->GetReconstructor() );
+
+    CexmcNmbOfHitsInRanges  nmbOfHitsSampled;
+    CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal;
+    CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
+    const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
+    if ( run )
+    {
+        nmbOfHitsSampled = run->GetNmbOfHitsSampled();
+        nmbOfHitsTriggeredReal = run->GetNmbOfHitsTriggeredReal();
+        nmbOfHitsTriggeredRec = run->GetNmbOfHitsTriggeredRec();
+    }
 
     CexmcRunSObject             sObject(
         productionModelType, gdmlFileName, etaDecayTable,
@@ -225,7 +272,18 @@ void  CexmcRunManager::SaveProject( void )
         edDigitizer->GetCalorimeterLeftThreshold(),
         edDigitizer->GetCalorimeterRightThreshold(),
         edDigitizer->GetOuterCrystalsVetoAlgorithm(),
-        edDigitizer->GetOuterCrystalsVetoFraction() );
+        edDigitizer->GetOuterCrystalsVetoFraction(),
+        reconstructor->GetCalorimeterEntryPointDefinitionAlgorithm(),
+        reconstructor->GetCrystalSelectionAlgorithm(),
+        reconstructor->GetCalorimeterEntryPointDepth(),
+        reconstructor->IsTableMassUsed(), reconstructor->IsMassCutUsed(),
+        reconstructor->GetMassCutOPCenter(),
+        reconstructor->GetMassCutNOPCenter(),
+        reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
+        reconstructor->GetMassCutEllipseAngle(),
+        nmbOfHitsSampled, nmbOfHitsTriggeredReal, nmbOfHitsTriggeredRec,
+        numberOfEventsProcessed, numberOfEventsProcessedEffective,
+        numberOfEventToBeProcessed );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -263,6 +321,9 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
         nSelect = -1;
     }
 
+    numberOfEventsProcessed = 0;
+    numberOfEventsProcessedEffective = 0;
+
     G4int  iEvent( 0 );
     G4int  iEventEffective( 0 );
 
@@ -298,6 +359,9 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
         if( runAborted )
             break;
     }
+
+    numberOfEventsProcessed = iEvent;
+    numberOfEventsProcessedEffective = iEventEffective;
 
     if( verboseLevel > 0 )
     {
@@ -337,6 +401,10 @@ void  CexmcRunManager::PrintReadData( void ) const
               sObject.fermiMotionIsOn << G4endl;
     G4cout << "  -- Event count policy (0 - all, 1 - interaction, 2 - trigger)"
               ": " << sObject.eventCountPolicy << G4endl;
+    G4cout << "  -- Number of events (processed / effective / ordered): " <<
+              sObject.numberOfEventsProcessed << " / " <<
+              sObject.numberOfEventsProcessedEffective << " / " <<
+              sObject.numberOfEventsToBeProcessed << G4endl;
     G4cout << "  -- Incident particle: " << sObject.incidentParticle << G4endl;
     G4cout << "              position: " <<
               G4BestUnit( sObject.beamPos, "Length" ) << G4endl;
@@ -371,7 +439,35 @@ void  CexmcRunManager::PrintReadData( void ) const
                sObject.outerCrystalsVetoAlgorithm << G4endl;
     G4cout << "  -- Outer crystals veto fraction: " <<
               sObject.outerCrystalsVetoFraction << G4endl;
-
+    G4cout << "  -- Reconstructor settings: " << G4endl;
+    G4cout << "     -- entry point definition algorithm " << G4endl;
+    G4cout << "        (0 - center of calorimeter, 1 - center of crystal with "
+                       "max ED," << G4endl;
+    G4cout << "         2 - linear, 3 - square): " <<
+              sObject.epDefinitionAlgorithm << G4endl;
+    G4cout << "     -- crystal selection algorithm (0 - all, 1 - adjacent): " <<
+              sObject.csAlgorithm << G4endl;
+    G4cout << "     -- entry point depth: " <<
+              G4BestUnit( sObject.epDepth, "Length" ) << G4endl;
+    G4cout << "     -- table mass of output particle used (0 -no, 1 - yes): " <<
+              sObject.useTableMass << G4endl;
+    G4cout << "     -- mass cut is enabled (0 - no, 1 - yes): " <<
+              sObject.useMassCut << G4endl;
+    G4cout << "     -- mass cut output particle center: " <<
+              G4BestUnit( sObject.mCutOPCenter, "Energy" ) << G4endl;
+    G4cout << "     -- mass cut nucleus output particle center: " <<
+              G4BestUnit( sObject.mCutNOPCenter, "Energy" ) << G4endl;
+    G4cout << "     -- mass cut output particle width of the ellipse: " <<
+              G4BestUnit( sObject.mCutOPWidth, "Energy" ) << G4endl;
+    G4cout << "     -- mass cut nucleus output particle width of the ellipse: "
+           << G4BestUnit( sObject.mCutNOPWidth, "Energy" ) << G4endl;
+    G4cout << "     -- mass cut angle of the ellipse: " <<
+              sObject.mCutAngle / deg << " deg" << G4endl;
+    G4cout << "  -- Setup acceptances (real, rec): " << G4endl;
+    CexmcRunAction::PrintResults( sObject.nmbOfHitsSampled,
+                                  sObject.nmbOfHitsTriggeredReal,
+                                  sObject.nmbOfHitsTriggeredRec,
+                                  sObject.angularRanges );
 
     G4cout << G4endl;
 }

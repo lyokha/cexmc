@@ -40,7 +40,16 @@ CexmcRunSObject::CexmcRunSObject(
         G4double  calorimeterEDLeftThreshold,
         G4double  calorimeterEDRightThreshold,
         CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm,
-        G4double  outerCrystalsVetoFraction ) :
+        G4double  outerCrystalsVetoFraction,
+        CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm,
+        CexmcCrystalSelectionAlgorithm  csAlgorithm, G4double  epDepth,
+        G4bool  useTableMass, G4bool  useMassCut, G4double  mCutOPCenter,
+        G4double  mCutNOPCenter, G4double  mCutOPWidth,  G4double  mCutNOPWidth,
+        G4double  mCutAngle, CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
+        CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal,
+        CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec,
+        G4int  numberOfEventsProcessed, G4int  numberOfEventsProcessedEffective,
+        G4int  numberOfEventsToBeProcessed ) :
     productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
     etaDecayTable( etaDecayTable ), angularRanges( angularRanges ),
     fermiMotionIsOn( fermiMotionIsOn ), eventCountPolicy( eventCountPolicy ),
@@ -55,7 +64,17 @@ CexmcRunSObject::CexmcRunSObject(
     calorimeterEDLeftThreshold( calorimeterEDLeftThreshold ),
     calorimeterEDRightThreshold( calorimeterEDRightThreshold ),
     outerCrystalsVetoAlgorithm( outerCrystalsVetoAlgorithm ),
-    outerCrystalsVetoFraction( outerCrystalsVetoFraction )
+    outerCrystalsVetoFraction( outerCrystalsVetoFraction ),
+    epDefinitionAlgorithm( epDefinitionAlgorithm ), csAlgorithm( csAlgorithm ),
+    epDepth( epDepth ), useTableMass( useTableMass ), useMassCut( useMassCut ),
+    mCutOPCenter( mCutOPCenter ), mCutNOPCenter( mCutNOPCenter ),
+    mCutOPWidth( mCutOPWidth ), mCutNOPWidth( mCutNOPWidth ),
+    mCutAngle( mCutAngle ), nmbOfHitsSampled( nmbOfHitsSampled ),
+    nmbOfHitsTriggeredReal( nmbOfHitsTriggeredReal ),
+    nmbOfHitsTriggeredRec( nmbOfHitsTriggeredRec ),
+    numberOfEventsProcessed( numberOfEventsProcessed ),
+    numberOfEventsProcessedEffective( numberOfEventsProcessedEffective ),
+    numberOfEventsToBeProcessed( numberOfEventsToBeProcessed )
 {
 }
 

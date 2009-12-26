@@ -57,7 +57,19 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 
         void      SetMassCutEllipseAngle( G4double  value );
 
+        G4bool    IsTableMassUsed( void ) const;
+
         G4bool    IsMassCutUsed( void ) const;
+
+        G4double  GetMassCutOPCenter( void ) const;
+
+        G4double  GetMassCutNOPCenter( void ) const;
+
+        G4double  GetMassCutOPWidth( void ) const;
+
+        G4double  GetMassCutNOPWidth( void ) const;
+
+        G4double  GetMassCutEllipseAngle( void ) const;
 
         G4bool    HasMassCutTriggered( void ) const;
 
@@ -160,9 +172,50 @@ inline void  CexmcChargeExchangeReconstructor::SetMassCutEllipseAngle(
 }
 
 
+inline G4bool  CexmcChargeExchangeReconstructor::IsTableMassUsed( void ) const
+{
+    return useTableMass;
+}
+
+
 inline G4bool  CexmcChargeExchangeReconstructor::IsMassCutUsed( void ) const
 {
     return useMassCut;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetMassCutOPCenter( void )
+                                                                        const
+{
+    return massCutOPCenter;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetMassCutNOPCenter( void )
+                                                                        const
+{
+    return massCutNOPCenter;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetMassCutOPWidth( void )
+                                                                        const
+{
+    return massCutOPWidth;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetMassCutNOPWidth( void )
+                                                                        const
+{
+    return massCutNOPWidth;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetMassCutEllipseAngle(
+                                                                    void ) const
+{
+    return massCutEllipseAngle;
 }
 
 

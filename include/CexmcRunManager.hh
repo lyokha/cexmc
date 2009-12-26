@@ -90,6 +90,11 @@ class  CexmcRunManager : public G4RunManager
         CexmcRunSObject             sObject;
 
     private:
+        G4int                       numberOfEventsProcessed;
+
+        G4int                       numberOfEventsProcessedEffective;
+
+    private:
         CexmcPhysicsManager *       physicsManager;
 
     private:

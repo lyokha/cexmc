@@ -53,6 +53,8 @@ class  CexmcEventAction : public G4UserEventAction
 
         void      DrawTrajectoryMarkers( G4bool  on );
 
+        CexmcChargeExchangeReconstructor *  GetReconstructor( void );
+
     private:
         CexmcEnergyDepositStore *  MakeEnergyDepositStore(
                         const CexmcEnergyDepositDigitizer *  digitizer ) const;
@@ -119,6 +121,13 @@ inline void  CexmcEventAction::SetVerboseDrawLevel( G4int  verboseDraw_ )
 inline void  CexmcEventAction::DrawTrajectoryMarkers( G4bool  on )
 {
     drawTrajectoryMarkers = on;
+}
+
+
+inline CexmcChargeExchangeReconstructor *
+                                    CexmcEventAction::GetReconstructor( void )
+{
+    return reconstructor;
 }
 
 
