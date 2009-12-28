@@ -24,6 +24,8 @@
 #include <G4ios.hh>
 #include "CexmcAngularRange.hh"
 #include "CexmcProductionModelData.hh"
+#include "CexmcRunManager.hh"
+#include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 class  CexmcProductionModelMessenger;
@@ -37,7 +39,7 @@ class  CexmcProductionModel
         virtual ~CexmcProductionModel();
 
     public:
-        void  ApplyFermiMotion( G4bool  on );
+        void  ApplyFermiMotion( G4bool  on, G4bool  fromMessenger = true );
 
         void  SetAngularRange( G4double  top, G4double  bottom,
                                G4int  nmbOfDivs );
@@ -62,6 +64,8 @@ class  CexmcProductionModel
 
         CexmcAngularRangeList     angularRanges;
 
+        CexmcAngularRangeList     angularRangesRef;
+
         CexmcAngularRangeList     triggeredAngularRanges;
 
         CexmcProductionModelData  productionModelData;
@@ -71,8 +75,17 @@ class  CexmcProductionModel
 };
 
 
-inline void  CexmcProductionModel::ApplyFermiMotion( G4bool  on )
+inline void  CexmcProductionModel::ApplyFermiMotion( G4bool  on,
+                                                     G4bool  fromMessenger )
 {
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
     fermiMotionIsOn = on;
 }
 
@@ -84,12 +97,33 @@ inline void  CexmcProductionModel::SetAngularRange( G4double  top,
          bottom > 1.0 || bottom < -1.0 || nmbOfDivs < 1 )
         return;
 
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                           G4RunManager::GetRunManager() ) );
+    if ( runManager->ProjectIsRead() )
+    {
+        G4bool                 isGoodCandidate( false );
+        CexmcAngularRangeList  normalizedARanges;
+        GetNormalizedAngularRange( angularRangesRef, normalizedARanges );
+        for ( CexmcAngularRangeList::iterator  k( normalizedARanges.begin() );
+                                            k != normalizedARanges.end(); ++k )
+        {
+            if ( top <= k->top && bottom >= k->bottom )
+            {
+                isGoodCandidate = true;
+                break;
+            }
+        }
+        if ( ! isGoodCandidate )
+            throw CexmcException( CexmcBadAngularRange );
+    }
+
     angularRanges.clear();
+    G4double  curBottom( top );
     for ( int  i( 0 ); i < nmbOfDivs; ++i )
     {
         G4double  binWidth( ( top - bottom ) / nmbOfDivs );
-        G4double  curTop( top - binWidth * i );
-        G4double  curBottom( curTop - binWidth );
+        G4double  curTop( curBottom );
+        curBottom -=  binWidth;
         angularRanges.push_back( CexmcAngularRange( curTop, curBottom, i ) );
     }
 }
@@ -98,7 +132,8 @@ inline void  CexmcProductionModel::SetAngularRange( G4double  top,
 inline void  CexmcProductionModel::SetAngularRanges(
                                 const CexmcAngularRangeList &  angularRanges_ )
 {
-    angularRanges = angularRanges_;
+    angularRangesRef = angularRanges_;
+    angularRanges = angularRangesRef;
 }
 
 
@@ -109,12 +144,33 @@ inline void  CexmcProductionModel::AddAngularRange( G4double  top,
          bottom > 1.0 || bottom < -1.0 || nmbOfDivs < 1 )
         return;
 
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                           G4RunManager::GetRunManager() ) );
+    if ( runManager->ProjectIsRead() )
+    {
+        G4bool                 isGoodCandidate( false );
+        CexmcAngularRangeList  normalizedARanges;
+        GetNormalizedAngularRange( angularRangesRef, normalizedARanges );
+        for ( CexmcAngularRangeList::iterator  k( normalizedARanges.begin() );
+                                            k != normalizedARanges.end(); ++k )
+        {
+            if ( top <= k->top && bottom >= k->bottom )
+            {
+                isGoodCandidate = true;
+                break;
+            }
+        }
+        if ( ! isGoodCandidate )
+            throw CexmcException( CexmcBadAngularRange );
+    }
+
     G4int  curIndex( angularRanges.size() );
+    G4double  curBottom( top );
     for ( int  i( 0 ); i < nmbOfDivs; ++i )
     {
         G4double  binWidth( ( top - bottom ) / nmbOfDivs );
-        G4double  curTop( top - binWidth * i );
-        G4double  curBottom( curTop - binWidth );
+        G4double  curTop( curBottom );
+        curBottom -= binWidth;
         angularRanges.push_back( CexmcAngularRange( curTop, curBottom,
                                                     curIndex + i ) );
     }

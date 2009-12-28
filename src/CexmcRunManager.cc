@@ -17,6 +17,7 @@
  */
 
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <G4Eta.hh>
@@ -39,11 +40,11 @@
 #include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
 #include "CexmcEventInfo.hh"
-#include "CexmcException.hh"
 
 
 CexmcRunManager::CexmcRunManager( const G4String &  projectId,
-                                  const G4String &  rProject ) :
+                                  const G4String &  rProject,
+                                  G4bool  overrideExistingProject ) :
     productionModelType( CexmcUnknownProductionModel ),
     gdmlFileName( "default.gdml" ), projectsDir( "." ), projectId( projectId ),
     rProject( rProject ), eventCountPolicy( CexmcCountAllEvents ),
@@ -58,6 +59,11 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
 
     if ( projectsDirEnv )
         projectsDir = projectsDirEnv;
+
+    struct stat  tmp;
+    if ( stat( ( projectsDir + "/" + projectId + ".rdb" ).c_str(), &tmp ) == 0
+         && ! overrideExistingProject )
+        throw CexmcException( CexmcProjectExists );
 
     messenger = new CexmcRunManagerMessenger( this );
 
@@ -132,7 +138,7 @@ void  CexmcRunManager::ReadProject( void )
     }
 
     physicsManager->GetProductionModel()->ApplyFermiMotion(
-                                                    sObject.fermiMotionIsOn );
+                                            sObject.fermiMotionIsOn, false );
     eventCountPolicy = sObject.eventCountPolicy;
 
     const CexmcPrimaryGeneratorAction *  primaryGeneratorAction(
@@ -150,16 +156,16 @@ void  CexmcRunManager::ReadProject( void )
         throw CexmcException( CexmcWeirdException );
 
     particleGun->SetParticleDefinition( particleDefinition );
-    particleGun->SetOrigPosition( sObject.beamPos );
-    particleGun->SetOrigDirection( sObject.beamDir );
-    particleGun->SetOrigMomentumAmp( sObject.beamMomentumAmp );
+    particleGun->SetOrigPosition( sObject.beamPos, false );
+    particleGun->SetOrigDirection( sObject.beamDir, false );
+    particleGun->SetOrigMomentumAmp( sObject.beamMomentumAmp, false );
 
-    thePrimaryGeneratorAction->SetFwhmPosX( sObject.beamFwhmPosX );
-    thePrimaryGeneratorAction->SetFwhmPosY( sObject.beamFwhmPosY );
-    thePrimaryGeneratorAction->SetFwhmDirX( sObject.beamFwhmDirX );
-    thePrimaryGeneratorAction->SetFwhmDirY( sObject.beamFwhmDirY );
+    thePrimaryGeneratorAction->SetFwhmPosX( sObject.beamFwhmPosX, false );
+    thePrimaryGeneratorAction->SetFwhmPosY( sObject.beamFwhmPosY, false );
+    thePrimaryGeneratorAction->SetFwhmDirX( sObject.beamFwhmDirX, false );
+    thePrimaryGeneratorAction->SetFwhmDirY( sObject.beamFwhmDirY, false );
     thePrimaryGeneratorAction->SetFwhmMomentumAmp(
-                                            sObject.beamFwhmMomentumAmp );
+                                        sObject.beamFwhmMomentumAmp, false );
 
     G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
     CexmcEnergyDepositDigitizer *  edDigitizer(
@@ -168,19 +174,19 @@ void  CexmcRunManager::ReadProject( void )
     if ( ! edDigitizer )
         throw CexmcException( CexmcWeirdException );
 
-    edDigitizer->SetMonitorThreshold( sObject.monitorEDThreshold );
+    edDigitizer->SetMonitorThreshold( sObject.monitorEDThreshold, false );
     edDigitizer->SetVetoCounterLeftThreshold(
-                                        sObject.vetoCounterEDLeftThreshold );
+                                sObject.vetoCounterEDLeftThreshold, false );
     edDigitizer->SetVetoCounterRightThreshold(
-                                        sObject.vetoCounterEDRightThreshold );
+                                sObject.vetoCounterEDRightThreshold, false );
     edDigitizer->SetCalorimeterLeftThreshold(
-                                        sObject.calorimeterEDLeftThreshold );
+                                sObject.calorimeterEDLeftThreshold, false );
     edDigitizer->SetCalorimeterRightThreshold(
-                                        sObject.calorimeterEDRightThreshold );
+                                sObject.calorimeterEDRightThreshold, false );
     edDigitizer->SetOuterCrystalsVetoAlgorithm(
-                                        sObject.outerCrystalsVetoAlgorithm );
+                                sObject.outerCrystalsVetoAlgorithm, false );
     edDigitizer->SetOuterCrystalsVetoFraction(
-                                        sObject.outerCrystalsVetoFraction );
+                                sObject.outerCrystalsVetoFraction, false );
 
     const CexmcEventAction *  eventAction(
                 static_cast< const CexmcEventAction * >( userEventAction ) );
@@ -470,5 +476,24 @@ void  CexmcRunManager::PrintReadData( void ) const
                                   sObject.angularRanges );
 
     G4cout << G4endl;
+}
+
+
+void  CexmcRunManager::PrintReadData(
+                            const CexmcOutputDataTypeSet &  outputData ) const
+{
+    CexmcOutputDataTypeSet::const_iterator  found(
+                                    outputData.find( CexmcOutputGeometry ) );
+    if ( found != outputData.end() )
+    {
+        G4String  cmd( G4String( "cat " ) + projectsDir + "/" + rProject +
+                       ".gdml" );
+        if ( system( cmd ) != 0 )
+            G4cerr << "Failed to cat geometry data" << G4endl;
+    }
+
+    found = outputData.find( CexmcOutputRun );
+    if ( found != outputData.end() )
+        PrintReadData();
 }
 

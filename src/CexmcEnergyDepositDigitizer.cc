@@ -16,6 +16,7 @@
  * ============================================================================
  */
 
+#include <iostream>
 #include <G4DigiManager.hh>
 #include <G4String.hh>
 #include "CexmcEnergyDepositDigitizer.hh"
@@ -247,5 +248,30 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             break;
         }
     }
+}
+
+
+std::ostream &  operator<<( std::ostream &  out,
+                const CexmcEnergyDepositCalorimeterCollection &  edCollection )
+{
+    std::ostream::fmtflags  savedFlags( out.flags() );
+
+    out << std::endl;
+    for ( CexmcEnergyDepositCalorimeterCollection::const_reverse_iterator
+            k( edCollection.rbegin() ); k != edCollection.rend(); ++k )
+    {
+        for ( CexmcEnergyDepositCrystalRowCollection::const_reverse_iterator
+                l( k->rbegin() ); l != k->rend(); ++l )
+        {
+            out.precision( 4 );
+            out.width( 10 );
+            out << *l;
+        }
+        out << std::endl;
+    }
+
+    out.flags( savedFlags );
+
+    return out;
 }
 

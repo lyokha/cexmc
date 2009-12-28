@@ -29,6 +29,12 @@ enum  CexmcExceptionType
     CexmcPreinitException,
     CexmcFileCompressException,
     CexmcReadProjectIncompleteException,
+    CexmcProjectExists,
+    CexmcCmdIsNotAllowed,
+    CexmcBadAngularRange,
+    CexmcBadThreshold,
+    CexmcBadOCVetoAlgorithm,
+    CexmcBadOCVetoFraction,
     CexmcWeirdException
 };
 

@@ -20,7 +20,7 @@
 #define CEXMC_ANGULAR_RANGE_HH
 
 #include <vector>
-#include <iostream>
+#include <iosfwd>
 #include <G4Types.hh>
 
 
@@ -44,6 +44,9 @@ struct  CexmcAngularRange
 };
 
 
+typedef std::vector< CexmcAngularRange >  CexmcAngularRangeList;
+
+
 template  < typename  Archive >
 inline void  CexmcAngularRange::serialize( Archive &  archive,
                                            const unsigned int )
@@ -54,28 +57,24 @@ inline void  CexmcAngularRange::serialize( Archive &  archive,
 }
 
 
-typedef std::vector< CexmcAngularRange >  CexmcAngularRangeList;
-
-
-inline std::ostream &  operator<<( std::ostream &  out,
-                                const CexmcAngularRangeList &  angularRanges )
+inline bool  operator<( const CexmcAngularRange &  left,
+                        const CexmcAngularRange &  right )
 {
-    std::ostream::fmtflags  savedFlags( out.flags() );
+    if ( left.top != right.top )
+        return left.top > right.top;
+    if ( left.bottom != right.bottom )
+        return left.bottom < right.bottom;
 
-    out.precision( 4 );
-    out << std::endl << std::fixed;
-    for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
-                                                k != angularRanges.end(); ++k )
-    {
-        out << "                 " << k->index  + 1 << " [" << k->top << ", " <<
-               k->bottom << ")";
-        out << std::endl;
-    }
-
-    out.flags( savedFlags );
-
-    return out;
+    return false;
 }
+
+
+void  GetNormalizedAngularRange( const CexmcAngularRangeList &  src,
+                                 CexmcAngularRangeList &  dst );
+
+
+std::ostream &  operator<<( std::ostream &  out,
+                            const CexmcAngularRangeList &  angularRanges );
 
 
 #endif

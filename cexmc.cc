@@ -16,6 +16,8 @@
  * =============================================================================
  */
 
+#include <set>
+#include <boost/algorithm/string.hpp>
 #include <boost/archive/archive_exception.hpp>
 #include <G4UImanager.hh>
 #include <G4UIsession.hh>
@@ -41,7 +43,8 @@
 struct  CexmcCmdLineData
 {
     CexmcCmdLineData() : isInteractive( false ), preinitMacro( "" ),
-                         initMacro( "" ), rProject( "" ), wProject( "" )
+                         initMacro( "" ), rProject( "" ), wProject( "" ),
+                         overrideExistingProject( false )
     {}
 
     G4bool    isInteractive;
@@ -49,22 +52,25 @@ struct  CexmcCmdLineData
     G4String  initMacro;
     G4String  rProject;
     G4String  wProject;
+    G4bool    overrideExistingProject;
+    std::set< CexmcOutputDataType >  outputData;
 };
 
 
 void  printUsage( void )
 {
     G4cout << "Usage: cexmc [-i] [-p preinit_macro] [-m init_macro] "
-                           "[-w project] [-r project]" << G4endl;
+                           "[[-y] -w project] [-r project [-o list]]" << G4endl;
     G4cout << "or     cexmc [--help | -h]" << G4endl;
     G4cout << "           -i - run in interactive mode" << G4endl;
-    G4cout << "           -p - use specified preinit macro file "
-                     "(default is 'preinit.mac')" << G4endl;
-    G4cout << "           -m - use specified init macro file "
-                     "(default is 'init.mac')" << G4endl;
-    G4cout << "           -w - save data in specified project files " << G4endl;
-    G4cout << "           -r - read data from specified project files " <<
+    G4cout << "           -p - use specified preinit macro file " << G4endl;
+    G4cout << "           -m - use specified init macro file " << G4endl;
+    G4cout << "           -w - save data in specified project files" << G4endl;
+    G4cout << "           -r - read data from specified project files" <<
               G4endl;
+    G4cout << "           -o - comma-separated list of data to output, "
+                              "possible values: run, geom, events" << G4endl;
+    G4cout << "           -y - force project override" << G4endl;
     G4cout << "  --help | -h - print this message and exit " << G4endl;
 }
 
@@ -132,6 +138,51 @@ G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
                 }
                 break;
             }
+            if ( G4String( argv[ i ], 2 ) == "-y" )
+            {
+                cmdLineData.overrideExistingProject = true;
+                break;
+            }
+            if ( G4String( argv[ i ], 2 ) == "-o" )
+            {
+                std::string  outputData( argv[ i ] + 2 );
+                if ( outputData == "" )
+                {
+                    if ( ++i >= argc )
+                        throw CexmcException( CexmcCmdLineParseException );
+                    outputData = argv[ i ];
+                }
+                std::set< std::string >  tokens;
+                boost::split( tokens, outputData, boost::is_any_of( "," ) );
+                for ( std::set< std::string >::iterator  k( tokens.begin() );
+                                                        k != tokens.end(); ++k )
+                {
+                    do
+                    {
+                        if ( *k == "run" )
+                        {
+                            cmdLineData.outputData.insert( CexmcOutputRun );
+                            break;
+                        }
+                        if ( *k == "geom" )
+                        {
+                            cmdLineData.outputData.insert(
+                                                          CexmcOutputGeometry );
+                            break;
+                        }
+                        if ( *k == "events" )
+                        {
+                            cmdLineData.outputData.insert( CexmcOutputEvents );
+                            break;
+                        }
+                        throw CexmcException( CexmcCmdLineParseException );
+                    } while ( false );
+                }
+                break;
+            }
+
+            throw CexmcException( CexmcCmdLineParseException );
+
         } while ( false );
     }
 
@@ -144,6 +195,7 @@ int  main( int  argc, char **  argv )
     G4UIsession *  session( NULL );
 
     CexmcCmdLineData  cmdLineData;
+    G4bool            outputDataOnly( false );
 
     try
     {
@@ -155,6 +207,11 @@ int  main( int  argc, char **  argv )
         if ( cmdLineData.rProject != "" &&
              cmdLineData.rProject == cmdLineData.wProject )
             throw CexmcException( CexmcCmdLineParseException );
+        if ( cmdLineData.rProject == "" && ! cmdLineData.outputData.empty() )
+            throw CexmcException( CexmcCmdLineParseException );
+        if ( cmdLineData.wProject != "" && ! cmdLineData.outputData.empty() )
+            throw CexmcException( CexmcCmdLineParseException );
+        outputDataOnly = ! cmdLineData.outputData.empty();
     }
     catch ( CexmcException &  e )
     {
@@ -167,7 +224,7 @@ int  main( int  argc, char **  argv )
         return 1;
     }
 
-    if ( cmdLineData.isInteractive )
+    if ( ! outputDataOnly && cmdLineData.isInteractive )
     {
         session = new G4UIterminal( new G4UItcsh );
     }
@@ -181,7 +238,15 @@ int  main( int  argc, char **  argv )
     try
     {
         runManager = new CexmcRunManager( cmdLineData.wProject,
-                                          cmdLineData.rProject );
+                                          cmdLineData.rProject,
+                                          cmdLineData.overrideExistingProject );
+
+        if ( outputDataOnly )
+        {
+            runManager->PrintReadData( cmdLineData.outputData );
+            delete runManager;
+            return 0;
+        }
 
         G4UImanager *  uiManager( G4UImanager::GetUIpointer() );
 

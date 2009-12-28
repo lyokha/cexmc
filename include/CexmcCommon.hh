@@ -92,5 +92,13 @@ enum  CexmcCrystalSelectionAlgorithm
 };
 
 
+enum  CexmcOutputDataType
+{
+    CexmcOutputRun,
+    CexmcOutputGeometry,
+    CexmcOutputEvents
+};
+
+
 #endif
 

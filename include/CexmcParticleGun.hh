@@ -21,6 +21,8 @@
 
 #include <G4ParticleGun.hh>
 #include <G4ThreeVector.hh>
+#include "CexmcRunManager.hh"
+#include "CexmcException.hh"
 
 class  CexmcParticleGunMessenger;
 
@@ -42,13 +44,17 @@ class  CexmcParticleGun : public G4ParticleGun
 
         G4double               GetOrigMomentumAmp( void ) const;
 
-        void  SetOrigPosition( const G4ThreeVector &  position );
+        void  SetOrigPosition( const G4ThreeVector &  position,
+                               G4bool  fromMessenger = true );
 
-        void  SetOrigDirection( const G4ThreeVector &  direction );
+        void  SetOrigDirection( const G4ThreeVector &  direction,
+                                G4bool  fromMessenger = true );
 
-        void  SetOrigMomentumAmp( G4double  momentumAmp );
+        void  SetOrigMomentumAmp( G4double  momentumAmp,
+                                  G4bool  fromMessenger = true );
 
-        void  SetIncidentParticle( G4ParticleDefinition *  particleDefinition );
+        void  SetIncidentParticle( G4ParticleDefinition *  particleDefinition,
+                                   G4bool  fromMessenger = true );
 
     private:
         G4ThreeVector  origPos;
@@ -89,28 +95,61 @@ inline G4double  CexmcParticleGun::GetOrigMomentumAmp( void ) const
 
 
 inline void  CexmcParticleGun::SetOrigPosition(
-                                            const G4ThreeVector &  position )
+                    const G4ThreeVector &  position, G4bool  fromMessenger )
 {
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
     origPos = position;
 }
 
 
 inline void  CexmcParticleGun::SetOrigDirection(
-                                            const G4ThreeVector &  direction )
+                    const G4ThreeVector &  direction, G4bool  fromMessenger )
 {
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
     origDir = direction;
 }
 
 
-inline void  CexmcParticleGun::SetOrigMomentumAmp( G4double  momentumAmp )
+inline void  CexmcParticleGun::SetOrigMomentumAmp( G4double  momentumAmp,
+                                                   G4bool  fromMessenger )
 {
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
     origMomentumAmp = momentumAmp;
 }
 
 
 inline void  CexmcParticleGun::SetIncidentParticle(
-                                    G4ParticleDefinition *  particleDefinition )
+            G4ParticleDefinition *  particleDefinition, G4bool  fromMessenger )
 {
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
     SetParticleDefinition( particleDefinition );
 }
 

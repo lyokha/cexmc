@@ -19,6 +19,7 @@
 #ifndef CEXMC_RUN_MANAGER_HH
 #define CEXMC_RUN_MANAGER_HH
 
+#include <set>
 #include <G4RunManager.hh>
 #include "CexmcRunSObject.hh"
 #include "CexmcException.hh"
@@ -28,11 +29,15 @@ class  CexmcRunManagerMessenger;
 class  CexmcPhysicsManager;
 
 
+typedef std::set< CexmcOutputDataType >  CexmcOutputDataTypeSet;
+
+
 class  CexmcRunManager : public G4RunManager
 {
     public:
         explicit CexmcRunManager( const G4String &  projectId = "",
-                                  const G4String &  rProject = "" );
+                                  const G4String &  rProject = "",
+                                  G4bool  overrideExistingProject = false );
 
         virtual ~CexmcRunManager();
 
@@ -51,6 +56,8 @@ class  CexmcRunManager : public G4RunManager
         void  SaveProject( void );
 
         void  PrintReadData( void ) const;
+
+        void  PrintReadData( const CexmcOutputDataTypeSet &  outputData ) const;
 
     public:
         CexmcProductionModelType  GetProductionModelType( void ) const;
@@ -113,7 +120,7 @@ inline void  CexmcRunManager::SetProductionModelType(
                                 CexmcProductionModelType  productionModelType_ )
 {
     if ( ProjectIsRead() )
-        return;
+        throw CexmcException( CexmcCmdIsNotAllowed );
 
     productionModelType = productionModelType_;
 }
@@ -122,7 +129,7 @@ inline void  CexmcRunManager::SetProductionModelType(
 inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
 {
     if ( ProjectIsRead() )
-        return;
+        throw CexmcException( CexmcCmdIsNotAllowed );
 
     gdmlFileName = gdmlFileName_;
 }

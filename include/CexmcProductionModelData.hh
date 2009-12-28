@@ -19,7 +19,7 @@
 #ifndef CEXMC_PRODUCTION_MODEL_DATA_HH
 #define CEXMC_PRODUCTION_MODEL_DATA_HH
 
-#include <iostream>
+#include <iosfwd>
 #include <G4ParticleDefinition.hh>
 #include <G4LorentzVector.hh>
 #include <G4UnitsTable.hh>
@@ -53,53 +53,8 @@ struct  CexmcProductionModelData
 };
 
 
-inline std::ostream &  operator<<( std::ostream &  out,
-                                        const CexmcProductionModelData &  data )
-{
-    std::ostream::fmtflags  savedFlags( out.flags() );
-
-    out.precision( 4 );
-    out << std::endl << std::fixed;
-
-    out << "       Incident particle       (LAB) : " <<
-           data.incidentParticle->GetParticleName() << " " <<
-           G4BestUnit( data.incidentParticleLAB, "Energy" ) << " -- " <<
-           G4BestUnit( data.incidentParticleLAB.e(), "Energy" ) << std::endl;
-    out << "                               (SCM) : " <<
-           data.incidentParticle->GetParticleName() << " " <<
-           G4BestUnit( data.incidentParticleSCM, "Energy" ) << " -- " <<
-           G4BestUnit( data.incidentParticleSCM.e(), "Energy" ) << std::endl;
-    out << "       Nucleus particle        (LAB) : " <<
-           data.nucleusParticle->GetParticleName() << " " <<
-           G4BestUnit( data.nucleusParticleLAB, "Energy" ) << " -- " <<
-           G4BestUnit( data.nucleusParticleLAB.e(), "Energy" ) << std::endl;
-    out << "                               (SCM) : " <<
-           data.nucleusParticle->GetParticleName() << " " <<
-           G4BestUnit( data.nucleusParticleSCM, "Energy" ) << " -- " <<
-           G4BestUnit( data.nucleusParticleSCM.e(), "Energy" ) << std::endl;
-    out << "       Output particle         (LAB) : " <<
-           data.outputParticle->GetParticleName() << " " <<
-           G4BestUnit( data.outputParticleLAB, "Energy" ) << " -- " <<
-           G4BestUnit( data.outputParticleLAB.e(), "Energy" ) << std::endl;
-    out << "                               (SCM) : " <<
-           data.outputParticle->GetParticleName() << " " <<
-           G4BestUnit( data.outputParticleSCM, "Energy" ) << " -- " <<
-           G4BestUnit( data.outputParticleSCM.e(), "Energy" ) << std::endl;
-    out << "       Nucleus output particle (LAB) : " <<
-           data.nucleusOutputParticle->GetParticleName() << " " <<
-           G4BestUnit( data.nucleusOutputParticleLAB, "Energy" ) << " -- " <<
-           G4BestUnit( data.nucleusOutputParticleLAB.e(), "Energy" ) <<
-           std::endl;
-    out << "                               (SCM) : " <<
-           data.nucleusOutputParticle->GetParticleName() << " " <<
-           G4BestUnit( data.nucleusOutputParticleSCM, "Energy" ) << " -- " <<
-           G4BestUnit( data.nucleusOutputParticleSCM.e(), "Energy" ) <<
-           std::endl;
-
-    out.flags( savedFlags );
-
-    return out;
-}
+std::ostream &  operator<<( std::ostream &  out,
+                            const CexmcProductionModelData &  data );
 
 
 #endif
