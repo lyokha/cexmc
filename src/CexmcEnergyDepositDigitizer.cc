@@ -39,8 +39,12 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     vetoCounterEDLeftThreshold( 0 ), vetoCounterEDRightThreshold( 0 ),
     calorimeterEDLeftThreshold( 0 ), calorimeterEDRightThreshold( 0 ),
     outerCrystalsVetoAlgorithm( CexmcNoOuterCrystalsVeto ),
-    outerCrystalsVetoFraction( 0 ), nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ),
-    messenger( NULL )
+    outerCrystalsVetoFraction( 0 ), monitorEDThresholdRef( 0 ),
+    vetoCounterEDLeftThresholdRef( 0 ), vetoCounterEDRightThresholdRef( 0 ),
+    calorimeterEDLeftThresholdRef( 0 ), calorimeterEDRightThresholdRef( 0 ),
+    outerCrystalsVetoAlgorithmRef( CexmcNoOuterCrystalsVeto ),
+    outerCrystalsVetoFractionRef( 0 ), nCrystalsInColumn( 1 ),
+    nCrystalsInRow( 1 ), messenger( NULL )
 {
     G4double  crystalWidth;
     G4double  crystalHeight;

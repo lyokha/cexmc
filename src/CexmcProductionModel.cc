@@ -21,7 +21,7 @@
 
 
 CexmcProductionModel::CexmcProductionModel( G4bool  fermiMotionIsOn ) :
-    fermiMotionIsOn( fermiMotionIsOn )
+    fermiMotionIsOn( fermiMotionIsOn ), messenger( NULL )
 {
     angularRanges.push_back( CexmcAngularRange( 1.0, -1.0, 0 ) );
     messenger = new CexmcProductionModelMessenger( this );

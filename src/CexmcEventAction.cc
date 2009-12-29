@@ -312,30 +312,53 @@ void  CexmcEventAction::DrawTrackPoints(
     if ( ! visManager )
         return;
 
-    G4Circle  circle( tpStore->monitorTP.positionWorld );
+    G4Circle         circle;
+    G4VisAttributes  visAttributes( G4Color( 0.0, 1.0, 0.4 ) );
     circle.SetScreenSize( 5.0 );
     circle.SetFillStyle( G4Circle::filled );
-    G4VisAttributes  visAttributes( G4Color( 0.0, 1.0, 0.4 ) );
     circle.SetVisAttributes( visAttributes );
-    visManager->Draw( circle );
 
-    circle.SetPosition( tpStore->targetTPIncidentParticle.positionWorld );
-    visManager->Draw( circle );
+    if ( tpStore->monitorTP.IsValid() )
+    {
+        circle.SetPosition( tpStore->monitorTP.positionWorld );
+        visManager->Draw( circle );
+    }
 
-    circle.SetPosition( tpStore->targetTPOutputParticle.positionWorld );
-    visManager->Draw( circle );
+    if ( tpStore->targetTPIncidentParticle.IsValid() )
+    {
+        circle.SetPosition( tpStore->targetTPIncidentParticle.positionWorld );
+        visManager->Draw( circle );
+    }
 
-    circle.SetPosition( tpStore->vetoCounterTPLeft.positionWorld );
-    visManager->Draw( circle );
+    if ( tpStore->targetTPOutputParticle.IsValid() )
+    {
+        circle.SetPosition( tpStore->targetTPOutputParticle.positionWorld );
+        visManager->Draw( circle );
+    }
 
-    circle.SetPosition( tpStore->vetoCounterTPRight.positionWorld );
-    visManager->Draw( circle );
+    if ( tpStore->vetoCounterTPLeft.IsValid() )
+    {
+        circle.SetPosition( tpStore->vetoCounterTPLeft.positionWorld );
+        visManager->Draw( circle );
+    }
 
-    circle.SetPosition( tpStore->calorimeterTPLeft.positionWorld );
-    visManager->Draw( circle );
+    if ( tpStore->vetoCounterTPRight.IsValid() )
+    {
+        circle.SetPosition( tpStore->vetoCounterTPRight.positionWorld );
+        visManager->Draw( circle );
+    }
 
-    circle.SetPosition( tpStore->calorimeterTPRight.positionWorld );
-    visManager->Draw( circle );
+    if ( tpStore->calorimeterTPLeft.IsValid() )
+    {
+        circle.SetPosition( tpStore->calorimeterTPLeft.positionWorld );
+        visManager->Draw( circle );
+    }
+
+    if ( tpStore->calorimeterTPRight.IsValid() )
+    {
+        circle.SetPosition( tpStore->calorimeterTPRight.positionWorld );
+        visManager->Draw( circle );
+    }
 }
 
 
