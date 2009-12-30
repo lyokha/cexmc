@@ -41,6 +41,7 @@ class  CexmcRunAction : public G4UserRunAction
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
+                        const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
                         const CexmcAngularRangeList &  angularRanges );
 
     private:

@@ -20,6 +20,7 @@
 #define CEXMC_RUN_MANAGER_HH
 
 #include <set>
+#include <boost/archive/binary_oarchive.hpp>
 #include <G4RunManager.hh>
 #include "CexmcRunSObject.hh"
 #include "CexmcException.hh"
@@ -72,9 +73,18 @@ class  CexmcRunManager : public G4RunManager
 
         G4String                  GetProjectId( void ) const;
 
+        boost::archive::binary_oarchive *  GetEventsArchive( void ) const;
+
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
                            G4int  nSelect );
+
+    private:
+        void  DoCommonEventLoop( G4int  nEvent, const G4String &  cmd,
+                                 G4int  nSelect );
+
+        void  DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
+                               G4int  nSelect );
 
     private:
         void  ReadPreinitProjectData( void );
@@ -100,6 +110,9 @@ class  CexmcRunManager : public G4RunManager
         G4int                       numberOfEventsProcessed;
 
         G4int                       numberOfEventsProcessedEffective;
+
+    private:
+        boost::archive::binary_oarchive *  eventsArchive;
 
     private:
         CexmcPhysicsManager *       physicsManager;
@@ -176,6 +189,13 @@ inline G4String  CexmcRunManager::GetProjectsDir( void ) const
 inline G4String  CexmcRunManager::GetProjectId( void ) const
 {
     return projectId;
+}
+
+
+inline boost::archive::binary_oarchive *  CexmcRunManager::GetEventsArchive(
+                                                                    void ) const
+{
+    return eventsArchive;
 }
 
 

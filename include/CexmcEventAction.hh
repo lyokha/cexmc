@@ -72,7 +72,8 @@ class  CexmcEventAction : public G4UserEventAction
                         const CexmcProductionModelData &  pmData ) const;
 
         void  PrintReconstructedData(
-                        const CexmcAngularRangeList &  angularRanges ) const;
+                        const CexmcAngularRangeList &  angularRanges,
+                        const CexmcAngularRange &  angularGap ) const;
 
         void  FillEnergyDepositHisto( const CexmcEnergyDepositStore *  edStore )
                                                                         const;
@@ -87,7 +88,10 @@ class  CexmcEventAction : public G4UserEventAction
                              const CexmcAngularRangeList &  aRangesRec,
                              G4bool  tpDigitizerHasTriggered,
                              G4bool  edDigitizerHasTriggered,
-                             G4bool  reconstructorHasTriggered );
+                             G4bool  reconstructorHasTriggered,
+                             const CexmcAngularRange &  aGap );
+
+        void  SaveEvent( const CexmcEnergyDepositStore *  edStore );
 
     private:
         CexmcPhysicsManager *               physicsManager;

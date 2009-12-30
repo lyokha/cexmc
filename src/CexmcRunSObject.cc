@@ -48,6 +48,7 @@ CexmcRunSObject::CexmcRunSObject(
         G4double  mCutAngle, CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal,
         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec,
+        CexmcNmbOfHitsInRanges  nmbOfOrphanHits, G4int  nmbOfSavedEvents,
         G4int  numberOfEventsProcessed, G4int  numberOfEventsProcessedEffective,
         G4int  numberOfEventsToBeProcessed ) :
     productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
@@ -72,6 +73,7 @@ CexmcRunSObject::CexmcRunSObject(
     mCutAngle( mCutAngle ), nmbOfHitsSampled( nmbOfHitsSampled ),
     nmbOfHitsTriggeredReal( nmbOfHitsTriggeredReal ),
     nmbOfHitsTriggeredRec( nmbOfHitsTriggeredRec ),
+    nmbOfOrphanHits( nmbOfOrphanHits ), nmbOfSavedEvents( nmbOfSavedEvents ),
     numberOfEventsProcessed( numberOfEventsProcessed ),
     numberOfEventsProcessedEffective( numberOfEventsProcessedEffective ),
     numberOfEventsToBeProcessed( numberOfEventsToBeProcessed )

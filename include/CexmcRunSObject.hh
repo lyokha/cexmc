@@ -69,6 +69,8 @@ class  CexmcRunSObject
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
                          CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal,
                          CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec,
+                         CexmcNmbOfHitsInRanges  nmbOfOrphanHits,
+                         G4int  nmbOfSavedEvents,
                          G4int  numberOfEventsProcessed,
                          G4int  numberOfEventsProcessedEffective,
                          G4int  numberOfEventsToBeProcessed );
@@ -148,6 +150,10 @@ class  CexmcRunSObject
 
         CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRec;
 
+        CexmcNmbOfHitsInRanges       nmbOfOrphanHits;
+
+        G4int                        nmbOfSavedEvents;
+
         G4int                        numberOfEventsProcessed;
 
         G4int                        numberOfEventsProcessedEffective;
@@ -194,6 +200,8 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & nmbOfHitsSampled;
     archive & nmbOfHitsTriggeredReal;
     archive & nmbOfHitsTriggeredRec;
+    archive & nmbOfOrphanHits;
+    archive & nmbOfSavedEvents;
     archive & numberOfEventsProcessed;
     archive & numberOfEventsProcessedEffective;
     archive & numberOfEventsToBeProcessed;

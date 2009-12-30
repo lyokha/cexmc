@@ -38,6 +38,10 @@ class  CexmcRun : public G4Run
 
         void  IncrementNmbOfHitsTriggeredRec( G4int  index );
 
+        void  IncrementNmbOfOrphanHits( G4int  index );
+
+        void  IncrementNmbOfSavedEvents( void );
+
     public:
         const CexmcNmbOfHitsInRanges &  GetNmbOfHitsSampled( void ) const;
 
@@ -45,12 +49,20 @@ class  CexmcRun : public G4Run
 
         const CexmcNmbOfHitsInRanges &  GetNmbOfHitsTriggeredRec( void ) const;
 
+        const CexmcNmbOfHitsInRanges &  GetNmbOfOrphanHits( void ) const;
+
+        G4int                           GetNmbOfSavedEvents( void ) const;
+
     private:
         CexmcNmbOfHitsInRanges  nmbOfHitsSampled;
 
         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal;
 
         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
+
+        CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
+
+        G4int                   nmbOfSavedEvents;
 };
 
 
@@ -72,6 +84,19 @@ inline const CexmcNmbOfHitsInRanges &
                             CexmcRun::GetNmbOfHitsTriggeredRec( void ) const
 {
     return nmbOfHitsTriggeredRec;
+}
+
+
+inline const CexmcNmbOfHitsInRanges &
+                            CexmcRun::GetNmbOfOrphanHits( void ) const
+{
+    return nmbOfOrphanHits;
+}
+
+
+inline G4int  CexmcRun::GetNmbOfSavedEvents( void ) const
+{
+    return nmbOfSavedEvents;
 }
 
 

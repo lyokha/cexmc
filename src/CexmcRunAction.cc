@@ -19,6 +19,7 @@
 #include "CexmcRunAction.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
+#include "CexmcAngularRange.hh"
 #include "CexmcException.hh"
 
 
@@ -38,6 +39,7 @@ void  CexmcRunAction::PrintResults(
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
+                        const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
                         const CexmcAngularRangeList &  angularRanges )
 {
     std::ostream::fmtflags  savedFlags( G4cout.flags() );
@@ -48,8 +50,7 @@ void  CexmcRunAction::PrintResults(
     for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
     {
-        G4cout << "       " << k->index + 1 << " [" << k->top << ", " <<
-                  k->bottom << ")";
+        G4cout << "       " << *k;
         G4int     total( 0 );
         G4int     triggered( 0 );
         G4double  acc( std::numeric_limits< G4double >::quiet_NaN() );
@@ -87,6 +88,28 @@ void  CexmcRunAction::PrintResults(
                   " )" << G4endl;
     }
 
+    CexmcAngularRangeList  angularGaps;
+    GetAngularGaps( angularRanges, angularGaps );
+
+    if ( ! angularGaps.empty() )
+    {
+        G4cout << "    orphans detected: " << G4endl;
+        for ( CexmcAngularRangeList::const_iterator  k( angularGaps.begin() );
+                                                k != angularGaps.end(); ++k )
+        {
+            G4cout << "       " << *k;
+            G4int     total( 0 );
+
+            CexmcNmbOfHitsInRanges::const_iterator  found(
+                                            nmbOfOrphanHits.find( k->index ) );
+            if ( found != nmbOfHitsSampled.end() )
+            {
+                total = found->second;
+            }
+            G4cout << " " << total << G4endl;
+        }
+    }
+
     G4cout.flags( savedFlags );
 }
 
@@ -101,6 +124,8 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
                                         theRun->GetNmbOfHitsTriggeredReal() );
     const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec(
                                         theRun->GetNmbOfHitsTriggeredRec() );
+    const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits(
+                                        theRun->GetNmbOfOrphanHits() );
 
     CexmcProductionModel *          productionModel(
                                         physicsManager->GetProductionModel() );
@@ -112,6 +137,6 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
 
     G4cout << " --- Setup acceptances (real, rec):" << G4endl;
     PrintResults( nmbOfHitsSampled, nmbOfHitsTriggeredReal,
-                  nmbOfHitsTriggeredRec, angularRanges );
+                  nmbOfHitsTriggeredRec, nmbOfOrphanHits, angularRanges );
 }
 

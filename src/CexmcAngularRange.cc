@@ -25,6 +25,9 @@ void  GetNormalizedAngularRange( const CexmcAngularRangeList &  src,
                                  CexmcAngularRangeList &  dst )
 {
     dst = src;
+    if ( dst.size() < 2 )
+        return;
+
     std::sort( dst.begin(), dst.end() );
 
     for ( CexmcAngularRangeList::iterator  k( dst.begin() + 1 );
@@ -46,22 +49,64 @@ void  GetNormalizedAngularRange( const CexmcAngularRangeList &  src,
 }
 
 
+void  GetAngularGaps( const CexmcAngularRangeList &  src,
+                      CexmcAngularRangeList &  dst )
+{
+    if ( src.empty() )
+    {
+        dst.push_back( CexmcAngularRange( 1.0, -1.0 , 0 ) );
+        return;
+    }
+
+    CexmcAngularRangeList  normalizedAngularRanges;
+    GetNormalizedAngularRange( src, normalizedAngularRanges );
+
+    G4int  index( 0 );
+    if ( normalizedAngularRanges[ 0 ].top < 1.0 )
+        dst.push_back( CexmcAngularRange(
+                        1.0, normalizedAngularRanges[ 0 ].top, index++ ) );
+
+    for ( CexmcAngularRangeList::iterator
+            k( normalizedAngularRanges.begin() );
+            k != normalizedAngularRanges.end(); ++k )
+    {
+        if ( k + 1 == normalizedAngularRanges.end() )
+            break;
+        dst.push_back( CexmcAngularRange(
+                        k->bottom, ( k + 1 )->top, index++ ) );
+    }
+
+    if ( normalizedAngularRanges.back().bottom > -1.0 )
+        dst.push_back( CexmcAngularRange(
+                        normalizedAngularRanges.back().bottom, -1.0, index ) );
+}
+
+
 std::ostream &  operator<<( std::ostream &  out,
-                            const CexmcAngularRangeList &  angularRanges )
+                            const CexmcAngularRange &  angularRange )
 {
     std::ostream::fmtflags  savedFlags( out.flags() );
 
     out.precision( 4 );
-    out << std::endl << std::fixed;
+    out << std::fixed;
+    out << angularRange.index  + 1 << " [" << angularRange.top << ", " <<
+               angularRange.bottom << ")";
+
+    out.flags( savedFlags );
+
+    return out;
+}
+
+
+std::ostream &  operator<<( std::ostream &  out,
+                            const CexmcAngularRangeList &  angularRanges )
+{
+    out << std::endl;
     for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
     {
-        out << "                 " << k->index  + 1 << " [" << k->top << ", " <<
-               k->bottom << ")";
-        out << std::endl;
+        out << "                 " << *k << std::endl;
     }
-
-    out.flags( savedFlags );
 
     return out;
 }

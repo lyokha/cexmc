@@ -20,15 +20,9 @@
 #ifndef CEXMC_ENERGY_DEPOSIT_STORE_HH
 #define CEXMC_ENERGY_DEPOSIT_STORE_HH
 
-#include <vector>
 #include <G4Allocator.hh>
-#include <G4Types.hh>
 #include "CexmcCommon.hh"
 
-
-typedef std::vector< G4double >  CexmcEnergyDepositCrystalRowCollection;
-typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
-                                 CexmcEnergyDepositCalorimeterCollection;
 
 struct  CexmcEnergyDepositStore
 {

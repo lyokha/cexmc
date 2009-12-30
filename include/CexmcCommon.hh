@@ -19,10 +19,16 @@
 #ifndef CEXMC_COMMON_HH
 #define CEXMC_COMMON_HH
 
+#include <vector>
 #include <G4String.hh>
 #include <G4Types.hh>
 
 #define CEXMC_LINE_START  "--- Cexmc ---  "
+
+
+typedef std::vector< G4double >  CexmcEnergyDepositCrystalRowCollection;
+typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
+                                 CexmcEnergyDepositCalorimeterCollection;
 
 
 const G4String  CexmcStudiedProcessFirstName( "studiedPhysics_" );

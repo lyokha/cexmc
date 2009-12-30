@@ -16,6 +16,7 @@
  * ============================================================================
  */
 
+#include <boost/archive/binary_oarchive.hpp>
 #include <G4ParticleDefinition.hh>
 #include <G4HadronicInteraction.hh>
 #include <G4ProcessManager.hh>
@@ -30,6 +31,7 @@
 #include "CexmcEventAction.hh"
 #include "CexmcEventActionMessenger.hh"
 #include "CexmcEventInfo.hh"
+#include "CexmcEventSObject.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcHistoManager.hh"
 #include "CexmcRunManager.hh"
@@ -206,8 +208,9 @@ void  CexmcEventAction::PrintProductionModelData(
 }
 
 
-void  CexmcEventAction::PrintReconstructedData( const CexmcAngularRangeList &
-                                            triggeredRecAngularRanges ) const
+void  CexmcEventAction::PrintReconstructedData(
+                        const CexmcAngularRangeList & triggeredRecAngularRanges,
+                        const CexmcAngularRange &  angularGap ) const
 {
     G4cout << " --- Reconstructed data: " << G4endl;
     G4cout << "       -- entry points:" << G4endl;
@@ -233,8 +236,11 @@ void  CexmcEventAction::PrintReconstructedData( const CexmcAngularRangeList &
     const CexmcProductionModelData &  pmData(
                                     reconstructor->GetProductionModelData() );
     G4cout << "       -- production model data: " << pmData;
-    G4cout << "       -- triggered angular ranges: " <<
-                                                    triggeredRecAngularRanges;
+    G4cout << "       -- triggered angular ranges: ";
+    if ( triggeredRecAngularRanges.empty() )
+        G4cout << "< orphan detected, gap " << angularGap << " >" << G4endl;
+    else
+        G4cout << triggeredRecAngularRanges;
 }
 
 
@@ -390,7 +396,8 @@ void  CexmcEventAction::UpdateRunHits(
                                     const CexmcAngularRangeList &  aRangesRec,
                                     G4bool  tpDigitizerHasTriggered,
                                     G4bool  edDigitizerHasTriggered,
-                                    G4bool  reconstructorHasTriggered )
+                                    G4bool  reconstructorHasTriggered,
+                                    const CexmcAngularRange &  aGap )
 {
     G4RunManager *    runManager( G4RunManager::GetRunManager() );
     const CexmcRun *  run( static_cast< const CexmcRun * >(
@@ -408,11 +415,43 @@ void  CexmcEventAction::UpdateRunHits(
 
     if ( reconstructorHasTriggered )
     {
-        for ( CexmcAngularRangeList::const_iterator  k( aRangesRec.begin() );
-                                                k != aRangesRec.end(); ++k )
+        if ( aRangesRec.empty() )
         {
-            theRun->IncrementNmbOfHitsTriggeredRec( k->index );
+            theRun->IncrementNmbOfOrphanHits( aGap.index );
         }
+        else
+        {
+            for ( CexmcAngularRangeList::const_iterator
+                    k( aRangesRec.begin() ); k != aRangesRec.end(); ++k )
+            {
+                theRun->IncrementNmbOfHitsTriggeredRec( k->index );
+            }
+        }
+    }
+}
+
+
+void  CexmcEventAction::SaveEvent( const CexmcEnergyDepositStore *  edStore )
+{
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    if ( ! runManager->ProjectIsSaved() )
+        return;
+
+    boost::archive::binary_oarchive *  archive(
+                                            runManager->GetEventsArchive() );
+    if ( archive )
+    {
+        CexmcEventSObject  sObject( edStore->monitorED,
+            edStore->vetoCounterEDLeft, edStore->vetoCounterEDRight,
+            edStore->calorimeterEDLeft, edStore->calorimeterEDRight,
+            edStore->calorimeterEDLeftCollection,
+            edStore->calorimeterEDRightCollection );
+        archive->operator<<( sObject );
+        const CexmcRun *  run( static_cast< const CexmcRun * >(
+                                                runManager->GetCurrentRun() ) );
+        CexmcRun *        theRun( const_cast< CexmcRun * >( run ) );
+        theRun->IncrementNmbOfSavedEvents();
     }
 }
 
@@ -478,9 +517,27 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
             }
         }
 
+        CexmcAngularRange  angularGap( 0.0, 0.0, 0 );
+        if ( triggeredRecAngularRanges.empty() )
+        {
+            CexmcAngularRangeList  angularGaps;
+            GetAngularGaps( angularRanges, angularGaps );
+            for ( CexmcAngularRangeList::const_iterator
+                    k( angularGaps.begin() ); k != angularGaps.end(); ++k )
+            {
+                G4double  cosTheta( reconstructor->GetProductionModelData().
+                                    outputParticleSCM.cosTheta() );
+                if ( cosTheta <= k->top && cosTheta > k->bottom )
+                {
+                    angularGap = *k;
+                    break;
+                }
+            }
+        }
+
         UpdateRunHits( triggeredAngularRanges, triggeredRecAngularRanges,
                        tpDigitizerHasTriggered, edDigitizerHasTriggered,
-                       reconstructorHasFullTrigger );
+                       reconstructorHasFullTrigger, angularGap );
 
         if ( verbose > 0 )
         {
@@ -498,7 +555,8 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                     PrintProductionModelData( triggeredAngularRanges, pmData );
                 }
                 if ( reconstructorHasTriggered )
-                    PrintReconstructedData( triggeredRecAngularRanges );
+                    PrintReconstructedData( triggeredRecAngularRanges,
+                                            angularGap );
                 if ( edDigitizerHasTriggered )
                     PrintEnergyDeposit( edStore );
             }
@@ -522,7 +580,10 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         }
 
         if ( edDigitizerHasTriggered )
+        {
+            SaveEvent( edStore );
             FillEnergyDepositHisto( edStore );
+        }
 
         G4Event *  theEvent( const_cast< G4Event * >( event ) );
         theEvent->SetUserInformation( new CexmcEventInfo(

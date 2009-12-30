@@ -39,6 +39,7 @@
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
+#include "CexmcEventSObject.hh"
 #include "CexmcEventInfo.hh"
 
 
@@ -49,7 +50,7 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     gdmlFileName( "default.gdml" ), projectsDir( "." ), projectId( projectId ),
     rProject( rProject ), eventCountPolicy( CexmcCountAllEvents ),
     numberOfEventsProcessed( 0 ), numberOfEventsProcessedEffective( 0 ),
-    physicsManager( NULL ), messenger( NULL )
+    eventsArchive( NULL ), physicsManager( NULL ), messenger( NULL )
 {
     /* this exception must be caught before creating the object! */
     if ( rProject != "" && rProject == projectId )
@@ -251,12 +252,16 @@ void  CexmcRunManager::SaveProject( void )
     CexmcNmbOfHitsInRanges  nmbOfHitsSampled;
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal;
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
+    CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
+    G4int                   nmbOfSavedEvents( 0 );
     const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
     if ( run )
     {
         nmbOfHitsSampled = run->GetNmbOfHitsSampled();
         nmbOfHitsTriggeredReal = run->GetNmbOfHitsTriggeredReal();
         nmbOfHitsTriggeredRec = run->GetNmbOfHitsTriggeredRec();
+        nmbOfOrphanHits = run->GetNmbOfOrphanHits();
+        nmbOfSavedEvents = run->GetNmbOfSavedEvents();
     }
 
     CexmcRunSObject             sObject(
@@ -288,8 +293,8 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
         reconstructor->GetMassCutEllipseAngle(),
         nmbOfHitsSampled, nmbOfHitsTriggeredReal, nmbOfHitsTriggeredRec,
-        numberOfEventsProcessed, numberOfEventsProcessedEffective,
-        numberOfEventToBeProcessed );
+        nmbOfOrphanHits, nmbOfSavedEvents, numberOfEventsProcessed,
+        numberOfEventsProcessedEffective, numberOfEventToBeProcessed );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -307,29 +312,9 @@ void  CexmcRunManager::SaveProject( void )
 }
 
 
-/* mostly adopted from G4RunManager::DoEventLoop() */
-void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
-                                    G4int  nSelect )
+void  CexmcRunManager::DoCommonEventLoop( G4int  nEvent, const G4String &  cmd,
+                                          G4int  nSelect )
 {
-    if ( verboseLevel > 0 ) 
-        timer->Start();
-
-    G4String  msg;
-    if ( macroFile != 0 )
-    {
-        if ( nSelect < 0 )
-            nSelect = nEvent;
-        msg = "/control/execute ";
-        msg += macroFile;
-    }
-    else
-    {
-        nSelect = -1;
-    }
-
-    numberOfEventsProcessed = 0;
-    numberOfEventsProcessedEffective = 0;
-
     G4int  iEvent( 0 );
     G4int  iEventEffective( 0 );
 
@@ -359,7 +344,7 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
         AnalyzeEvent( currentEvent );
         UpdateScoring();
         if( iEvent < nSelect )
-            G4UImanager::GetUIpointer()->ApplyCommand( msg );
+            G4UImanager::GetUIpointer()->ApplyCommand( cmd );
         StackPreviousEvent( currentEvent );
         currentEvent = 0;
         if( runAborted )
@@ -368,6 +353,87 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
 
     numberOfEventsProcessed = iEvent;
     numberOfEventsProcessedEffective = iEventEffective;
+}
+
+
+void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
+                                        G4int  nSelect )
+{
+    if ( ! ProjectIsRead() )
+        return;
+
+    CexmcEventSObject  evSObject;
+
+    /* read events data */
+    std::ifstream   eventsDataFile( ( projectsDir + "/" + rProject + ".edb" ).
+                                  c_str() );
+    if ( ! eventsDataFile )
+        throw CexmcException( CexmcReadProjectIncompleteException );
+
+    boost::archive::binary_iarchive  archive( eventsDataFile );
+
+    for ( G4int  i( 0 ); i < sObject.nmbOfSavedEvents; ++i )
+    {
+        archive >> evSObject;
+        G4cout << G4BestUnit( evSObject.monitorED, "Energy" ) << G4endl;
+    }
+}
+
+
+/* mostly adopted from G4RunManager::DoEventLoop() */
+void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
+                                    G4int  nSelect )
+{
+    if ( verboseLevel > 0 ) 
+        timer->Start();
+
+    G4String  cmd;
+    if ( macroFile != 0 )
+    {
+        if ( nSelect < 0 )
+            nSelect = nEvent;
+        cmd = "/control/execute ";
+        cmd += macroFile;
+    }
+    else
+    {
+        nSelect = -1;
+    }
+
+    eventsArchive = NULL;
+    numberOfEventsProcessed = 0;
+    numberOfEventsProcessedEffective = 0;
+
+    if ( ProjectIsRead() )
+    {
+        if ( ProjectIsSaved() )
+        {
+            std::ofstream   eventsDataFile(
+                        ( projectsDir + "/" + projectId + ".edb" ).c_str() );
+            boost::archive::binary_oarchive  eventsArchive_( eventsDataFile );
+            eventsArchive = &eventsArchive_;
+            DoCommonEventLoop( nEvent, cmd, nSelect );
+        }
+        else
+        {
+            DoReadEventLoop( nEvent, cmd, nSelect );
+        }
+    }
+    else
+    {
+        if ( ProjectIsSaved() )
+        {
+            std::ofstream   eventsDataFile(
+                        ( projectsDir + "/" + projectId + ".edb" ).c_str() );
+            boost::archive::binary_oarchive  eventsArchive_( eventsDataFile );
+            eventsArchive = &eventsArchive_;
+            DoCommonEventLoop( nEvent, cmd, nSelect );
+        }
+        else
+        {
+            DoCommonEventLoop( nEvent, cmd, nSelect );
+        }
+    }
 
     if( verboseLevel > 0 )
     {
@@ -376,16 +442,19 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
         G4cout << "Run Summary" << G4endl;
         if( runAborted )
         {
-            G4cout << "  Run Aborted after " << iEvent <<
+            G4cout << "  Run Aborted after " << numberOfEventsProcessed <<
                       " events processed." << G4endl;
         }
         else
         {
-            G4cout << "  Number of events processed : " << iEvent <<
-                      ", effectively: " << iEventEffective << G4endl;
+            G4cout << "  Number of events processed : " <<
+                      numberOfEventsProcessed << ", effectively: " <<
+                      numberOfEventsProcessedEffective << G4endl;
         }
         G4cout << "  "  << *timer << G4endl;
     }
+
+    eventsArchive = NULL;
 }
 
 
@@ -473,6 +542,7 @@ void  CexmcRunManager::PrintReadData( void ) const
     CexmcRunAction::PrintResults( sObject.nmbOfHitsSampled,
                                   sObject.nmbOfHitsTriggeredReal,
                                   sObject.nmbOfHitsTriggeredRec,
+                                  sObject.nmbOfOrphanHits,
                                   sObject.angularRanges );
 
     G4cout << G4endl;

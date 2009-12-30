@@ -73,6 +73,14 @@ void  GetNormalizedAngularRange( const CexmcAngularRangeList &  src,
                                  CexmcAngularRangeList &  dst );
 
 
+void  GetAngularGaps( const CexmcAngularRangeList &  src,
+                      CexmcAngularRangeList &  dst );
+
+
+std::ostream &  operator<<( std::ostream &  out,
+                            const CexmcAngularRange &  angularRange );
+
+
 std::ostream &  operator<<( std::ostream &  out,
                             const CexmcAngularRangeList &  angularRanges );
 

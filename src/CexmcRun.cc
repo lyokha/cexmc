@@ -19,7 +19,7 @@
 #include "CexmcRun.hh"
 
 
-CexmcRun::CexmcRun()
+CexmcRun::CexmcRun() : nmbOfSavedEvents( 0 )
 {
 }
 
@@ -54,5 +54,22 @@ void  CexmcRun::IncrementNmbOfHitsTriggeredRec( G4int  index )
         nmbOfHitsTriggeredRec.insert( std::pair< int, int >( index, 1 ) );
     else
         ++found->second;
+}
+
+
+void  CexmcRun::IncrementNmbOfOrphanHits( G4int  index )
+{
+    CexmcNmbOfHitsInRanges::iterator  found(
+                                        nmbOfOrphanHits.find( index ) );
+    if ( found == nmbOfOrphanHits.end() )
+        nmbOfOrphanHits.insert( std::pair< int, int >( index, 1 ) );
+    else
+        ++found->second;
+}
+
+
+void  CexmcRun::IncrementNmbOfSavedEvents( void )
+{
+    ++nmbOfSavedEvents;
 }
 
