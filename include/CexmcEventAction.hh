@@ -91,7 +91,9 @@ class  CexmcEventAction : public G4UserEventAction
                              G4bool  reconstructorHasTriggered,
                              const CexmcAngularRange &  aGap );
 
-        void  SaveEvent( const CexmcEnergyDepositStore *  edStore );
+        void  SaveEvent( const G4Event *  event,
+                         const CexmcEnergyDepositStore *  edStore,
+                         const CexmcTrackPointsStore *  tpStore );
 
     private:
         CexmcPhysicsManager *               physicsManager;

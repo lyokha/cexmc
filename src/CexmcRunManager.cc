@@ -40,6 +40,7 @@
 #include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
 #include "CexmcEventSObject.hh"
+#include "CexmcTrackPointInfo.hh"
 #include "CexmcEventInfo.hh"
 
 
@@ -375,7 +376,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
     for ( G4int  i( 0 ); i < sObject.nmbOfSavedEvents; ++i )
     {
         archive >> evSObject;
-        G4cout << G4BestUnit( evSObject.monitorED, "Energy" ) << G4endl;
+        G4cout << CexmcTrackPointInfo( evSObject.monitorTP ) << G4endl;
     }
 }
 

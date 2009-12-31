@@ -431,7 +431,9 @@ void  CexmcEventAction::UpdateRunHits(
 }
 
 
-void  CexmcEventAction::SaveEvent( const CexmcEnergyDepositStore *  edStore )
+void  CexmcEventAction::SaveEvent( const G4Event *  event,
+                                   const CexmcEnergyDepositStore *  edStore,
+                                   const CexmcTrackPointsStore *  tpStore )
 {
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
@@ -442,11 +444,17 @@ void  CexmcEventAction::SaveEvent( const CexmcEnergyDepositStore *  edStore )
                                             runManager->GetEventsArchive() );
     if ( archive )
     {
-        CexmcEventSObject  sObject( edStore->monitorED,
+        CexmcEventSObject  sObject( event->GetEventID(), edStore->monitorED,
             edStore->vetoCounterEDLeft, edStore->vetoCounterEDRight,
             edStore->calorimeterEDLeft, edStore->calorimeterEDRight,
             edStore->calorimeterEDLeftCollection,
-            edStore->calorimeterEDRightCollection );
+            edStore->calorimeterEDRightCollection, tpStore->monitorTP,
+            tpStore->targetTPIncidentParticle, tpStore->targetTPOutputParticle,
+            tpStore->targetTPNucleusParticle,
+            tpStore->targetTPOutputParticleDecayProductParticle1,
+            tpStore->targetTPOutputParticleDecayProductParticle2,
+            tpStore->vetoCounterTPLeft, tpStore->vetoCounterTPRight,
+            tpStore->calorimeterTPLeft, tpStore->calorimeterTPRight );
         archive->operator<<( sObject );
         const CexmcRun *  run( static_cast< const CexmcRun * >(
                                                 runManager->GetCurrentRun() ) );
@@ -581,7 +589,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 
         if ( edDigitizerHasTriggered )
         {
-            SaveEvent( edStore );
+            SaveEvent( event, edStore, tpStore );
             FillEnergyDepositHisto( edStore );
         }
 
