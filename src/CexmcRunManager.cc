@@ -47,6 +47,7 @@
 #include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
 #include "CexmcEventSObject.hh"
+#include "CexmcEventFastSObject.hh"
 #include "CexmcTrackPointInfo.hh"
 #include "CexmcEventInfo.hh"
 
@@ -58,7 +59,8 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     gdmlFileName( "default.gdml" ), projectsDir( "." ), projectId( projectId ),
     rProject( rProject ), eventCountPolicy( CexmcCountAllEvents ),
     numberOfEventsProcessed( 0 ), numberOfEventsProcessedEffective( 0 ),
-    eventsArchive( NULL ), physicsManager( NULL ), messenger( NULL )
+    eventsArchive( NULL ), fastEventsArchive( NULL ), physicsManager( NULL ),
+    messenger( NULL )
 {
     /* this exception must be caught before creating the object! */
     if ( rProject != "" && rProject == projectId )
@@ -262,6 +264,7 @@ void  CexmcRunManager::SaveProject( void )
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
     CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
     G4int                   nmbOfSavedEvents( 0 );
+    G4int                   nmbOfSavedFastEvents( 0 );
     const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
     if ( run )
     {
@@ -270,6 +273,7 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfHitsTriggeredRec = run->GetNmbOfHitsTriggeredRec();
         nmbOfOrphanHits = run->GetNmbOfOrphanHits();
         nmbOfSavedEvents = run->GetNmbOfSavedEvents();
+        nmbOfSavedFastEvents = run->GetNmbOfSavedFastEvents();
     }
 
     CexmcRunSObject             sObject(
@@ -301,8 +305,9 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
         reconstructor->GetMassCutEllipseAngle(),
         nmbOfHitsSampled, nmbOfHitsTriggeredReal, nmbOfHitsTriggeredRec,
-        nmbOfOrphanHits, nmbOfSavedEvents, numberOfEventsProcessed,
-        numberOfEventsProcessedEffective, numberOfEventToBeProcessed );
+        nmbOfOrphanHits, nmbOfSavedEvents, nmbOfSavedFastEvents,
+        numberOfEventsProcessed, numberOfEventsProcessedEffective,
+        numberOfEventToBeProcessed );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -364,21 +369,37 @@ void  CexmcRunManager::DoCommonEventLoop( G4int  nEvent, const G4String &  cmd,
 }
 
 
-void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
-                                        G4int  nSelect )
+void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 {
+    G4int  iEvent( 0 );
+    G4int  iEventEffective( 0 );
+
     if ( ! ProjectIsRead() )
         return;
 
-    CexmcEventSObject  evSObject;
+    if ( ! physicsManager )
+        throw CexmcException( CexmcWeirdException );
+
+    CexmcProductionModel *  productionModel(
+                                        physicsManager->GetProductionModel() );
+
+    CexmcEventSObject      evSObject;
+    CexmcEventFastSObject  evFastSObject;
 
     /* read events data */
-    std::ifstream   eventsDataFile( ( projectsDir + "/" + rProject + ".edb" ).
-                                  c_str() );
+    std::ifstream   eventsDataFile(
+                        ( projectsDir + "/" + rProject + ".edb" ).  c_str() );
     if ( ! eventsDataFile )
         throw CexmcException( CexmcReadProjectIncompleteException );
 
-    boost::archive::binary_iarchive  archive( eventsDataFile );
+    boost::archive::binary_iarchive  evArchive( eventsDataFile );
+
+    std::ifstream   eventsFastDataFile(
+                        ( projectsDir + "/" + rProject + ".fdb" ).  c_str() );
+    if ( ! eventsFastDataFile )
+        throw CexmcException( CexmcReadProjectIncompleteException );
+
+    boost::archive::binary_iarchive  evFastArchive( eventsFastDataFile );
 
     G4Event  event;
     currentEvent = &event;
@@ -415,10 +436,31 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterTP );
 
-    for ( G4int  i( 0 ); i < sObject.nmbOfSavedEvents; ++i )
+    for ( iEvent = 0; iEvent < nEvent; ++iEvent )
     {
-        archive >> evSObject;
+        evFastArchive >> evFastSObject;
         event.SetEventID( evSObject.eventId );
+
+        productionModel->SetTriggeredAngularRanges(
+                                                evFastSObject.opCosThetaSCM );
+
+        if ( ! evFastSObject.edDigitizerHasTriggered )
+        {
+            const CexmcAngularRangeList &  triggeredAngularRanges(
+                                productionModel->GetTriggeredAngularRanges() );
+            for ( CexmcAngularRangeList::const_iterator
+                        k( triggeredAngularRanges.begin() );
+                                        k != triggeredAngularRanges.end(); ++k )
+            {
+                const CexmcRun *  run( static_cast< const CexmcRun * >(
+                                                            GetCurrentRun() ) );
+                CexmcRun *  theRun( const_cast< CexmcRun * >( run ) );
+                theRun->IncrementNmbOfHitsSampled( k->index );
+            }
+            continue;
+        }
+
+        evArchive >> evSObject;
 
         monitorED->GetMap()->operator[]( 0 ) = &evSObject.monitorED;
         vetoCounterED->GetMap()->operator[]( 0 ) = &evSObject.vetoCounterEDLeft;
@@ -518,6 +560,9 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
                 1 << CexmcTrackPointsInLeftRightSet::GetLeftRightBitsOffset() |
                     calorimeterTPRightInfo.trackId ) = &calorimeterTPRightInfo;
 
+        productionModel->SetProductionModelData(
+                                            evSObject.productionModelData );
+
         const CexmcEventAction *  eventAction(
                 static_cast< const CexmcEventAction * >( userEventAction ) );
         if ( ! eventAction )
@@ -526,6 +571,29 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
         CexmcEventAction *  theEventAction( const_cast< CexmcEventAction * >(
                                                                 eventAction ) );
         theEventAction->EndOfEventAction( &event );
+
+        CexmcEventInfo *  eventInfo( static_cast< CexmcEventInfo * >(
+                                                event.GetUserInformation() ) );
+        switch ( eventCountPolicy )
+        {
+        case CexmcCountAllEvents :
+            ++iEventEffective;
+            break;
+        case CexmcCountEventsWithInteraction :
+            if ( eventInfo->TpTriggerIsOk() )
+                ++iEventEffective;
+            break;
+        case CexmcCountEventsWithTrigger :
+            if ( eventInfo->EdTriggerIsOk() )
+                ++iEventEffective;
+            break;
+        default :
+            ++iEventEffective;
+            break;
+        }
+
+        delete event.GetUserInformation();
+        event.SetUserInformation( NULL );
     }
 
     monitorED->GetMap()->clear();
@@ -535,6 +603,9 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
     targetTP->GetMap()->clear();
     vetoCounterTP->GetMap()->clear();
     calorimeterTP->GetMap()->clear();
+
+    numberOfEventsProcessed = iEvent;
+    numberOfEventsProcessedEffective = iEventEffective;
 }
 
 
@@ -559,6 +630,7 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
     }
 
     eventsArchive = NULL;
+    fastEventsArchive = NULL;
     numberOfEventsProcessed = 0;
     numberOfEventsProcessedEffective = 0;
 
@@ -570,11 +642,17 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
                         ( projectsDir + "/" + projectId + ".edb" ).c_str() );
             boost::archive::binary_oarchive  eventsArchive_( eventsDataFile );
             eventsArchive = &eventsArchive_;
-            DoReadEventLoop( nEvent, cmd, nSelect );
+            std::ofstream   fastEventsDataFile(
+                        ( projectsDir + "/" + projectId + ".fdb" ).c_str() );
+            boost::archive::binary_oarchive  fastEventsArchive_(
+                                                        fastEventsDataFile );
+            eventsArchive = &eventsArchive_;
+            fastEventsArchive = &fastEventsArchive_;
+            DoReadEventLoop( nEvent );
         }
         else
         {
-            DoReadEventLoop( nEvent, cmd, nSelect );
+            DoReadEventLoop( nEvent );
         }
     }
     else
@@ -584,7 +662,12 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
             std::ofstream   eventsDataFile(
                         ( projectsDir + "/" + projectId + ".edb" ).c_str() );
             boost::archive::binary_oarchive  eventsArchive_( eventsDataFile );
+            std::ofstream   fastEventsDataFile(
+                        ( projectsDir + "/" + projectId + ".fdb" ).c_str() );
+            boost::archive::binary_oarchive  fastEventsArchive_(
+                                                        fastEventsDataFile );
             eventsArchive = &eventsArchive_;
+            fastEventsArchive = &fastEventsArchive_;
             DoCommonEventLoop( nEvent, cmd, nSelect );
         }
         else
@@ -613,6 +696,7 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
     }
 
     eventsArchive = NULL;
+    fastEventsArchive = NULL;
 }
 
 

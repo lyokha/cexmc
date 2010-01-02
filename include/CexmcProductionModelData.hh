@@ -27,6 +27,21 @@
 
 struct  CexmcProductionModelData
 {
+    CexmcProductionModelData();
+
+    CexmcProductionModelData( const G4LorentzVector &  incidentParticleSCM,
+                          const G4LorentzVector &  incidentParticleLAB,
+                          const G4LorentzVector &  nucleusParticleSCM,
+                          const G4LorentzVector &  nucleusParticleLAB,
+                          const G4LorentzVector &  outputParticleSCM,
+                          const G4LorentzVector &  outputParticleLAB,
+                          const G4LorentzVector &  nucleusOutputParticleSCM,
+                          const G4LorentzVector &  nucleusOutputParticleLAB,
+                          const G4ParticleDefinition *  incidentParticle,
+                          const G4ParticleDefinition *  nucleusParticle,
+                          const G4ParticleDefinition *  outputParticle,
+                          const G4ParticleDefinition *  nucleusOutputParticle );
+
     G4LorentzVector  incidentParticleSCM;
 
     G4LorentzVector  incidentParticleLAB;

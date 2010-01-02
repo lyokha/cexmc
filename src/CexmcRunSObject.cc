@@ -48,7 +48,8 @@ CexmcRunSObject::CexmcRunSObject(
         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal,
         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec,
         CexmcNmbOfHitsInRanges  nmbOfOrphanHits, G4int  nmbOfSavedEvents,
-        G4int  numberOfEventsProcessed, G4int  numberOfEventsProcessedEffective,
+        G4int  nmbOfSavedFastEvents, G4int  numberOfEventsProcessed,
+        G4int  numberOfEventsProcessedEffective,
         G4int  numberOfEventsToBeProcessed ) :
     productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
     etaDecayTable( etaDecayTable ), angularRanges( angularRanges ),
@@ -73,6 +74,7 @@ CexmcRunSObject::CexmcRunSObject(
     nmbOfHitsTriggeredReal( nmbOfHitsTriggeredReal ),
     nmbOfHitsTriggeredRec( nmbOfHitsTriggeredRec ),
     nmbOfOrphanHits( nmbOfOrphanHits ), nmbOfSavedEvents( nmbOfSavedEvents ),
+    nmbOfSavedFastEvents( nmbOfSavedFastEvents ),
     numberOfEventsProcessed( numberOfEventsProcessed ),
     numberOfEventsProcessedEffective( numberOfEventsProcessedEffective ),
     numberOfEventsToBeProcessed( numberOfEventsToBeProcessed )

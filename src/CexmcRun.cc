@@ -19,7 +19,7 @@
 #include "CexmcRun.hh"
 
 
-CexmcRun::CexmcRun() : nmbOfSavedEvents( 0 )
+CexmcRun::CexmcRun() : nmbOfSavedEvents( 0 ), nmbOfSavedFastEvents( 0 )
 {
 }
 
@@ -71,5 +71,11 @@ void  CexmcRun::IncrementNmbOfOrphanHits( G4int  index )
 void  CexmcRun::IncrementNmbOfSavedEvents( void )
 {
     ++nmbOfSavedEvents;
+}
+
+
+void  CexmcRun::IncrementNmbOfSavedFastEvents( void )
+{
+    ++nmbOfSavedFastEvents;
 }
 

@@ -49,6 +49,9 @@ class  CexmcProductionModel
         void  AddAngularRange( G4double  top, G4double  bottom,
                                G4int  nmbOfDivs );
 
+        void  SetProductionModelData(
+                    const CexmcProductionModelData &  productionModelData_ );
+
         void  PrintInitialData( void ) const;
 
         const CexmcAngularRangeList &  GetAngularRanges( void ) const;
@@ -58,6 +61,8 @@ class  CexmcProductionModel
         const CexmcProductionModelData &  GetProductionModelData( void ) const;
 
         G4bool  IsFermiMotionOn( void ) const;
+
+        void    SetTriggeredAngularRanges( G4double  opCosThetaSCM );
 
     protected:
         G4bool                    fermiMotionIsOn;
@@ -174,6 +179,13 @@ inline void  CexmcProductionModel::AddAngularRange( G4double  top,
         angularRanges.push_back( CexmcAngularRange( curTop, curBottom,
                                                     curIndex + i ) );
     }
+}
+
+
+inline void  CexmcProductionModel::SetProductionModelData(
+                        const CexmcProductionModelData &  productionModelData_ )
+{
+    productionModelData = productionModelData_;
 }
 
 

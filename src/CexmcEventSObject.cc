@@ -43,7 +43,8 @@ CexmcEventSObject::CexmcEventSObject( G4int  eventId, G4double  monitorED,
         const CexmcTrackPointInfo &  vetoCounterTPLeft,
         const CexmcTrackPointInfo &  vetoCounterTPRight,
         const CexmcTrackPointInfo &  calorimeterTPLeft,
-        const CexmcTrackPointInfo &  calorimeterTPRight ) :
+        const CexmcTrackPointInfo &  calorimeterTPRight,
+        const CexmcProductionModelData &  productionModelData ) :
     eventId( eventId ), monitorED( monitorED ),
     vetoCounterEDLeft( vetoCounterEDLeft ),
     vetoCounterEDRight( vetoCounterEDRight ),
@@ -62,7 +63,8 @@ CexmcEventSObject::CexmcEventSObject( G4int  eventId, G4double  monitorED,
     vetoCounterTPLeft( vetoCounterTPLeft ),
     vetoCounterTPRight( vetoCounterTPRight ),
     calorimeterTPLeft( calorimeterTPLeft ),
-    calorimeterTPRight( calorimeterTPRight )
+    calorimeterTPRight( calorimeterTPRight ),
+    productionModelData( productionModelData )
 {
 }
 

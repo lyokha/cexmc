@@ -60,6 +60,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  PrintReadData( const CexmcOutputDataTypeSet &  outputData ) const;
 
+        void  ReplayEvents( G4int  nEvents = 0 );
+
     public:
         CexmcProductionModelType  GetProductionModelType( void ) const;
 
@@ -75,6 +77,8 @@ class  CexmcRunManager : public G4RunManager
 
         boost::archive::binary_oarchive *  GetEventsArchive( void ) const;
 
+        boost::archive::binary_oarchive *  GetFastEventsArchive( void ) const;
+
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
                            G4int  nSelect );
@@ -83,8 +87,7 @@ class  CexmcRunManager : public G4RunManager
         void  DoCommonEventLoop( G4int  nEvent, const G4String &  cmd,
                                  G4int  nSelect );
 
-        void  DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
-                               G4int  nSelect );
+        void  DoReadEventLoop( G4int  nEvent );
 
     private:
         void  ReadPreinitProjectData( void );
@@ -113,6 +116,8 @@ class  CexmcRunManager : public G4RunManager
 
     private:
         boost::archive::binary_oarchive *  eventsArchive;
+
+        boost::archive::binary_oarchive *  fastEventsArchive;
 
     private:
         CexmcPhysicsManager *       physicsManager;
@@ -196,6 +201,25 @@ inline boost::archive::binary_oarchive *  CexmcRunManager::GetEventsArchive(
                                                                     void ) const
 {
     return eventsArchive;
+}
+
+
+inline boost::archive::binary_oarchive *  CexmcRunManager::GetFastEventsArchive(
+                                                                    void ) const
+{
+    return fastEventsArchive;
+}
+
+
+inline void  CexmcRunManager::ReplayEvents( G4int  nEvents )
+{
+    if ( ! ProjectIsRead() )
+        return;
+
+    if ( nEvents == 0 )
+        nEvents = sObject.nmbOfSavedFastEvents;
+
+    BeamOn( nEvents );
 }
 
 

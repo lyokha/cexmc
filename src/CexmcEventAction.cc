@@ -32,6 +32,7 @@
 #include "CexmcEventActionMessenger.hh"
 #include "CexmcEventInfo.hh"
 #include "CexmcEventSObject.hh"
+#include "CexmcEventFastSObject.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcHistoManager.hh"
 #include "CexmcRunManager.hh"
@@ -204,12 +205,6 @@ void  CexmcEventAction::PrintProductionModelData(
                             const CexmcProductionModelData &  pmData ) const
 {
     G4cout << " --- Triggered angular ranges: " << angularRanges;
-
-    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-    if ( runManager->ProjectIsRead() )
-        return;
-
     G4cout << " --- Production model data: " << pmData;
 }
 
@@ -439,7 +434,8 @@ void  CexmcEventAction::UpdateRunHits(
 
 void  CexmcEventAction::SaveEvent( const G4Event *  event,
                                    const CexmcEnergyDepositStore *  edStore,
-                                   const CexmcTrackPointsStore *  tpStore )
+                                   const CexmcTrackPointsStore *  tpStore,
+                                   const CexmcProductionModelData &  pmData )
 {
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
@@ -454,18 +450,46 @@ void  CexmcEventAction::SaveEvent( const G4Event *  event,
             edStore->vetoCounterEDLeft, edStore->vetoCounterEDRight,
             edStore->calorimeterEDLeft, edStore->calorimeterEDRight,
             edStore->calorimeterEDLeftCollection,
-            edStore->calorimeterEDRightCollection, tpStore->monitorTP,
-            tpStore->targetTPIncidentParticle, tpStore->targetTPOutputParticle,
-            tpStore->targetTPNucleusParticle,
+            edStore->calorimeterEDRightCollection,
+            tpStore->monitorTP, tpStore->targetTPIncidentParticle,
+            tpStore->targetTPOutputParticle, tpStore->targetTPNucleusParticle,
             tpStore->targetTPOutputParticleDecayProductParticle1,
             tpStore->targetTPOutputParticleDecayProductParticle2,
             tpStore->vetoCounterTPLeft, tpStore->vetoCounterTPRight,
-            tpStore->calorimeterTPLeft, tpStore->calorimeterTPRight );
+            tpStore->calorimeterTPLeft, tpStore->calorimeterTPRight, pmData );
         archive->operator<<( sObject );
         const CexmcRun *  run( static_cast< const CexmcRun * >(
                                                 runManager->GetCurrentRun() ) );
         CexmcRun *        theRun( const_cast< CexmcRun * >( run ) );
         theRun->IncrementNmbOfSavedEvents();
+    }
+}
+
+
+void  CexmcEventAction::SaveEventFast( const G4Event *  event,
+                                       G4bool  edDigitizerHasTriggered,
+                                       G4bool  tpDigitizerHasTriggered,
+                                       G4double  opCosThetaSCM )
+{
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    if ( ! runManager->ProjectIsSaved() )
+        return;
+
+    boost::archive::binary_oarchive *  archive(
+                                        runManager->GetFastEventsArchive() );
+    if ( archive )
+    {
+        if ( ! tpDigitizerHasTriggered )
+            opCosThetaSCM = 2.0;
+
+        CexmcEventFastSObject  sObject( event->GetEventID(), opCosThetaSCM,
+                                        edDigitizerHasTriggered );
+        archive->operator<<( sObject );
+        const CexmcRun *  run( static_cast< const CexmcRun * >(
+                                                runManager->GetCurrentRun() ) );
+        CexmcRun *        theRun( const_cast< CexmcRun * >( run ) );
+        theRun->IncrementNmbOfSavedFastEvents();
     }
 }
 
@@ -593,9 +617,16 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
             }
         }
 
+        if ( edDigitizerHasTriggered || tpDigitizerHasTriggered )
+        {
+            SaveEventFast( event, edDigitizerHasTriggered,
+                           tpDigitizerHasTriggered,
+                           pmData.outputParticleSCM.cosTheta() );
+        }
+
         if ( edDigitizerHasTriggered )
         {
-            SaveEvent( event, edStore, tpStore );
+            SaveEvent( event, edStore, tpStore, pmData );
             FillEnergyDepositHisto( edStore );
         }
 

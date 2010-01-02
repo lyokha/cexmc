@@ -20,6 +20,39 @@
 #include "CexmcProductionModelData.hh"
 
 
+CexmcProductionModelData::CexmcProductionModelData()
+{
+}
+
+
+CexmcProductionModelData::CexmcProductionModelData(
+                      const G4LorentzVector &  incidentParticleSCM,
+                      const G4LorentzVector &  incidentParticleLAB,
+                      const G4LorentzVector &  nucleusParticleSCM,
+                      const G4LorentzVector &  nucleusParticleLAB,
+                      const G4LorentzVector &  outputParticleSCM,
+                      const G4LorentzVector &  outputParticleLAB,
+                      const G4LorentzVector &  nucleusOutputParticleSCM,
+                      const G4LorentzVector &  nucleusOutputParticleLAB,
+                      const G4ParticleDefinition *  incidentParticle,
+                      const G4ParticleDefinition *  nucleusParticle,
+                      const G4ParticleDefinition *  outputParticle,
+                      const G4ParticleDefinition *  nucleusOutputParticle ) :
+    incidentParticleSCM( incidentParticleSCM ),
+    incidentParticleLAB( incidentParticleLAB ),
+    nucleusParticleSCM( nucleusParticleSCM ),
+    nucleusParticleLAB( nucleusParticleLAB ),
+    outputParticleSCM( outputParticleSCM ),
+    outputParticleLAB( outputParticleLAB ),
+    nucleusOutputParticleSCM( nucleusOutputParticleSCM ),
+    nucleusOutputParticleLAB( nucleusOutputParticleLAB ),
+    incidentParticle( incidentParticle ), nucleusParticle( nucleusParticle ),
+    outputParticle( outputParticle ),
+    nucleusOutputParticle( nucleusOutputParticle )
+{
+}
+
+
 std::ostream &  operator<<( std::ostream &  out,
                             const CexmcProductionModelData &  data )
 {

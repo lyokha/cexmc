@@ -93,7 +93,13 @@ class  CexmcEventAction : public G4UserEventAction
 
         void  SaveEvent( const G4Event *  event,
                          const CexmcEnergyDepositStore *  edStore,
-                         const CexmcTrackPointsStore *  tpStore );
+                         const CexmcTrackPointsStore *  tpStore,
+                         const CexmcProductionModelData &  pmData );
+
+        void  SaveEventFast( const G4Event *  event,
+                             G4bool  edDigitizerHasTriggered,
+                             G4bool  tpDigitizerHasTriggered,
+                             G4double  opCosThetaSCM );
 
     private:
         CexmcPhysicsManager *               physicsManager;

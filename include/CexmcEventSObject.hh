@@ -22,9 +22,11 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include "CexmcSimpleTrackPointInfoStore.hh"
+#include "CexmcSimpleProductionModelDataStore.hh"
 #include "CexmcCommon.hh"
 
 class  CexmcTrackPointInfo;
+class  CexmcProductionModelData;
 
 
 class  CexmcEventSObject
@@ -53,7 +55,8 @@ class  CexmcEventSObject
                 const CexmcTrackPointInfo &  vetoCounterTPLeft,
                 const CexmcTrackPointInfo &  vetoCounterTPRight,
                 const CexmcTrackPointInfo &  calorimeterTPLeft,
-                const CexmcTrackPointInfo &  calorimeterTPRight );
+                const CexmcTrackPointInfo &  calorimeterTPRight,
+                const CexmcProductionModelData &  productionModelData );
 
     private:
         template  < typename  Archive >
@@ -97,6 +100,8 @@ class  CexmcEventSObject
         CexmcSimpleTrackPointInfoStore           calorimeterTPLeft;
 
         CexmcSimpleTrackPointInfoStore           calorimeterTPRight;
+
+        CexmcSimpleProductionModelDataStore      productionModelData;
 };
 
 
@@ -121,6 +126,7 @@ void  CexmcEventSObject::serialize( Archive &  archive, const unsigned int )
     archive & vetoCounterTPRight;
     archive & calorimeterTPLeft;
     archive & calorimeterTPRight;
+    archive & productionModelData;
 }
 
 

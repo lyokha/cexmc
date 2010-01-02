@@ -24,6 +24,7 @@
 class  CexmcRunManager;
 class  G4UIcommand;
 class  G4UIcmdWithAString;
+class  G4UIcmdWithAnInteger;
 
 
 class  CexmcRunManagerMessenger : public G4UImessenger
@@ -37,13 +38,15 @@ class  CexmcRunManagerMessenger : public G4UImessenger
         void  SetNewValue( G4UIcommand *  cmd, G4String  value );
 
     private:
-        CexmcRunManager *     runManager;
+        CexmcRunManager *       runManager;
 
-        G4UIcmdWithAString *  setProductionModel;
+        G4UIcmdWithAString *    setProductionModel;
 
-        G4UIcmdWithAString *  setGdmlFile;
+        G4UIcmdWithAString *    setGdmlFile;
 
-        G4UIcmdWithAString *  setEventCountPolicy;
+        G4UIcmdWithAString *    setEventCountPolicy;
+
+        G4UIcmdWithAnInteger *  replayEvents;
 };
 
 

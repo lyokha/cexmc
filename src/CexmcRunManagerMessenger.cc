@@ -17,6 +17,7 @@
  */
 
 #include <G4UIcmdWithAString.hh>
+#include <G4UIcmdWithAnInteger.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
 #include "CexmcMessenger.hh"
@@ -25,7 +26,7 @@
 CexmcRunManagerMessenger::CexmcRunManagerMessenger(
                                 CexmcRunManager *  runManager ) :
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL ),
-    setEventCountPolicy( NULL )
+    setEventCountPolicy( NULL ), replayEvents( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -50,6 +51,16 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     setEventCountPolicy->SetDefaultValue( "all" );
     setEventCountPolicy->SetCandidates( "all interaction trigger" );
     setEventCountPolicy->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    replayEvents = new G4UIcmdWithAnInteger(
+        ( CexmcMessenger::runDirName + "replay" ).c_str(), this );
+    replayEvents->SetGuidance( "Replay specified number of events.\n"
+           "  if number of events is 0 (or not specified) then all run will be "
+           "replayed" );
+    replayEvents->SetParameterName( "ReplayEvents", true );
+    replayEvents->SetDefaultValue( 0 );
+    replayEvents->SetRange( "ReplayEvents >= 0" );
+    replayEvents->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
 
@@ -58,6 +69,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
     delete setProductionModel;
     delete setGdmlFile;
     delete setEventCountPolicy;
+    delete replayEvents;
 }
 
 
@@ -108,6 +120,12 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
                 }
             } while ( false );
             runManager->SetEventCountPolicy( eventCountPolicy );
+            break;
+        }
+        if ( cmd == replayEvents )
+        {
+            runManager->ReplayEvents(
+                                G4UIcmdWithAnInteger::GetNewIntValue( value ) );
             break;
         }
     } while ( false );

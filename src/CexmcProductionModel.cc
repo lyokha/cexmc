@@ -33,3 +33,17 @@ CexmcProductionModel::~CexmcProductionModel()
     delete messenger;
 }
 
+
+void  CexmcProductionModel::SetTriggeredAngularRanges( G4double  opCosThetaSCM )
+{
+    triggeredAngularRanges.clear();
+
+    for ( CexmcAngularRangeList::iterator  k( angularRanges.begin() );
+                                            k != angularRanges.end(); ++k )
+    {
+        if ( opCosThetaSCM <= k->top && opCosThetaSCM > k->bottom )
+            triggeredAngularRanges.push_back( CexmcAngularRange(
+                                            k->top, k->bottom, k->index ) );
+    }
+}
+

@@ -94,7 +94,7 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                 if ( k->second->trackType == CexmcOutputParticleTrack )
                 {
                     targetTPOutputParticle = *k->second;
-                    hasTriggered = true;
+                    hasTriggered = targetTPOutputParticle.IsValid();
                     break;
                 }
                 if ( k->second->trackType == CexmcNucleusParticleTrack )
