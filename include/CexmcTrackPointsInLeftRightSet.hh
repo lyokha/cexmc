@@ -38,6 +38,8 @@ class  CexmcTrackPointsInLeftRightSet : public CexmcTrackPoints
     public:
         static CexmcSide  GetSide( G4int  index );
 
+        static G4int  GetLeftRightBitsOffset( void );
+
     protected:
         static G4int  leftRightBitsOffset;
 };
@@ -49,6 +51,12 @@ inline CexmcSide  CexmcTrackPointsInLeftRightSet::GetSide( G4int  index )
         return CexmcRight;
 
     return CexmcLeft;
+}
+
+
+inline G4int  CexmcTrackPointsInLeftRightSet::GetLeftRightBitsOffset( void )
+{
+    return leftRightBitsOffset;
 }
 
 

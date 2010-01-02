@@ -29,7 +29,7 @@ G4int  CexmcEnergyDepositInLeftRightSet::leftRightBitsOffset( 16 );
 
 CexmcEnergyDepositInLeftRightSet::CexmcEnergyDepositInLeftRightSet(
                             const G4String &  name ) :
-    CexmcSimpleEnergyDeposit( name  )
+    CexmcSimpleEnergyDeposit( name )
 {
 }
 

@@ -22,6 +22,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <G4Eta.hh>
 #include <G4DigiManager.hh>
+#include <G4SDManager.hh>
 #include <G4DecayTable.hh>
 #include <G4ParticleDefinition.hh>
 #include <G4ParticleTable.hh>
@@ -36,6 +37,12 @@
 #include "CexmcSimpleDecayTableStore.hh"
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcEnergyDepositDigitizer.hh"
+#include "CexmcSimpleEnergyDeposit.hh"
+#include "CexmcEnergyDepositInLeftRightSet.hh"
+#include "CexmcEnergyDepositInCalorimeter.hh"
+#include "CexmcTrackPoints.hh"
+#include "CexmcTrackPointsInLeftRightSet.hh"
+#include "CexmcTrackPointsInCalorimeter.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
@@ -270,7 +277,7 @@ void  CexmcRunManager::SaveProject( void )
         physicsManager->GetProductionModel()->GetAngularRanges(),
         physicsManager->GetProductionModel()->IsFermiMotionOn(),
         eventCountPolicy,
-        particleGun->GetParticleDefinition()->GetParticleName(),
+        particleGun->GetParticleDefinition()->GetPDGEncoding(),
         particleGun->GetOrigPosition(), particleGun->GetOrigDirection(),
         particleGun->GetOrigMomentumAmp(),
         primaryGeneratorAction->GetFwhmPosX(),
@@ -373,11 +380,161 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent, const G4String &  cmd,
 
     boost::archive::binary_iarchive  archive( eventsDataFile );
 
+    G4Event  event;
+    currentEvent = &event;
+    G4SDManager *      sdManager( G4SDManager::GetSDMpointer() );
+    event.SetHCofThisEvent( sdManager->PrepareNewEvent() );
+    G4HCofThisEvent *  hcOfThisEvent( event.GetHCofThisEvent() );
+
+    G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
+
+    G4int  hcId( digiManager->GetHitsCollectionID( "vMonitor/Monitor/ED" ) );
+    CexmcEnergyDepositCollection *  monitorED(
+                                            new CexmcEnergyDepositCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, monitorED );
+    hcId = digiManager->GetHitsCollectionID( "vVetoCounter/VetoCounter/ED" );
+    CexmcEnergyDepositCollection *  vetoCounterED(
+                                            new CexmcEnergyDepositCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, vetoCounterED );
+    hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/ED" );
+    CexmcEnergyDepositCollection *  calorimeterED(
+                                            new CexmcEnergyDepositCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, calorimeterED );
+    hcId = digiManager->GetHitsCollectionID( "vMonitor/Monitor/TP" );
+    CexmcTrackPointsCollection *  monitorTP( new CexmcTrackPointsCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, monitorTP );
+    hcId = digiManager->GetHitsCollectionID( "vTarget/Target/TP" );
+    CexmcTrackPointsCollection *  targetTP( new CexmcTrackPointsCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, targetTP );
+    hcId = digiManager->GetHitsCollectionID( "vVetoCounter/VetoCounter/TP" );
+    CexmcTrackPointsCollection *  vetoCounterTP(
+                                            new CexmcTrackPointsCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, vetoCounterTP );
+    hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/TP" );
+    CexmcTrackPointsCollection *  calorimeterTP(
+                                            new CexmcTrackPointsCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, calorimeterTP );
+
     for ( G4int  i( 0 ); i < sObject.nmbOfSavedEvents; ++i )
     {
         archive >> evSObject;
-        G4cout << CexmcTrackPointInfo( evSObject.monitorTP ) << G4endl;
+        event.SetEventID( evSObject.eventId );
+
+        monitorED->GetMap()->operator[]( 0 ) = &evSObject.monitorED;
+        vetoCounterED->GetMap()->operator[]( 0 ) = &evSObject.vetoCounterEDLeft;
+        vetoCounterED->GetMap()->operator[]( 1 <<
+                CexmcEnergyDepositInLeftRightSet::GetLeftRightBitsOffset() ) =
+                                                &evSObject.vetoCounterEDRight;
+        G4int  row( 0 );
+        for ( CexmcEnergyDepositCalorimeterCollection::iterator
+                k( evSObject.calorimeterEDLeftCollection.begin() );
+                    k != evSObject.calorimeterEDLeftCollection.end(); ++k )
+        {
+            G4int  index( row <<
+                CexmcEnergyDepositInCalorimeter::GetCopyDepth1BitsOffset() );
+            G4int  column( 0 );
+            for ( CexmcEnergyDepositCrystalRowCollection::iterator
+                    l( k->begin() ); l != k->end(); ++l )
+            {
+                calorimeterED->GetMap()->operator[]( index | column ) = &*l;
+                ++column;
+            }
+            ++row;
+        }
+        row = 0;
+        for ( CexmcEnergyDepositCalorimeterCollection::iterator
+                k( evSObject.calorimeterEDRightCollection.begin() );
+                    k != evSObject.calorimeterEDRightCollection.end(); ++k )
+        {
+            G4int  index(
+                1 << CexmcEnergyDepositInLeftRightSet::GetLeftRightBitsOffset()
+                | row <<
+                CexmcEnergyDepositInCalorimeter::GetCopyDepth1BitsOffset() );
+            G4int  column( 0 );
+            for ( CexmcEnergyDepositCrystalRowCollection::iterator
+                    l( k->begin() ); l != k->end(); ++l )
+            {
+                calorimeterED->GetMap()->operator[]( index | column ) = &*l;
+                ++column;
+            }
+            ++row;
+        }
+
+        CexmcTrackPointInfo  monitorTPInfo( evSObject.monitorTP );
+        CexmcTrackPointInfo  targetTPIncidentParticleInfo(
+                                        evSObject.targetTPIncidentParticle );
+        CexmcTrackPointInfo  targetTPOutputParticleInfo(
+                                        evSObject.targetTPOutputParticle );
+        CexmcTrackPointInfo  targetTPNucleusParticleInfo(
+                                        evSObject.targetTPNucleusParticle );
+        CexmcTrackPointInfo  targetTPOutputParticleDecayProductParticle1Info(
+                        evSObject.targetTPOutputParticleDecayProductParticle1 );
+        CexmcTrackPointInfo  targetTPOutputParticleDecayProductParticle2Info(
+                        evSObject.targetTPOutputParticleDecayProductParticle2 );
+        CexmcTrackPointInfo  vetoCounterTPLeftInfo(
+                                                evSObject.vetoCounterTPLeft );
+        CexmcTrackPointInfo  vetoCounterTPRightInfo(
+                                                evSObject.vetoCounterTPRight );
+        CexmcTrackPointInfo  calorimeterTPLeftInfo(
+                                                evSObject.calorimeterTPLeft );
+        CexmcTrackPointInfo  calorimeterTPRightInfo(
+                                                evSObject.calorimeterTPRight );
+
+        if ( monitorTPInfo.IsValid() )
+            monitorTP->GetMap()->operator[]( monitorTPInfo.trackId ) =
+                                                &monitorTPInfo;
+        if ( targetTPIncidentParticleInfo.IsValid() )
+            targetTP->GetMap()->operator[](
+                    targetTPIncidentParticleInfo.trackId ) =
+                                                &targetTPIncidentParticleInfo;
+        if ( targetTPOutputParticleInfo.IsValid() )
+            targetTP->GetMap()->operator[](
+                    targetTPOutputParticleInfo.trackId ) =
+                                                &targetTPOutputParticleInfo;
+        if ( targetTPNucleusParticleInfo.IsValid() )
+            targetTP->GetMap()->operator[](
+                    targetTPNucleusParticleInfo.trackId ) =
+                                                &targetTPNucleusParticleInfo;
+        if ( targetTPOutputParticleDecayProductParticle1Info.IsValid() )
+            targetTP->GetMap()->operator[](
+                    targetTPOutputParticleDecayProductParticle1Info.trackId ) =
+                            &targetTPOutputParticleDecayProductParticle1Info;
+        if ( targetTPOutputParticleDecayProductParticle2Info.IsValid() )
+            targetTP->GetMap()->operator[](
+                    targetTPOutputParticleDecayProductParticle2Info.trackId ) =
+                            &targetTPOutputParticleDecayProductParticle2Info;
+        if ( vetoCounterTPLeftInfo.IsValid() )
+            vetoCounterTP->GetMap()->operator[](
+                    vetoCounterTPLeftInfo.trackId ) = &vetoCounterTPLeftInfo;
+        if ( vetoCounterTPRightInfo.IsValid() )
+            vetoCounterTP->GetMap()->operator[](
+                1 << CexmcTrackPointsInLeftRightSet::GetLeftRightBitsOffset() |
+                    vetoCounterTPRightInfo.trackId ) = &vetoCounterTPRightInfo;
+        if ( calorimeterTPLeftInfo.IsValid() )
+            calorimeterTP->GetMap()->operator[](
+                    calorimeterTPLeftInfo.trackId ) = &calorimeterTPLeftInfo;
+        if ( calorimeterTPRightInfo.IsValid() )
+            calorimeterTP->GetMap()->operator[](
+                1 << CexmcTrackPointsInLeftRightSet::GetLeftRightBitsOffset() |
+                    calorimeterTPRightInfo.trackId ) = &calorimeterTPRightInfo;
+
+        const CexmcEventAction *  eventAction(
+                static_cast< const CexmcEventAction * >( userEventAction ) );
+        if ( ! eventAction )
+            throw CexmcException( CexmcWeirdException );
+
+        CexmcEventAction *  theEventAction( const_cast< CexmcEventAction * >(
+                                                                eventAction ) );
+        theEventAction->EndOfEventAction( &event );
     }
+
+    monitorED->GetMap()->clear();
+    vetoCounterED->GetMap()->clear();
+    calorimeterED->GetMap()->clear();
+    monitorTP->GetMap()->clear();
+    targetTP->GetMap()->clear();
+    vetoCounterTP->GetMap()->clear();
+    calorimeterTP->GetMap()->clear();
 }
 
 
@@ -413,7 +570,7 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
                         ( projectsDir + "/" + projectId + ".edb" ).c_str() );
             boost::archive::binary_oarchive  eventsArchive_( eventsDataFile );
             eventsArchive = &eventsArchive_;
-            DoCommonEventLoop( nEvent, cmd, nSelect );
+            DoReadEventLoop( nEvent, cmd, nSelect );
         }
         else
         {
@@ -481,7 +638,14 @@ void  CexmcRunManager::PrintReadData( void ) const
               sObject.numberOfEventsProcessed << " / " <<
               sObject.numberOfEventsProcessedEffective << " / " <<
               sObject.numberOfEventsToBeProcessed << G4endl;
-    G4cout << "  -- Incident particle: " << sObject.incidentParticle << G4endl;
+    G4ParticleDefinition *  particleDefinition(
+                    G4ParticleTable::GetParticleTable()->FindParticle(
+                                                sObject.incidentParticle ) );
+    if ( ! particleDefinition )
+        throw CexmcException( CexmcWeirdException );
+
+    G4cout << "  -- Incident particle: " <<
+              particleDefinition->GetParticleName() << G4endl;
     G4cout << "              position: " <<
               G4BestUnit( sObject.beamPos, "Length" ) << G4endl;
     G4cout << "             direction: " << G4ThreeVector( sObject.beamDir ) <<

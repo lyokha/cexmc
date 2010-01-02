@@ -204,6 +204,12 @@ void  CexmcEventAction::PrintProductionModelData(
                             const CexmcProductionModelData &  pmData ) const
 {
     G4cout << " --- Triggered angular ranges: " << angularRanges;
+
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    if ( runManager->ProjectIsRead() )
+        return;
+
     G4cout << " --- Production model data: " << pmData;
 }
 

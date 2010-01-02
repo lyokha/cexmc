@@ -38,6 +38,8 @@ class  CexmcEnergyDepositInCalorimeter : public CexmcEnergyDepositInLeftRightSet
 
         static G4int  GetColumn( G4int  index );
 
+        static G4int  GetCopyDepth1BitsOffset( void );
+
     protected:
         static G4int  copyDepth1BitsOffset;
 };
@@ -55,6 +57,12 @@ inline G4int  CexmcEnergyDepositInCalorimeter::GetColumn( G4int  index )
 {
     return index & ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) |
                               ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) - 1 ) );
+}
+
+
+inline G4int  CexmcEnergyDepositInCalorimeter::GetCopyDepth1BitsOffset( void )
+{
+    return copyDepth1BitsOffset;
 }
 
 

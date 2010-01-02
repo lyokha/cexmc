@@ -38,6 +38,10 @@ class  CexmcTrackPointsInCalorimeter : public CexmcTrackPointsInLeftRightSet
 
         static G4int  GetColumn( G4int  index );
 
+        static G4int  GetCopyDepth0BitsOffset( void );
+
+        static G4int  GetCopyDepth1BitsOffset( void );
+
     protected:
         static G4int  copyDepth0BitsOffset;
 
@@ -58,6 +62,18 @@ inline G4int  CexmcTrackPointsInCalorimeter::GetColumn( G4int  index )
     index &= ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) |
                           ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) - 1 ) );
     return index >> copyDepth0BitsOffset;
+}
+
+
+inline G4int  CexmcTrackPointsInCalorimeter::GetCopyDepth0BitsOffset( void )
+{
+    return copyDepth0BitsOffset;
+}
+
+
+inline G4int  CexmcTrackPointsInCalorimeter::GetCopyDepth1BitsOffset( void )
+{
+    return copyDepth1BitsOffset;
 }
 
 

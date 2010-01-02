@@ -38,6 +38,8 @@ class  CexmcEnergyDepositInLeftRightSet : public CexmcSimpleEnergyDeposit
     public:
         static CexmcSide  GetSide( G4int  index );
 
+        static G4int  GetLeftRightBitsOffset( void );
+
     protected:
         static G4int  leftRightBitsOffset;
 };
@@ -49,6 +51,12 @@ inline CexmcSide  CexmcEnergyDepositInLeftRightSet::GetSide( G4int  index )
         return CexmcRight;
 
     return CexmcLeft;
+}
+
+
+inline G4int  CexmcEnergyDepositInLeftRightSet::GetLeftRightBitsOffset( void )
+{
+    return leftRightBitsOffset;
 }
 
 
