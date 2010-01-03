@@ -27,6 +27,4 @@
 /cexmc/reconstructor/mCutNOPWidth 50 MeV
 /cexmc/reconstructor/mCutAngle 45 deg
 
-/cexmc/run/eventCountPolicy trigger
-
 /cexmc/event/verbose 2

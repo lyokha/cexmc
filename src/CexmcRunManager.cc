@@ -59,8 +59,8 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     gdmlFileName( "default.gdml" ), projectsDir( "." ), projectId( projectId ),
     rProject( rProject ), eventCountPolicy( CexmcCountAllEvents ),
     numberOfEventsProcessed( 0 ), numberOfEventsProcessedEffective( 0 ),
-    eventsArchive( NULL ), fastEventsArchive( NULL ), physicsManager( NULL ),
-    messenger( NULL )
+    curEventRead( 0 ), eventsArchive( NULL ), fastEventsArchive( NULL ),
+    physicsManager( NULL ), messenger( NULL )
 {
     /* this exception must be caught before creating the object! */
     if ( rProject != "" && rProject == projectId )
@@ -373,6 +373,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 {
     G4int  iEvent( 0 );
     G4int  iEventEffective( 0 );
+    G4int  nEventCount( 0 );
 
     if ( ! ProjectIsRead() )
         return;
@@ -436,13 +437,23 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterTP );
 
-    for ( iEvent = 0; iEvent < nEvent; ++iEvent )
+    for ( iEvent = 0; iEvent < sObject.nmbOfSavedFastEvents; ++iEvent )
     {
         evFastArchive >> evFastSObject;
         event.SetEventID( evSObject.eventId );
 
         productionModel->SetTriggeredAngularRanges(
                                                 evFastSObject.opCosThetaSCM );
+
+        if ( nEventCount < curEventRead )
+        {
+            if ( evFastSObject.edDigitizerHasTriggered )
+            {
+                evArchive >> evSObject;
+                ++nEventCount;
+            }
+            continue;
+        }
 
         if ( ! evFastSObject.edDigitizerHasTriggered )
         {
@@ -574,27 +585,18 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
         CexmcEventInfo *  eventInfo( static_cast< CexmcEventInfo * >(
                                                 event.GetUserInformation() ) );
-        switch ( eventCountPolicy )
-        {
-        case CexmcCountAllEvents :
+
+        if ( eventInfo->EdTriggerIsOk() )
             ++iEventEffective;
-            break;
-        case CexmcCountEventsWithInteraction :
-            if ( eventInfo->TpTriggerIsOk() )
-                ++iEventEffective;
-            break;
-        case CexmcCountEventsWithTrigger :
-            if ( eventInfo->EdTriggerIsOk() )
-                ++iEventEffective;
-            break;
-        default :
-            ++iEventEffective;
-            break;
-        }
 
         delete event.GetUserInformation();
         event.SetUserInformation( NULL );
+
+        if ( nEvent > 0 && iEventEffective == nEvent )
+            break;
     }
+
+    curEventRead = nEventCount + iEventEffective;
 
     monitorED->GetMap()->clear();
     vetoCounterED->GetMap()->clear();

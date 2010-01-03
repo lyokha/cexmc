@@ -26,7 +26,7 @@
 CexmcRunManagerMessenger::CexmcRunManagerMessenger(
                                 CexmcRunManager *  runManager ) :
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL ),
-    setEventCountPolicy( NULL ), replayEvents( NULL )
+    setEventCountPolicy( NULL ), replayEvents( NULL ), seekTo( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -54,13 +54,24 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
 
     replayEvents = new G4UIcmdWithAnInteger(
         ( CexmcMessenger::runDirName + "replay" ).c_str(), this );
-    replayEvents->SetGuidance( "Replay specified number of events.\n"
+    replayEvents->SetGuidance( "Replay specified number of events "
+           "(available only if a project is read).\n"
            "  if number of events is 0 (or not specified) then all run will be "
            "replayed" );
     replayEvents->SetParameterName( "ReplayEvents", true );
     replayEvents->SetDefaultValue( 0 );
     replayEvents->SetRange( "ReplayEvents >= 0" );
     replayEvents->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    seekTo = new G4UIcmdWithAnInteger(
+        ( CexmcMessenger::runDirName + "seekto" ).c_str(), this );
+    seekTo->SetGuidance( "Seek to specified event id "
+           "(available only if a project is read).\n"
+           "  event count starts from 1" );
+    seekTo->SetParameterName( "SeekTo", false );
+    seekTo->SetDefaultValue( 1 );
+    seekTo->SetRange( "SeekTo > 0" );
+    seekTo->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
 
@@ -70,6 +81,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
     delete setGdmlFile;
     delete setEventCountPolicy;
     delete replayEvents;
+    delete seekTo;
 }
 
 
@@ -126,6 +138,11 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
         {
             runManager->ReplayEvents(
                                 G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+            break;
+        }
+        if ( cmd == seekTo )
+        {
+            runManager->SeekTo( G4UIcmdWithAnInteger::GetNewIntValue( value ) );
             break;
         }
     } while ( false );

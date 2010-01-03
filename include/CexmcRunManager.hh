@@ -20,6 +20,7 @@
 #define CEXMC_RUN_MANAGER_HH
 
 #include <set>
+#include <limits>
 #include <boost/archive/binary_oarchive.hpp>
 #include <G4RunManager.hh>
 #include "CexmcRunSObject.hh"
@@ -61,6 +62,8 @@ class  CexmcRunManager : public G4RunManager
         void  PrintReadData( const CexmcOutputDataTypeSet &  outputData ) const;
 
         void  ReplayEvents( G4int  nEvents = 0 );
+
+        void  SeekTo( G4int  eventNmb = 1 );
 
     public:
         CexmcProductionModelType  GetProductionModelType( void ) const;
@@ -114,6 +117,8 @@ class  CexmcRunManager : public G4RunManager
 
         G4int                       numberOfEventsProcessedEffective;
 
+        G4int                       curEventRead;
+
     private:
         boost::archive::binary_oarchive *  eventsArchive;
 
@@ -156,6 +161,9 @@ inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
 inline void  CexmcRunManager::SetEventCountPolicy(
                                 CexmcEventCountPolicy  eventCountPolicy_ )
 {
+    if ( ProjectIsRead() )
+        throw CexmcException( CexmcCmdIsNotAllowed );
+
     eventCountPolicy = eventCountPolicy_;
 }
 
@@ -217,9 +225,18 @@ inline void  CexmcRunManager::ReplayEvents( G4int  nEvents )
         return;
 
     if ( nEvents == 0 )
-        nEvents = sObject.nmbOfSavedFastEvents;
+        nEvents = std::numeric_limits< G4int >::max();
 
     BeamOn( nEvents );
+}
+
+
+inline void  CexmcRunManager::SeekTo( G4int  eventNmb )
+{
+    if ( ! ProjectIsRead() )
+        return;
+
+    curEventRead = eventNmb - 1;
 }
 
 

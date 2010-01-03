@@ -39,6 +39,7 @@ const G4String  CexmcEDDigitizerName( "EDDig" );
 const G4String  CexmcTPDigitizerName( "TPDig" );
 
 const G4double  CexmcFwhmToStddev( 0.42466 );
+const G4double  CexmcInvalidCosTheta( 2.0 );
 
 
 enum  CexmcProductionModelType

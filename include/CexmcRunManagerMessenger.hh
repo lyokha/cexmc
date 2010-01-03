@@ -47,6 +47,8 @@ class  CexmcRunManagerMessenger : public G4UImessenger
         G4UIcmdWithAString *    setEventCountPolicy;
 
         G4UIcmdWithAnInteger *  replayEvents;
+
+        G4UIcmdWithAnInteger *  seekTo;
 };
 
 

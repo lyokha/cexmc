@@ -481,7 +481,7 @@ void  CexmcEventAction::SaveEventFast( const G4Event *  event,
     if ( archive )
     {
         if ( ! tpDigitizerHasTriggered )
-            opCosThetaSCM = 2.0;
+            opCosThetaSCM = CexmcInvalidCosTheta;
 
         CexmcEventFastSObject  sObject( event->GetEventID(), opCosThetaSCM,
                                         edDigitizerHasTriggered );

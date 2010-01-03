@@ -16,6 +16,7 @@
  * ============================================================================
  */
 
+#include <limits>
 #include "CexmcRunAction.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
