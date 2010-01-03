@@ -281,7 +281,7 @@ void  CexmcRunManager::SaveProject( void )
         physicsManager->GetProductionModel()->GetAngularRanges(),
         physicsManager->GetProductionModel()->IsFermiMotionOn(),
         eventCountPolicy,
-        particleGun->GetParticleDefinition()->GetPDGEncoding(),
+        particleGun->GetParticleDefinition()->GetParticleName(),
         particleGun->GetOrigPosition(), particleGun->GetOrigDirection(),
         particleGun->GetOrigMomentumAmp(),
         primaryGeneratorAction->GetFwhmPosX(),
@@ -724,14 +724,7 @@ void  CexmcRunManager::PrintReadData( void ) const
               sObject.numberOfEventsProcessed << " / " <<
               sObject.numberOfEventsProcessedEffective << " / " <<
               sObject.numberOfEventsToBeProcessed << G4endl;
-    G4ParticleDefinition *  particleDefinition(
-                    G4ParticleTable::GetParticleTable()->FindParticle(
-                                                sObject.incidentParticle ) );
-    if ( ! particleDefinition )
-        throw CexmcException( CexmcWeirdException );
-
-    G4cout << "  -- Incident particle: " <<
-              particleDefinition->GetParticleName() << G4endl;
+    G4cout << "  -- Incident particle: " << sObject.incidentParticle << G4endl;
     G4cout << "              position: " <<
               G4BestUnit( sObject.beamPos, "Length" ) << G4endl;
     G4cout << "             direction: " << G4ThreeVector( sObject.beamDir ) <<

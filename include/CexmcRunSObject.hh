@@ -44,7 +44,7 @@ class  CexmcRunSObject
                          const CexmcAngularRangeList &  angularRanges,
                          G4bool  fermiMotionIsOn,
                          CexmcEventCountPolicy  eventCountPolicy,
-                         G4int  incidentParticle,
+                         const std::string &  incidentParticle,
                          const CexmcSimpleThreeVectorStore &  beamPos,
                          const CexmcSimpleThreeVectorStore &  beamDir,
                          G4double  beamMomentumAmp, G4double  beamFwhmPosX,
@@ -92,7 +92,7 @@ class  CexmcRunSObject
 
         CexmcEventCountPolicy        eventCountPolicy;
 
-        G4int                        incidentParticle;
+        std::string                  incidentParticle;
 
         CexmcSimpleThreeVectorStore  beamPos;
 
