@@ -437,7 +437,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterTP );
 
-    for ( iEvent = 0; iEvent < sObject.nmbOfSavedFastEvents; ++iEvent )
+    for ( int  i( 0 ); i < sObject.nmbOfSavedFastEvents; ++i )
     {
         evFastArchive >> evFastSObject;
         event.SetEventID( evSObject.eventId );
@@ -454,6 +454,8 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
             }
             continue;
         }
+
+        ++iEvent;
 
         if ( ! evFastSObject.edDigitizerHasTriggered )
         {
