@@ -236,7 +236,7 @@ inline void  CexmcRunManager::SeekTo( G4int  eventNmb )
     if ( ! ProjectIsRead() )
         return;
 
-    curEventRead = eventNmb - 1;
+    curEventRead = eventNmb;
 }
 
 

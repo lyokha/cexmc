@@ -67,10 +67,12 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
         ( CexmcMessenger::runDirName + "seekto" ).c_str(), this );
     seekTo->SetGuidance( "Seek to specified event id "
            "(available only if a project is read).\n"
-           "  event count starts from 1" );
+           "  'seekto 0' brings to the start of run, 'seekto 4' - to the first"
+           "\n  recorded event with interaction after fourth recorded event "
+           "with trigger" );
     seekTo->SetParameterName( "SeekTo", false );
-    seekTo->SetDefaultValue( 1 );
-    seekTo->SetRange( "SeekTo > 0" );
+    seekTo->SetDefaultValue( 0 );
+    seekTo->SetRange( "SeekTo >= 0" );
     seekTo->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
