@@ -75,8 +75,9 @@ class  CexmcEventAction : public G4UserEventAction
                         const CexmcAngularRangeList &  angularRanges,
                         const CexmcAngularRange &  angularGap ) const;
 
-        void  FillEnergyDepositHisto( const CexmcEnergyDepositStore *  edStore )
-                                                                        const;
+        void  FillEDTHistos( const CexmcEnergyDepositStore *  edStore ) const;
+
+        void  FillTPTHistos( const CexmcTrackPointsStore *  tpStore ) const;
 
         void  DrawTrajectories( const G4Event *  event );
 

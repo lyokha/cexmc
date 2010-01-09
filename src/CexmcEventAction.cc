@@ -245,7 +245,7 @@ void  CexmcEventAction::PrintReconstructedData(
 }
 
 
-void  CexmcEventAction::FillEnergyDepositHisto(
+void  CexmcEventAction::FillEDTHistos(
                                 const CexmcEnergyDepositStore *  edStore ) const
 {
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
@@ -261,7 +261,7 @@ void  CexmcEventAction::FillEnergyDepositHisto(
                 l( k->rbegin() ); l != k->rend(); ++l )
         {
             if ( *l > 0 )
-                histoManager->Add( CexmcEnergyDepositInLeftCalorimeter,
+                histoManager->Add( CexmcEDInLeftCalorimeter_EDT_Histo,
                                    j, i, *l );
             ++j;
         }
@@ -279,12 +279,24 @@ void  CexmcEventAction::FillEnergyDepositHisto(
                 l( k->rbegin() ); l != k->rend(); ++l )
         {
             if ( *l > 0 )
-                histoManager->Add( CexmcEnergyDepositInRightCalorimeter,
+                histoManager->Add( CexmcEDInRightCalorimeter_EDT_Histo,
                                    j, i, *l );
             ++j;
         }
         ++i;
     }
+}
+
+
+void  CexmcEventAction::FillTPTHistos(
+                                const CexmcTrackPointsStore *  tpStore ) const
+{
+    CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
+
+    if ( tpStore->monitorTP.IsValid() )
+        histoManager->Add( CexmcTPInMonitor_TPT_Histo,
+                           tpStore->monitorTP.positionLocal.x(),
+                           tpStore->monitorTP.positionLocal.y() );
 }
 
 
@@ -627,7 +639,12 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( edDigitizerHasTriggered )
         {
             SaveEvent( event, edStore, tpStore, pmData );
-            FillEnergyDepositHisto( edStore );
+            FillEDTHistos( edStore );
+        }
+
+        if ( tpDigitizerHasTriggered )
+        {
+            FillTPTHistos( tpStore );
         }
 
         G4Event *  theEvent( const_cast< G4Event * >( event ) );

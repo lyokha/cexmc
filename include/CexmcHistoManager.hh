@@ -29,8 +29,9 @@ class  CexmcHistoManagerMessenger;
 
 enum  CexmcHistoType
 {
-    CexmcEnergyDepositInLeftCalorimeter,
-    CexmcEnergyDepositInRightCalorimeter
+    CexmcEDInLeftCalorimeter_EDT_Histo,
+    CexmcEDInRightCalorimeter_EDT_Histo,
+    CexmcTPInMonitor_TPT_Histo
 };
 
 
@@ -52,16 +53,20 @@ class  CexmcHistoManager
         void  Add( CexmcHistoType  histoType, G4int  binX, G4int  binY,
                    G4double  value );
 
+        void  Add( CexmcHistoType, G4double  x, G4double  y );
+
         void  List( void ) const;
 
         void  Print( const G4String &  value );
 
-    public:
+    private:
         TFile *                              outFile;
 
-        TH2F *                               edInLeftCalorimeter;
+        TH2F *                               edcl_edt;
 
-        TH2F *                               edInRightCalorimeter;
+        TH2F *                               edcr_edt;
+
+        TH2F *                               tpmon_tpt;
 
     private:
         std::map< CexmcHistoType, TH1 * > *  histos;

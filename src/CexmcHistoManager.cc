@@ -22,11 +22,19 @@
 #include <TDirectory.h>
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
+#include <G4Box.hh>
 #include "CexmcHistoManager.hh"
 #include "CexmcHistoManagerMessenger.hh"
 #include "CexmcRunManager.hh"
 
 extern TDirectory *  gDirectory;
+
+
+namespace
+{
+    const G4double  CexmcHistoTPResolution( 0.1 * cm );
+    const G4double  CexmcHistoTPSafetyArea( 1.0 * cm );
+}
 
 
 CexmcHistoManager *  CexmcHistoManager::instance( NULL );
@@ -56,6 +64,16 @@ void  CexmcHistoManager::Initialize( void )
         return;
 
     Instance();
+
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    if ( runManager->ProjectIsSaved() )
+    {
+        G4String  projectsDir( runManager->GetProjectsDir() );
+        G4String  resultsFile( projectsDir + "/" + runManager->GetProjectId() +
+                               ".root" );
+        instance->outFile = new TFile( resultsFile, "recreate" );
+    }
 
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
     EAxis                         axis;
@@ -87,34 +105,41 @@ void  CexmcHistoManager::Initialize( void )
         }
     }
 
-    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-    if ( runManager->ProjectIsSaved() )
-    {
-        G4String  projectsDir( runManager->GetProjectsDir() );
-        G4String  resultsFile( projectsDir + "/" + runManager->GetProjectId() +
-                               ".root" );
-        instance->outFile = new TFile( resultsFile, "recreate" );
-    }
-    instance->edInLeftCalorimeter = new TH2F( "edlc",
-            "Energy Deposit (lc)", nCrystalsInRow, 0, nCrystalsInRow,
+    instance->edcl_edt = new TH2F( "edcl_edt",
+            "Energy Deposit (lc) --edt--", nCrystalsInRow, 0, nCrystalsInRow,
                                    nCrystalsInColumn, 0, nCrystalsInColumn );
     instance->histos->insert( std::pair< CexmcHistoType, TH1 * >(
-                                        CexmcEnergyDepositInLeftCalorimeter,
-                                        instance->edInLeftCalorimeter ) );
-    instance->edInRightCalorimeter = new TH2F( "edrc",
-            "Energy Deposit (rc)", nCrystalsInRow, 0, nCrystalsInRow,
+                                        CexmcEDInLeftCalorimeter_EDT_Histo,
+                                        instance->edcl_edt ) );
+    instance->edcr_edt = new TH2F( "edcr_edt",
+            "Energy Deposit (rc) --edt--", nCrystalsInRow, 0, nCrystalsInRow,
                                    nCrystalsInColumn, 0, nCrystalsInColumn );
     instance->histos->insert( std::pair< CexmcHistoType, TH1 * >(
-                                         CexmcEnergyDepositInRightCalorimeter,
-                                         instance->edInRightCalorimeter ) );
+                                         CexmcEDInRightCalorimeter_EDT_Histo,
+                                         instance->edcr_edt ) );
+
+    lVolume = lvs->GetVolume( "vMonitor" );
+    G4Box *   box( static_cast< G4Box * >( lVolume->GetSolid() ) );
+    width = box->GetXHalfLength() * 2;
+    G4double  height( box->GetYHalfLength() * 2 );
+    G4double  halfWidth( width / 2 + CexmcHistoTPSafetyArea );
+    G4double  halfHeight( height / 2 + CexmcHistoTPSafetyArea );
+    G4int     nBinsX( halfWidth * 2 / CexmcHistoTPResolution );
+    G4int     nBinsY( halfHeight * 2 / CexmcHistoTPResolution );
+
+    instance->tpmon_tpt = new TH2F( "tpmon_tpt",
+            "Track Points (mon) --tpt--", nBinsX, -halfWidth, halfWidth,
+                                          nBinsY, -halfHeight, halfHeight );
+    instance->histos->insert( std::pair< CexmcHistoType, TH1 * >(
+                                         CexmcTPInMonitor_TPT_Histo,
+                                         instance->tpmon_tpt ) );
 
     isInitialized = true;
 }
 
 
 CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
-    edInLeftCalorimeter( 0 ), edInRightCalorimeter( 0 ), histos( NULL ),
+    edcl_edt( NULL ), edcr_edt( NULL ), tpmon_tpt( NULL ), histos( NULL ),
     messenger( NULL )
 {
     histos = new std::map< CexmcHistoType, TH1 * >;
@@ -146,6 +171,13 @@ void  CexmcHistoManager::Add( CexmcHistoType  histoType,
     Double_t  curValue( ( *histos )[ histoType ]->GetBinContent( binX, binY ) );
     ( *histos )[ histoType ]->SetBinContent( binX, binY,
                                              curValue + value / GeV );
+}
+
+
+void  CexmcHistoManager::Add( CexmcHistoType  histoType, G4double  x,
+                              G4double  y )
+{
+    ( *histos )[ histoType ]->Fill( x, y );
 }
 
 
