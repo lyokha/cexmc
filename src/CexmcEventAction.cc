@@ -548,8 +548,12 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         {
             reconstructor->Reconstruct( edStore );
             reconstructorHasTriggered = reconstructor->HasTriggered();
-            reconstructorHasFullTrigger = reconstructorHasTriggered &&
-                                          reconstructor->HasMassCutTriggered();
+            reconstructorHasFullTrigger = reconstructorHasTriggered;
+            if ( reconstructorHasFullTrigger && reconstructor->IsMassCutUsed() )
+            {
+                reconstructorHasFullTrigger =
+                                        reconstructor->HasMassCutTriggered();
+            }
         }
 
         CexmcAngularRangeList  triggeredRecAngularRanges;

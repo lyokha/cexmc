@@ -33,6 +33,7 @@ enum  CexmcExceptionType
     CexmcCmdIsNotAllowed,
     CexmcBadAngularRange,
     CexmcBadThreshold,
+    CexmcBadCalorimeterTriggerAlgorithm,
     CexmcBadOCVetoAlgorithm,
     CexmcBadOCVetoFraction,
     CexmcWeirdException

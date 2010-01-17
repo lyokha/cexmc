@@ -31,8 +31,9 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setMonitorThreshold( NULL ), setVetoCountersThreshold( NULL ),
     setLeftVetoCounterThreshold( NULL ), setRightVetoCounterThreshold( NULL ),
     setCalorimetersThreshold( NULL ), setLeftCalorimeterThreshold( NULL ),
-    setRightCalorimeterThreshold( NULL ), setOuterCrystalsVetoAlgorithm( NULL ),
-    setOuterCrystalsVetoFraction( NULL )
+    setRightCalorimeterThreshold( NULL ),
+    setCalorimeterTriggerAlgorithm( NULL ),
+    setOuterCrystalsVetoAlgorithm( NULL ), setOuterCrystalsVetoFraction( NULL )
 {
     setMonitorThreshold = new G4UIcmdWithADoubleAndUnit(
             ( CexmcMessenger::monitorEDDirName + "threshold" ).c_str(), this );
@@ -119,6 +120,23 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setRightCalorimeterThreshold->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
+    setCalorimeterTriggerAlgorithm = new G4UIcmdWithAString(
+            ( CexmcMessenger::detectorDirName +
+              "calorimeterTriggerAlgorithm" ).c_str(), this );
+    setCalorimeterTriggerAlgorithm->SetGuidance( "\n"
+                "    all - energy deposit in all crystals in a calorimeter\n"
+                "          will be checked against calorimeter threshold "
+                          "value,\n"
+                "    inner - energy deposit in only inner crystals\n"
+                "            will be checked against calorimeter threshold "
+                            "value" );
+    setCalorimeterTriggerAlgorithm->SetParameterName(
+                                        "CalorimeterTriggerAlgorithm", false );
+    setCalorimeterTriggerAlgorithm->SetDefaultValue( "inner" );
+    setCalorimeterTriggerAlgorithm->SetCandidates( "all inner" );
+    setCalorimeterTriggerAlgorithm->AvailableForStates( G4State_PreInit,
+                                                        G4State_Idle );
+
     setOuterCrystalsVetoAlgorithm = new G4UIcmdWithAString(
             ( CexmcMessenger::detectorDirName +
               "outerCrystalsVetoAlgorithm" ).c_str(), this );
@@ -130,7 +148,7 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
                     "fraction in\n               outer crystals is more than "
                     "value of 'outerCrystalsVetoFraction'" );
     setOuterCrystalsVetoAlgorithm->SetParameterName(
-                                        "OuterCrystalsVetoAlgorithm", true );
+                                        "OuterCrystalsVetoAlgorithm", false );
     setOuterCrystalsVetoAlgorithm->SetDefaultValue( "none" );
     setOuterCrystalsVetoAlgorithm->SetCandidates( "none max fraction" );
     setOuterCrystalsVetoAlgorithm->AvailableForStates( G4State_PreInit,
@@ -161,6 +179,7 @@ CexmcEnergyDepositDigitizerMessenger::~CexmcEnergyDepositDigitizerMessenger()
     delete setCalorimetersThreshold;
     delete setLeftCalorimeterThreshold;
     delete setRightCalorimeterThreshold;
+    delete setCalorimeterTriggerAlgorithm;
     delete setOuterCrystalsVetoAlgorithm;
     delete setOuterCrystalsVetoFraction;
 }
@@ -211,6 +230,23 @@ void  CexmcEnergyDepositDigitizerMessenger::SetNewValue( G4UIcommand *  cmd,
         {
             energyDepositDigitizer->SetCalorimeterRightThreshold(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
+        }
+        if ( cmd == setCalorimeterTriggerAlgorithm )
+        {
+            CexmcCalorimeterTriggerAlgorithm calorimeterTriggerAlgorithm(
+                                    CexmcAllCrystalsMakeEDTriggerThreshold );
+            do
+            {
+                if ( value == "inner" )
+                {
+                    calorimeterTriggerAlgorithm =
+                                    CexmcInnerCrystalsMakeEDTriggerThreshold;
+                    break;
+                }
+            } while ( false );
+            energyDepositDigitizer->SetCalorimeterTriggerAlgorithm(
+                                                calorimeterTriggerAlgorithm );
             break;
         }
         if ( cmd == setOuterCrystalsVetoAlgorithm )

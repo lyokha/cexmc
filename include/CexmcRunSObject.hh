@@ -56,6 +56,8 @@ class  CexmcRunSObject
                          G4double  vetoCounterEDRightThreshold,
                          G4double  calorimeterEDLeftThreshold,
                          G4double  calorimeterEDRightThreshold,
+                         CexmcCalorimeterTriggerAlgorithm
+                                                    calorimeterTriggerAlgorithm,
                          CexmcOuterCrystalsVetoAlgorithm
                                                     outerCrystalsVetoAlgorithm,
                          G4double  outerCrystalsVetoFraction,
@@ -119,6 +121,8 @@ class  CexmcRunSObject
         G4double                     calorimeterEDLeftThreshold;
 
         G4double                     calorimeterEDRightThreshold;
+
+        CexmcCalorimeterTriggerAlgorithm  calorimeterTriggerAlgorithm;
 
         CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm;
 
@@ -187,6 +191,7 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & vetoCounterEDRightThreshold;
     archive & calorimeterEDLeftThreshold;
     archive & calorimeterEDRightThreshold;
+    archive & calorimeterTriggerAlgorithm;
     archive & outerCrystalsVetoAlgorithm;
     archive & outerCrystalsVetoFraction;
     archive & epDefinitionAlgorithm;

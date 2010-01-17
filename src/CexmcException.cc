@@ -61,6 +61,10 @@ const char *  CexmcException::what( void ) const throw()
         return CEXMC_LINE_START "Bad threshold. "
                 "Check specified thresholds (probably they mismatch thresholds "
                 "in the read project).";
+    case CexmcBadCalorimeterTriggerAlgorithm :
+        return CEXMC_LINE_START "Bad calorimeter trigger algorithm. "
+                "Check specified calorimeter trigger algorithm (probably it "
+                "mismatches algorithm in the read project).";
     case CexmcBadOCVetoAlgorithm :
         return CEXMC_LINE_START "Bad outer crystals veto algorithm. "
                 "Check specified outer crystals veto algorithm (probably it "

@@ -83,6 +83,13 @@ enum  CexmcOuterCrystalsVetoAlgorithm
 };
 
 
+enum  CexmcCalorimeterTriggerAlgorithm
+{
+    CexmcAllCrystalsMakeEDTriggerThreshold,
+    CexmcInnerCrystalsMakeEDTriggerThreshold
+};
+
+
 enum  CexmcCalorimeterEntryPointDefinitionAlgorithm
 {
     CexmcEntryPointInTheCenter,

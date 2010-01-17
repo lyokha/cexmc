@@ -38,10 +38,12 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     hasTriggered( false ), monitorEDThreshold( 0 ),
     vetoCounterEDLeftThreshold( 0 ), vetoCounterEDRightThreshold( 0 ),
     calorimeterEDLeftThreshold( 0 ), calorimeterEDRightThreshold( 0 ),
+    calorimeterTriggerAlgorithm( CexmcAllCrystalsMakeEDTriggerThreshold ),
     outerCrystalsVetoAlgorithm( CexmcNoOuterCrystalsVeto ),
     outerCrystalsVetoFraction( 0 ), monitorEDThresholdRef( 0 ),
     vetoCounterEDLeftThresholdRef( 0 ), vetoCounterEDRightThresholdRef( 0 ),
     calorimeterEDLeftThresholdRef( 0 ), calorimeterEDRightThresholdRef( 0 ),
+    calorimeterTriggerAlgorithmRef( CexmcAllCrystalsMakeEDTriggerThreshold ),
     outerCrystalsVetoAlgorithmRef( CexmcNoOuterCrystalsVeto ),
     outerCrystalsVetoFractionRef( 0 ), nCrystalsInColumn( 1 ),
     nCrystalsInRow( 1 ), messenger( NULL )
@@ -169,6 +171,8 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
     G4double  maxEDCrystalRight( 0 );
     G4double  outerCrystalsEDLeft( 0 );
     G4double  outerCrystalsEDRight( 0 );
+    G4double  innerCrystalsEDLeft( 0 );
+    G4double  innerCrystalsEDRight( 0 );
 
     hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/ED" );
     hitsCollection = static_cast< const CexmcEnergyDepositCollection* >(
@@ -198,6 +202,10 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                 {
                     outerCrystalsEDLeft += *k->second;
                 }
+                else
+                {
+                    innerCrystalsEDLeft += *k->second;
+                }
                 calorimeterEDLeft += *k->second;
                 calorimeterEDLeftCollection[ row ][ column ] = *k->second;
                 break;
@@ -212,6 +220,10 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                 {
                     outerCrystalsEDRight += *k->second;
                 }
+                else
+                {
+                    innerCrystalsEDRight += *k->second;
+                }
                 calorimeterEDRight += *k->second;
                 calorimeterEDRightCollection[ row ][ column ] = *k->second;
                 break;
@@ -221,11 +233,21 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
         }
     }
 
+    G4double  calorimeterEDLeftEffective( calorimeterEDLeft );
+    G4double  calorimeterEDRightEffective( calorimeterEDRight );
+
+    if ( calorimeterTriggerAlgorithm ==
+         CexmcInnerCrystalsMakeEDTriggerThreshold )
+    {
+        calorimeterEDLeftEffective = innerCrystalsEDLeft;
+        calorimeterEDRightEffective = innerCrystalsEDRight;
+    }
+
     hasTriggered = monitorED >= monitorEDThreshold &&
                    vetoCounterEDLeft < vetoCounterEDLeftThreshold &&
                    vetoCounterEDRight < vetoCounterEDRightThreshold &&
-                   calorimeterEDLeft >= calorimeterEDLeftThreshold &&
-                   calorimeterEDRight >= calorimeterEDRightThreshold;
+                   calorimeterEDLeftEffective >= calorimeterEDLeftThreshold &&
+                   calorimeterEDRightEffective >= calorimeterEDRightThreshold;
 
     /* event won't trigger if outer crystals veto triggered */
     if ( hasTriggered )

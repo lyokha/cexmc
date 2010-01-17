@@ -71,27 +71,31 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
 
     public:
         void      SetMonitorThreshold( G4double  value,
-                                       G4bool fromMessenger = true );
+                                       G4bool  fromMessenger = true );
 
         void      SetVetoCounterLeftThreshold( G4double  value,
-                                               G4bool fromMessenger = true );
+                                               G4bool  fromMessenger = true );
 
         void      SetVetoCounterRightThreshold( G4double  value,
-                                                G4bool fromMessenger = true );
+                                                G4bool  fromMessenger = true );
 
         void      SetVetoCountersThreshold( G4double  value );
 
         void      SetCalorimeterLeftThreshold( G4double  value,
-                                               G4bool fromMessenger = true );
+                                               G4bool  fromMessenger = true );
 
         void      SetCalorimeterRightThreshold( G4double  value,
-                                                G4bool fromMessenger = true );
+                                                G4bool  fromMessenger = true );
 
         void      SetCalorimetersThreshold( G4double  value );
 
+        void      SetCalorimeterTriggerAlgorithm(
+                                    CexmcCalorimeterTriggerAlgorithm  value,
+                                    G4bool  fromMessenger = true );
+
         void      SetOuterCrystalsVetoAlgorithm(
                                     CexmcOuterCrystalsVetoAlgorithm  value,
-                                    G4bool fromMessenger = true );
+                                    G4bool  fromMessenger = true );
 
         void      SetOuterCrystalsVetoFraction( G4double  value,
                                                 G4bool fromMessenger = true );
@@ -105,6 +109,9 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4double  GetCalorimeterLeftThreshold( void ) const;
 
         G4double  GetCalorimeterRightThreshold( void ) const;
+
+        CexmcCalorimeterTriggerAlgorithm
+                  GetCalorimeterTriggerAlgorithm( void ) const;
 
         CexmcOuterCrystalsVetoAlgorithm
                   GetOuterCrystalsVetoAlgorithm( void ) const;
@@ -153,6 +160,8 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
 
         G4double                                 calorimeterEDRightThreshold;
 
+        CexmcCalorimeterTriggerAlgorithm         calorimeterTriggerAlgorithm;
+
         CexmcOuterCrystalsVetoAlgorithm          outerCrystalsVetoAlgorithm;
 
         G4double                                 outerCrystalsVetoFraction;
@@ -166,6 +175,8 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4double                                 calorimeterEDLeftThresholdRef;
 
         G4double                                 calorimeterEDRightThresholdRef;
+
+        CexmcCalorimeterTriggerAlgorithm         calorimeterTriggerAlgorithmRef;
 
         CexmcOuterCrystalsVetoAlgorithm          outerCrystalsVetoAlgorithmRef;
 
@@ -376,6 +387,27 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimetersThreshold(
 }
 
 
+inline void  CexmcEnergyDepositDigitizer::SetCalorimeterTriggerAlgorithm(
+                CexmcCalorimeterTriggerAlgorithm  value, G4bool  fromMessenger )
+{
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() &&
+             calorimeterTriggerAlgorithmRef !=
+                                     CexmcAllCrystalsMakeEDTriggerThreshold )
+            throw CexmcException( CexmcBadCalorimeterTriggerAlgorithm );
+    }
+    else
+    {
+        calorimeterTriggerAlgorithmRef = value;
+    }
+
+    calorimeterTriggerAlgorithm = value;
+}
+
+
 inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoAlgorithm(
                 CexmcOuterCrystalsVetoAlgorithm  value, G4bool  fromMessenger )
 {
@@ -455,6 +487,14 @@ inline G4double  CexmcEnergyDepositDigitizer::GetCalorimeterRightThreshold(
                                                                     void ) const
 {
     return calorimeterEDRightThreshold;
+}
+
+
+inline  CexmcCalorimeterTriggerAlgorithm
+                CexmcEnergyDepositDigitizer::GetCalorimeterTriggerAlgorithm(
+                                                                    void ) const
+{
+    return calorimeterTriggerAlgorithm;
 }
 
 

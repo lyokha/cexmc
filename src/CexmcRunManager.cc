@@ -194,6 +194,8 @@ void  CexmcRunManager::ReadProject( void )
                                 sObject.calorimeterEDLeftThreshold, false );
     edDigitizer->SetCalorimeterRightThreshold(
                                 sObject.calorimeterEDRightThreshold, false );
+    edDigitizer->SetCalorimeterTriggerAlgorithm(
+                                sObject.calorimeterTriggerAlgorithm, false );
     edDigitizer->SetOuterCrystalsVetoAlgorithm(
                                 sObject.outerCrystalsVetoAlgorithm, false );
     edDigitizer->SetOuterCrystalsVetoFraction(
@@ -294,6 +296,7 @@ void  CexmcRunManager::SaveProject( void )
         edDigitizer->GetVetoCounterRightThreshold(),
         edDigitizer->GetCalorimeterLeftThreshold(),
         edDigitizer->GetCalorimeterRightThreshold(),
+        edDigitizer->GetCalorimeterTriggerAlgorithm(),
         edDigitizer->GetOuterCrystalsVetoAlgorithm(),
         edDigitizer->GetOuterCrystalsVetoFraction(),
         reconstructor->GetCalorimeterEntryPointDefinitionAlgorithm(),
@@ -755,7 +758,9 @@ void  CexmcRunManager::PrintReadData( void ) const
               " / " <<
               G4BestUnit( sObject.calorimeterEDRightThreshold, "Energy" ) <<
               G4endl;
-    G4cout << "  -- Outer crystals veto alforithm "
+    G4cout << "  -- Calorimeter trigger algorithm (0 - all, 1 - inner): " <<
+               sObject.calorimeterTriggerAlgorithm << G4endl;
+    G4cout << "  -- Outer crystals veto algorithm "
               "(0 - none, 1 - max, 2 - fraction): " <<
                sObject.outerCrystalsVetoAlgorithm << G4endl;
     G4cout << "  -- Outer crystals veto fraction: " <<
