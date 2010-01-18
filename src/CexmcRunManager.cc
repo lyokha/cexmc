@@ -262,6 +262,7 @@ void  CexmcRunManager::SaveProject( void )
                                         theEventAction->GetReconstructor() );
 
     CexmcNmbOfHitsInRanges  nmbOfHitsSampled;
+    CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull;
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal;
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
     CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
@@ -271,6 +272,7 @@ void  CexmcRunManager::SaveProject( void )
     if ( run )
     {
         nmbOfHitsSampled = run->GetNmbOfHitsSampled();
+        nmbOfHitsSampledFull = run->GetNmbOfHitsSampledFull();
         nmbOfHitsTriggeredReal = run->GetNmbOfHitsTriggeredReal();
         nmbOfHitsTriggeredRec = run->GetNmbOfHitsTriggeredRec();
         nmbOfOrphanHits = run->GetNmbOfOrphanHits();
@@ -307,10 +309,10 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetMassCutNOPCenter(),
         reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
         reconstructor->GetMassCutEllipseAngle(),
-        nmbOfHitsSampled, nmbOfHitsTriggeredReal, nmbOfHitsTriggeredRec,
-        nmbOfOrphanHits, nmbOfSavedEvents, nmbOfSavedFastEvents,
-        numberOfEventsProcessed, numberOfEventsProcessedEffective,
-        numberOfEventToBeProcessed );
+        nmbOfHitsSampled, nmbOfHitsSampledFull, nmbOfHitsTriggeredReal,
+        nmbOfHitsTriggeredRec, nmbOfOrphanHits, nmbOfSavedEvents,
+        nmbOfSavedFastEvents, numberOfEventsProcessed,
+        numberOfEventsProcessedEffective, numberOfEventToBeProcessed );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -471,7 +473,9 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
                 const CexmcRun *  run( static_cast< const CexmcRun * >(
                                                             GetCurrentRun() ) );
                 CexmcRun *  theRun( const_cast< CexmcRun * >( run ) );
-                theRun->IncrementNmbOfHitsSampled( k->index );
+                theRun->IncrementNmbOfHitsSampledFull( k->index );
+                if ( evFastSObject.edDigitizerMonitorHasTriggered )
+                    theRun->IncrementNmbOfHitsSampled( k->index );
             }
             continue;
         }
@@ -791,6 +795,7 @@ void  CexmcRunManager::PrintReadData( void ) const
               sObject.mCutAngle / deg << " deg" << G4endl;
     G4cout << "  -- Setup acceptances (real, rec): " << G4endl;
     CexmcRunAction::PrintResults( sObject.nmbOfHitsSampled,
+                                  sObject.nmbOfHitsSampledFull,
                                   sObject.nmbOfHitsTriggeredReal,
                                   sObject.nmbOfHitsTriggeredRec,
                                   sObject.nmbOfOrphanHits,

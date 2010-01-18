@@ -89,6 +89,7 @@ class  CexmcEventAction : public G4UserEventAction
                              const CexmcAngularRangeList &  aRangesRec,
                              G4bool  tpDigitizerHasTriggered,
                              G4bool  edDigitizerHasTriggered,
+                             G4bool  edDigitizerMonitorHasTriggered,
                              G4bool  reconstructorHasTriggered,
                              const CexmcAngularRange &  aGap );
 
@@ -98,8 +99,9 @@ class  CexmcEventAction : public G4UserEventAction
                          const CexmcProductionModelData &  pmData );
 
         void  SaveEventFast( const G4Event *  event,
-                             G4bool  edDigitizerHasTriggered,
                              G4bool  tpDigitizerHasTriggered,
+                             G4bool  edDigitizerHasTriggered,
+                             G4bool  edDigitizerMonitorHasTriggered,
                              G4double  opCosThetaSCM );
 
     private:

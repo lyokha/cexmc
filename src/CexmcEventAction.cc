@@ -409,6 +409,7 @@ void  CexmcEventAction::UpdateRunHits(
                                     const CexmcAngularRangeList &  aRangesRec,
                                     G4bool  tpDigitizerHasTriggered,
                                     G4bool  edDigitizerHasTriggered,
+                                    G4bool  edDigitizerMonitorHasTriggered,
                                     G4bool  reconstructorHasTriggered,
                                     const CexmcAngularRange &  aGap )
 {
@@ -421,7 +422,11 @@ void  CexmcEventAction::UpdateRunHits(
                                                 k != aRangesReal.end(); ++k )
     {
         if ( tpDigitizerHasTriggered )
-            theRun->IncrementNmbOfHitsSampled( k->index );
+        {
+            theRun->IncrementNmbOfHitsSampledFull( k->index );
+            if ( edDigitizerMonitorHasTriggered )
+                theRun->IncrementNmbOfHitsSampled( k->index );
+        }
         if ( edDigitizerHasTriggered )
             theRun->IncrementNmbOfHitsTriggeredReal( k->index );
     }
@@ -479,8 +484,9 @@ void  CexmcEventAction::SaveEvent( const G4Event *  event,
 
 
 void  CexmcEventAction::SaveEventFast( const G4Event *  event,
-                                       G4bool  edDigitizerHasTriggered,
                                        G4bool  tpDigitizerHasTriggered,
+                                       G4bool  edDigitizerHasTriggered,
+                                       G4bool  edDigitizerMonitorHasTriggered,
                                        G4double  opCosThetaSCM )
 {
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
@@ -493,10 +499,14 @@ void  CexmcEventAction::SaveEventFast( const G4Event *  event,
     if ( archive )
     {
         if ( ! tpDigitizerHasTriggered )
+        {
             opCosThetaSCM = CexmcInvalidCosTheta;
+            edDigitizerMonitorHasTriggered = false;
+        }
 
         CexmcEventFastSObject  sObject( event->GetEventID(), opCosThetaSCM,
-                                        edDigitizerHasTriggered );
+                                        edDigitizerHasTriggered,
+                                        edDigitizerMonitorHasTriggered );
         archive->operator<<( sObject );
         const CexmcRun *  run( static_cast< const CexmcRun * >(
                                                 runManager->GetCurrentRun() ) );
@@ -519,6 +529,8 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
     energyDepositDigitizer->Digitize();
     trackPointsDigitizer->Digitize();
 
+    G4bool  edDigitizerMonitorHasTriggered(
+                                energyDepositDigitizer->MonitorHasTriggered() );
     G4bool  edDigitizerHasTriggered( energyDepositDigitizer->HasTriggered() );
     G4bool  tpDigitizerHasTriggered( trackPointsDigitizer->HasTriggered() );
     G4bool  reconstructorHasTriggered( false );
@@ -591,6 +603,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 
         UpdateRunHits( triggeredAngularRanges, triggeredRecAngularRanges,
                        tpDigitizerHasTriggered, edDigitizerHasTriggered,
+                       edDigitizerMonitorHasTriggered,
                        reconstructorHasFullTrigger, angularGap );
 
         if ( verbose > 0 )
@@ -635,8 +648,9 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 
         if ( edDigitizerHasTriggered || tpDigitizerHasTriggered )
         {
-            SaveEventFast( event, edDigitizerHasTriggered,
-                           tpDigitizerHasTriggered,
+            SaveEventFast( event, tpDigitizerHasTriggered,
+                           edDigitizerHasTriggered,
+                           edDigitizerMonitorHasTriggered,
                            pmData.outputParticleSCM.cosTheta() );
         }
 

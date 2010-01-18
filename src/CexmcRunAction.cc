@@ -38,6 +38,7 @@ G4Run *  CexmcRunAction::GenerateRun( void )
 
 void  CexmcRunAction::PrintResults(
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
+                        const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
                         const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
@@ -53,6 +54,7 @@ void  CexmcRunAction::PrintResults(
     {
         G4cout << "       " << *k;
         G4int     total( 0 );
+        G4int     totalFull( 0 );
         G4int     triggered( 0 );
         G4double  acc( std::numeric_limits< G4double >::quiet_NaN() );
 
@@ -62,6 +64,12 @@ void  CexmcRunAction::PrintResults(
         {
             total = found->second;
             acc = 0;
+        }
+
+        found = nmbOfHitsSampledFull.find( k->index );
+        if ( found != nmbOfHitsSampledFull.end() )
+        {
+            totalFull = found->second;
         }
 
         G4double  accSave( acc );
@@ -86,7 +94,7 @@ void  CexmcRunAction::PrintResults(
         }
 
         G4cout << "  | " << acc << " ( " << triggered << " / " << total <<
-                  " )" << G4endl;
+                  " / " << totalFull << " )" << G4endl;
     }
 
     CexmcAngularRangeList  angularGaps;
@@ -121,6 +129,8 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
 
     const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled(
                                         theRun->GetNmbOfHitsSampled() );
+    const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull(
+                                        theRun->GetNmbOfHitsSampledFull() );
     const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal(
                                         theRun->GetNmbOfHitsTriggeredReal() );
     const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec(
@@ -137,7 +147,8 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
                                         productionModel->GetAngularRanges() );
 
     G4cout << " --- Setup acceptances (real, rec):" << G4endl;
-    PrintResults( nmbOfHitsSampled, nmbOfHitsTriggeredReal,
-                  nmbOfHitsTriggeredRec, nmbOfOrphanHits, angularRanges );
+    PrintResults( nmbOfHitsSampled, nmbOfHitsSampledFull,
+                  nmbOfHitsTriggeredReal, nmbOfHitsTriggeredRec,
+                  nmbOfOrphanHits, angularRanges );
 }
 

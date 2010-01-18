@@ -25,9 +25,11 @@ CexmcEventFastSObject::CexmcEventFastSObject()
 
 
 CexmcEventFastSObject::CexmcEventFastSObject( G4int  eventId,
-                G4double  opCosThetaSCM, G4bool  edDigitizerHasTriggered ) :
+                G4double  opCosThetaSCM, G4bool  edDigitizerHasTriggered,
+                G4bool  edDigitizerMonitorHasTriggered ) :
     eventId( eventId ), opCosThetaSCM( opCosThetaSCM ),
-    edDigitizerHasTriggered( edDigitizerHasTriggered ) 
+    edDigitizerHasTriggered( edDigitizerHasTriggered ),
+    edDigitizerMonitorHasTriggered( edDigitizerMonitorHasTriggered )
 {
 }
 

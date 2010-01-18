@@ -39,6 +39,7 @@ class  CexmcRunAction : public G4UserRunAction
     public:
         static void  PrintResults(
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
+                        const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
                         const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,

@@ -27,11 +27,12 @@
 #/cexmc/detector/VetoCounter/TP/verbose 1
 #/cexmc/detector/Calorimeter/TP/verbose 1
 
+/cexmc/detector/calorimeterTriggerAlgorithm all
+
 /cexmc/detector/Monitor/ED/threshold 500 keV
 /cexmc/detector/VetoCounter/ED/threshold 250 keV
 /cexmc/detector/Calorimeter/ED/threshold 40 MeV
 
-/cexmc/detector/calorimeterTriggerAlgorithm all
 /cexmc/detector/outerCrystalsVetoAlgorithm none
 /cexmc/detector/outerCrystalsVetoFraction 0.5
 

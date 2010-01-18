@@ -32,7 +32,8 @@ class  CexmcEventFastSObject
         CexmcEventFastSObject();
 
         CexmcEventFastSObject( G4int  eventId, G4double  opCosThetaSCM,
-                               G4bool  edDigitizerHasTriggered );
+                               G4bool  edDigitizerHasTriggered,
+                               G4bool  edDigitizerMonitorHasTriggered );
 
     private:
         template  < typename  Archive >
@@ -44,6 +45,8 @@ class  CexmcEventFastSObject
         G4double  opCosThetaSCM;
 
         G4bool    edDigitizerHasTriggered;
+
+        G4bool    edDigitizerMonitorHasTriggered;
 };
 
 
@@ -53,6 +56,7 @@ void  CexmcEventFastSObject::serialize( Archive &  archive, const unsigned int )
     archive & eventId;
     archive & opCosThetaSCM;
     archive & edDigitizerHasTriggered;
+    archive & edDigitizerMonitorHasTriggered;
 }
 
 

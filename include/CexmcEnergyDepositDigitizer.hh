@@ -67,6 +67,8 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
                                 GetCalorimeterEDRightCollection( void ) const;
 
     public:
+        G4bool    MonitorHasTriggered( void ) const;
+
         G4bool    HasTriggered( void ) const;
 
     public:
@@ -146,6 +148,8 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4int                                    calorimeterEDRightMaxX;
 
         G4int                                    calorimeterEDRightMaxY;
+
+        G4bool                                   monitorHasTriggered;
 
         G4bool                                   hasTriggered;
 
@@ -263,6 +267,12 @@ inline const CexmcEnergyDepositCalorimeterCollection &
     CexmcEnergyDepositDigitizer::GetCalorimeterEDRightCollection( void ) const
 {
     return calorimeterEDRightCollection;
+}
+
+
+inline G4bool  CexmcEnergyDepositDigitizer::MonitorHasTriggered( void ) const
+{
+    return monitorHasTriggered;
 }
 
 
@@ -395,8 +405,9 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimeterTriggerAlgorithm(
         CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
         if ( runManager->ProjectIsRead() &&
-             calorimeterTriggerAlgorithmRef !=
-                                     CexmcAllCrystalsMakeEDTriggerThreshold )
+             ! ( calorimeterTriggerAlgorithmRef ==
+                                     CexmcAllCrystalsMakeEDTriggerThreshold ||
+               value == calorimeterTriggerAlgorithmRef ) )
             throw CexmcException( CexmcBadCalorimeterTriggerAlgorithm );
     }
     else
@@ -416,7 +427,8 @@ inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoAlgorithm(
         CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
         if ( runManager->ProjectIsRead() &&
-             outerCrystalsVetoAlgorithmRef != CexmcNoOuterCrystalsVeto )
+             ! ( outerCrystalsVetoAlgorithmRef == CexmcNoOuterCrystalsVeto ||
+                 value == outerCrystalsVetoAlgorithmRef ) )
             throw CexmcException( CexmcBadOCVetoAlgorithm );
     }
     else

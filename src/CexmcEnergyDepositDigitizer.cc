@@ -35,7 +35,8 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     calorimeterEDLeft( 0 ), calorimeterEDRight( 0 ),
     calorimeterEDLeftMaxX( 0 ), calorimeterEDLeftMaxY( 0 ),
     calorimeterEDRightMaxX( 0 ), calorimeterEDRightMaxY( 0 ),
-    hasTriggered( false ), monitorEDThreshold( 0 ),
+    monitorHasTriggered( false ), hasTriggered( false ),
+    monitorEDThreshold( 0 ),
     vetoCounterEDLeftThreshold( 0 ), vetoCounterEDRightThreshold( 0 ),
     calorimeterEDLeftThreshold( 0 ), calorimeterEDRightThreshold( 0 ),
     calorimeterTriggerAlgorithm( CexmcAllCrystalsMakeEDTriggerThreshold ),
@@ -98,6 +99,7 @@ void  CexmcEnergyDepositDigitizer::InitializeData( void )
     calorimeterEDLeftMaxY = 0;
     calorimeterEDRightMaxX = 0;
     calorimeterEDRightMaxY = 0;
+    monitorHasTriggered = false;
     hasTriggered = false;
 
     for ( CexmcEnergyDepositCalorimeterCollection::iterator
@@ -243,7 +245,9 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
         calorimeterEDRightEffective = innerCrystalsEDRight;
     }
 
-    hasTriggered = monitorED >= monitorEDThreshold &&
+    monitorHasTriggered = monitorED >= monitorEDThreshold;
+
+    hasTriggered = monitorHasTriggered &&
                    vetoCounterEDLeft < vetoCounterEDLeftThreshold &&
                    vetoCounterEDRight < vetoCounterEDRightThreshold &&
                    calorimeterEDLeftEffective >= calorimeterEDLeftThreshold &&

@@ -69,6 +69,7 @@ class  CexmcRunSObject
                          G4double  mCutNOPCenter, G4double  mCutOPWidth,
                          G4double  mCutNOPWidth, G4double  mCutAngle,
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
+                         CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull,
                          CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal,
                          CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec,
                          CexmcNmbOfHitsInRanges  nmbOfOrphanHits,
@@ -150,6 +151,8 @@ class  CexmcRunSObject
 
         CexmcNmbOfHitsInRanges       nmbOfHitsSampled;
 
+        CexmcNmbOfHitsInRanges       nmbOfHitsSampledFull;
+
         CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredReal;
 
         CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRec;
@@ -205,6 +208,7 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & mCutNOPWidth;
     archive & mCutAngle;
     archive & nmbOfHitsSampled;
+    archive & nmbOfHitsSampledFull;
     archive & nmbOfHitsTriggeredReal;
     archive & nmbOfHitsTriggeredRec;
     archive & nmbOfOrphanHits;

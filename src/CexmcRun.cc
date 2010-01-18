@@ -35,6 +35,17 @@ void  CexmcRun::IncrementNmbOfHitsSampled( G4int  index )
 }
 
 
+void  CexmcRun::IncrementNmbOfHitsSampledFull( G4int  index )
+{
+    CexmcNmbOfHitsInRanges::iterator  found(
+                                        nmbOfHitsSampledFull.find( index ) );
+    if ( found == nmbOfHitsSampledFull.end() )
+        nmbOfHitsSampledFull.insert( std::pair< int, int >( index, 1 ) );
+    else
+        ++found->second;
+}
+
+
 void  CexmcRun::IncrementNmbOfHitsTriggeredReal( G4int  index )
 {
     CexmcNmbOfHitsInRanges::iterator  found(
