@@ -418,32 +418,40 @@ void  CexmcEventAction::UpdateRunHits(
                                                 runManager->GetCurrentRun() ) );
     CexmcRun *        theRun( const_cast< CexmcRun * >( run ) );
 
-    for ( CexmcAngularRangeList::const_iterator  k( aRangesReal.begin() );
-                                                k != aRangesReal.end(); ++k )
+    if ( tpDigitizerHasTriggered )
     {
-        if ( tpDigitizerHasTriggered )
+        for ( CexmcAngularRangeList::const_iterator  k( aRangesReal.begin() );
+                                                k != aRangesReal.end(); ++k )
         {
             theRun->IncrementNmbOfHitsSampledFull( k->index );
             if ( edDigitizerMonitorHasTriggered )
                 theRun->IncrementNmbOfHitsSampled( k->index );
+            if ( edDigitizerHasTriggered )
+                theRun->IncrementNmbOfHitsTriggeredReal( k->index );
         }
-        if ( edDigitizerHasTriggered )
-            theRun->IncrementNmbOfHitsTriggeredReal( k->index );
-    }
-
-    if ( reconstructorHasTriggered )
-    {
-        if ( aRangesRec.empty() )
+        if ( reconstructorHasTriggered )
         {
-            theRun->IncrementNmbOfOrphanHits( aGap.index );
-        }
-        else
-        {
-            for ( CexmcAngularRangeList::const_iterator
-                    k( aRangesRec.begin() ); k != aRangesRec.end(); ++k )
+            if ( aRangesRec.empty() )
             {
-                theRun->IncrementNmbOfHitsTriggeredRec( k->index );
+                theRun->IncrementNmbOfOrphanHits( aGap.index );
             }
+            else
+            {
+                for ( CexmcAngularRangeList::const_iterator
+                        k( aRangesRec.begin() ); k != aRangesRec.end(); ++k )
+                {
+                    theRun->IncrementNmbOfHitsTriggeredRec( k->index );
+                }
+            }
+        }
+    }
+    else
+    {
+        if ( edDigitizerHasTriggered )
+        {
+            theRun->IncrementNmbOfFalseHitsTriggeredReal();
+            if ( reconstructorHasTriggered )
+                theRun->IncrementNmbOfFalseHitsTriggeredRec();
         }
     }
 }

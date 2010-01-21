@@ -19,7 +19,9 @@
 #include "CexmcRun.hh"
 
 
-CexmcRun::CexmcRun() : nmbOfSavedEvents( 0 ), nmbOfSavedFastEvents( 0 )
+CexmcRun::CexmcRun() : nmbOfFalseHitsTriggeredReal( 0 ),
+    nmbOfFalseHitsTriggeredRec( 0 ), nmbOfSavedEvents( 0 ),
+    nmbOfSavedFastEvents( 0 )
 {
 }
 
@@ -76,6 +78,18 @@ void  CexmcRun::IncrementNmbOfOrphanHits( G4int  index )
         nmbOfOrphanHits.insert( std::pair< int, int >( index, 1 ) );
     else
         ++found->second;
+}
+
+
+void  CexmcRun::IncrementNmbOfFalseHitsTriggeredReal( void )
+{
+    ++nmbOfFalseHitsTriggeredReal;
+}
+
+
+void  CexmcRun::IncrementNmbOfFalseHitsTriggeredRec( void )
+{
+    ++nmbOfFalseHitsTriggeredRec;
 }
 
 

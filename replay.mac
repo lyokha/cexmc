@@ -3,7 +3,7 @@
 /event/verbose    0
 /hits/verbose     0
 
-/cexmc/detector/Monitor/ED/threshold 500 keV
+/cexmc/detector/Monitor/ED/threshold 125 keV
 /cexmc/detector/VetoCounter/ED/threshold 250 keV
 /cexmc/detector/Calorimeter/ED/threshold 40 MeV
 

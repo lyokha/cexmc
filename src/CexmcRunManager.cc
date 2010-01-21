@@ -266,6 +266,8 @@ void  CexmcRunManager::SaveProject( void )
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal;
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
     CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
+    G4int                   nmbOfFalseHitsTriggeredReal( 0 );
+    G4int                   nmbOfFalseHitsTriggeredRec( 0 );
     G4int                   nmbOfSavedEvents( 0 );
     G4int                   nmbOfSavedFastEvents( 0 );
     const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
@@ -276,6 +278,8 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfHitsTriggeredReal = run->GetNmbOfHitsTriggeredReal();
         nmbOfHitsTriggeredRec = run->GetNmbOfHitsTriggeredRec();
         nmbOfOrphanHits = run->GetNmbOfOrphanHits();
+        nmbOfFalseHitsTriggeredReal = run->GetNmbOfFalseHitsTriggeredReal();
+        nmbOfFalseHitsTriggeredRec = run->GetNmbOfFalseHitsTriggeredRec();
         nmbOfSavedEvents = run->GetNmbOfSavedEvents();
         nmbOfSavedFastEvents = run->GetNmbOfSavedFastEvents();
     }
@@ -310,9 +314,10 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
         reconstructor->GetMassCutEllipseAngle(),
         nmbOfHitsSampled, nmbOfHitsSampledFull, nmbOfHitsTriggeredReal,
-        nmbOfHitsTriggeredRec, nmbOfOrphanHits, nmbOfSavedEvents,
-        nmbOfSavedFastEvents, numberOfEventsProcessed,
-        numberOfEventsProcessedEffective, numberOfEventToBeProcessed );
+        nmbOfHitsTriggeredRec, nmbOfOrphanHits, nmbOfFalseHitsTriggeredReal,
+        nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
+        numberOfEventsProcessed, numberOfEventsProcessedEffective,
+        numberOfEventToBeProcessed );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -799,7 +804,9 @@ void  CexmcRunManager::PrintReadData( void ) const
                                   sObject.nmbOfHitsTriggeredReal,
                                   sObject.nmbOfHitsTriggeredRec,
                                   sObject.nmbOfOrphanHits,
-                                  sObject.angularRanges );
+                                  sObject.angularRanges,
+                                  sObject.nmbOfFalseHitsTriggeredReal,
+                                  sObject.nmbOfFalseHitsTriggeredRec );
 
     G4cout << G4endl;
 }

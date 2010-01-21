@@ -42,11 +42,13 @@ void  CexmcRunAction::PrintResults(
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
                         const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
-                        const CexmcAngularRangeList &  angularRanges )
+                        const CexmcAngularRangeList &  angularRanges,
+                        G4int  nmbOfFalseHitsTriggeredReal,
+                        G4int  nmbOfFalseHitsTriggeredRec )
 {
     std::ostream::fmtflags  savedFlags( G4cout.flags() );
 
-    G4cout.precision( 4 );
+    G4cout.precision( 8 );
     G4cout << std::fixed;
 
     for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
@@ -119,6 +121,11 @@ void  CexmcRunAction::PrintResults(
         }
     }
 
+    G4cout << "       ---" << G4endl;
+    G4cout << "       False hits (real, rec):  " <<
+        nmbOfFalseHitsTriggeredReal << " | " << nmbOfFalseHitsTriggeredRec <<
+        G4endl;
+
     G4cout.flags( savedFlags );
 }
 
@@ -149,6 +156,8 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
     G4cout << " --- Setup acceptances (real, rec):" << G4endl;
     PrintResults( nmbOfHitsSampled, nmbOfHitsSampledFull,
                   nmbOfHitsTriggeredReal, nmbOfHitsTriggeredRec,
-                  nmbOfOrphanHits, angularRanges );
+                  nmbOfOrphanHits, angularRanges,
+                  theRun->GetNmbOfFalseHitsTriggeredReal(),
+                  theRun->GetNmbOfFalseHitsTriggeredRec() );
 }
 

@@ -22,6 +22,7 @@
 /vis/geometry/set/daughtersInvisible all -1 false
 #/vis/geometry/set/visibility vCalorimeter ! true
 /vis/geometry/set/colour vMonitor -1 0.4 1.0 0.6
+/vis/geometry/set/colour vMonitorBack -1 0.4 1.0 0.6
 /vis/geometry/set/colour vTargetInnerCover -1 0.4 1.0 0.6
 #/vis/viewer/set/hiddenEdge 0
 

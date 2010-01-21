@@ -43,7 +43,9 @@ class  CexmcRunAction : public G4UserRunAction
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
                         const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
                         const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
-                        const CexmcAngularRangeList &  angularRanges );
+                        const CexmcAngularRangeList &  angularRanges,
+                        G4int  nmbOfFalseHitsTriggeredReal,
+                        G4int  nmbOfFalseHitsTriggeredRec );
 
     private:
         CexmcPhysicsManager *  physicsManager;

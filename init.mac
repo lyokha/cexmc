@@ -29,7 +29,7 @@
 
 /cexmc/detector/calorimeterTriggerAlgorithm all
 
-/cexmc/detector/Monitor/ED/threshold 500 keV
+/cexmc/detector/Monitor/ED/threshold 125 keV
 /cexmc/detector/VetoCounter/ED/threshold 250 keV
 /cexmc/detector/Calorimeter/ED/threshold 40 MeV
 
@@ -40,8 +40,8 @@
 /cexmc/gun/position 0 0 -36 cm
 /cexmc/gun/direction 0 0 1
 /cexmc/gun/momentumAmp 730 MeV
-/cexmc/gun/fwhmPosX 7.0 cm
-/cexmc/gun/fwhmPosY 4.6 cm
+/cexmc/gun/fwhmPosX 3.5 cm
+/cexmc/gun/fwhmPosY 3.0 cm
 /cexmc/gun/fwhmDirX 1.35 deg
 /cexmc/gun/fwhmDirY 1.12 deg
 /cexmc/gun/fwhmMomentumAmp 0.015

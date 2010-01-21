@@ -30,6 +30,7 @@
 
         <!-- these values are supposed to be changed -->
         <constant name="MonitorPosZ" value="-34.0"/>
+        <constant name="MonitorBackPosZ" value="140.0"/>
         <constant name="TargetRotZ" value="40.0"/>
         <constant name="TargetColumn1Angle" value="25.0"/>
         <constant name="TargetColumn2Angle" value="-110.0"/>
@@ -57,6 +58,9 @@
         <constant name="MonitorLength" value="0.25"/>
         <constant name="MonitorHeight" value="4.0"/>
         <constant name="MonitorWidth" value="6.0"/>
+        <constant name="MonitorBackLength" value="2.0"/>
+        <constant name="MonitorBackHeight" value="WorldHeight"/>
+        <constant name="MonitorBackWidth" value="25.0"/>
         <constant name="CrystalLength" value="30.0"/>
         <constant name="CrystalHeight" value="6.0"/>
         <constant name="CrystalWidth" value="6.0"/>
@@ -122,6 +126,7 @@
 
         <!-- positions and rotations -->
         <position name="MonitorPos" x="0.0" y="0.0" z="MonitorPosZ" unit="cm"/>
+        <position name="MonitorBackPos" x="0.0" y="0.0" z="MonitorBackPosZ" unit="cm"/>
         <position name="TargetPos" x="TargetPosX" y="TargetPosY" z="TargetPosZ"
             unit="cm"/>
         <rotation name="TargetRot" x="90.0" y="0.0" z="-TargetRotZ" unit="deg"/>
@@ -256,6 +261,8 @@
             lunit="cm"/>
         <box name="sMonitor" x="MonitorWidth" y="MonitorHeight"
             z="MonitorLength" lunit="cm"/>
+        <box name="sMonitorBack" x="MonitorBackWidth" y="MonitorBackHeight"
+            z="MonitorBackLength" lunit="cm"/>
         <tube name="sTargetOuterCoverStub0" rmin="TargetOuterCoverRadius"
             rmax="TargetOuterCoverRadius + TargetOuterCoverThickness"
             z="TargetHeight" deltaphi="FullCircle" aunit="deg" lunit="cm"/>
@@ -362,6 +369,10 @@
             <solidref ref="sMonitor"/>
             <auxiliary auxtype="EnergyDepositDetector" auxvalue="MonitorED"/>
             <auxiliary auxtype="TrackPointsDetector" auxvalue="MonitorTP"/>
+        </volume>
+        <volume name="vMonitorBack">
+            <materialref ref="Scintillator"/>
+            <solidref ref="sMonitorBack"/>
         </volume>
         <volume name="vTarget">
             <materialref ref="G4_lH2"/>
@@ -553,6 +564,10 @@
                 <volumeref ref="vMonitor"/>
                 <positionref ref="MonitorPos"/>
             </physvol>
+            <!--<physvol name="MonitorBack">-->
+                <!--<volumeref ref="vMonitorBack"/>-->
+                <!--<positionref ref="MonitorBackPos"/>-->
+            <!--</physvol>-->
             <physvol name="CalorimeterLeft">
                 <volumeref ref="vCalorimeter"/>
                 <positionref ref="CalorimeterLeftPos"/>
