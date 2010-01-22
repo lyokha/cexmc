@@ -124,8 +124,8 @@ void  CexmcHistoManager::Initialize( void )
     G4double  height( box->GetYHalfLength() * 2 );
     G4double  halfWidth( width / 2 + CexmcHistoTPSafetyArea );
     G4double  halfHeight( height / 2 + CexmcHistoTPSafetyArea );
-    G4int     nBinsX( halfWidth * 2 / CexmcHistoTPResolution );
-    G4int     nBinsY( halfHeight * 2 / CexmcHistoTPResolution );
+    G4int     nBinsX( G4int( halfWidth * 2 / CexmcHistoTPResolution ) );
+    G4int     nBinsY( G4int( halfHeight * 2 / CexmcHistoTPResolution ) );
 
     instance->tpmon_tpt = new TH2F( "tpmon_tpt",
             "Track Points (mon) --tpt--", nBinsX, -halfWidth, halfWidth,

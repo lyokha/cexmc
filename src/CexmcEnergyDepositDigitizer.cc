@@ -284,7 +284,9 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
 std::ostream &  operator<<( std::ostream &  out,
                 const CexmcEnergyDepositCalorimeterCollection &  edCollection )
 {
-    std::ostream::fmtflags  savedFlags( out.flags() );
+    std::streamsize  prec( out.precision() );
+
+    out.precision( 4 );
 
     out << std::endl;
     for ( CexmcEnergyDepositCalorimeterCollection::const_reverse_iterator
@@ -292,15 +294,11 @@ std::ostream &  operator<<( std::ostream &  out,
     {
         for ( CexmcEnergyDepositCrystalRowCollection::const_reverse_iterator
                 l( k->rbegin() ); l != k->rend(); ++l )
-        {
-            out.precision( 4 );
-            out.width( 10 );
-            out << *l;
-        }
+            out << std::setw( 10 ) << *l;
         out << std::endl;
     }
 
-    out.flags( savedFlags );
+    out.precision( prec );
 
     return out;
 }

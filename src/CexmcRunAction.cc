@@ -47,6 +47,7 @@ void  CexmcRunAction::PrintResults(
                         G4int  nmbOfFalseHitsTriggeredRec )
 {
     std::ostream::fmtflags  savedFlags( G4cout.flags() );
+    std::streamsize  prec( G4cout.precision() );
 
     G4cout.precision( 8 );
     G4cout << std::fixed;
@@ -126,6 +127,7 @@ void  CexmcRunAction::PrintResults(
         nmbOfFalseHitsTriggeredReal << " | " << nmbOfFalseHitsTriggeredRec <<
         G4endl;
 
+    G4cout.precision( prec );
     G4cout.flags( savedFlags );
 }
 

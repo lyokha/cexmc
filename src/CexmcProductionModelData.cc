@@ -57,6 +57,7 @@ std::ostream &  operator<<( std::ostream &  out,
                             const CexmcProductionModelData &  data )
 {
     std::ostream::fmtflags  savedFlags( out.flags() );
+    std::streamsize  prec( out.precision() );
 
     out.precision( 4 );
     out << std::endl << std::fixed;
@@ -96,6 +97,7 @@ std::ostream &  operator<<( std::ostream &  out,
            G4BestUnit( data.nucleusOutputParticleSCM.e(), "Energy" ) <<
            std::endl;
 
+    out.precision( prec );
     out.flags( savedFlags );
 
     return out;

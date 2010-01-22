@@ -288,8 +288,11 @@ int  main( int  argc, char **  argv )
 
         CexmcHistoManager::Initialize();
 
-        visManager = new G4VisExecutive;
-        visManager->Initialize();
+        if ( cmdLineData.isInteractive )
+        {
+            visManager = new G4VisExecutive;
+            visManager->Initialize();
+        }
 
         if ( runManager->ProjectIsRead() )
         {
@@ -307,7 +310,11 @@ int  main( int  argc, char **  argv )
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );
 
-        productionModel->PrintInitialData();
+
+        if ( cmdLineData.isInteractive )
+        {
+            productionModel->PrintInitialData();
+        }
 
         if ( session )
         {
