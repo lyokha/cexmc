@@ -261,7 +261,7 @@ void  CexmcEventAction::FillEDTHistos(
                 l( k->rbegin() ); l != k->rend(); ++l )
         {
             if ( *l > 0 )
-                histoManager->Add( CexmcEDInLeftCalorimeter_EDT_Histo,
+                histoManager->Add( CexmcEDInLeftCalorimeter_EDT_Histo, 0,
                                    j, i, *l );
             ++j;
         }
@@ -279,7 +279,7 @@ void  CexmcEventAction::FillEDTHistos(
                 l( k->rbegin() ); l != k->rend(); ++l )
         {
             if ( *l > 0 )
-                histoManager->Add( CexmcEDInRightCalorimeter_EDT_Histo,
+                histoManager->Add( CexmcEDInRightCalorimeter_EDT_Histo, 0,
                                    j, i, *l );
             ++j;
         }
@@ -294,9 +294,43 @@ void  CexmcEventAction::FillTPTHistos(
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
 
     if ( tpStore->monitorTP.IsValid() )
-        histoManager->Add( CexmcTPInMonitor_TPT_Histo,
+        histoManager->Add( CexmcTPInMonitor_TPT_Histo, 0,
                            tpStore->monitorTP.positionLocal.x(),
                            tpStore->monitorTP.positionLocal.y() );
+}
+
+
+void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
+                const CexmcAngularRangeList &  triggeredAngularRanges,
+                const CexmcAngularRangeList &  triggeredRecAngularRanges ) const
+{
+    CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
+
+    G4double    opMass( reconstructor->GetOutputParticleMass() );
+    G4double    nopMass( reconstructor->GetNucleusOutputParticleMass() );
+
+    histoManager->Add( CexmcRecMasses_EDT_Histo, 0, opMass, nopMass );
+
+    if ( ! reconstructorHasFullTrigger )
+        return;
+
+    histoManager->Add( CexmcRecMasses_RT_Histo, 0,
+                       reconstructor->GetOutputParticleMass(),
+                       reconstructor->GetNucleusOutputParticleMass() );
+
+    for ( CexmcAngularRangeList::const_iterator
+                        k( triggeredAngularRanges.begin() );
+                                    k != triggeredAngularRanges.end(); ++k )
+    {
+        histoManager->Add( CexmcRecMassOP_ARReal_RT_Histo, k->index, opMass );
+    }
+
+    for ( CexmcAngularRangeList::const_iterator
+                        k( triggeredRecAngularRanges.begin() );
+                                    k != triggeredRecAngularRanges.end(); ++k )
+    {
+        histoManager->Add( CexmcRecMassOP_ARRec_RT_Histo, k->index, opMass );
+    }
 }
 
 
@@ -671,6 +705,12 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( tpDigitizerHasTriggered )
         {
             FillTPTHistos( tpStore );
+        }
+
+        if ( reconstructorHasTriggered )
+        {
+            FillRTHistos( reconstructorHasFullTrigger, triggeredAngularRanges,
+                          triggeredRecAngularRanges );
         }
 
         G4Event *  theEvent( const_cast< G4Event * >( event ) );

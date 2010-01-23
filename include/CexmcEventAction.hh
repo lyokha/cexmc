@@ -79,6 +79,11 @@ class  CexmcEventAction : public G4UserEventAction
 
         void  FillTPTHistos( const CexmcTrackPointsStore *  tpStore ) const;
 
+        void  FillRTHistos( G4bool reconstructorHasFullTrigger,
+                const CexmcAngularRangeList &  triggeredAngularRanges,
+                const CexmcAngularRangeList &  triggeredRecAngularRanges )
+                                                                        const;
+
         void  DrawTrajectories( const G4Event *  event );
 
         void  DrawTrackPoints( const CexmcTrackPointsStore *  tpStore ) const;

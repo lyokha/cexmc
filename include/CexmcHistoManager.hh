@@ -19,11 +19,12 @@
 #ifndef CEXMC_HISTO_MANAGER_HH
 #define CEXMC_HISTO_MANAGER_HH
 
+#include <vector>
 #include <map>
+#include "CexmcAngularRange.hh"
 
 class  TFile;
 class  TH1;
-class  TH2F;
 class  CexmcHistoManagerMessenger;
 
 
@@ -31,8 +32,19 @@ enum  CexmcHistoType
 {
     CexmcEDInLeftCalorimeter_EDT_Histo,
     CexmcEDInRightCalorimeter_EDT_Histo,
-    CexmcTPInMonitor_TPT_Histo
+    CexmcTPInMonitor_TPT_Histo,
+    CexmcRecMasses_EDT_Histo,
+    CexmcRecMasses_RT_Histo,
+    CexmcRecMassOP_ARReal_RT_Histo,
+    CexmcRecMassNOP_ARReal_RT_Histo,
+    CexmcRecMassOP_ARRec_RT_Histo,
+    CexmcRecMassNOP_ARRec_RT_Histo
 };
+
+
+typedef std::vector< TH1 * >                             CexmcHistoVector;
+typedef std::map< CexmcHistoType, CexmcHistoVector * >   CexmcHistosMap;
+typedef std::pair< CexmcHistoType, CexmcHistoVector * >  CexmcHistoPair;
 
 
 class  CexmcHistoManager
@@ -42,18 +54,26 @@ class  CexmcHistoManager
 
         static void                 Destroy( void );
 
-        static void                 Initialize( void );
-
     private:
         CexmcHistoManager();
 
         ~CexmcHistoManager();
 
     public:
-        void  Add( CexmcHistoType  histoType, G4int  binX, G4int  binY,
-                   G4double  value );
+        void  Initialize( void );
 
-        void  Add( CexmcHistoType, G4double  x, G4double  y );
+        void  SetupARHistos( const CexmcAngularRangeList &  aRanges );
+
+        void  AddARHistos( const CexmcAngularRange &  aRange );
+
+        void  Add( CexmcHistoType  histoType, unsigned int  index, G4int  binX,
+                   G4int  binY, G4double  value );
+
+        void  Add( CexmcHistoType  histoType, unsigned int  index,
+                   G4double  x );
+
+        void  Add( CexmcHistoType  histoType, unsigned int  index, G4double  x,
+                   G4double  y );
 
         void  List( void ) const;
 
@@ -62,22 +82,34 @@ class  CexmcHistoManager
     private:
         TFile *                              outFile;
 
-        TH2F *                               edcl_edt;
+        CexmcHistoVector                     edcl_edt;
 
-        TH2F *                               edcr_edt;
+        CexmcHistoVector                     edcr_edt;
 
-        TH2F *                               tpmon_tpt;
+        CexmcHistoVector                     tpmon_tpt;
+
+        CexmcHistoVector                     recmasses_edt;
+
+        CexmcHistoVector                     recmasses_rt;
+
+        CexmcHistoVector                     recmassop_arreal_rt;
+
+        CexmcHistoVector                     recmassnop_arreal_rt;
+
+        CexmcHistoVector                     recmassop_arrec_rt;
+
+        CexmcHistoVector                     recmassnop_arrec_rt;
 
     private:
-        std::map< CexmcHistoType, TH1 * > *  histos;
+        CexmcHistosMap                       histos;
+
+        bool                                 isInitialized;
 
     private:
         CexmcHistoManagerMessenger *         messenger;
 
     private:
         static CexmcHistoManager *           instance;
-
-        static bool                          isInitialized;
 };
 
 

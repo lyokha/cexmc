@@ -399,14 +399,14 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
     /* read events data */
     std::ifstream   eventsDataFile(
-                        ( projectsDir + "/" + rProject + ".edb" ).  c_str() );
+                        ( projectsDir + "/" + rProject + ".edb" ).c_str() );
     if ( ! eventsDataFile )
         throw CexmcException( CexmcReadProjectIncompleteException );
 
     boost::archive::binary_iarchive  evArchive( eventsDataFile );
 
     std::ifstream   eventsFastDataFile(
-                        ( projectsDir + "/" + rProject + ".fdb" ).  c_str() );
+                        ( projectsDir + "/" + rProject + ".fdb" ).c_str() );
     if ( ! eventsFastDataFile )
         throw CexmcException( CexmcReadProjectIncompleteException );
 

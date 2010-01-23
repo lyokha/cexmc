@@ -25,6 +25,6 @@
 /cexmc/reconstructor/mCutNOPCenter 950 MeV
 /cexmc/reconstructor/mCutOPWidth 50 MeV
 /cexmc/reconstructor/mCutNOPWidth 50 MeV
-/cexmc/reconstructor/mCutAngle 45 deg
+/cexmc/reconstructor/mCutAngle 135 deg
 
 /cexmc/event/verbose 2

@@ -286,7 +286,7 @@ int  main( int  argc, char **  argv )
 
         runManager->SetUserAction( new CexmcSteppingAction( physicsManager ) );
 
-        CexmcHistoManager::Initialize();
+        CexmcHistoManager::Instance()->Initialize();
 
         if ( cmdLineData.isInteractive )
         {
