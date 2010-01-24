@@ -245,66 +245,96 @@ void  CexmcEventAction::PrintReconstructedData(
 }
 
 
-void  CexmcEventAction::FillEDTHistos(
-                                const CexmcEnergyDepositStore *  edStore ) const
+void  CexmcEventAction::FillEDTHistos( const CexmcEnergyDepositStore *  edStore,
+                const CexmcAngularRangeList &  triggeredAngularRanges ) const
 {
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
 
-    G4int  i( 0 );
-
-    for ( CexmcEnergyDepositCalorimeterCollection::const_iterator
-            k( edStore->calorimeterEDLeftCollection.begin() );
-            k != edStore->calorimeterEDLeftCollection.end(); ++k )
+    for ( CexmcAngularRangeList::const_iterator
+                        k( triggeredAngularRanges.begin() );
+                                    k != triggeredAngularRanges.end(); ++k )
     {
-        G4int  j( 0 );
-        for ( CexmcEnergyDepositCrystalRowCollection::const_reverse_iterator
-                l( k->rbegin() ); l != k->rend(); ++l )
-        {
-            if ( *l > 0 )
-                histoManager->Add( CexmcEDInLeftCalorimeter_EDT_Histo, 0,
-                                   j, i, *l );
-            ++j;
-        }
-        ++i;
-    }
-
-    i = 0;
-
-    for ( CexmcEnergyDepositCalorimeterCollection::const_iterator
-            k( edStore->calorimeterEDRightCollection.begin() );
-            k != edStore->calorimeterEDRightCollection.end(); ++k )
-    {
-        G4int  j( 0 );
-        for ( CexmcEnergyDepositCrystalRowCollection::const_reverse_iterator
-                l( k->rbegin() ); l != k->rend(); ++l )
-        {
-            if ( *l > 0 )
-                histoManager->Add( CexmcEDInRightCalorimeter_EDT_Histo, 0,
-                                   j, i, *l );
-            ++j;
-        }
-        ++i;
+        histoManager->Add( CexmcAbsEnInLeftCalorimeter_ARReal_EDT_Histo,
+                           k->index, edStore->calorimeterEDLeft );
+        histoManager->Add( CexmcAbsEnInRightCalorimeter_ARReal_EDT_Histo,
+                           k->index, edStore->calorimeterEDRight );
     }
 }
 
 
-void  CexmcEventAction::FillTPTHistos(
-                                const CexmcTrackPointsStore *  tpStore ) const
+void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
+                const CexmcProductionModelData &  pmData,
+                const CexmcAngularRangeList &  triggeredAngularRanges ) const
 {
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
 
     if ( tpStore->monitorTP.IsValid() )
+    {
+        histoManager->Add( CexmcMomentumIP_TPT_Histo, 0,
+                           tpStore->monitorTP.momentumAmp );
         histoManager->Add( CexmcTPInMonitor_TPT_Histo, 0,
                            tpStore->monitorTP.positionLocal.x(),
                            tpStore->monitorTP.positionLocal.y() );
+    }
+
+    for ( CexmcAngularRangeList::const_iterator
+                        k( triggeredAngularRanges.begin() );
+                                    k != triggeredAngularRanges.end(); ++k )
+    {
+        if ( tpStore->calorimeterTPLeft.IsValid() )
+        {
+            /* kinetic energy and momentum of gamma are equal */
+            G4double  kinEnergy( tpStore->calorimeterTPLeft.momentumAmp );
+            histoManager->Add( CexmcKinEnAtLeftCalorimeter_ARReal_TPT_Histo,
+                               k->index, kinEnergy );
+        }
+        if ( tpStore->calorimeterTPRight.IsValid() )
+        {
+            G4double  kinEnergy( tpStore->calorimeterTPRight.momentumAmp );
+            histoManager->Add( CexmcKinEnAtRightCalorimeter_ARReal_TPT_Histo,
+                               k->index, kinEnergy );
+        }
+        if ( tpStore->targetTPOutputParticle.IsValid() )
+        {
+            G4double  momentumAmp(
+                                tpStore->targetTPOutputParticle.momentumAmp );
+            G4double  mass( tpStore->targetTPOutputParticle.particle->
+                            GetPDGMass() );
+            G4double  kinEnergy( std::sqrt( momentumAmp * momentumAmp +
+                                            mass * mass ) -mass );
+            histoManager->Add( CexmcKinEnOP_LAB_ARReal_TPT_Histo,
+                               k->index, kinEnergy );
+            histoManager->Add( CexmcAngleOP_SCM_ARReal_TPT_Histo,
+                               k->index, pmData.outputParticleSCM.cosTheta() );
+        }
+        if ( tpStore->targetTPOutputParticleDecayProductParticle1.IsValid() &&
+             tpStore->targetTPOutputParticleDecayProductParticle2.IsValid() )
+        {
+            G4double  openAngle(
+                        tpStore->targetTPOutputParticleDecayProductParticle1.
+                        directionWorld.angle( tpStore->
+                                targetTPOutputParticleDecayProductParticle2.
+                                        directionWorld ) / deg );
+            histoManager->Add( CexmcOpenAngle_ARReal_TPT_Histo,
+                               k->index, openAngle );
+        }
+    }
 }
 
 
 void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
-                const CexmcAngularRangeList &  triggeredAngularRanges,
-                const CexmcAngularRangeList &  triggeredRecAngularRanges ) const
+                const CexmcEnergyDepositStore *  edStore,
+                const CexmcTrackPointsStore *  tpStore,
+                const CexmcProductionModelData &  pmData,
+                const CexmcAngularRangeList &  triggeredAngularRanges ) const
 {
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
+
+    if ( tpStore->monitorTP.IsValid() )
+    {
+        histoManager->Add( CexmcMomentumIP_RT_Histo, 0,
+                           tpStore->monitorTP.momentumAmp );
+    }
 
     G4double    opMass( reconstructor->GetOutputParticleMass() );
     G4double    nopMass( reconstructor->GetNucleusOutputParticleMass() );
@@ -318,18 +348,73 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
                        reconstructor->GetOutputParticleMass(),
                        reconstructor->GetNucleusOutputParticleMass() );
 
+    G4double  recCosTheta( reconstructor->GetProductionModelData().
+                                               outputParticleSCM.cosTheta());
+
     for ( CexmcAngularRangeList::const_iterator
                         k( triggeredAngularRanges.begin() );
                                     k != triggeredAngularRanges.end(); ++k )
     {
         histoManager->Add( CexmcRecMassOP_ARReal_RT_Histo, k->index, opMass );
-    }
-
-    for ( CexmcAngularRangeList::const_iterator
-                        k( triggeredRecAngularRanges.begin() );
-                                    k != triggeredRecAngularRanges.end(); ++k )
-    {
-        histoManager->Add( CexmcRecMassOP_ARRec_RT_Histo, k->index, opMass );
+        histoManager->Add( CexmcRecMassNOP_ARReal_RT_Histo, k->index, nopMass );
+        if ( tpStore->calorimeterTPLeft.IsValid() )
+        {
+            G4double  kinEnergy( tpStore->calorimeterTPLeft.momentumAmp );
+            histoManager->Add( CexmcKinEnAtLeftCalorimeter_ARReal_RT_Histo,
+                               k->index, kinEnergy );
+            histoManager->Add( CexmcMissEnFromLeftCalorimeter_ARReal_RT_Histo,
+                               k->index,
+                               kinEnergy - edStore->calorimeterEDLeft );
+        }
+        if ( tpStore->calorimeterTPRight.IsValid() )
+        {
+            G4double  kinEnergy( tpStore->calorimeterTPRight.momentumAmp );
+            histoManager->Add( CexmcKinEnAtRightCalorimeter_ARReal_RT_Histo,
+                               k->index, kinEnergy );
+            histoManager->Add( CexmcMissEnFromRightCalorimeter_ARReal_RT_Histo,
+                               k->index,
+                               kinEnergy - edStore->calorimeterEDRight );
+        }
+        if ( tpStore->targetTPOutputParticle.IsValid() )
+        {
+            G4double  momentumAmp(
+                                tpStore->targetTPOutputParticle.momentumAmp );
+            G4double  mass( tpStore->targetTPOutputParticle.particle->
+                            GetPDGMass() );
+            G4double  kinEnergy( std::sqrt( momentumAmp * momentumAmp +
+                                            mass * mass ) -mass );
+            histoManager->Add( CexmcKinEnOP_LAB_ARReal_RT_Histo,
+                               k->index, kinEnergy );
+            histoManager->Add( CexmcAngleOP_SCM_ARReal_RT_Histo,
+                               k->index, pmData.outputParticleSCM.cosTheta() );
+            G4double  diffCosTheta( pmData.outputParticleSCM.cosTheta() -
+                                    recCosTheta );
+            histoManager->Add( CexmcDiffAngleOP_SCM_ARReal_RT_Histo,
+                               k->index, diffCosTheta );
+        }
+        if ( tpStore->targetTPOutputParticleDecayProductParticle1.IsValid() &&
+             tpStore->targetTPOutputParticleDecayProductParticle2.IsValid() )
+        {
+            G4double  openAngle(
+                        tpStore->targetTPOutputParticleDecayProductParticle1.
+                        directionWorld.angle( tpStore->
+                                targetTPOutputParticleDecayProductParticle2.
+                                        directionWorld ) / deg );
+            histoManager->Add( CexmcOpenAngle_ARReal_RT_Histo,
+                               k->index, openAngle );
+            G4double  diffOpenAngle( openAngle - reconstructor->GetTheAngle() /
+                                     deg );
+            histoManager->Add( CexmcDiffOpenAngle_ARReal_RT_Histo,
+                               k->index, diffOpenAngle );
+        }
+        histoManager->Add( CexmcAbsEnInLeftCalorimeter_ARReal_RT_Histo,
+                           k->index, edStore->calorimeterEDLeft );
+        histoManager->Add( CexmcAbsEnInRightCalorimeter_ARReal_RT_Histo,
+                           k->index, edStore->calorimeterEDRight );
+        histoManager->Add( CexmcRecAngleOP_SCM_ARReal_RT_Histo,
+                           k->index, recCosTheta );
+        histoManager->Add( CexmcRecOpenAngle_ARReal_RT_Histo,
+                           k->index, reconstructor->GetTheAngle() / deg );
     }
 }
 
@@ -699,18 +784,18 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( edDigitizerHasTriggered )
         {
             SaveEvent( event, edStore, tpStore, pmData );
-            FillEDTHistos( edStore );
+            FillEDTHistos( edStore, triggeredAngularRanges );
         }
 
         if ( tpDigitizerHasTriggered )
         {
-            FillTPTHistos( tpStore );
+            FillTPTHistos( tpStore, pmData, triggeredAngularRanges );
         }
 
         if ( reconstructorHasTriggered )
         {
-            FillRTHistos( reconstructorHasFullTrigger, triggeredAngularRanges,
-                          triggeredRecAngularRanges );
+            FillRTHistos( reconstructorHasFullTrigger, edStore, tpStore,
+                          pmData, triggeredAngularRanges );
         }
 
         G4Event *  theEvent( const_cast< G4Event * >( event ) );

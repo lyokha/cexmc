@@ -30,15 +30,35 @@ class  CexmcHistoManagerMessenger;
 
 enum  CexmcHistoType
 {
-    CexmcEDInLeftCalorimeter_EDT_Histo,
-    CexmcEDInRightCalorimeter_EDT_Histo,
+    CexmcMomentumIP_TPT_Histo,
+    CexmcMomentumIP_RT_Histo,
     CexmcTPInMonitor_TPT_Histo,
+    CexmcTPInTarget_TPT_Histo,
+    CexmcTPInTarget_RT_Histo,
     CexmcRecMasses_EDT_Histo,
     CexmcRecMasses_RT_Histo,
     CexmcRecMassOP_ARReal_RT_Histo,
     CexmcRecMassNOP_ARReal_RT_Histo,
-    CexmcRecMassOP_ARRec_RT_Histo,
-    CexmcRecMassNOP_ARRec_RT_Histo
+    CexmcKinEnAtLeftCalorimeter_ARReal_TPT_Histo,
+    CexmcKinEnAtRightCalorimeter_ARReal_TPT_Histo,
+    CexmcKinEnAtLeftCalorimeter_ARReal_RT_Histo,
+    CexmcKinEnAtRightCalorimeter_ARReal_RT_Histo,
+    CexmcAbsEnInLeftCalorimeter_ARReal_EDT_Histo,
+    CexmcAbsEnInRightCalorimeter_ARReal_EDT_Histo,
+    CexmcAbsEnInLeftCalorimeter_ARReal_RT_Histo,
+    CexmcAbsEnInRightCalorimeter_ARReal_RT_Histo,
+    CexmcMissEnFromLeftCalorimeter_ARReal_RT_Histo,
+    CexmcMissEnFromRightCalorimeter_ARReal_RT_Histo,
+    CexmcKinEnOP_LAB_ARReal_TPT_Histo,
+    CexmcKinEnOP_LAB_ARReal_RT_Histo,
+    CexmcAngleOP_SCM_ARReal_TPT_Histo,
+    CexmcAngleOP_SCM_ARReal_RT_Histo,
+    CexmcRecAngleOP_SCM_ARReal_RT_Histo,
+    CexmcDiffAngleOP_SCM_ARReal_RT_Histo,
+    CexmcOpenAngle_ARReal_TPT_Histo,
+    CexmcOpenAngle_ARReal_RT_Histo,
+    CexmcRecOpenAngle_ARReal_RT_Histo,
+    CexmcDiffOpenAngle_ARReal_RT_Histo
 };
 
 
@@ -80,36 +100,76 @@ class  CexmcHistoManager
         void  Print( const G4String &  value );
 
     private:
-        TFile *                              outFile;
+        TFile *                       outFile;
 
-        CexmcHistoVector                     edcl_edt;
+        CexmcHistoVector              momip_tpt;
 
-        CexmcHistoVector                     edcr_edt;
+        CexmcHistoVector              momip_rt;
 
-        CexmcHistoVector                     tpmon_tpt;
+        CexmcHistoVector              tpmon_tpt;
 
-        CexmcHistoVector                     recmasses_edt;
+        CexmcHistoVector              tptar_tpt;
 
-        CexmcHistoVector                     recmasses_rt;
+        CexmcHistoVector              tptar_rt;
 
-        CexmcHistoVector                     recmassop_arreal_rt;
+        CexmcHistoVector              recmasses_edt;
 
-        CexmcHistoVector                     recmassnop_arreal_rt;
+        CexmcHistoVector              recmasses_rt;
 
-        CexmcHistoVector                     recmassop_arrec_rt;
+        CexmcHistoVector              recmassop_arreal_rt;
 
-        CexmcHistoVector                     recmassnop_arrec_rt;
+        CexmcHistoVector              recmassnop_arreal_rt;
+
+        CexmcHistoVector              kecl_arreal_tpt;
+
+        CexmcHistoVector              kecr_arreal_tpt;
+
+        CexmcHistoVector              kecl_arreal_rt;
+
+        CexmcHistoVector              kecr_arreal_rt;
+
+        CexmcHistoVector              aecl_arreal_edt;
+
+        CexmcHistoVector              aecr_arreal_edt;
+
+        CexmcHistoVector              aecl_arreal_rt;
+
+        CexmcHistoVector              aecr_arreal_rt;
+
+        CexmcHistoVector              mecl_arreal_rt;
+
+        CexmcHistoVector              mecr_arreal_rt;
+
+        CexmcHistoVector              keop_lab_arreal_tpt;
+
+        CexmcHistoVector              keop_lab_arreal_rt;
+
+        CexmcHistoVector              aop_scm_arreal_tpt;
+
+        CexmcHistoVector              aop_scm_arreal_rt;
+
+        CexmcHistoVector              recaop_scm_arreal_rt;
+
+        CexmcHistoVector              diffaop_scm_arreal_rt;
+
+        CexmcHistoVector              oa_scm_arreal_tpt;
+
+        CexmcHistoVector              oa_scm_arreal_rt;
+
+        CexmcHistoVector              recoa_scm_arreal_rt;
+
+        CexmcHistoVector              diffoa_scm_arreal_rt;
 
     private:
-        CexmcHistosMap                       histos;
+        CexmcHistosMap                histos;
 
-        bool                                 isInitialized;
-
-    private:
-        CexmcHistoManagerMessenger *         messenger;
+        bool                          isInitialized;
 
     private:
-        static CexmcHistoManager *           instance;
+        CexmcHistoManagerMessenger *  messenger;
+
+    private:
+        static CexmcHistoManager *    instance;
 };
 
 

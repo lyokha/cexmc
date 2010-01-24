@@ -66,6 +66,8 @@ class  CexmcRunManager : public G4RunManager
         void  SeekTo( G4int  eventNmb = 1 );
 
     public:
+        CexmcPhysicsManager *     GetPhysicsManager( void );
+
         CexmcProductionModelType  GetProductionModelType( void ) const;
 
         G4String                  GetGdmlFileName( void ) const;
@@ -165,6 +167,12 @@ inline void  CexmcRunManager::SetEventCountPolicy(
         throw CexmcException( CexmcCmdIsNotAllowed );
 
     eventCountPolicy = eventCountPolicy_;
+}
+
+
+inline CexmcPhysicsManager *  CexmcRunManager::GetPhysicsManager( void )
+{
+    return physicsManager;
 }
 
 

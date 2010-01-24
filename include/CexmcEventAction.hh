@@ -75,14 +75,18 @@ class  CexmcEventAction : public G4UserEventAction
                         const CexmcAngularRangeList &  angularRanges,
                         const CexmcAngularRange &  angularGap ) const;
 
-        void  FillEDTHistos( const CexmcEnergyDepositStore *  edStore ) const;
+        void  FillEDTHistos( const CexmcEnergyDepositStore *  edStore,
+                const CexmcAngularRangeList &  triggeredAngularRanges ) const;
 
-        void  FillTPTHistos( const CexmcTrackPointsStore *  tpStore ) const;
+        void  FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
+                const CexmcProductionModelData &  pmData,
+                const CexmcAngularRangeList &  triggeredAngularRanges ) const;
 
         void  FillRTHistos( G4bool reconstructorHasFullTrigger,
-                const CexmcAngularRangeList &  triggeredAngularRanges,
-                const CexmcAngularRangeList &  triggeredRecAngularRanges )
-                                                                        const;
+                const CexmcEnergyDepositStore *  edStore,
+                const CexmcTrackPointsStore *  tpStore,
+                const CexmcProductionModelData &  pmData,
+                const CexmcAngularRangeList &  triggeredAngularRanges ) const;
 
         void  DrawTrajectories( const G4Event *  event );
 

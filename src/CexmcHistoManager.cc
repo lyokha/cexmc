@@ -17,6 +17,7 @@
  */
 
 #include <TH1.h>
+#include <TH1F.h>
 #include <TH2F.h>
 #include <TFile.h>
 #include <TDirectory.h>
@@ -26,6 +27,7 @@
 #include "CexmcHistoManager.hh"
 #include "CexmcHistoManagerMessenger.hh"
 #include "CexmcBasicPhysicsSettings.hh"
+#include "CexmcPhysicsManager.hh"
 #include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 
@@ -38,9 +40,19 @@ extern TDirectory *  gDirectory;
 
 namespace
 {
+    const G4double  CexmcHistoBeamMomentumMin( 0.0 * GeV );
+    const G4double  CexmcHistoBeamMomentumMax( 1.0 * GeV );
+    const G4double  CexmcHistoBeamMomentumResolution( 0.5 * MeV );
     const G4double  CexmcHistoTPResolution( 0.1 * cm );
     const G4double  CexmcHistoTPSafetyArea( 1.0 * cm );
     const G4double  CexmcHistoMassResolution( 1.0 * MeV );
+    const G4double  CexmcHistoEnergyResolution( 1.0 * MeV );
+    const G4double  CexmcHistoEnergyMax( 1.0 * GeV );
+    const G4double  CexmcHistoMissEnergyResolution( 0.2 * MeV );
+    const G4double  CexmcHistoMissEnergyMin( -0.1 * GeV );
+    const G4double  CexmcHistoMissEnergyMax( 0.2 * GeV );
+    const G4double  CexmcHistoAngularResolution( 0.5 );
+    const G4double  CexmcHistoAngularCResolution( 0.001 );
 }
 
 
@@ -123,54 +135,28 @@ void  CexmcHistoManager::Initialize( void )
     }
 
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
-    EAxis                         axis;
-    G4int                         nCrystalsInColumn( 1 );
-    G4int                         nCrystalsInRow( 1 );
-    G4double                      width;
-    G4double                      offset;
-    G4bool                        consuming;
+    const G4LogicalVolume *       lVolume( lvs->GetVolume( "vMonitor" ) );
 
-    G4LogicalVolume *             lVolume( lvs->GetVolume( "vCalorimeter" ) );
-    if ( lVolume )
-    {
-        G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
-        if ( pVolume && pVolume->IsReplicated() )
-        {
-            pVolume->GetReplicationData( axis, nCrystalsInColumn, width, offset,
-                                         consuming );
-        }
-    }
+    nBinsMinX = CexmcHistoBeamMomentumMin;
+    nBinsMaxX = CexmcHistoBeamMomentumMax;
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) /
+                    CexmcHistoBeamMomentumResolution );
+    histo = new TH1F( "momip_tpt", "Beam momentum at monitor" TPT_TITLE,
+                      nBinsX, nBinsMinX, nBinsMaxX );
+    momip_tpt.push_back( histo );
+    histos.insert( CexmcHistoPair( CexmcMomentumIP_TPT_Histo, &momip_tpt ) );
 
-    lVolume = lvs->GetVolume( "vCrystalRow" );
-    if ( lVolume )
-    {
-        G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
-        if ( pVolume && pVolume->IsReplicated() )
-        {
-            pVolume->GetReplicationData( axis, nCrystalsInRow, width, offset,
-                                         consuming );
-        }
-    }
+    histo = new TH1F( "momip_rt", "Beam momentum at monitor" RT_TITLE,
+                      nBinsX, nBinsMinX, nBinsMaxX );
+    momip_rt.push_back( histo );
+    histos.insert( CexmcHistoPair( CexmcMomentumIP_RT_Histo, &momip_rt ) );
 
-    histo = new TH2F( "edcl_edt", "Energy Deposit (lc)" EDT_TITLE,
-                      nCrystalsInRow, 0, nCrystalsInRow, nCrystalsInColumn, 0,
-                      nCrystalsInColumn );
-    edcl_edt.push_back( histo );
-    histos.insert( CexmcHistoPair( CexmcEDInLeftCalorimeter_EDT_Histo,
-                                   &edcl_edt ) );
-    histo = new TH2F( "edcr_edt", "Energy Deposit (rc)" EDT_TITLE,
-                      nCrystalsInRow, 0, nCrystalsInRow, nCrystalsInColumn, 0,
-                      nCrystalsInColumn );
-    edcr_edt.push_back( histo );
-    histos.insert( CexmcHistoPair( CexmcEDInRightCalorimeter_EDT_Histo,
-                                   &edcr_edt ) );
-
-    lVolume = lvs->GetVolume( "vMonitor" );
     G4Box *   box( static_cast< G4Box * >( lVolume->GetSolid() ) );
-    width = box->GetXHalfLength() * 2;
+    G4double  width( box->GetXHalfLength() * 2 );
     G4double  height( box->GetYHalfLength() * 2 );
     G4double  halfWidth( width / 2 + CexmcHistoTPSafetyArea );
     G4double  halfHeight( height / 2 + CexmcHistoTPSafetyArea );
+
     nBinsX = Int_t( halfWidth * 2 / CexmcHistoTPResolution );
     nBinsY = Int_t( halfHeight * 2 / CexmcHistoTPResolution );
     histo = new TH2F( "tpmon_tpt", "Track Points (mon)" TPT_TITLE,
@@ -201,6 +187,9 @@ void  CexmcHistoManager::Initialize( void )
     recmasses_rt.push_back( histo );
     histos.insert( CexmcHistoPair( CexmcRecMasses_RT_Histo, &recmasses_rt ) );
 
+    SetupARHistos( runManager->GetPhysicsManager()->GetProductionModel()->
+                   GetAngularRanges() );
+
     isInitialized = true;
 }
 
@@ -210,8 +199,26 @@ void  CexmcHistoManager::SetupARHistos( const CexmcAngularRangeList &  aRanges )
     gDirectory->Delete( "*_r[1-9]*" );
     recmassop_arreal_rt.clear();
     recmassnop_arreal_rt.clear();
-    recmassop_arrec_rt.clear();
-    recmassnop_arrec_rt.clear();
+    kecl_arreal_tpt.clear();
+    kecr_arreal_tpt.clear();
+    kecl_arreal_rt.clear();
+    kecr_arreal_rt.clear();
+    aecl_arreal_edt.clear();
+    aecr_arreal_edt.clear();
+    aecl_arreal_rt.clear();
+    aecr_arreal_rt.clear();
+    mecl_arreal_rt.clear();
+    mecr_arreal_rt.clear();
+    keop_lab_arreal_tpt.clear();
+    keop_lab_arreal_rt.clear();
+    aop_scm_arreal_tpt.clear();
+    aop_scm_arreal_rt.clear();
+    recaop_scm_arreal_rt.clear();
+    diffaop_scm_arreal_rt.clear();
+    oa_scm_arreal_tpt.clear();
+    oa_scm_arreal_rt.clear();
+    recoa_scm_arreal_rt.clear();
+    diffoa_scm_arreal_rt.clear();
 
     for ( CexmcAngularRangeList::const_iterator  k( aRanges.begin() );
                                                     k != aRanges.end(); ++k )
@@ -262,19 +269,6 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
                                              nBinsX, nBinsMinX, nBinsMaxX ) );
     histos.insert( CexmcHistoPair( CexmcRecMassOP_ARReal_RT_Histo,
                                    &recmassop_arreal_rt ) );
-    out.str( "" );
-    out << "recmassop_r" << aRange.index + 1 << "rec_rt";
-    name = out.str();
-    out.str( "" );
-    out << "Reconstructed mass of " << opName << " {range " <<
-            aRange.index + 1 << "rec [" << std::fixed <<
-            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
-            ")}" RT_TITLE;
-    title = out.str();
-    recmassop_arrec_rt.push_back( new TH1F( name.c_str(), title.c_str(),
-                                            nBinsX, nBinsMinX, nBinsMaxX ) );
-    histos.insert( CexmcHistoPair( CexmcRecMassOP_ARRec_RT_Histo,
-                                   &recmassop_arrec_rt ) );
 
     out.str( "" );
     out << "recmassnop_r" << aRange.index + 1 << "real_rt";
@@ -293,19 +287,312 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
                                               nBinsX, nBinsMinX, nBinsMaxX ) );
     histos.insert( CexmcHistoPair( CexmcRecMassNOP_ARReal_RT_Histo,
                                    &recmassnop_arreal_rt ) );
+
     out.str( "" );
-    out << "recmassnop_r" << aRange.index + 1 << "rec_rt";
+    out << "kecl_r" << aRange.index + 1 << "real_tpt";
     name = out.str();
     out.str( "" );
-    out << "Reconstructed mass of " << nopName << " {range " <<
-            aRange.index + 1 << "rec [" << std::fixed <<
+    out << "Kinetic energy of gamma (lc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" TPT_TITLE;
+    title = out.str();
+    nBinsMinX = 0;
+    nBinsMaxX = Int_t( CexmcHistoEnergyMax );
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoEnergyResolution );
+    kecl_arreal_tpt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                         nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcKinEnAtLeftCalorimeter_ARReal_TPT_Histo,
+                                   &kecl_arreal_tpt ) );
+
+    out.str( "" );
+    out << "kecr_r" << aRange.index + 1 << "real_tpt";
+    name = out.str();
+    out.str( "" );
+    out << "Kinetic energy of gamma (rc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" TPT_TITLE;
+    title = out.str();
+    kecr_arreal_tpt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                         nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair(
+                                CexmcKinEnAtRightCalorimeter_ARReal_TPT_Histo,
+                                &kecr_arreal_tpt ) );
+
+    out.str( "" );
+    out << "kecl_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Kinetic energy of gamma (lc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
             std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
             ")}" RT_TITLE;
     title = out.str();
-    recmassnop_arrec_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+    kecl_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                        nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcKinEnAtLeftCalorimeter_ARReal_RT_Histo,
+                                   &kecl_arreal_rt ) );
+
+    out.str( "" );
+    out << "kecr_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Kinetic energy of gamma (rc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    kecr_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                        nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcKinEnAtRightCalorimeter_ARReal_RT_Histo,
+                                   &kecr_arreal_rt ) );
+
+    out.str( "" );
+    out << "aecl_r" << aRange.index + 1 << "real_edt";
+    name = out.str();
+    out.str( "" );
+    out << "Absorbed energy (lc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" EDT_TITLE;
+    title = out.str();
+    aecl_arreal_edt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                         nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcAbsEnInLeftCalorimeter_ARReal_EDT_Histo,
+                                   &aecl_arreal_edt ) );
+
+    out.str( "" );
+    out << "aecr_r" << aRange.index + 1 << "real_edt";
+    name = out.str();
+    out.str( "" );
+    out << "Absorbed energy (rc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" EDT_TITLE;
+    title = out.str();
+    aecr_arreal_edt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                         nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair(
+                                CexmcAbsEnInRightCalorimeter_ARReal_EDT_Histo,
+                                &aecr_arreal_edt ) );
+
+    out.str( "" );
+    out << "aecl_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Absorbed energy (lc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    aecl_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                        nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcAbsEnInLeftCalorimeter_ARReal_RT_Histo,
+                                   &aecl_arreal_rt ) );
+
+    out.str( "" );
+    out << "aecr_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Absorbed energy (rc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    aecr_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                        nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcAbsEnInRightCalorimeter_ARReal_RT_Histo,
+                                   &aecr_arreal_rt ) );
+
+    out.str( "" );
+    out << "mecl_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Missing energy (lc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    nBinsMinX = Int_t( CexmcHistoMissEnergyMin );
+    nBinsMaxX = Int_t( CexmcHistoMissEnergyMax );
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) /
+                    CexmcHistoMissEnergyResolution );
+    mecl_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                        nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair(
+                                CexmcMissEnFromLeftCalorimeter_ARReal_RT_Histo,
+                                &mecl_arreal_rt ) );
+
+    out.str( "" );
+    out << "mecr_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Missing energy (rc) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    mecr_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                        nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair(
+                                CexmcMissEnFromRightCalorimeter_ARReal_RT_Histo,
+                                &mecr_arreal_rt ) );
+
+    out.str( "" );
+    out << "keop_lab_r" << aRange.index + 1 << "real_tpt";
+    name = out.str();
+    out.str( "" );
+    out << "Kinetic energy of newborn " << opName << " (lab) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" TPT_TITLE;
+    title = out.str();
+    nBinsMinX = Int_t( 0 );
+    nBinsMaxX = Int_t( CexmcHistoEnergyMax );
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoEnergyResolution );
+    keop_lab_arreal_tpt.push_back( new TH1F( name.c_str(), title.c_str(),
                                              nBinsX, nBinsMinX, nBinsMaxX ) );
-    histos.insert( CexmcHistoPair( CexmcRecMassNOP_ARRec_RT_Histo,
-                                   &recmassnop_arrec_rt ) );
+    histos.insert( CexmcHistoPair( CexmcKinEnOP_LAB_ARReal_TPT_Histo,
+                                   &keop_lab_arreal_tpt ) );
+
+    out.str( "" );
+    out << "keop_lab_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Kinetic energy of newborn " << opName << " (lab) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    nBinsMinX = Int_t( 0 );
+    nBinsMaxX = Int_t( CexmcHistoEnergyMax );
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoEnergyResolution );
+    keop_lab_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                            nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcKinEnOP_LAB_ARReal_RT_Histo,
+                                   &keop_lab_arreal_rt ) );
+
+    out.str( "" );
+    out << "aop_scm_r" << aRange.index + 1 << "real_tpt";
+    name = out.str();
+    out.str( "" );
+    out << "Angle of newborn " << opName << " (scm) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" TPT_TITLE;
+    title = out.str();
+    nBinsMinX = Int_t( -1.0 );
+    nBinsMaxX = Int_t( 1.0 );
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoAngularCResolution );
+    aop_scm_arreal_tpt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                            nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcAngleOP_SCM_ARReal_TPT_Histo,
+                                   &aop_scm_arreal_tpt ) );
+
+    out.str( "" );
+    out << "aop_scm_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Angle of newborn " << opName << " (scm) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    aop_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                           nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcAngleOP_SCM_ARReal_RT_Histo,
+                                   &aop_scm_arreal_rt ) );
+
+    out.str( "" );
+    out << "recaop_scm_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Reconstructed angle of newborn " << opName << " (scm) {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    recaop_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                              nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcRecAngleOP_SCM_ARReal_RT_Histo,
+                                   &recaop_scm_arreal_rt ) );
+
+    out.str( "" );
+    out << "diffaop_scm_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Real - reconstructed angle of newborn " << opName <<
+            " (scm) {range " << aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    diffaop_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                               nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcDiffAngleOP_SCM_ARReal_RT_Histo,
+                                   &diffaop_scm_arreal_rt ) );
+
+    out.str( "" );
+    out << "oa_scm_r" << aRange.index + 1 << "real_tpt";
+    name = out.str();
+    out.str( "" );
+    out << "Open angle between the gammas {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" TPT_TITLE;
+    title = out.str();
+    nBinsMinX = Int_t( 0. );
+    nBinsMaxX = Int_t( 360. );
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoAngularResolution );
+    oa_scm_arreal_tpt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                           nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcOpenAngle_ARReal_TPT_Histo,
+                                   &oa_scm_arreal_tpt ) );
+
+    out.str( "" );
+    out << "oa_scm_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Open angle between the gammas {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    oa_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                          nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcOpenAngle_ARReal_RT_Histo,
+                                   &oa_scm_arreal_rt ) );
+
+    out.str( "" );
+    out << "recoa_scm_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Reconstructed open angle between the gammas {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    recoa_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                             nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcRecOpenAngle_ARReal_RT_Histo,
+                                   &recoa_scm_arreal_rt ) );
+
+    out.str( "" );
+    out << "diffoa_scm_r" << aRange.index + 1 << "real_rt";
+    name = out.str();
+    out.str( "" );
+    out << "Real - reconstructed open angle between the gammas {range " <<
+            aRange.index + 1 << "real [" << std::fixed <<
+            std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
+            ")}" RT_TITLE;
+    title = out.str();
+    nBinsMinX = Int_t( -180. );
+    nBinsMaxX = Int_t( 180. );
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoAngularResolution );
+    diffoa_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                              nBinsX, nBinsMinX, nBinsMaxX ) );
+    histos.insert( CexmcHistoPair( CexmcDiffOpenAngle_ARReal_RT_Histo,
+                                   &diffoa_scm_arreal_rt ) );
 }
 
 
