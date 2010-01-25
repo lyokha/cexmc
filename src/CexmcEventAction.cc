@@ -277,6 +277,14 @@ void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
                            tpStore->monitorTP.positionLocal.y() );
     }
 
+    if ( tpStore->targetTPOutputParticle.IsValid() )
+    {
+        histoManager->Add( CexmcTPInTarget_TPT_Histo, 0,
+                           tpStore->targetTPOutputParticle.positionLocal.x(),
+                           tpStore->targetTPOutputParticle.positionLocal.y(),
+                           tpStore->targetTPOutputParticle.positionLocal.z() );
+    }
+
     for ( CexmcAngularRangeList::const_iterator
                         k( triggeredAngularRanges.begin() );
                                     k != triggeredAngularRanges.end(); ++k )
@@ -330,19 +338,55 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
 {
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
 
+    G4double    opMass( reconstructor->GetOutputParticleMass() );
+    G4double    nopMass( reconstructor->GetNucleusOutputParticleMass() );
+
+    histoManager->Add( CexmcRecMasses_EDT_Histo, 0, opMass, nopMass );
+
+    for ( CexmcAngularRangeList::const_iterator
+                        k( triggeredAngularRanges.begin() );
+                                    k != triggeredAngularRanges.end(); ++k )
+    {
+        if ( tpStore->calorimeterTPLeft.IsValid() )
+        {
+            histoManager->Add( CexmcOPDPAtLeftCalorimeter_ARReal_EDT_Histo,
+                               k->index,
+                               tpStore->calorimeterTPLeft.positionLocal.x(),
+                               tpStore->calorimeterTPLeft.positionLocal.y() );
+        }
+        if ( tpStore->calorimeterTPRight.IsValid() )
+        {
+            histoManager->Add( CexmcOPDPAtRightCalorimeter_ARReal_EDT_Histo,
+                               k->index,
+                               tpStore->calorimeterTPRight.positionLocal.x(),
+                               tpStore->calorimeterTPRight.positionLocal.y() );
+        }
+        histoManager->Add( CexmcRecOPDPAtLeftCalorimeter_ARReal_EDT_Histo,
+                           k->index,
+                           reconstructor->GetCalorimeterEPLeftPosition().x(),
+                           reconstructor->GetCalorimeterEPLeftPosition().y() );
+        histoManager->Add( CexmcRecOPDPAtRightCalorimeter_ARReal_EDT_Histo,
+                           k->index,
+                           reconstructor->GetCalorimeterEPRightPosition().x(),
+                           reconstructor->GetCalorimeterEPRightPosition().y() );
+    }
+
+    if ( ! reconstructorHasFullTrigger )
+        return;
+
     if ( tpStore->monitorTP.IsValid() )
     {
         histoManager->Add( CexmcMomentumIP_RT_Histo, 0,
                            tpStore->monitorTP.momentumAmp );
     }
 
-    G4double    opMass( reconstructor->GetOutputParticleMass() );
-    G4double    nopMass( reconstructor->GetNucleusOutputParticleMass() );
-
-    histoManager->Add( CexmcRecMasses_EDT_Histo, 0, opMass, nopMass );
-
-    if ( ! reconstructorHasFullTrigger )
-        return;
+    if ( tpStore->targetTPOutputParticle.IsValid() )
+    {
+        histoManager->Add( CexmcTPInTarget_RT_Histo, 0,
+                           tpStore->targetTPOutputParticle.positionLocal.x(),
+                           tpStore->targetTPOutputParticle.positionLocal.y(),
+                           tpStore->targetTPOutputParticle.positionLocal.z() );
+    }
 
     histoManager->Add( CexmcRecMasses_RT_Histo, 0,
                        reconstructor->GetOutputParticleMass(),
@@ -407,6 +451,20 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
             histoManager->Add( CexmcDiffOpenAngle_ARReal_RT_Histo,
                                k->index, diffOpenAngle );
         }
+        if ( tpStore->calorimeterTPLeft.IsValid() )
+        {
+            histoManager->Add( CexmcOPDPAtLeftCalorimeter_ARReal_RT_Histo,
+                               k->index,
+                               tpStore->calorimeterTPLeft.positionLocal.x(),
+                               tpStore->calorimeterTPLeft.positionLocal.y() );
+        }
+        if ( tpStore->calorimeterTPRight.IsValid() )
+        {
+            histoManager->Add( CexmcOPDPAtRightCalorimeter_ARReal_RT_Histo,
+                               k->index,
+                               tpStore->calorimeterTPRight.positionLocal.x(),
+                               tpStore->calorimeterTPRight.positionLocal.y() );
+        }
         histoManager->Add( CexmcAbsEnInLeftCalorimeter_ARReal_RT_Histo,
                            k->index, edStore->calorimeterEDLeft );
         histoManager->Add( CexmcAbsEnInRightCalorimeter_ARReal_RT_Histo,
@@ -415,6 +473,14 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
                            k->index, recCosTheta );
         histoManager->Add( CexmcRecOpenAngle_ARReal_RT_Histo,
                            k->index, reconstructor->GetTheAngle() / deg );
+        histoManager->Add( CexmcRecOPDPAtLeftCalorimeter_ARReal_RT_Histo,
+                           k->index,
+                           reconstructor->GetCalorimeterEPLeftPosition().x(),
+                           reconstructor->GetCalorimeterEPLeftPosition().y() );
+        histoManager->Add( CexmcRecOPDPAtRightCalorimeter_ARReal_RT_Histo,
+                           k->index,
+                           reconstructor->GetCalorimeterEPRightPosition().x(),
+                           reconstructor->GetCalorimeterEPRightPosition().y() );
     }
 }
 

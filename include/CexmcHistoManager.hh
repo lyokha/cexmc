@@ -39,6 +39,14 @@ enum  CexmcHistoType
     CexmcRecMasses_RT_Histo,
     CexmcRecMassOP_ARReal_RT_Histo,
     CexmcRecMassNOP_ARReal_RT_Histo,
+    CexmcOPDPAtLeftCalorimeter_ARReal_EDT_Histo,
+    CexmcOPDPAtRightCalorimeter_ARReal_EDT_Histo,
+    CexmcOPDPAtLeftCalorimeter_ARReal_RT_Histo,
+    CexmcOPDPAtRightCalorimeter_ARReal_RT_Histo,
+    CexmcRecOPDPAtLeftCalorimeter_ARReal_EDT_Histo,
+    CexmcRecOPDPAtRightCalorimeter_ARReal_EDT_Histo,
+    CexmcRecOPDPAtLeftCalorimeter_ARReal_RT_Histo,
+    CexmcRecOPDPAtRightCalorimeter_ARReal_RT_Histo,
     CexmcKinEnAtLeftCalorimeter_ARReal_TPT_Histo,
     CexmcKinEnAtRightCalorimeter_ARReal_TPT_Histo,
     CexmcKinEnAtLeftCalorimeter_ARReal_RT_Histo,
@@ -86,14 +94,17 @@ class  CexmcHistoManager
 
         void  AddARHistos( const CexmcAngularRange &  aRange );
 
-        void  Add( CexmcHistoType  histoType, unsigned int  index, G4int  binX,
-                   G4int  binY, G4double  value );
-
         void  Add( CexmcHistoType  histoType, unsigned int  index,
                    G4double  x );
 
         void  Add( CexmcHistoType  histoType, unsigned int  index, G4double  x,
                    G4double  y );
+
+        void  Add( CexmcHistoType  histoType, unsigned int  index, G4double  x,
+                   G4double  y, G4double  z );
+
+        void  Add( CexmcHistoType  histoType, unsigned int  index, G4int  binX,
+                   G4int  binY, G4double  value );
 
         void  List( void ) const;
 
@@ -119,6 +130,22 @@ class  CexmcHistoManager
         CexmcHistoVector              recmassop_arreal_rt;
 
         CexmcHistoVector              recmassnop_arreal_rt;
+
+        CexmcHistoVector              opdpcl_arreal_edt;
+
+        CexmcHistoVector              opdpcr_arreal_edt;
+
+        CexmcHistoVector              opdpcl_arreal_rt;
+
+        CexmcHistoVector              opdpcr_arreal_rt;
+
+        CexmcHistoVector              recopdpcl_arreal_edt;
+
+        CexmcHistoVector              recopdpcr_arreal_edt;
+
+        CexmcHistoVector              recopdpcl_arreal_rt;
+
+        CexmcHistoVector              recopdpcr_arreal_rt;
 
         CexmcHistoVector              kecl_arreal_tpt;
 
