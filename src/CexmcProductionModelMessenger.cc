@@ -34,7 +34,7 @@ CexmcProductionModelMessenger::CexmcProductionModelMessenger(
     applyFermiMotion->SetGuidance( "Switch on/off fermi motion in target "
                                    "nuclei" );
     applyFermiMotion->SetParameterName( "ApplyFermiMotionInTarget", false );
-    applyFermiMotion->SetDefaultValue( true );
+    applyFermiMotion->SetDefaultValue( false );
     applyFermiMotion->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setAngularRange = new G4UIcmdWith3Vector(

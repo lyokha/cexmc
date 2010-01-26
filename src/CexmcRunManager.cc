@@ -284,7 +284,7 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfSavedFastEvents = run->GetNmbOfSavedFastEvents();
     }
 
-    CexmcRunSObject             sObject(
+    CexmcRunSObject  sObject(
         productionModelType, gdmlFileName, etaDecayTable,
         physicsManager->GetProductionModel()->GetAngularRanges(),
         physicsManager->GetProductionModel()->IsFermiMotionOn(),
@@ -784,8 +784,8 @@ void  CexmcRunManager::PrintReadData( void ) const
               sObject.csAlgorithm << G4endl;
     G4cout << "     -- entry point depth: " <<
               G4BestUnit( sObject.epDepth, "Length" ) << G4endl;
-    G4cout << "     -- table mass of output particle used (0 -no, 1 - yes): " <<
-              sObject.useTableMass << G4endl;
+    G4cout << "     -- table mass of output particle used "
+                      "(0 - no, 1 - yes): " << sObject.useTableMass << G4endl;
     G4cout << "     -- mass cut is enabled (0 - no, 1 - yes): " <<
               sObject.useMassCut << G4endl;
     G4cout << "     -- mass cut output particle center: " <<
@@ -827,6 +827,15 @@ void  CexmcRunManager::PrintReadData(
 
     found = outputData.find( CexmcOutputRun );
     if ( found != outputData.end() )
+    {
+        G4DecayTable *  etaDecayTable( G4Eta::Definition()->GetDecayTable() );
+        for ( CexmcDecayBranchesStore::const_iterator
+                k( sObject.etaDecayTable.GetDecayBranches().begin() );
+                k != sObject.etaDecayTable.GetDecayBranches().end(); ++k )
+        {
+            etaDecayTable->GetDecayChannel( k->first )->SetBR( k->second );
+        }
         PrintReadData();
+    }
 }
 
