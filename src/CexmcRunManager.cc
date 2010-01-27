@@ -263,11 +263,10 @@ void  CexmcRunManager::SaveProject( void )
 
     CexmcNmbOfHitsInRanges  nmbOfHitsSampled;
     CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull;
-    CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal;
-    CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
+    CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange;
+    CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRecRange;
     CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
-    G4int                   nmbOfFalseHitsTriggeredReal( 0 );
-    G4int                   nmbOfFalseHitsTriggeredRec( 0 );
+    G4int                   nmbOfFalseHitsTriggered( 0 );
     G4int                   nmbOfSavedEvents( 0 );
     G4int                   nmbOfSavedFastEvents( 0 );
     const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
@@ -275,11 +274,10 @@ void  CexmcRunManager::SaveProject( void )
     {
         nmbOfHitsSampled = run->GetNmbOfHitsSampled();
         nmbOfHitsSampledFull = run->GetNmbOfHitsSampledFull();
-        nmbOfHitsTriggeredReal = run->GetNmbOfHitsTriggeredReal();
-        nmbOfHitsTriggeredRec = run->GetNmbOfHitsTriggeredRec();
+        nmbOfHitsTriggeredRealRange = run->GetNmbOfHitsTriggeredRealRange();
+        nmbOfHitsTriggeredRecRange = run->GetNmbOfHitsTriggeredRecRange();
         nmbOfOrphanHits = run->GetNmbOfOrphanHits();
-        nmbOfFalseHitsTriggeredReal = run->GetNmbOfFalseHitsTriggeredReal();
-        nmbOfFalseHitsTriggeredRec = run->GetNmbOfFalseHitsTriggeredRec();
+        nmbOfFalseHitsTriggered = run->GetNmbOfFalseHitsTriggered();
         nmbOfSavedEvents = run->GetNmbOfSavedEvents();
         nmbOfSavedFastEvents = run->GetNmbOfSavedFastEvents();
     }
@@ -313,11 +311,10 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetMassCutNOPCenter(),
         reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
         reconstructor->GetMassCutEllipseAngle(),
-        nmbOfHitsSampled, nmbOfHitsSampledFull, nmbOfHitsTriggeredReal,
-        nmbOfHitsTriggeredRec, nmbOfOrphanHits, nmbOfFalseHitsTriggeredReal,
-        nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
-        numberOfEventsProcessed, numberOfEventsProcessedEffective,
-        numberOfEventToBeProcessed );
+        nmbOfHitsSampled, nmbOfHitsSampledFull, nmbOfHitsTriggeredRealRange,
+        nmbOfHitsTriggeredRecRange, nmbOfOrphanHits, nmbOfFalseHitsTriggered,
+        nmbOfSavedEvents, nmbOfSavedFastEvents, numberOfEventsProcessed,
+        numberOfEventsProcessedEffective, numberOfEventToBeProcessed );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -801,12 +798,11 @@ void  CexmcRunManager::PrintReadData( void ) const
     G4cout << "  -- Setup acceptances (real, rec): " << G4endl;
     CexmcRunAction::PrintResults( sObject.nmbOfHitsSampled,
                                   sObject.nmbOfHitsSampledFull,
-                                  sObject.nmbOfHitsTriggeredReal,
-                                  sObject.nmbOfHitsTriggeredRec,
+                                  sObject.nmbOfHitsTriggeredRealRange,
+                                  sObject.nmbOfHitsTriggeredRecRange,
                                   sObject.nmbOfOrphanHits,
                                   sObject.angularRanges,
-                                  sObject.nmbOfFalseHitsTriggeredReal,
-                                  sObject.nmbOfFalseHitsTriggeredRec );
+                                  sObject.nmbOfFalseHitsTriggered );
 
     G4cout << G4endl;
 }

@@ -36,15 +36,13 @@ class  CexmcRun : public G4Run
 
         void  IncrementNmbOfHitsSampledFull( G4int  index );
 
-        void  IncrementNmbOfHitsTriggeredReal( G4int  index );
+        void  IncrementNmbOfHitsTriggeredRealRange( G4int  index );
 
-        void  IncrementNmbOfHitsTriggeredRec( G4int  index );
+        void  IncrementNmbOfHitsTriggeredRecRange( G4int  index );
 
         void  IncrementNmbOfOrphanHits( G4int  index );
 
-        void  IncrementNmbOfFalseHitsTriggeredReal( void );
-
-        void  IncrementNmbOfFalseHitsTriggeredRec( void );
+        void  IncrementNmbOfFalseHitsTriggered( void );
 
         void  IncrementNmbOfSavedEvents( void );
 
@@ -55,15 +53,15 @@ class  CexmcRun : public G4Run
 
         const CexmcNmbOfHitsInRanges &  GetNmbOfHitsSampledFull( void ) const;
 
-        const CexmcNmbOfHitsInRanges &  GetNmbOfHitsTriggeredReal( void ) const;
+        const CexmcNmbOfHitsInRanges &  GetNmbOfHitsTriggeredRealRange( void )
+                                                                        const;
 
-        const CexmcNmbOfHitsInRanges &  GetNmbOfHitsTriggeredRec( void ) const;
+        const CexmcNmbOfHitsInRanges &  GetNmbOfHitsTriggeredRecRange( void )
+                                                                        const;
 
         const CexmcNmbOfHitsInRanges &  GetNmbOfOrphanHits( void ) const;
 
-        G4int  GetNmbOfFalseHitsTriggeredReal( void ) const;
-
-        G4int  GetNmbOfFalseHitsTriggeredRec( void ) const;
+        G4int  GetNmbOfFalseHitsTriggered( void ) const;
 
         G4int  GetNmbOfSavedEvents( void ) const;
 
@@ -74,15 +72,13 @@ class  CexmcRun : public G4Run
 
         CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull;
 
-        CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal;
+        CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange;
 
-        CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec;
+        CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRecRange;
 
         CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
 
-        G4int                   nmbOfFalseHitsTriggeredReal;
-
-        G4int                   nmbOfFalseHitsTriggeredRec;
+        G4int                   nmbOfFalseHitsTriggered;
 
         G4int                   nmbOfSavedEvents;
 
@@ -105,16 +101,16 @@ inline const CexmcNmbOfHitsInRanges &
 
 
 inline const CexmcNmbOfHitsInRanges &
-                            CexmcRun::GetNmbOfHitsTriggeredReal( void ) const
+                        CexmcRun::GetNmbOfHitsTriggeredRealRange( void ) const
 {
-    return nmbOfHitsTriggeredReal;
+    return nmbOfHitsTriggeredRealRange;
 }
 
 
 inline const CexmcNmbOfHitsInRanges &
-                            CexmcRun::GetNmbOfHitsTriggeredRec( void ) const
+                        CexmcRun::GetNmbOfHitsTriggeredRecRange( void ) const
 {
-    return nmbOfHitsTriggeredRec;
+    return nmbOfHitsTriggeredRecRange;
 }
 
 
@@ -125,15 +121,9 @@ inline const CexmcNmbOfHitsInRanges &
 }
 
 
-inline G4int  CexmcRun::GetNmbOfFalseHitsTriggeredReal( void ) const
+inline G4int  CexmcRun::GetNmbOfFalseHitsTriggered( void ) const
 {
-    return nmbOfFalseHitsTriggeredReal;
-}
-
-
-inline G4int  CexmcRun::GetNmbOfFalseHitsTriggeredRec( void ) const
-{
-    return nmbOfFalseHitsTriggeredRec;
+    return nmbOfFalseHitsTriggered;
 }
 
 

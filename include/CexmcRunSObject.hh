@@ -70,11 +70,10 @@ class  CexmcRunSObject
                          G4double  mCutNOPWidth, G4double  mCutAngle,
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull,
-                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredReal,
-                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRec,
+                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange,
+                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRecRange,
                          CexmcNmbOfHitsInRanges  nmbOfOrphanHits,
-                         G4int  nmbOfFalseHitsTriggeredReal,
-                         G4int  nmbOfFalseHitsTriggeredRec,
+                         G4int  nmbOfFalseHitsTriggered,
                          G4int  nmbOfSavedEvents, G4int  nmbOfSavedFastEvents,
                          G4int  numberOfEventsProcessed,
                          G4int  numberOfEventsProcessedEffective,
@@ -155,15 +154,13 @@ class  CexmcRunSObject
 
         CexmcNmbOfHitsInRanges       nmbOfHitsSampledFull;
 
-        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredReal;
+        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRealRange;
 
-        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRec;
+        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRecRange;
 
         CexmcNmbOfHitsInRanges       nmbOfOrphanHits;
 
-        G4int                        nmbOfFalseHitsTriggeredReal;
-
-        G4int                        nmbOfFalseHitsTriggeredRec;
+        G4int                        nmbOfFalseHitsTriggered;
 
         G4int                        nmbOfSavedEvents;
 
@@ -215,11 +212,10 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & mCutAngle;
     archive & nmbOfHitsSampled;
     archive & nmbOfHitsSampledFull;
-    archive & nmbOfHitsTriggeredReal;
-    archive & nmbOfHitsTriggeredRec;
+    archive & nmbOfHitsTriggeredRealRange;
+    archive & nmbOfHitsTriggeredRecRange;
     archive & nmbOfOrphanHits;
-    archive & nmbOfFalseHitsTriggeredReal;
-    archive & nmbOfFalseHitsTriggeredRec;
+    archive & nmbOfFalseHitsTriggered;
     archive & nmbOfSavedEvents;
     archive & nmbOfSavedFastEvents;
     archive & numberOfEventsProcessed;

@@ -611,8 +611,8 @@ void  CexmcEventAction::UpdateRunHits(
             theRun->IncrementNmbOfHitsSampledFull( k->index );
             if ( edDigitizerMonitorHasTriggered )
                 theRun->IncrementNmbOfHitsSampled( k->index );
-            if ( edDigitizerHasTriggered )
-                theRun->IncrementNmbOfHitsTriggeredReal( k->index );
+            if ( reconstructorHasTriggered )
+                theRun->IncrementNmbOfHitsTriggeredRealRange( k->index );
         }
         if ( reconstructorHasTriggered )
         {
@@ -625,7 +625,7 @@ void  CexmcEventAction::UpdateRunHits(
                 for ( CexmcAngularRangeList::const_iterator
                         k( aRangesRec.begin() ); k != aRangesRec.end(); ++k )
                 {
-                    theRun->IncrementNmbOfHitsTriggeredRec( k->index );
+                    theRun->IncrementNmbOfHitsTriggeredRecRange( k->index );
                 }
             }
         }
@@ -633,11 +633,7 @@ void  CexmcEventAction::UpdateRunHits(
     else
     {
         if ( edDigitizerHasTriggered )
-        {
-            theRun->IncrementNmbOfFalseHitsTriggeredReal();
-            if ( reconstructorHasTriggered )
-                theRun->IncrementNmbOfFalseHitsTriggeredRec();
-        }
+            theRun->IncrementNmbOfFalseHitsTriggered();
     }
 }
 

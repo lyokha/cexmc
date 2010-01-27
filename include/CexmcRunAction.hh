@@ -38,14 +38,13 @@ class  CexmcRunAction : public G4UserRunAction
 
     public:
         static void  PrintResults(
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull,
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
-                        const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
-                        const CexmcAngularRangeList &  angularRanges,
-                        G4int  nmbOfFalseHitsTriggeredReal,
-                        G4int  nmbOfFalseHitsTriggeredRec );
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull,
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRealRange,
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRecRange,
+                    const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
+                    const CexmcAngularRangeList &  angularRanges,
+                    G4int  nmbOfFalseHitsTriggered );
 
     private:
         CexmcPhysicsManager *  physicsManager;

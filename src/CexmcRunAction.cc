@@ -37,14 +37,13 @@ G4Run *  CexmcRunAction::GenerateRun( void )
 
 
 void  CexmcRunAction::PrintResults(
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull,
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal,
-                        const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec,
-                        const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
-                        const CexmcAngularRangeList &  angularRanges,
-                        G4int  nmbOfFalseHitsTriggeredReal,
-                        G4int  nmbOfFalseHitsTriggeredRec )
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsSampled,
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull,
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRealRange,
+                    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRecRange,
+                    const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits,
+                    const CexmcAngularRangeList &  angularRanges,
+                    G4int  nmbOfFalseHitsTriggered )
 {
     std::ostream::fmtflags  savedFlags( G4cout.flags() );
     std::streamsize  prec( G4cout.precision() );
@@ -76,8 +75,8 @@ void  CexmcRunAction::PrintResults(
         }
 
         G4double  accSave( acc );
-        found = nmbOfHitsTriggeredReal.find( k->index );
-        if ( found != nmbOfHitsTriggeredReal.end() )
+        found = nmbOfHitsTriggeredRealRange.find( k->index );
+        if ( found != nmbOfHitsTriggeredRealRange.end() )
         {
             triggered = found->second;
             if ( total > 0 )
@@ -88,8 +87,8 @@ void  CexmcRunAction::PrintResults(
 
         triggered = 0;
         acc = accSave;
-        found = nmbOfHitsTriggeredRec.find( k->index );
-        if ( found != nmbOfHitsTriggeredRec.end() )
+        found = nmbOfHitsTriggeredRecRange.find( k->index );
+        if ( found != nmbOfHitsTriggeredRecRange.end() )
         {
             triggered = found->second;
             if ( total > 0 )
@@ -123,9 +122,7 @@ void  CexmcRunAction::PrintResults(
     }
 
     G4cout << "       ---" << G4endl;
-    G4cout << "       False hits (real, rec):  " <<
-        nmbOfFalseHitsTriggeredReal << " | " << nmbOfFalseHitsTriggeredRec <<
-        G4endl;
+    G4cout << "       False hits:  " << nmbOfFalseHitsTriggered << G4endl;
 
     G4cout.precision( prec );
     G4cout.flags( savedFlags );
@@ -140,10 +137,10 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
                                         theRun->GetNmbOfHitsSampled() );
     const CexmcNmbOfHitsInRanges &  nmbOfHitsSampledFull(
                                         theRun->GetNmbOfHitsSampledFull() );
-    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredReal(
-                                        theRun->GetNmbOfHitsTriggeredReal() );
-    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRec(
-                                        theRun->GetNmbOfHitsTriggeredRec() );
+    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRealRange(
+                                    theRun->GetNmbOfHitsTriggeredRealRange() );
+    const CexmcNmbOfHitsInRanges &  nmbOfHitsTriggeredRecRange(
+                                    theRun->GetNmbOfHitsTriggeredRecRange() );
     const CexmcNmbOfHitsInRanges &  nmbOfOrphanHits(
                                         theRun->GetNmbOfOrphanHits() );
 
@@ -157,9 +154,8 @@ void  CexmcRunAction::EndOfRunAction( const G4Run *  run )
 
     G4cout << " --- Setup acceptances (real, rec):" << G4endl;
     PrintResults( nmbOfHitsSampled, nmbOfHitsSampledFull,
-                  nmbOfHitsTriggeredReal, nmbOfHitsTriggeredRec,
+                  nmbOfHitsTriggeredRealRange, nmbOfHitsTriggeredRecRange,
                   nmbOfOrphanHits, angularRanges,
-                  theRun->GetNmbOfFalseHitsTriggeredReal(),
-                  theRun->GetNmbOfFalseHitsTriggeredRec() );
+                  theRun->GetNmbOfFalseHitsTriggered() );
 }
 

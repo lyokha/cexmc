@@ -19,8 +19,7 @@
 #include "CexmcRun.hh"
 
 
-CexmcRun::CexmcRun() : nmbOfFalseHitsTriggeredReal( 0 ),
-    nmbOfFalseHitsTriggeredRec( 0 ), nmbOfSavedEvents( 0 ),
+CexmcRun::CexmcRun() : nmbOfFalseHitsTriggered( 0 ), nmbOfSavedEvents( 0 ),
     nmbOfSavedFastEvents( 0 )
 {
 }
@@ -48,23 +47,23 @@ void  CexmcRun::IncrementNmbOfHitsSampledFull( G4int  index )
 }
 
 
-void  CexmcRun::IncrementNmbOfHitsTriggeredReal( G4int  index )
+void  CexmcRun::IncrementNmbOfHitsTriggeredRealRange( G4int  index )
 {
     CexmcNmbOfHitsInRanges::iterator  found(
-                                        nmbOfHitsTriggeredReal.find( index ) );
-    if ( found == nmbOfHitsTriggeredReal.end() )
-        nmbOfHitsTriggeredReal.insert( std::pair< int, int >( index, 1 ) );
+                                    nmbOfHitsTriggeredRealRange.find( index ) );
+    if ( found == nmbOfHitsTriggeredRealRange.end() )
+        nmbOfHitsTriggeredRealRange.insert( std::pair< int, int >( index, 1 ) );
     else
         ++found->second;
 }
 
 
-void  CexmcRun::IncrementNmbOfHitsTriggeredRec( G4int  index )
+void  CexmcRun::IncrementNmbOfHitsTriggeredRecRange( G4int  index )
 {
     CexmcNmbOfHitsInRanges::iterator  found(
-                                        nmbOfHitsTriggeredRec.find( index ) );
-    if ( found == nmbOfHitsTriggeredRec.end() )
-        nmbOfHitsTriggeredRec.insert( std::pair< int, int >( index, 1 ) );
+                                    nmbOfHitsTriggeredRecRange.find( index ) );
+    if ( found == nmbOfHitsTriggeredRecRange.end() )
+        nmbOfHitsTriggeredRecRange.insert( std::pair< int, int >( index, 1 ) );
     else
         ++found->second;
 }
@@ -81,15 +80,9 @@ void  CexmcRun::IncrementNmbOfOrphanHits( G4int  index )
 }
 
 
-void  CexmcRun::IncrementNmbOfFalseHitsTriggeredReal( void )
+void  CexmcRun::IncrementNmbOfFalseHitsTriggered( void )
 {
-    ++nmbOfFalseHitsTriggeredReal;
-}
-
-
-void  CexmcRun::IncrementNmbOfFalseHitsTriggeredRec( void )
-{
-    ++nmbOfFalseHitsTriggeredRec;
+    ++nmbOfFalseHitsTriggered;
 }
 
 
