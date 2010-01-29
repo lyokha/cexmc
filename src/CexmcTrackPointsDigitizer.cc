@@ -167,7 +167,7 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                                                                    index ) );
             G4double   xInCalorimeterOffset(
                     ( G4double( column ) - G4double( nCrystalsInRow ) / 2 ) *
-                                        crystalWidth  + crystalWidth / 2 );
+                                        crystalWidth + crystalWidth / 2 );
             G4double   yInCalorimeterOffset(
                     ( G4double( row ) - G4double( nCrystalsInColumn ) / 2 ) *
                                         crystalHeight + crystalHeight / 2 );

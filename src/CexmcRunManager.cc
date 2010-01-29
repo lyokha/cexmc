@@ -46,6 +46,7 @@
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
+#include "CexmcCalorimeterGeometry.hh"
 #include "CexmcEventSObject.hh"
 #include "CexmcEventFastSObject.hh"
 #include "CexmcTrackPointInfo.hh"
@@ -266,7 +267,8 @@ void  CexmcRunManager::SaveProject( void )
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange;
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRecRange;
     CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
-    G4int                   nmbOfFalseHitsTriggered( 0 );
+    G4int                   nmbOfFalseHitsTriggeredEDT( 0 );
+    G4int                   nmbOfFalseHitsTriggeredRec( 0 );
     G4int                   nmbOfSavedEvents( 0 );
     G4int                   nmbOfSavedFastEvents( 0 );
     const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
@@ -277,7 +279,8 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfHitsTriggeredRealRange = run->GetNmbOfHitsTriggeredRealRange();
         nmbOfHitsTriggeredRecRange = run->GetNmbOfHitsTriggeredRecRange();
         nmbOfOrphanHits = run->GetNmbOfOrphanHits();
-        nmbOfFalseHitsTriggered = run->GetNmbOfFalseHitsTriggered();
+        nmbOfFalseHitsTriggeredEDT = run->GetNmbOfFalseHitsTriggeredEDT();
+        nmbOfFalseHitsTriggeredRec = run->GetNmbOfFalseHitsTriggeredRec();
         nmbOfSavedEvents = run->GetNmbOfSavedEvents();
         nmbOfSavedFastEvents = run->GetNmbOfSavedFastEvents();
     }
@@ -312,9 +315,10 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
         reconstructor->GetMassCutEllipseAngle(),
         nmbOfHitsSampled, nmbOfHitsSampledFull, nmbOfHitsTriggeredRealRange,
-        nmbOfHitsTriggeredRecRange, nmbOfOrphanHits, nmbOfFalseHitsTriggered,
-        nmbOfSavedEvents, nmbOfSavedFastEvents, numberOfEventsProcessed,
-        numberOfEventsProcessedEffective, numberOfEventToBeProcessed );
+        nmbOfHitsTriggeredRecRange, nmbOfOrphanHits, nmbOfFalseHitsTriggeredEDT,
+        nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
+        numberOfEventsProcessed, numberOfEventsProcessedEffective,
+        numberOfEventToBeProcessed );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -447,7 +451,6 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
     for ( int  i( 0 ); i < sObject.nmbOfSavedFastEvents; ++i )
     {
         evFastArchive >> evFastSObject;
-        event.SetEventID( evSObject.eventId );
 
         productionModel->SetTriggeredAngularRanges(
                                                 evFastSObject.opCosThetaSCM );
@@ -484,19 +487,22 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
         evArchive >> evSObject;
 
+        event.SetEventID( evSObject.eventId );
+
         monitorED->GetMap()->operator[]( 0 ) = &evSObject.monitorED;
         vetoCounterED->GetMap()->operator[]( 0 ) = &evSObject.vetoCounterEDLeft;
         vetoCounterED->GetMap()->operator[]( 1 <<
                 CexmcEnergyDepositInLeftRightSet::GetLeftRightBitsOffset() ) =
                                                 &evSObject.vetoCounterEDRight;
         G4int  row( 0 );
+        G4int  column( 0 );
         for ( CexmcEnergyDepositCalorimeterCollection::iterator
                 k( evSObject.calorimeterEDLeftCollection.begin() );
                     k != evSObject.calorimeterEDLeftCollection.end(); ++k )
         {
             G4int  index( row <<
                 CexmcEnergyDepositInCalorimeter::GetCopyDepth1BitsOffset() );
-            G4int  column( 0 );
+            column = 0;
             for ( CexmcEnergyDepositCrystalRowCollection::iterator
                     l( k->begin() ); l != k->end(); ++l )
             {
@@ -514,7 +520,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
                 1 << CexmcEnergyDepositInLeftRightSet::GetLeftRightBitsOffset()
                 | row <<
                 CexmcEnergyDepositInCalorimeter::GetCopyDepth1BitsOffset() );
-            G4int  column( 0 );
+            column = 0;
             for ( CexmcEnergyDepositCrystalRowCollection::iterator
                     l( k->begin() ); l != k->end(); ++l )
             {
@@ -574,13 +580,35 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
             vetoCounterTP->GetMap()->operator[](
                 1 << CexmcTrackPointsInLeftRightSet::GetLeftRightBitsOffset() |
                     vetoCounterTPRightInfo.trackId ) = &vetoCounterTPRightInfo;
+
+        G4ThreeVector  pos;
         if ( calorimeterTPLeftInfo.IsValid() )
+        {
+            pos = calorimeterTPLeftInfo.positionLocal;
+            CexmcCalorimeterGeometry::ConvertToCrystalGeometry(
+                    calorimeterTPLeftInfo.positionLocal, row, column, pos );
+            calorimeterTPLeftInfo.positionLocal = pos;
             calorimeterTP->GetMap()->operator[](
-                    calorimeterTPLeftInfo.trackId ) = &calorimeterTPLeftInfo;
+                row << CexmcTrackPointsInCalorimeter::
+                                                GetCopyDepth1BitsOffset() |
+                column << CexmcTrackPointsInCalorimeter::
+                                                GetCopyDepth0BitsOffset() |
+                calorimeterTPLeftInfo.trackId ) = &calorimeterTPLeftInfo;
+        }
         if ( calorimeterTPRightInfo.IsValid() )
+        {
+            pos = calorimeterTPRightInfo.positionLocal;
+            CexmcCalorimeterGeometry::ConvertToCrystalGeometry(
+                    calorimeterTPRightInfo.positionLocal, row, column, pos );
+            calorimeterTPRightInfo.positionLocal = pos;
             calorimeterTP->GetMap()->operator[](
                 1 << CexmcTrackPointsInLeftRightSet::GetLeftRightBitsOffset() |
-                    calorimeterTPRightInfo.trackId ) = &calorimeterTPRightInfo;
+                row << CexmcTrackPointsInCalorimeter::
+                                                GetCopyDepth1BitsOffset() |
+                column << CexmcTrackPointsInCalorimeter::
+                                                GetCopyDepth0BitsOffset() |
+                calorimeterTPRightInfo.trackId ) = &calorimeterTPRightInfo;
+        }
 
         productionModel->SetProductionModelData(
                                             evSObject.productionModelData );
@@ -603,19 +631,19 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         delete event.GetUserInformation();
         event.SetUserInformation( NULL );
 
+        monitorED->GetMap()->clear();
+        vetoCounterED->GetMap()->clear();
+        calorimeterED->GetMap()->clear();
+        monitorTP->GetMap()->clear();
+        targetTP->GetMap()->clear();
+        vetoCounterTP->GetMap()->clear();
+        calorimeterTP->GetMap()->clear();
+
         if ( nEvent > 0 && iEventEffective == nEvent )
             break;
     }
 
     curEventRead = nEventCount + iEventEffective;
-
-    monitorED->GetMap()->clear();
-    vetoCounterED->GetMap()->clear();
-    calorimeterED->GetMap()->clear();
-    monitorTP->GetMap()->clear();
-    targetTP->GetMap()->clear();
-    vetoCounterTP->GetMap()->clear();
-    calorimeterTP->GetMap()->clear();
 
     numberOfEventsProcessed = iEvent;
     numberOfEventsProcessedEffective = iEventEffective;
@@ -802,7 +830,8 @@ void  CexmcRunManager::PrintReadData( void ) const
                                   sObject.nmbOfHitsTriggeredRecRange,
                                   sObject.nmbOfOrphanHits,
                                   sObject.angularRanges,
-                                  sObject.nmbOfFalseHitsTriggered );
+                                  sObject.nmbOfFalseHitsTriggeredEDT,
+                                  sObject.nmbOfFalseHitsTriggeredRec );
 
     G4cout << G4endl;
 }

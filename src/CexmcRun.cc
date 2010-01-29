@@ -19,7 +19,8 @@
 #include "CexmcRun.hh"
 
 
-CexmcRun::CexmcRun() : nmbOfFalseHitsTriggered( 0 ), nmbOfSavedEvents( 0 ),
+CexmcRun::CexmcRun() : nmbOfFalseHitsTriggeredEDT( 0 ),
+    nmbOfFalseHitsTriggeredRec( 0 ), nmbOfSavedEvents( 0 ),
     nmbOfSavedFastEvents( 0 )
 {
 }
@@ -80,9 +81,15 @@ void  CexmcRun::IncrementNmbOfOrphanHits( G4int  index )
 }
 
 
-void  CexmcRun::IncrementNmbOfFalseHitsTriggered( void )
+void  CexmcRun::IncrementNmbOfFalseHitsTriggeredEDT( void )
 {
-    ++nmbOfFalseHitsTriggered;
+    ++nmbOfFalseHitsTriggeredEDT;
+}
+
+
+void  CexmcRun::IncrementNmbOfFalseHitsTriggeredRec( void )
+{
+    ++nmbOfFalseHitsTriggeredRec;
 }
 
 

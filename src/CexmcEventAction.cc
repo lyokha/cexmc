@@ -633,7 +633,9 @@ void  CexmcEventAction::UpdateRunHits(
     else
     {
         if ( edDigitizerHasTriggered )
-            theRun->IncrementNmbOfFalseHitsTriggered();
+            theRun->IncrementNmbOfFalseHitsTriggeredEDT();
+        if ( reconstructorHasTriggered )
+            theRun->IncrementNmbOfFalseHitsTriggeredRec();
     }
 }
 

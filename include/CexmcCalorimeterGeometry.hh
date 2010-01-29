@@ -34,6 +34,10 @@ class  CexmcCalorimeterGeometry
                                       G4double &  crystalHeight,
                                       G4double &  crystalLength );
 
+        static void  ConvertToCrystalGeometry( const G4ThreeVector &  src,
+                                               G4int &  row, G4int & column,
+                                               G4ThreeVector &  dst );
+
         static void  GetCalorimeterLeftTransform(
                                             G4AffineTransform &  transform );
 

@@ -404,6 +404,9 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     title = out.str();
     nBinsX = Int_t( halfWidth * 2 / CexmcHistoTPResolution );
     Int_t  nBinsY( Int_t( halfHeight * 2 / CexmcHistoTPResolution ) );
+    /* looks like there is no possibility to draw descending xaxis in root,
+     * so imagine that you look at calorimeters from behind, i.e. your face to
+     * the beam */
     opdpcl_arreal_edt.push_back( new TH2F( name.c_str(), title.c_str(),
                                            nBinsX, -halfWidth, halfWidth,
                                            nBinsY, -halfHeight, halfHeight ) );

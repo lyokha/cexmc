@@ -42,7 +42,9 @@ class  CexmcRun : public G4Run
 
         void  IncrementNmbOfOrphanHits( G4int  index );
 
-        void  IncrementNmbOfFalseHitsTriggered( void );
+        void  IncrementNmbOfFalseHitsTriggeredEDT( void );
+
+        void  IncrementNmbOfFalseHitsTriggeredRec( void );
 
         void  IncrementNmbOfSavedEvents( void );
 
@@ -61,7 +63,9 @@ class  CexmcRun : public G4Run
 
         const CexmcNmbOfHitsInRanges &  GetNmbOfOrphanHits( void ) const;
 
-        G4int  GetNmbOfFalseHitsTriggered( void ) const;
+        G4int  GetNmbOfFalseHitsTriggeredEDT( void ) const;
+
+        G4int  GetNmbOfFalseHitsTriggeredRec( void ) const;
 
         G4int  GetNmbOfSavedEvents( void ) const;
 
@@ -78,7 +82,9 @@ class  CexmcRun : public G4Run
 
         CexmcNmbOfHitsInRanges  nmbOfOrphanHits;
 
-        G4int                   nmbOfFalseHitsTriggered;
+        G4int                   nmbOfFalseHitsTriggeredEDT;
+
+        G4int                   nmbOfFalseHitsTriggeredRec;
 
         G4int                   nmbOfSavedEvents;
 
@@ -121,9 +127,15 @@ inline const CexmcNmbOfHitsInRanges &
 }
 
 
-inline G4int  CexmcRun::GetNmbOfFalseHitsTriggered( void ) const
+inline G4int  CexmcRun::GetNmbOfFalseHitsTriggeredEDT( void ) const
 {
-    return nmbOfFalseHitsTriggered;
+    return nmbOfFalseHitsTriggeredEDT;
+}
+
+
+inline G4int  CexmcRun::GetNmbOfFalseHitsTriggeredRec( void ) const
+{
+    return nmbOfFalseHitsTriggeredRec;
 }
 
 

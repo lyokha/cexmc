@@ -57,7 +57,7 @@
 /cexmc/reconstructor/entryPointDepth 7 cm
 /cexmc/reconstructor/useTableMass false
 
-/cexmc/reconstructor/useMassCut true
+/cexmc/reconstructor/useMassCut false
 /cexmc/reconstructor/mCutOPCenter 530 MeV
 /cexmc/reconstructor/mCutNOPCenter 950 MeV
 /cexmc/reconstructor/mCutOPWidth 50 MeV
