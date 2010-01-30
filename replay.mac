@@ -1,30 +1,3 @@
-/control/verbose  1
-/run/verbose      1
-/event/verbose    0
-/hits/verbose     0
+/control/verbose 1
 
-/cexmc/detector/Monitor/ED/threshold 125 keV
-/cexmc/detector/VetoCounter/ED/threshold 250 keV
-/cexmc/detector/Calorimeter/ED/threshold 40 MeV
-
-/cexmc/detector/outerCrystalsVetoAlgorithm none
-/cexmc/detector/outerCrystalsVetoFraction 0.5
-
-#/cexmc/physics/setAngularRange 0.1 -0.1 2
-#/cexmc/physics/addAngularRange 1.0 0.0 10
-#/cexmc/physics/addAngularRange -0.5 -0.8 2
-/cexmc/physics/setAngularRange 1.0 -1.0 10
-
-/cexmc/reconstructor/entryPointDefinitionAlgo sqrt
-/cexmc/reconstructor/crystalSelectionAlgo all
-/cexmc/reconstructor/entryPointDepth 7 cm
-/cexmc/reconstructor/useTableMass false
-
-/cexmc/reconstructor/useMassCut true
-/cexmc/reconstructor/mCutOPCenter 530 MeV
-/cexmc/reconstructor/mCutNOPCenter 950 MeV
-/cexmc/reconstructor/mCutOPWidth 50 MeV
-/cexmc/reconstructor/mCutNOPWidth 50 MeV
-/cexmc/reconstructor/mCutAngle 135 deg
-
-/cexmc/event/verbose 2
+/cexmc/run/replay
