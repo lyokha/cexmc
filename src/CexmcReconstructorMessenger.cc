@@ -52,6 +52,28 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
     setCalorimeterEntryPointDefinitionAlgorithm->AvailableForStates(
                                             G4State_PreInit, G4State_Idle );
 
+    setCalorimeterEntryPointDepthDefinitionAlgorithm = new G4UIcmdWithAString(
+        ( CexmcMessenger::reconstructorDirName +
+                              "entryPointDepthDefinitionAlgo" ).c_str(), this );
+    setCalorimeterEntryPointDepthDefinitionAlgorithm->SetGuidance(
+        "\n    Algorithm to reconstruct entry point depth of output particle "
+        "decay products\n    in calorimeter (value is defined by "
+                            "'entryPointDepth' parameter)\n"
+        "    plain - depth is a constant\n"
+        "    sphere - depth depends on X and Y of calorimeter entry points "
+        "and locates\n             on surface of a sphere with origin in the "
+        "center of the target;\n             radius of the sphere is sum of "
+        "distance to the calorimeter and\n             'entryPointDepth' "
+        "value" );
+    setCalorimeterEntryPointDepthDefinitionAlgorithm->SetDefaultValue(
+                                                                    "plain" );
+    setCalorimeterEntryPointDepthDefinitionAlgorithm->SetParameterName(
+                                    "EntryPointDepthDefinitionAlgo", false );
+    setCalorimeterEntryPointDepthDefinitionAlgorithm->SetCandidates(
+                                    "plain sphere" );
+    setCalorimeterEntryPointDepthDefinitionAlgorithm->AvailableForStates(
+                                                G4State_PreInit, G4State_Idle );
+
     setCrystalSelectionAlgorithm = new G4UIcmdWithAString(
         ( CexmcMessenger::reconstructorDirName + "crystalSelectionAlgo" ).
                 c_str(), this );
@@ -85,6 +107,7 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
 CexmcReconstructorMessenger::~CexmcReconstructorMessenger()
 {
     delete setCalorimeterEntryPointDefinitionAlgorithm;
+    delete setCalorimeterEntryPointDepthDefinitionAlgorithm;
     delete setCrystalSelectionAlgorithm;
     delete setCalorimeterEntryPointDepth;
 }
@@ -120,6 +143,22 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
             } while ( false );
             reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm(
                                                         epDefinitionAlgorithm );
+            break;
+        }
+        if ( cmd == setCalorimeterEntryPointDepthDefinitionAlgorithm )
+        {
+            CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+                        epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain );
+            do
+            {
+                if ( value  == "sphere" )
+                {
+                    epDepthDefinitionAlgorithm = CexmcEntryPointDepthSphere;
+                    break;
+                }
+            } while ( false );
+            reconstructor->SetCalorimeterEntryPointDepthDefinitionAlgorithm(
+                                                epDepthDefinitionAlgorithm );
             break;
         }
         if ( cmd == setCrystalSelectionAlgorithm )

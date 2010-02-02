@@ -39,15 +39,21 @@ class  CexmcReconstructor
 
     public:
         void  SetCalorimeterEntryPointDefinitionAlgorithm(
-                        CexmcCalorimeterEntryPointDefinitionAlgorithm  algo );
+                    CexmcCalorimeterEntryPointDefinitionAlgorithm  algo );
+
+        void  SetCalorimeterEntryPointDepthDefinitionAlgorithm(
+                    CexmcCalorimeterEntryPointDepthDefinitionAlgorithm  algo );
 
         void  SetCrystalSelectionAlgorithm(
-                        CexmcCrystalSelectionAlgorithm  algo );
+                    CexmcCrystalSelectionAlgorithm  algo );
 
         void  SetCalorimeterEntryPointDepth( G4double  depth );
 
         CexmcCalorimeterEntryPointDefinitionAlgorithm
                     GetCalorimeterEntryPointDefinitionAlgorithm( void ) const;
+
+        CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+                GetCalorimeterEntryPointDepthDefinitionAlgorithm( void ) const;
 
         CexmcCrystalSelectionAlgorithm
                     GetCrystalSelectionAlgorithm( void ) const;
@@ -98,6 +104,9 @@ class  CexmcReconstructor
 
     protected:
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
+
+        CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+                                                    epDepthDefinitionAlgorithm;
 
         CexmcCrystalSelectionAlgorithm                 csAlgorithm;
 
@@ -160,6 +169,14 @@ inline void  CexmcReconstructor::SetCalorimeterEntryPointDefinitionAlgorithm(
 }
 
 
+inline void
+        CexmcReconstructor::SetCalorimeterEntryPointDepthDefinitionAlgorithm(
+                    CexmcCalorimeterEntryPointDepthDefinitionAlgorithm  algo )
+{
+    epDepthDefinitionAlgorithm = algo;
+}
+
+
 inline void  CexmcReconstructor::SetCrystalSelectionAlgorithm(
                                         CexmcCrystalSelectionAlgorithm  algo )
 {
@@ -179,6 +196,14 @@ inline CexmcCalorimeterEntryPointDefinitionAlgorithm
                                                                         const
 {
     return epDefinitionAlgorithm;
+}
+
+
+inline CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+        CexmcReconstructor::GetCalorimeterEntryPointDepthDefinitionAlgorithm(
+                                                                    void ) const
+{
+    return epDepthDefinitionAlgorithm;
 }
 
 

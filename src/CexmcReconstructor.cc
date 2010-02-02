@@ -26,6 +26,7 @@
 CexmcReconstructor::CexmcReconstructor() :
     hasTriggered( false ),
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
+    epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain ),
     csAlgorithm( CexmcSelectAllCrystals ), epDepth( 0 ), theAngle( 0 ),
     nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ), crystalWidth( 0 ),
     crystalHeight( 0 ), crystalLength( 0 ), messenger( NULL )
@@ -268,6 +269,54 @@ void  CexmcReconstructor::ReconstructEntryPoints(
         calorimeterEPRightPosition.setY( yWeightsSum / energySum );
         break;
     default :
+        break;
+    }
+
+    switch ( epDepthDefinitionAlgorithm )
+    {
+    case CexmcEntryPointDepthPlain :
+        break;
+    case CexmcEntryPointDepthSphere :
+        {
+            G4double  calorimeterEPLeftRadiusOfTheSphere(
+                             calorimeterLeftTransform.NetTranslation().mag() +
+                             calorimeterEPLeftPosition.z() );
+            G4double  calorimeterEPLeftRadiusOfTheSphere2(
+                                      calorimeterEPLeftRadiusOfTheSphere *
+                                      calorimeterEPLeftRadiusOfTheSphere );
+            G4double  calorimeterEPLeftPositionX2(
+                                            calorimeterEPLeftPosition.x() *
+                                            calorimeterEPLeftPosition.x() );
+            G4double  calorimeterEPLeftPositionY2(
+                                            calorimeterEPLeftPosition.y() *
+                                            calorimeterEPLeftPosition.y() );
+            G4double  calorimeterEPLeftPositionZOffset(
+                           calorimeterEPLeftRadiusOfTheSphere - std::sqrt(
+                                  calorimeterEPLeftRadiusOfTheSphere2 -
+                                  calorimeterEPLeftPositionX2 -
+                                  calorimeterEPLeftPositionY2 ) );
+            G4double  calorimeterEPRightRadiusOfTheSphere(
+                              calorimeterRightTransform.NetTranslation().mag() +
+                              calorimeterEPRightPosition.z() );
+            G4double  calorimeterEPRightRadiusOfTheSphere2(
+                                       calorimeterEPRightRadiusOfTheSphere *
+                                       calorimeterEPRightRadiusOfTheSphere );
+            G4double  calorimeterEPRightPositionX2(
+                                            calorimeterEPRightPosition.x() *
+                                            calorimeterEPRightPosition.x() );
+            G4double  calorimeterEPRightPositionY2(
+                                            calorimeterEPRightPosition.y() *
+                                            calorimeterEPRightPosition.y() );
+            G4double  calorimeterEPRightPositionZOffset(
+                            calorimeterEPRightRadiusOfTheSphere - std::sqrt(
+                                    calorimeterEPRightRadiusOfTheSphere2 -
+                                    calorimeterEPRightPositionX2 -
+                                    calorimeterEPRightPositionY2 ) );
+            calorimeterEPLeftPosition.setZ( calorimeterEPLeftPosition.z() -
+                                            calorimeterEPLeftPositionZOffset );
+            calorimeterEPRightPosition.setZ( calorimeterEPRightPosition.z() -
+                                         calorimeterEPRightPositionZOffset );
+        }
         break;
     }
 

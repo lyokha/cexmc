@@ -63,6 +63,8 @@ class  CexmcRunSObject
                          G4double  outerCrystalsVetoFraction,
                          CexmcCalorimeterEntryPointDefinitionAlgorithm
                                                     epDefinitionAlgorithm,
+                         CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+                                                    epDepthDefinitionAlgorithm,
                          CexmcCrystalSelectionAlgorithm  csAlgorithm,
                          G4double  epDepth, G4bool  useTableMass,
                          G4bool  useMassCut, G4double  mCutOPCenter,
@@ -132,6 +134,9 @@ class  CexmcRunSObject
         G4double                     outerCrystalsVetoFraction;
 
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
+
+        CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+                                                    epDepthDefinitionAlgorithm;
 
         CexmcCrystalSelectionAlgorithm  csAlgorithm;
 
@@ -204,6 +209,7 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & outerCrystalsVetoAlgorithm;
     archive & outerCrystalsVetoFraction;
     archive & epDefinitionAlgorithm;
+    archive & epDepthDefinitionAlgorithm;
     archive & csAlgorithm;
     archive & epDepth;
     archive & useTableMass;

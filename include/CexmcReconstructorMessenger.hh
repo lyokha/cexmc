@@ -40,11 +40,13 @@ class  CexmcReconstructorMessenger : public G4UImessenger
         void  SetNewValue( G4UIcommand *  cmd, G4String  value );
 
     private:
-        CexmcReconstructor *         reconstructor;
+        CexmcReconstructor *   reconstructor;
 
-        G4UIcmdWithAString *        setCalorimeterEntryPointDefinitionAlgorithm;
+        G4UIcmdWithAString *   setCalorimeterEntryPointDefinitionAlgorithm;
 
-        G4UIcmdWithAString *         setCrystalSelectionAlgorithm;
+        G4UIcmdWithAString *   setCalorimeterEntryPointDepthDefinitionAlgorithm;
+
+        G4UIcmdWithAString *   setCrystalSelectionAlgorithm;
 
         G4UIcmdWithADoubleAndUnit *  setCalorimeterEntryPointDepth;
 };

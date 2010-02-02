@@ -99,6 +99,13 @@ enum  CexmcCalorimeterEntryPointDefinitionAlgorithm
 };
 
 
+enum  CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+{
+    CexmcEntryPointDepthPlain,
+    CexmcEntryPointDepthSphere
+};
+
+
 enum  CexmcCrystalSelectionAlgorithm
 {
     CexmcSelectAllCrystals,

@@ -215,7 +215,9 @@ void  CexmcRunManager::ReadProject( void )
         throw CexmcException( CexmcWeirdException );
 
     reconstructor->SetCalorimeterEntryPointDefinitionAlgorithm(
-                                                sObject.epDefinitionAlgorithm );
+                                        sObject.epDefinitionAlgorithm );
+    reconstructor->SetCalorimeterEntryPointDepthDefinitionAlgorithm(
+                                        sObject.epDepthDefinitionAlgorithm );
     reconstructor->SetCrystalSelectionAlgorithm( sObject.csAlgorithm );
     reconstructor->SetCalorimeterEntryPointDepth( sObject.epDepth );
     reconstructor->UseTableMass( sObject.useTableMass );
@@ -307,6 +309,7 @@ void  CexmcRunManager::SaveProject( void )
         edDigitizer->GetOuterCrystalsVetoAlgorithm(),
         edDigitizer->GetOuterCrystalsVetoFraction(),
         reconstructor->GetCalorimeterEntryPointDefinitionAlgorithm(),
+        reconstructor->GetCalorimeterEntryPointDepthDefinitionAlgorithm(),
         reconstructor->GetCrystalSelectionAlgorithm(),
         reconstructor->GetCalorimeterEntryPointDepth(),
         reconstructor->IsTableMassUsed(), reconstructor->IsMassCutUsed(),
@@ -805,6 +808,9 @@ void  CexmcRunManager::PrintReadData( void ) const
                        "max ED," << G4endl;
     G4cout << "         2 - linear, 3 - square): " <<
               sObject.epDefinitionAlgorithm << G4endl;
+    G4cout << "     -- entry point depth definition algorithm "
+                      "(0 - plain, 1 - sphere): " <<
+                          sObject.epDepthDefinitionAlgorithm << G4endl;
     G4cout << "     -- crystal selection algorithm (0 - all, 1 - adjacent): " <<
               sObject.csAlgorithm << G4endl;
     G4cout << "     -- entry point depth: " <<

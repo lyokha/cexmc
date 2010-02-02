@@ -54,7 +54,8 @@
 
 /cexmc/reconstructor/entryPointDefinitionAlgo sqrt
 /cexmc/reconstructor/crystalSelectionAlgo all
-/cexmc/reconstructor/entryPointDepth 7 cm
+/cexmc/reconstructor/entryPointDepthDefinitionAlgo plain
+/cexmc/reconstructor/entryPointDepth 0 cm
 /cexmc/reconstructor/useTableMass false
 
 /cexmc/reconstructor/useMassCut false
