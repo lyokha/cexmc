@@ -179,13 +179,13 @@ class  CexmcHistoManager
 
         CexmcHistoVector              diffaop_scm_arreal_rt;
 
-        CexmcHistoVector              oa_scm_arreal_tpt;
+        CexmcHistoVector              oa_arreal_tpt;
 
-        CexmcHistoVector              oa_scm_arreal_rt;
+        CexmcHistoVector              oa_arreal_rt;
 
-        CexmcHistoVector              recoa_scm_arreal_rt;
+        CexmcHistoVector              recoa_arreal_rt;
 
-        CexmcHistoVector              diffoa_scm_arreal_rt;
+        CexmcHistoVector              diffoa_arreal_rt;
 
     private:
         CexmcHistosMap                histos;

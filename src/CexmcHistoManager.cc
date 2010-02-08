@@ -148,13 +148,13 @@ CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
     histos.insert( CexmcHistoPair( CexmcDiffAngleOP_SCM_ARReal_RT_Histo,
                                    &diffaop_scm_arreal_rt ) );
     histos.insert( CexmcHistoPair( CexmcOpenAngle_ARReal_TPT_Histo,
-                                   &oa_scm_arreal_tpt ) );
+                                   &oa_arreal_tpt ) );
     histos.insert( CexmcHistoPair( CexmcOpenAngle_ARReal_RT_Histo,
-                                   &oa_scm_arreal_rt ) );
+                                   &oa_arreal_rt ) );
     histos.insert( CexmcHistoPair( CexmcRecOpenAngle_ARReal_RT_Histo,
-                                   &recoa_scm_arreal_rt ) );
+                                   &recoa_arreal_rt ) );
     histos.insert( CexmcHistoPair( CexmcDiffOpenAngle_ARReal_RT_Histo,
-                                   &diffoa_scm_arreal_rt ) );
+                                   &diffoa_arreal_rt ) );
     messenger = new CexmcHistoManagerMessenger;
 }
 
@@ -315,10 +315,10 @@ void  CexmcHistoManager::SetupARHistos( const CexmcAngularRangeList &  aRanges )
     aop_scm_arreal_rt.clear();
     recaop_scm_arreal_rt.clear();
     diffaop_scm_arreal_rt.clear();
-    oa_scm_arreal_tpt.clear();
-    oa_scm_arreal_rt.clear();
-    recoa_scm_arreal_rt.clear();
-    diffoa_scm_arreal_rt.clear();
+    oa_arreal_tpt.clear();
+    oa_arreal_rt.clear();
+    recoa_arreal_rt.clear();
+    diffoa_arreal_rt.clear();
 
     for ( CexmcAngularRangeList::const_iterator  k( aRanges.begin() );
                                                     k != aRanges.end(); ++k )
@@ -711,7 +711,7 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
                                                nBinsX, nBinsMinX, nBinsMaxX ) );
 
     out.str( "" );
-    out << "oa_scm_r" << aRange.index + 1 << "real_tpt";
+    out << "oa_r" << aRange.index + 1 << "real_tpt";
     name = out.str();
     out.str( "" );
     out << "Open angle between the gammas {range " <<
@@ -722,11 +722,11 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     nBinsMinX = Int_t( 0. );
     nBinsMaxX = Int_t( 360. );
     nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoAngularResolution );
-    oa_scm_arreal_tpt.push_back( new TH1F( name.c_str(), title.c_str(),
-                                           nBinsX, nBinsMinX, nBinsMaxX ) );
+    oa_arreal_tpt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                       nBinsX, nBinsMinX, nBinsMaxX ) );
 
     out.str( "" );
-    out << "oa_scm_r" << aRange.index + 1 << "real_rt";
+    out << "oa_r" << aRange.index + 1 << "real_rt";
     name = out.str();
     out.str( "" );
     out << "Open angle between the gammas {range " <<
@@ -734,11 +734,11 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
             std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
             ")}" RT_TITLE;
     title = out.str();
-    oa_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
-                                          nBinsX, nBinsMinX, nBinsMaxX ) );
+    oa_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                      nBinsX, nBinsMinX, nBinsMaxX ) );
 
     out.str( "" );
-    out << "recoa_scm_r" << aRange.index + 1 << "real_rt";
+    out << "recoa_r" << aRange.index + 1 << "real_rt";
     name = out.str();
     out.str( "" );
     out << "Reconstructed open angle between the gammas {range " <<
@@ -746,11 +746,11 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
             std::setprecision( 4 ) << aRange.top << ", " << aRange.bottom <<
             ")}" RT_TITLE;
     title = out.str();
-    recoa_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
-                                             nBinsX, nBinsMinX, nBinsMaxX ) );
+    recoa_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                         nBinsX, nBinsMinX, nBinsMaxX ) );
 
     out.str( "" );
-    out << "diffoa_scm_r" << aRange.index + 1 << "real_rt";
+    out << "diffoa_r" << aRange.index + 1 << "real_rt";
     name = out.str();
     out.str( "" );
     out << "Real - reconstructed open angle between the gammas {range " <<
@@ -761,8 +761,8 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     nBinsMinX = Int_t( -180. );
     nBinsMaxX = Int_t( 180. );
     nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoAngularResolution );
-    diffoa_scm_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
-                                              nBinsX, nBinsMinX, nBinsMaxX ) );
+    diffoa_arreal_rt.push_back( new TH1F( name.c_str(), title.c_str(),
+                                          nBinsX, nBinsMinX, nBinsMaxX ) );
 }
 
 
