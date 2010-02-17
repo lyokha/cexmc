@@ -26,6 +26,9 @@ class  G4UIcommand;
 class  G4UIcmdWithADouble;
 class  G4UIcmdWithADoubleAndUnit;
 class  G4UIcmdWithAString;
+class  G4UIcmdWithABool;
+class  G4UIcmdWith3Vector;
+class  G4UIcmdWithoutParameter;
 
 
 class  CexmcEnergyDepositDigitizerMessenger : public G4UImessenger
@@ -61,6 +64,12 @@ class  CexmcEnergyDepositDigitizerMessenger : public G4UImessenger
         G4UIcmdWithAString *           setOuterCrystalsVetoAlgorithm;
 
         G4UIcmdWithADouble *           setOuterCrystalsVetoFraction;
+
+        G4UIcmdWithABool *             applyFiniteCrystalResolution;
+
+        G4UIcmdWith3Vector *           addCrystalResolutionRange;
+
+        G4UIcmdWithoutParameter *      clearCrystalResolutionData;
 };
 
 

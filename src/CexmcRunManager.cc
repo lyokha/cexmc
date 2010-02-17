@@ -201,6 +201,9 @@ void  CexmcRunManager::ReadProject( void )
                                 sObject.outerCrystalsVetoAlgorithm, false );
     edDigitizer->SetOuterCrystalsVetoFraction(
                                 sObject.outerCrystalsVetoFraction, false );
+    edDigitizer->ApplyFiniteCrystalResolution(
+                                sObject.applyFiniteCrystalResolution, false );
+    edDigitizer->SetCrystalResolutionData( sObject.crystalResolutionData );
 
     const CexmcEventAction *  eventAction(
                 static_cast< const CexmcEventAction * >( userEventAction ) );
@@ -314,6 +317,8 @@ void  CexmcRunManager::SaveProject( void )
         edDigitizer->GetCalorimeterTriggerAlgorithm(),
         edDigitizer->GetOuterCrystalsVetoAlgorithm(),
         edDigitizer->GetOuterCrystalsVetoFraction(),
+        edDigitizer->IsFiniteCrystalResolutionApplied(),
+        edDigitizer->GetCrystalResolutionData(),
         reconstructor->GetCalorimeterEntryPointDefinitionAlgorithm(),
         reconstructor->GetCalorimeterEntryPointDepthDefinitionAlgorithm(),
         reconstructor->GetCrystalSelectionAlgorithm(),
@@ -808,12 +813,19 @@ void  CexmcRunManager::PrintReadData( void ) const
               G4BestUnit( sObject.calorimeterEDRightThreshold, "Energy" ) <<
               G4endl;
     G4cout << "  -- Calorimeter trigger algorithm (0 - all, 1 - inner): " <<
-               sObject.calorimeterTriggerAlgorithm << G4endl;
+              sObject.calorimeterTriggerAlgorithm << G4endl;
     G4cout << "  -- Outer crystals veto algorithm "
               "(0 - none, 1 - max, 2 - fraction): " <<
-               sObject.outerCrystalsVetoAlgorithm << G4endl;
+              sObject.outerCrystalsVetoAlgorithm << G4endl;
     G4cout << "  -- Outer crystals veto fraction: " <<
               sObject.outerCrystalsVetoFraction << G4endl;
+    G4cout << "  -- Finite crystal resolution applied (0 - no, 1 - yes): " <<
+              sObject.applyFiniteCrystalResolution << G4endl;
+    if ( sObject.applyFiniteCrystalResolution )
+    {
+        G4cout << "  -- Crystal resolution data: " <<
+                  sObject.crystalResolutionData;
+    }
     G4cout << "  -- Reconstructor settings: " << G4endl;
     G4cout << "     -- entry point definition algorithm " << G4endl;
     G4cout << "        (0 - center of calorimeter, 1 - center of crystal with "

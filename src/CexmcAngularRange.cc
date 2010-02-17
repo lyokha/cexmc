@@ -90,7 +90,7 @@ std::ostream &  operator<<( std::ostream &  out,
 
     out.precision( 4 );
     out << std::fixed;
-    out << angularRange.index  + 1 << " [" << angularRange.top << ", " <<
+    out << angularRange.index + 1 << " [" << angularRange.top << ", " <<
                angularRange.bottom << ")";
 
     out.precision( prec );

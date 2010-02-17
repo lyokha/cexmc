@@ -19,6 +19,9 @@
 #include <G4UIcmdWithADouble.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
 #include <G4UIcmdWithAString.hh>
+#include <G4UIcmdWithABool.hh>
+#include <G4UIcmdWith3Vector.hh>
+#include <G4UIcmdWithoutParameter.hh>
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositDigitizerMessenger.hh"
 #include "CexmcMessenger.hh"
@@ -33,7 +36,9 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setCalorimetersThreshold( NULL ), setLeftCalorimeterThreshold( NULL ),
     setRightCalorimeterThreshold( NULL ),
     setCalorimeterTriggerAlgorithm( NULL ),
-    setOuterCrystalsVetoAlgorithm( NULL ), setOuterCrystalsVetoFraction( NULL )
+    setOuterCrystalsVetoAlgorithm( NULL ), setOuterCrystalsVetoFraction( NULL ),
+    applyFiniteCrystalResolution( NULL ), addCrystalResolutionRange( NULL ),
+    clearCrystalResolutionData( NULL )
 {
     setMonitorThreshold = new G4UIcmdWithADoubleAndUnit(
             ( CexmcMessenger::monitorEDDirName + "threshold" ).c_str(), this );
@@ -158,15 +163,50 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
             ( CexmcMessenger::detectorDirName +
               "outerCrystalsVetoFraction" ).c_str(), this );
     setOuterCrystalsVetoFraction->SetGuidance( "\n    fraction of whole energy "
-            "deposit in one calorimeter \n    that belongs to outer crystals.\n"
+            "deposit in one calorimeter\n    that belongs to outer crystals.\n"
             "    If 'outerCrystalsVetoAlgorithm' is 'fraction' and\n"
             "    the outer crystals energy deposit fraction exceeds "
                 "this value\n    then event won't trigger" );
     setOuterCrystalsVetoFraction->SetParameterName(
-                                        "OuterCrystalsVetoFraction", true );
+                                        "OuterCrystalsVetoFraction", false );
     setOuterCrystalsVetoFraction->SetDefaultValue( 0 );
     setOuterCrystalsVetoFraction->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
+
+    applyFiniteCrystalResolution = new G4UIcmdWithABool(
+            ( CexmcMessenger::detectorDirName +
+              "applyFiniteCrystalResolution" ).c_str(), this );
+    applyFiniteCrystalResolution->SetGuidance( "\n    specify if finite "
+            "energy resolution of the crystals\n    will be accounted" );
+    applyFiniteCrystalResolution->SetParameterName(
+                                        "ApplyFiniteCrystalResolution", false );
+    applyFiniteCrystalResolution->SetDefaultValue( false );
+    applyFiniteCrystalResolution->AvailableForStates( G4State_PreInit,
+                                                      G4State_Idle );
+
+    addCrystalResolutionRange = new G4UIcmdWith3Vector(
+            ( CexmcMessenger::detectorDirName +
+              "addCrystalResolutionRange" ).c_str(), this );
+    addCrystalResolutionRange->SetGuidance( "\n    add new energy range "
+            "(in GeV!) with fwhm percentage\n    value of crystal resolution "
+            "in this range" );
+    addCrystalResolutionRange->SetParameterName(
+            "CrystalResolutionRangeBottom", "CrystalResolutionRangeTop",
+            "CrystalResolutionRangeValue", false );
+    addCrystalResolutionRange->SetRange( "CrystalResolutionRangeBottom >= 0. "
+            "&& CrystalResolutionRangeTop >= 0. && "
+            "CrystalResolutionRangeValue >= 0." );
+    addCrystalResolutionRange->AvailableForStates( G4State_PreInit,
+                                                   G4State_Idle );
+
+    clearCrystalResolutionData = new G4UIcmdWithoutParameter(
+            ( CexmcMessenger::detectorDirName +
+              "clearCrystalResolutionData" ).c_str(), this );
+    clearCrystalResolutionData->SetGuidance( "\n    clear all crystal "
+              "resolution ranges.\n    Can be used to redefine crystal "
+              "resolution data" );
+    clearCrystalResolutionData->AvailableForStates( G4State_PreInit,
+                                                    G4State_Idle );
 }
 
 
@@ -182,6 +222,9 @@ CexmcEnergyDepositDigitizerMessenger::~CexmcEnergyDepositDigitizerMessenger()
     delete setCalorimeterTriggerAlgorithm;
     delete setOuterCrystalsVetoAlgorithm;
     delete setOuterCrystalsVetoFraction;
+    delete applyFiniteCrystalResolution;
+    delete addCrystalResolutionRange;
+    delete clearCrystalResolutionData;
 }
 
 
@@ -276,6 +319,27 @@ void  CexmcEnergyDepositDigitizerMessenger::SetNewValue( G4UIcommand *  cmd,
         {
             energyDepositDigitizer->SetOuterCrystalsVetoFraction(
                         G4UIcmdWithADouble::GetNewDoubleValue( value ) );
+            break;
+        }
+        if ( cmd == applyFiniteCrystalResolution )
+        {
+            energyDepositDigitizer->ApplyFiniteCrystalResolution(
+                        G4UIcmdWithABool::GetNewBoolValue( value ) );
+            break;
+        }
+        if ( cmd == addCrystalResolutionRange )
+        {
+            G4ThreeVector  vec( G4UIcmdWith3Vector::GetNew3VectorValue(
+                                                                    value ) );
+            G4double       bottom( std::min( vec.x(), vec.y() ) );
+            G4double       top( std::max( vec.x(), vec.y() ) );
+            energyDepositDigitizer->AddCrystalResolutionRange( bottom, top,
+                                                               vec.z() );
+            break;
+        }
+        if ( cmd == clearCrystalResolutionData )
+        {
+            energyDepositDigitizer->ClearCrystalResolutionData();
             break;
         }
     } while ( false );

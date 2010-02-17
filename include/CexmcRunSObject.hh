@@ -26,6 +26,7 @@
 #include "CexmcSimpleDecayTableStore.hh"
 #include "CexmcSimpleThreeVectorStore.hh"
 #include "CexmcAngularRange.hh"
+#include "CexmcSimpleRangeWithValue.hh"
 #include "CexmcRun.hh"
 #include "CexmcCommon.hh"
 
@@ -61,6 +62,9 @@ class  CexmcRunSObject
                          CexmcOuterCrystalsVetoAlgorithm
                                                     outerCrystalsVetoAlgorithm,
                          G4double  outerCrystalsVetoFraction,
+                         G4bool  applyFiniteCrystalResolution,
+                         const CexmcEnergyRangeWithDoubleValueList &
+                                                    crystalResolutionData,
                          CexmcCalorimeterEntryPointDefinitionAlgorithm
                                                     epDefinitionAlgorithm,
                          CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
@@ -135,6 +139,10 @@ class  CexmcRunSObject
         CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm;
 
         G4double                     outerCrystalsVetoFraction;
+
+        G4bool                       applyFiniteCrystalResolution;
+
+        CexmcEnergyRangeWithDoubleValueList  crystalResolutionData;
 
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
 
@@ -223,6 +231,8 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & calorimeterTriggerAlgorithm;
     archive & outerCrystalsVetoAlgorithm;
     archive & outerCrystalsVetoFraction;
+    archive & applyFiniteCrystalResolution;
+    archive & crystalResolutionData;
     archive & epDefinitionAlgorithm;
     archive & epDepthDefinitionAlgorithm;
     archive & csAlgorithm;

@@ -42,6 +42,8 @@ CexmcRunSObject::CexmcRunSObject(
         CexmcCalorimeterTriggerAlgorithm  calorimeterTriggerAlgorithm,
         CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm,
         G4double  outerCrystalsVetoFraction,
+        G4bool  applyFiniteCrystalResolution,
+        const CexmcEnergyRangeWithDoubleValueList &  crystalResolutionData,
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm,
         CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
                                                     epDepthDefinitionAlgorithm,
@@ -76,6 +78,8 @@ CexmcRunSObject::CexmcRunSObject(
     calorimeterTriggerAlgorithm( calorimeterTriggerAlgorithm ),
     outerCrystalsVetoAlgorithm( outerCrystalsVetoAlgorithm ),
     outerCrystalsVetoFraction( outerCrystalsVetoFraction ),
+    applyFiniteCrystalResolution( applyFiniteCrystalResolution ),
+    crystalResolutionData( crystalResolutionData ),
     epDefinitionAlgorithm( epDefinitionAlgorithm ),
     epDepthDefinitionAlgorithm( epDepthDefinitionAlgorithm ),
     csAlgorithm( csAlgorithm ), epDepth( epDepth ),

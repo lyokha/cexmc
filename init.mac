@@ -36,6 +36,13 @@
 /cexmc/detector/outerCrystalsVetoAlgorithm none
 /cexmc/detector/outerCrystalsVetoFraction 0.5
 
+/cexmc/detector/applyFiniteCrystalResolution false
+/cexmc/detector/addCrystalResolutionRange 0.   0.04 0.48
+/cexmc/detector/addCrystalResolutionRange 0.04 0.06 0.27
+/cexmc/detector/addCrystalResolutionRange 0.06 0.10 0.22
+/cexmc/detector/addCrystalResolutionRange 0.10 0.20 0.18
+/cexmc/detector/addCrystalResolutionRange 0.20 2.00 0.15
+
 /cexmc/gun/particle pi-
 /cexmc/gun/position 0 0 -36 cm
 /cexmc/gun/direction 0 0 1

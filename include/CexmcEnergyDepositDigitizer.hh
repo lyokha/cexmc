@@ -22,6 +22,7 @@
 #include <iosfwd>
 #include <G4VDigitizerModule.hh>
 #include "CexmcEnergyDepositStore.hh"
+#include "CexmcSimpleRangeWithValue.hh"
 #include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
@@ -102,6 +103,18 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         void      SetOuterCrystalsVetoFraction( G4double  value,
                                                 G4bool fromMessenger = true );
 
+        void      ApplyFiniteCrystalResolution( G4bool  value,
+                                                G4bool fromMessenger = true );
+
+        void      AddCrystalResolutionRange( G4double  bottom, G4double  top,
+                                             G4double  value,
+                                             G4bool  fromMessenger = true );
+
+        void      ClearCrystalResolutionData( G4bool  fromMessenger = true );
+
+        void      SetCrystalResolutionData(
+                            const CexmcEnergyRangeWithDoubleValueList &  data );
+
         G4double  GetMonitorThreshold( void ) const;
 
         G4double  GetVetoCounterLeftThreshold( void ) const;
@@ -119,6 +132,11 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
                   GetOuterCrystalsVetoAlgorithm( void ) const;
 
         G4double  GetOuterCrystalsVetoFraction( void ) const;
+
+        G4bool    IsFiniteCrystalResolutionApplied( void ) const;
+
+        const CexmcEnergyRangeWithDoubleValueList &
+                  GetCrystalResolutionData( void ) const;
 
     public:
         G4bool    IsOuterCrystal( G4int  column, G4int  row );
@@ -190,6 +208,11 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4int                                    nCrystalsInColumn;
 
         G4int                                    nCrystalsInRow;
+
+    private:
+        G4bool                                   applyFiniteCrystalResolution;
+
+        CexmcEnergyRangeWithDoubleValueList      crystalResolutionData;
 
     private:
         CexmcEnergyDepositDigitizerMessenger *   messenger;
@@ -460,6 +483,62 @@ inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoFraction(
 }
 
 
+inline void  CexmcEnergyDepositDigitizer::ApplyFiniteCrystalResolution(
+                                      G4bool  value, G4bool  fromMessenger )
+{
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
+    applyFiniteCrystalResolution = value;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::AddCrystalResolutionRange(
+                                      G4double  bottom, G4double  top,
+                                      G4double  value, G4bool  fromMessenger )
+{
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
+    /* range boundaries are given in GeV */
+    crystalResolutionData.push_back( CexmcEnergyRangeWithDoubleValue(
+                                            bottom * GeV, top * GeV, value ) );
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::ClearCrystalResolutionData(
+                                                G4bool  fromMessenger )
+{
+    if ( fromMessenger )
+    {
+        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+        if ( runManager->ProjectIsRead() )
+            throw CexmcException( CexmcCmdIsNotAllowed );
+    }
+
+    crystalResolutionData.clear();
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::SetCrystalResolutionData(
+                            const CexmcEnergyRangeWithDoubleValueList &  data )
+{
+    ClearCrystalResolutionData( false );
+    crystalResolutionData = data;
+}
+
+
 inline G4bool  CexmcEnergyDepositDigitizer::IsOuterCrystal( G4int  column,
                                                             G4int  row )
 {
@@ -522,6 +601,20 @@ inline G4double  CexmcEnergyDepositDigitizer::GetOuterCrystalsVetoFraction(
                                                                     void ) const
 {
     return outerCrystalsVetoFraction;
+}
+
+
+inline G4bool  CexmcEnergyDepositDigitizer::IsFiniteCrystalResolutionApplied(
+                                                                    void ) const
+{
+    return applyFiniteCrystalResolution;
+}
+
+
+inline const CexmcEnergyRangeWithDoubleValueList &
+            CexmcEnergyDepositDigitizer::GetCrystalResolutionData( void ) const
+{
+    return crystalResolutionData;
 }
 
 

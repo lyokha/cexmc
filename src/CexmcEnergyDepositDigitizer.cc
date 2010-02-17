@@ -19,6 +19,7 @@
 #include <iostream>
 #include <G4DigiManager.hh>
 #include <G4String.hh>
+#include <Randomize.hh>
 #include "CexmcEnergyDepositDigitizer.hh"
 #include "CexmcEnergyDepositDigitizerMessenger.hh"
 #include "CexmcSimpleEnergyDeposit.hh"
@@ -47,7 +48,8 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     calorimeterTriggerAlgorithmRef( CexmcAllCrystalsMakeEDTriggerThreshold ),
     outerCrystalsVetoAlgorithmRef( CexmcNoOuterCrystalsVeto ),
     outerCrystalsVetoFractionRef( 0 ), nCrystalsInColumn( 1 ),
-    nCrystalsInRow( 1 ), messenger( NULL )
+    nCrystalsInRow( 1 ), applyFiniteCrystalResolution( false ),
+    messenger( NULL )
 {
     G4double  crystalWidth;
     G4double  crystalHeight;
@@ -176,6 +178,9 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
     G4double  innerCrystalsEDLeft( 0 );
     G4double  innerCrystalsEDRight( 0 );
 
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+
     hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/ED" );
     hitsCollection = static_cast< const CexmcEnergyDepositCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
@@ -191,43 +196,60 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             G4int      row( CexmcEnergyDepositInCalorimeter::GetRow( index ) );
             G4int      column( CexmcEnergyDepositInCalorimeter::GetColumn(
                                                                    index ) );
+            G4double   value( *k->second );
+            if ( applyFiniteCrystalResolution && value > 0. &&
+                                                 ! runManager->ProjectIsRead() )
+            {
+                for ( CexmcEnergyRangeWithDoubleValueList::const_iterator
+                          l( crystalResolutionData.begin() );
+                          l != crystalResolutionData.end(); ++l )
+                {
+                    if ( value < l->bottom || value >= l->top )
+                        continue;
+                    value = G4RandGauss::shoot( value,
+                                        value * l->value * CexmcFwhmToStddev );
+                    if ( value < 0. )
+                        value = 0.;
+                    break;
+                }
+            }
             switch ( side )
             {
             case CexmcLeft :
-                if ( *k->second > maxEDCrystalLeft )
+                if ( value > maxEDCrystalLeft )
                 {
                     calorimeterEDLeftMaxX = column;
                     calorimeterEDLeftMaxY = row;
-                    maxEDCrystalLeft = *k->second;
+                    maxEDCrystalLeft = value;
                 }
                 if ( IsOuterCrystal( column, row ) )
                 {
-                    outerCrystalsEDLeft += *k->second;
+                    outerCrystalsEDLeft += value;
                 }
                 else
                 {
-                    innerCrystalsEDLeft += *k->second;
+                    innerCrystalsEDLeft += value;
                 }
-                calorimeterEDLeft += *k->second;
-                calorimeterEDLeftCollection[ row ][ column ] = *k->second;
+                calorimeterEDLeft += value;
+                calorimeterEDLeftCollection[ row ][ column ] = value;
                 break;
             case CexmcRight :
-                if ( *k->second > maxEDCrystalRight )
+                if ( value > maxEDCrystalRight )
                 {
                     calorimeterEDRightMaxX = column;
                     calorimeterEDRightMaxY = row;
-                    maxEDCrystalRight = *k->second;
+                    maxEDCrystalRight = value;
                 }
                 if ( IsOuterCrystal( column, row ) )
                 {
-                    outerCrystalsEDRight += *k->second;
+                    outerCrystalsEDRight += value;
                 }
                 else
                 {
-                    innerCrystalsEDRight += *k->second;
+                    innerCrystalsEDRight += value;
                 }
-                calorimeterEDRight += *k->second;
-                calorimeterEDRightCollection[ row ][ column ] = *k->second;
+                calorimeterEDRight += value;
+                calorimeterEDRightCollection[ row ][ column ] = value;
                 break;
             default :
                 break;
