@@ -89,7 +89,9 @@ class  CexmcReconstructor
         G4double               GetTheAngle( void ) const;
 
     public:
-        G4bool  HasTriggered( void ) const;
+        G4bool          HasBasicTrigger( void ) const;
+
+        virtual G4bool  HasFullTrigger( void ) const;
 
     protected:
         void  ReconstructEntryPoints(
@@ -100,7 +102,7 @@ class  CexmcReconstructor
         void  ReconstructAngle( void );
 
     protected:
-        G4bool  hasTriggered;
+        G4bool  hasBasicTrigger;
 
     protected:
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
@@ -310,9 +312,9 @@ inline G4double  CexmcReconstructor::GetTheAngle( void ) const
 }
 
 
-inline G4bool  CexmcReconstructor::HasTriggered( void ) const
+inline G4bool  CexmcReconstructor::HasBasicTrigger( void ) const
 {
-    return hasTriggered;
+    return hasBasicTrigger;
 }
 
 

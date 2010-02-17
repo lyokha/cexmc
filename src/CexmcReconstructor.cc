@@ -24,7 +24,7 @@
 
 
 CexmcReconstructor::CexmcReconstructor() :
-    hasTriggered( false ),
+    hasBasicTrigger( false ),
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
     epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain ),
     csAlgorithm( CexmcSelectAllCrystals ), epDepth( 0 ), theAngle( 0 ),
@@ -54,10 +54,16 @@ void  CexmcReconstructor::Reconstruct(
                                     const CexmcEnergyDepositStore * edStore )
 {
     ReconstructEntryPoints( edStore );
-    if ( hasTriggered )
+    if ( hasBasicTrigger )
         ReconstructTargetPoint();
-    if ( hasTriggered )
+    if ( hasBasicTrigger )
         ReconstructAngle();
+}
+
+
+G4bool  CexmcReconstructor::HasFullTrigger( void ) const
+{
+    return hasBasicTrigger;
 }
 
 
@@ -329,7 +335,7 @@ void  CexmcReconstructor::ReconstructEntryPoints(
     calorimeterEPRightWorldDirection = calorimeterRightTransform.TransformAxis(
                                                  calorimeterEPRightDirection );
 
-    hasTriggered = true;
+    hasBasicTrigger = true;
 }
 
 
@@ -346,7 +352,7 @@ void  CexmcReconstructor::ReconstructTargetPoint( void )
     targetEPDirection = targetTransform.Inverse().TransformAxis(
                                                     targetEPWorldDirection );
 
-    hasTriggered = true;
+    hasBasicTrigger = true;
 }
 
 
@@ -358,6 +364,6 @@ void  CexmcReconstructor::ReconstructAngle( void )
                             targetEPWorldPosition );
     theAngle = epLeft.angle( epRight );
 
-    hasTriggered = true;
+    hasBasicTrigger = true;
 }
 

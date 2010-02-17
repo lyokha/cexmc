@@ -227,6 +227,12 @@ void  CexmcRunManager::ReadProject( void )
     reconstructor->SetMassCutOPWidth( sObject.mCutOPWidth );
     reconstructor->SetMassCutNOPWidth( sObject.mCutNOPWidth );
     reconstructor->SetMassCutEllipseAngle( sObject.mCutAngle );
+    reconstructor->UseAbsorbedEnergyCut( sObject.useAbsorbedEnergyCut );
+    reconstructor->SetAbsorbedEnergyCutCLCenter( sObject.aeCutCLCenter );
+    reconstructor->SetAbsorbedEnergyCutCRCenter( sObject.aeCutCRCenter );
+    reconstructor->SetAbsorbedEnergyCutCLWidth( sObject.aeCutCLWidth );
+    reconstructor->SetAbsorbedEnergyCutCRWidth( sObject.aeCutCRWidth );
+    reconstructor->SetAbsorbedEnergyCutEllipseAngle( sObject.aeCutAngle );
 }
 
 
@@ -317,6 +323,12 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetMassCutNOPCenter(),
         reconstructor->GetMassCutOPWidth(), reconstructor->GetMassCutNOPWidth(),
         reconstructor->GetMassCutEllipseAngle(),
+        reconstructor->IsAbsorbedEnergyCutUsed(),
+        reconstructor->GetAbsorbedEnergyCutCLCenter(),
+        reconstructor->GetAbsorbedEnergyCutCRCenter(),
+        reconstructor->GetAbsorbedEnergyCutCLWidth(),
+        reconstructor->GetAbsorbedEnergyCutCRWidth(),
+        reconstructor->GetAbsorbedEnergyCutEllipseAngle(),
         nmbOfHitsSampled, nmbOfHitsSampledFull, nmbOfHitsTriggeredRealRange,
         nmbOfHitsTriggeredRecRange, nmbOfOrphanHits, nmbOfFalseHitsTriggeredEDT,
         nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
@@ -819,16 +831,37 @@ void  CexmcRunManager::PrintReadData( void ) const
                       "(0 - no, 1 - yes): " << sObject.useTableMass << G4endl;
     G4cout << "     -- mass cut is enabled (0 - no, 1 - yes): " <<
               sObject.useMassCut << G4endl;
-    G4cout << "     -- mass cut output particle center: " <<
-              G4BestUnit( sObject.mCutOPCenter, "Energy" ) << G4endl;
-    G4cout << "     -- mass cut nucleus output particle center: " <<
-              G4BestUnit( sObject.mCutNOPCenter, "Energy" ) << G4endl;
-    G4cout << "     -- mass cut output particle width of the ellipse: " <<
-              G4BestUnit( sObject.mCutOPWidth, "Energy" ) << G4endl;
-    G4cout << "     -- mass cut nucleus output particle width of the ellipse: "
-           << G4BestUnit( sObject.mCutNOPWidth, "Energy" ) << G4endl;
-    G4cout << "     -- mass cut angle of the ellipse: " <<
-              sObject.mCutAngle / deg << " deg" << G4endl;
+    if ( sObject.useMassCut )
+    {
+        G4cout << "     -- mass cut output particle center: " <<
+                  G4BestUnit( sObject.mCutOPCenter, "Energy" ) << G4endl;
+        G4cout << "     -- mass cut nucleus output particle center: " <<
+                  G4BestUnit( sObject.mCutNOPCenter, "Energy" ) << G4endl;
+        G4cout << "     -- mass cut output particle width of the ellipse: " <<
+                  G4BestUnit( sObject.mCutOPWidth, "Energy" ) << G4endl;
+        G4cout << "     -- mass cut nucleus output particle width of the "
+                          "ellipse: "
+               << G4BestUnit( sObject.mCutNOPWidth, "Energy" ) << G4endl;
+        G4cout << "     -- mass cut angle of the ellipse: " <<
+                  sObject.mCutAngle / deg << " deg" << G4endl;
+    }
+    G4cout << "     -- absorbed energy cut is enabled (0 - no, 1 - yes): " <<
+              sObject.useAbsorbedEnergyCut << G4endl;
+    if ( sObject.useAbsorbedEnergyCut )
+    {
+        G4cout << "     -- absorbed energy cut left calorimeter center: " <<
+                  G4BestUnit( sObject.aeCutCLCenter, "Energy" ) << G4endl;
+        G4cout << "     -- absorbed energy cut right calorimeter center: " <<
+                  G4BestUnit( sObject.aeCutCRCenter, "Energy" ) << G4endl;
+        G4cout << "     -- absorbed energy cut left calorimeter width of the "
+                          "ellipse: " <<
+                  G4BestUnit( sObject.aeCutCLWidth, "Energy" ) << G4endl;
+        G4cout << "     -- absorbed energy cut right calorimeter width of the "
+                          "ellipse: "
+               << G4BestUnit( sObject.aeCutCRWidth, "Energy" ) << G4endl;
+        G4cout << "     -- absorbed energy cut angle of the ellipse: " <<
+                  sObject.aeCutAngle / deg << " deg" << G4endl;
+    }
     G4cout << "  -- Setup acceptances (real, rec): " << G4endl;
     CexmcRunAction::PrintResults( sObject.nmbOfHitsSampled,
                                   sObject.nmbOfHitsSampledFull,

@@ -37,6 +37,8 @@ enum  CexmcHistoType
     CexmcTPInTarget_RT_Histo,
     CexmcRecMasses_EDT_Histo,
     CexmcRecMasses_RT_Histo,
+    CexmcAbsorbedEnergy_EDT_Histo,
+    CexmcAbsorbedEnergy_RT_Histo,
     CexmcRecMassOP_ARReal_RT_Histo,
     CexmcRecMassNOP_ARReal_RT_Histo,
     CexmcOPDPAtLeftCalorimeter_ARReal_EDT_Histo,
@@ -126,6 +128,10 @@ class  CexmcHistoManager
         CexmcHistoVector              recmasses_edt;
 
         CexmcHistoVector              recmasses_rt;
+
+        CexmcHistoVector              ae_edt;
+
+        CexmcHistoVector              ae_rt;
 
         CexmcHistoVector              recmassop_arreal_rt;
 

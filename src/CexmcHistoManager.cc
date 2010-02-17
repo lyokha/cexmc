@@ -48,11 +48,11 @@ namespace
     const G4double  CexmcHistoTPResolution( 0.1 * cm );
     const G4double  CexmcHistoTPSafetyArea( 1.0 * cm );
     const G4double  CexmcHistoMassResolution( 1.0 * MeV );
-    const G4double  CexmcHistoEnergyResolution( 1.0 * MeV );
     const G4double  CexmcHistoEnergyMax( 1.0 * GeV );
-    const G4double  CexmcHistoMissEnergyResolution( 0.2 * MeV );
+    const G4double  CexmcHistoEnergyResolution( 1.0 * MeV );
     const G4double  CexmcHistoMissEnergyMin( -0.1 * GeV );
     const G4double  CexmcHistoMissEnergyMax( 0.2 * GeV );
+    const G4double  CexmcHistoMissEnergyResolution( 0.2 * MeV );
     const G4double  CexmcHistoAngularResolution( 0.5 );
     const G4double  CexmcHistoAngularCResolution( 0.001 );
 }
@@ -87,6 +87,8 @@ CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
     histos.insert( CexmcHistoPair( CexmcTPInTarget_RT_Histo, &tptar_rt ) );
     histos.insert( CexmcHistoPair( CexmcRecMasses_EDT_Histo, &recmasses_edt ) );
     histos.insert( CexmcHistoPair( CexmcRecMasses_RT_Histo, &recmasses_rt ) );
+    histos.insert( CexmcHistoPair( CexmcAbsorbedEnergy_EDT_Histo, &ae_edt ) );
+    histos.insert( CexmcHistoPair( CexmcAbsorbedEnergy_RT_Histo, &ae_rt ) );
     histos.insert( CexmcHistoPair( CexmcRecMassOP_ARReal_RT_Histo,
                                    &recmassop_arreal_rt ) );
     histos.insert( CexmcHistoPair( CexmcRecMassNOP_ARReal_RT_Histo,
@@ -278,6 +280,22 @@ void  CexmcHistoManager::Initialize( void )
     histo = new TH2F( "recmasses_rt", title.c_str(), nBinsX, nBinsMinX,
                       nBinsMaxX, nBinsY, nBinsMinY, nBinsMaxY );
     recmasses_rt.push_back( histo );
+
+    nBinsMinX = 0;
+    nBinsMaxX = CexmcHistoEnergyMax;
+    nBinsMinY = 0;
+    nBinsMaxY = CexmcHistoEnergyMax;
+    nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoEnergyResolution );
+    nBinsY = Int_t( ( nBinsMaxY - nBinsMinY ) / CexmcHistoEnergyResolution );
+    title = G4String( "Absorbed energy (rc vs. lc)" ) + EDT_TITLE;
+    histo = new TH2F( "ae_edt", title.c_str(), nBinsX, nBinsMinX,
+                      nBinsMaxX, nBinsY, nBinsMinY, nBinsMaxY );
+    ae_edt.push_back( histo );
+
+    title = G4String( "Absorbed energy (rc vs. lc)" ) + RT_TITLE;
+    histo = new TH2F( "ae_rt", title.c_str(), nBinsX, nBinsMinX,
+                      nBinsMaxX, nBinsY, nBinsMinY, nBinsMaxY );
+    ae_rt.push_back( histo );
 
     SetupARHistos( runManager->GetPhysicsManager()->GetProductionModel()->
                    GetAngularRanges() );

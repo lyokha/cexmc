@@ -60,10 +60,17 @@
 
 /cexmc/reconstructor/useMassCut false
 /cexmc/reconstructor/mCutOPCenter 530 MeV
-/cexmc/reconstructor/mCutNOPCenter 950 MeV
-/cexmc/reconstructor/mCutOPWidth 50 MeV
-/cexmc/reconstructor/mCutNOPWidth 50 MeV
-/cexmc/reconstructor/mCutAngle 135 deg
+/cexmc/reconstructor/mCutNOPCenter 970 MeV
+/cexmc/reconstructor/mCutOPWidth 10 MeV
+/cexmc/reconstructor/mCutNOPWidth 30 MeV
+/cexmc/reconstructor/mCutAngle 45 deg
+
+/cexmc/reconstructor/useAbsorbedEnergyCut false
+/cexmc/reconstructor/aeCutCLCenter 310 MeV
+/cexmc/reconstructor/aeCutCRCenter 310 MeV
+/cexmc/reconstructor/aeCutCLWidth 100 MeV
+/cexmc/reconstructor/aeCutCRWidth 180 MeV
+/cexmc/reconstructor/aeCutAngle 45 deg
 
 /cexmc/run/eventCountPolicy trigger
 

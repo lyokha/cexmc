@@ -57,6 +57,18 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 
         void      SetMassCutEllipseAngle( G4double  value );
 
+        void      UseAbsorbedEnergyCut( G4bool  on );
+
+        void      SetAbsorbedEnergyCutCLCenter( G4double  value );
+
+        void      SetAbsorbedEnergyCutCRCenter( G4double  value );
+
+        void      SetAbsorbedEnergyCutCLWidth( G4double  value );
+
+        void      SetAbsorbedEnergyCutCRWidth( G4double  value );
+
+        void      SetAbsorbedEnergyCutEllipseAngle( G4double  value );
+
         G4bool    IsTableMassUsed( void ) const;
 
         G4bool    IsMassCutUsed( void ) const;
@@ -72,6 +84,22 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
         G4double  GetMassCutEllipseAngle( void ) const;
 
         G4bool    HasMassCutTriggered( void ) const;
+
+        G4bool    IsAbsorbedEnergyCutUsed( void ) const;
+
+        G4double  GetAbsorbedEnergyCutCLCenter( void ) const;
+
+        G4double  GetAbsorbedEnergyCutCRCenter( void ) const;
+
+        G4double  GetAbsorbedEnergyCutCLWidth( void ) const;
+
+        G4double  GetAbsorbedEnergyCutCRWidth( void ) const;
+
+        G4double  GetAbsorbedEnergyCutEllipseAngle( void ) const;
+
+        G4bool    HasAbsorbedEnergyCutTriggered( void ) const;
+
+        G4bool    HasFullTrigger( void ) const;
 
     private:
         G4double  outputParticleMass;
@@ -96,8 +124,22 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 
         G4double  massCutEllipseAngle;
 
+        G4bool    useAbsorbedEnergyCut;
+
+        G4double  absorbedEnergyCutCLCenter;
+
+        G4double  absorbedEnergyCutCRCenter;
+
+        G4double  absorbedEnergyCutCLWidth;
+
+        G4double  absorbedEnergyCutCRWidth;
+
+        G4double  absorbedEnergyCutEllipseAngle;
+
     private:
         G4bool    hasMassCutTriggered;
+
+        G4bool    hasAbsorbedEnergyCutTriggered;
 
     private:
         CexmcChargeExchangeReconstructorMessenger *  messenger;
@@ -172,6 +214,48 @@ inline void  CexmcChargeExchangeReconstructor::SetMassCutEllipseAngle(
 }
 
 
+inline void  CexmcChargeExchangeReconstructor::UseAbsorbedEnergyCut(
+                                                                G4bool  on )
+{
+    useAbsorbedEnergyCut = on;
+}
+
+
+inline void  CexmcChargeExchangeReconstructor::SetAbsorbedEnergyCutCLCenter(
+                                                            G4double  value )
+{
+    absorbedEnergyCutCLCenter = value;
+}
+
+
+inline void  CexmcChargeExchangeReconstructor::SetAbsorbedEnergyCutCRCenter(
+                                                            G4double  value )
+{
+    absorbedEnergyCutCRCenter = value;
+}
+
+
+inline void  CexmcChargeExchangeReconstructor::SetAbsorbedEnergyCutCLWidth(
+                                                            G4double  value )
+{
+    absorbedEnergyCutCLWidth = value;
+}
+
+
+inline void  CexmcChargeExchangeReconstructor::SetAbsorbedEnergyCutCRWidth(
+                                                            G4double  value )
+{
+    absorbedEnergyCutCRWidth = value;
+}
+
+
+inline void  CexmcChargeExchangeReconstructor::SetAbsorbedEnergyCutEllipseAngle(
+                                                            G4double  value )
+{
+    absorbedEnergyCutEllipseAngle = value;
+}
+
+
 inline G4bool  CexmcChargeExchangeReconstructor::IsTableMassUsed( void ) const
 {
     return useTableMass;
@@ -223,6 +307,55 @@ inline G4bool  CexmcChargeExchangeReconstructor::HasMassCutTriggered( void )
                                                                         const
 {
     return hasMassCutTriggered;
+}
+
+
+inline G4bool  CexmcChargeExchangeReconstructor::IsAbsorbedEnergyCutUsed( void )
+                                                                        const
+{
+    return useAbsorbedEnergyCut;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetAbsorbedEnergyCutCLCenter(
+                                                                    void ) const
+{
+    return absorbedEnergyCutCLCenter;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetAbsorbedEnergyCutCRCenter(
+                                                                    void ) const
+{
+    return absorbedEnergyCutCRCenter;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetAbsorbedEnergyCutCLWidth(
+                                                                    void ) const
+{
+    return absorbedEnergyCutCLWidth;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetAbsorbedEnergyCutCRWidth(
+                                                                    void ) const
+{
+    return absorbedEnergyCutCRWidth;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::
+                                GetAbsorbedEnergyCutEllipseAngle( void ) const
+{
+    return absorbedEnergyCutEllipseAngle;
+}
+
+
+inline G4bool  CexmcChargeExchangeReconstructor::HasAbsorbedEnergyCutTriggered(
+                                                                    void ) const
+{
+    return hasAbsorbedEnergyCutTriggered;
 }
 
 

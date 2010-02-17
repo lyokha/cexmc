@@ -55,6 +55,18 @@ class  CexmcChargeExchangeReconstructorMessenger : public G4UImessenger
         G4UIcmdWithADoubleAndUnit *         mCutNOPWidth;
 
         G4UIcmdWithADoubleAndUnit *         mCutAngle;
+
+        G4UIcmdWithABool *                  useAbsorbedEnergyCut;
+
+        G4UIcmdWithADoubleAndUnit *         aeCutCLCenter;
+
+        G4UIcmdWithADoubleAndUnit *         aeCutCRCenter;
+
+        G4UIcmdWithADoubleAndUnit *         aeCutCLWidth;
+
+        G4UIcmdWithADoubleAndUnit *         aeCutCRWidth;
+
+        G4UIcmdWithADoubleAndUnit *         aeCutAngle;
 };
 
 

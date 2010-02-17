@@ -70,6 +70,9 @@ class  CexmcRunSObject
                          G4bool  useMassCut, G4double  mCutOPCenter,
                          G4double  mCutNOPCenter, G4double  mCutOPWidth,
                          G4double  mCutNOPWidth, G4double  mCutAngle,
+                         G4bool  useAbsorbedEnergyCut, G4double  aeCutCLCenter,
+                         G4double  aeCutCRCenter, G4double  aeCutCLWidth,
+                         G4double  aeCutCRWidth, G4double  aeCutAngle,
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull,
                          CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange,
@@ -156,6 +159,18 @@ class  CexmcRunSObject
 
         G4double                     mCutAngle;
 
+        G4bool                       useAbsorbedEnergyCut;
+
+        G4double                     aeCutCLCenter;
+
+        G4double                     aeCutCRCenter;
+
+        G4double                     aeCutCLWidth;
+
+        G4double                     aeCutCRWidth;
+
+        G4double                     aeCutAngle;
+
         CexmcNmbOfHitsInRanges       nmbOfHitsSampled;
 
         CexmcNmbOfHitsInRanges       nmbOfHitsSampledFull;
@@ -219,6 +234,12 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & mCutOPWidth;
     archive & mCutNOPWidth;
     archive & mCutAngle;
+    archive & useAbsorbedEnergyCut;
+    archive & aeCutCLCenter;
+    archive & aeCutCRCenter;
+    archive & aeCutCLWidth;
+    archive & aeCutCRWidth;
+    archive & aeCutAngle;
     archive & nmbOfHitsSampled;
     archive & nmbOfHitsSampledFull;
     archive & nmbOfHitsTriggeredRealRange;

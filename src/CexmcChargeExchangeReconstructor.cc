@@ -32,7 +32,11 @@ CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor() :
     outputParticleMass( 0 ),  nucleusOutputParticleMass( 0 ),
     useTableMass( false ), useMassCut( false ), massCutOPCenter( 0 ),
     massCutNOPCenter( 0 ), massCutOPWidth( 0 ), massCutNOPWidth( 0 ),
-    massCutEllipseAngle( 0 ), hasMassCutTriggered( false ), messenger( NULL )
+    massCutEllipseAngle( 0 ), useAbsorbedEnergyCut( false ),
+    absorbedEnergyCutCLCenter( 0 ), absorbedEnergyCutCRCenter( 0 ),
+    absorbedEnergyCutCLWidth( 0 ), absorbedEnergyCutCRWidth( 0 ),
+    absorbedEnergyCutEllipseAngle( 0 ), hasMassCutTriggered( false ),
+    hasAbsorbedEnergyCutTriggered( false ), messenger( NULL )
 {
     CexmcRunManager *         runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
@@ -66,9 +70,9 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
                                     const CexmcEnergyDepositStore *  edStore )
 {
     ReconstructEntryPoints( edStore );
-    if ( hasTriggered )
+    if ( hasBasicTrigger )
         ReconstructTargetPoint();
-    if ( hasTriggered )
+    if ( hasBasicTrigger )
         ReconstructAngle();
 
     G4ThreeVector  epLeft( calorimeterEPLeftWorldPosition -
@@ -175,20 +179,75 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     {
         G4double  cosMassCutEllipseAngle( std::cos( massCutEllipseAngle ) );
         G4double  sinMassCutEllipseAngle( std::sin( massCutEllipseAngle ) );
-        G4double  massCutOPWidth2( massCutOPWidth * massCutOPWidth );
-        G4double  massCutNOPWidth2( massCutNOPWidth * massCutNOPWidth );
 
-        hasMassCutTriggered =
-            std::pow( ( outputParticleMass - massCutOPCenter ) *
-                          cosMassCutEllipseAngle +
-                      ( nucleusOutputParticleMass - massCutNOPCenter ) *
-                          sinMassCutEllipseAngle, 2 ) / massCutOPWidth2 +
-            std::pow( - ( outputParticleMass - massCutOPCenter ) *
-                          sinMassCutEllipseAngle +
-                      ( nucleusOutputParticleMass - massCutNOPCenter ) *
-                          cosMassCutEllipseAngle, 2 ) / massCutNOPWidth2 < 1;
+        if ( massCutOPWidth <= 0. || massCutNOPWidth <= 0. )
+        {
+            hasMassCutTriggered = false;
+        }
+        else
+        {
+            G4double  massCutOPWidth2( massCutOPWidth * massCutOPWidth );
+            G4double  massCutNOPWidth2( massCutNOPWidth * massCutNOPWidth );
+
+            hasMassCutTriggered =
+                std::pow( ( outputParticleMass - massCutOPCenter ) *
+                              cosMassCutEllipseAngle +
+                          ( nucleusOutputParticleMass - massCutNOPCenter ) *
+                              sinMassCutEllipseAngle, 2 ) / massCutOPWidth2 +
+                std::pow( - ( outputParticleMass - massCutOPCenter ) *
+                              sinMassCutEllipseAngle +
+                          ( nucleusOutputParticleMass - massCutNOPCenter ) *
+                              cosMassCutEllipseAngle, 2 ) / massCutNOPWidth2 <
+                1;
+        }
     }
 
-    hasTriggered = true;
+    if ( useAbsorbedEnergyCut )
+    {
+        G4double  cosAbsorbedEnergyCutEllipseAngle(
+                                std::cos( absorbedEnergyCutEllipseAngle ) );
+        G4double  sinAbsorbedEnergyCutEllipseAngle(
+                                std::sin( absorbedEnergyCutEllipseAngle ) );
+
+        if ( absorbedEnergyCutCLWidth <= 0. || absorbedEnergyCutCRWidth <= 0. )
+        {
+            hasAbsorbedEnergyCutTriggered = false;
+        }
+        else
+        {
+            G4double  absorbedEnergyCutCLWidth2(
+                        absorbedEnergyCutCLWidth * absorbedEnergyCutCLWidth );
+            G4double  absorbedEnergyCutCRWidth2(
+                        absorbedEnergyCutCRWidth * absorbedEnergyCutCRWidth );
+
+            hasAbsorbedEnergyCutTriggered =
+                std::pow( ( calorimeterEDLeft - absorbedEnergyCutCLCenter ) *
+                              cosAbsorbedEnergyCutEllipseAngle +
+                          ( calorimeterEDRight - absorbedEnergyCutCRCenter ) *
+                              sinAbsorbedEnergyCutEllipseAngle, 2 ) /
+                absorbedEnergyCutCLWidth2 +
+                std::pow( - ( calorimeterEDLeft - absorbedEnergyCutCLCenter ) *
+                              sinAbsorbedEnergyCutEllipseAngle +
+                          ( calorimeterEDRight - absorbedEnergyCutCRCenter ) *
+                              cosAbsorbedEnergyCutEllipseAngle, 2 ) /
+                absorbedEnergyCutCRWidth2 <
+                1;
+        }
+    }
+
+    hasBasicTrigger = true;
+}
+
+
+G4bool  CexmcChargeExchangeReconstructor::HasFullTrigger( void ) const
+{
+    if ( ! hasBasicTrigger )
+        return false;
+    if ( useMassCut && ! hasMassCutTriggered )
+        return false;
+    if ( useAbsorbedEnergyCut && ! hasAbsorbedEnergyCutTriggered )
+        return false;
+
+    return true;
 }
 

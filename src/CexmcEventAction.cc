@@ -234,6 +234,13 @@ void  CexmcEventAction::PrintReconstructedData(
         else
             G4cout << "            < mass cut failed >" << G4endl;
     }
+    if ( reconstructor->IsAbsorbedEnergyCutUsed() )
+    {
+        if ( reconstructor->HasAbsorbedEnergyCutTriggered() )
+            G4cout << "            < absorbed energy cut passed >" << G4endl;
+        else
+            G4cout << "            < absorbed energy cut failed >" << G4endl;
+    }
     const CexmcProductionModelData &  pmData(
                                     reconstructor->GetProductionModelData() );
     G4cout << "       -- production model data: " << pmData;
@@ -249,6 +256,10 @@ void  CexmcEventAction::FillEDTHistos( const CexmcEnergyDepositStore *  edStore,
                 const CexmcAngularRangeList &  triggeredAngularRanges ) const
 {
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
+
+    histoManager->Add( CexmcAbsorbedEnergy_EDT_Histo, 0,
+                       edStore->calorimeterEDLeft,
+                       edStore->calorimeterEDRight );
 
     for ( CexmcAngularRangeList::const_iterator
                         k( triggeredAngularRanges.begin() );
@@ -391,6 +402,10 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
     histoManager->Add( CexmcRecMasses_RT_Histo, 0,
                        reconstructor->GetOutputParticleMass(),
                        reconstructor->GetNucleusOutputParticleMass() );
+
+    histoManager->Add( CexmcAbsorbedEnergy_RT_Histo, 0,
+                       edStore->calorimeterEDLeft,
+                       edStore->calorimeterEDRight );
 
     G4double  recCosTheta( reconstructor->GetProductionModelData().
                                                outputParticleSCM.cosTheta());
@@ -595,7 +610,7 @@ void  CexmcEventAction::UpdateRunHits(
                                     G4bool  tpDigitizerHasTriggered,
                                     G4bool  edDigitizerHasTriggered,
                                     G4bool  edDigitizerMonitorHasTriggered,
-                                    G4bool  reconstructorHasTriggered,
+                                    G4bool  reconstructorHasFullTrigger,
                                     const CexmcAngularRange &  aGap )
 {
     G4RunManager *    runManager( G4RunManager::GetRunManager() );
@@ -611,10 +626,10 @@ void  CexmcEventAction::UpdateRunHits(
             theRun->IncrementNmbOfHitsSampledFull( k->index );
             if ( edDigitizerMonitorHasTriggered )
                 theRun->IncrementNmbOfHitsSampled( k->index );
-            if ( reconstructorHasTriggered )
+            if ( reconstructorHasFullTrigger )
                 theRun->IncrementNmbOfHitsTriggeredRealRange( k->index );
         }
-        if ( reconstructorHasTriggered )
+        if ( reconstructorHasFullTrigger )
         {
             if ( aRangesRec.empty() )
             {
@@ -634,7 +649,7 @@ void  CexmcEventAction::UpdateRunHits(
     {
         if ( edDigitizerHasTriggered )
             theRun->IncrementNmbOfFalseHitsTriggeredEDT();
-        if ( reconstructorHasTriggered )
+        if ( reconstructorHasFullTrigger )
             theRun->IncrementNmbOfFalseHitsTriggeredRec();
     }
 }
@@ -724,7 +739,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                                 energyDepositDigitizer->MonitorHasTriggered() );
     G4bool  edDigitizerHasTriggered( energyDepositDigitizer->HasTriggered() );
     G4bool  tpDigitizerHasTriggered( trackPointsDigitizer->HasTriggered() );
-    G4bool  reconstructorHasTriggered( false );
+    G4bool  reconstructorHasBasicTrigger( false );
     G4bool  reconstructorHasFullTrigger( false );
 
     CexmcEnergyDepositStore *  edStore( MakeEnergyDepositStore(
@@ -750,18 +765,13 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( edDigitizerHasTriggered )
         {
             reconstructor->Reconstruct( edStore );
-            reconstructorHasTriggered = reconstructor->HasTriggered();
-            reconstructorHasFullTrigger = reconstructorHasTriggered;
-            if ( reconstructorHasFullTrigger && reconstructor->IsMassCutUsed() )
-            {
-                reconstructorHasFullTrigger =
-                                        reconstructor->HasMassCutTriggered();
-            }
+            reconstructorHasBasicTrigger = reconstructor->HasBasicTrigger();
+            reconstructorHasFullTrigger = reconstructor->HasFullTrigger();
         }
 
         CexmcAngularRangeList  triggeredRecAngularRanges;
 
-        if ( reconstructorHasTriggered )
+        if ( reconstructorHasBasicTrigger )
         {
             for ( CexmcAngularRangeList::const_iterator
                   k( angularRanges.begin() ); k != angularRanges.end(); ++k )
@@ -812,7 +822,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                     PrintTrackPoints( tpStore );
                     PrintProductionModelData( triggeredAngularRanges, pmData );
                 }
-                if ( reconstructorHasTriggered )
+                if ( reconstructorHasBasicTrigger )
                     PrintReconstructedData( triggeredRecAngularRanges,
                                             angularGap );
                 if ( edDigitizerHasTriggered )
@@ -832,7 +842,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                 DrawTrajectories( event );
                 if ( tpDigitizerHasTriggered )
                     DrawTrackPoints( tpStore );
-                if ( reconstructorHasTriggered )
+                if ( reconstructorHasBasicTrigger )
                     DrawReconstructionData();
             }
         }
@@ -856,7 +866,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
             FillTPTHistos( tpStore, pmData, triggeredAngularRanges );
         }
 
-        if ( reconstructorHasTriggered )
+        if ( reconstructorHasBasicTrigger )
         {
             FillRTHistos( reconstructorHasFullTrigger, edStore, tpStore,
                           pmData, triggeredAngularRanges );
@@ -866,7 +876,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         theEvent->SetUserInformation( new CexmcEventInfo(
                                                 edDigitizerHasTriggered,
                                                 tpDigitizerHasTriggered,
-                                                reconstructorHasTriggered ) );
+                                                reconstructorHasFullTrigger ) );
     }
     catch ( CexmcException &  e )
     {
