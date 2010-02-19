@@ -149,11 +149,16 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     G4double   totalEnergy( productionModelData.incidentParticleSCM.e() +
                             productionModelData.nucleusParticleSCM.e() );
 
-    /* introduced here to take into account weird run aborts on incorrect
-     * double <-> float casts */
-    G4double   epsilon( 0.0001 );
+    triggeredAngularRanges.clear();
+
+    genin_.np = 2;
+    genin_.tecm = totalEnergy / GeV;
+    genin_.amass[ 0 ] = outputParticleMass / GeV;
+    genin_.amass[ 1 ] = neutronMass / GeV;
+    genin_.kgenev = 1;
+
     /* kinematically impossible */
-    if ( totalEnergy - epsilon < neutronMass + outputParticleMass )
+    if ( genin_.tecm <= genin_.amass[ 0 ] + genin_.amass[ 1 ] )
     {
         theParticleChange.SetEnergyChange( kinEnergy );
         theParticleChange.SetMomentumChange(
@@ -161,14 +166,8 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
         return &theParticleChange;
     }
 
-    triggeredAngularRanges.clear();
-
     do
     {
-        genin_.np = 2;
-        genin_.tecm = totalEnergy / GeV;
-        genin_.amass[ 0 ] = outputParticleMass / GeV;
-        genin_.amass[ 1 ] = neutronMass / GeV;
         genbod_();
         productionModelData.outputParticleSCM.setPx(
                                                 genout_.pcm[ 0 ][ 0 ] * GeV );
@@ -178,14 +177,6 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
                                                 genout_.pcm[ 0 ][ 2 ] * GeV );
         productionModelData.outputParticleSCM.setE(
                                                 genout_.pcm[ 0 ][ 3 ] * GeV );
-        productionModelData.nucleusOutputParticleSCM.setPx(
-                                                genout_.pcm[ 1 ][ 0 ] * GeV );
-        productionModelData.nucleusOutputParticleSCM.setPy(
-                                                genout_.pcm[ 1 ][ 1 ] * GeV );
-        productionModelData.nucleusOutputParticleSCM.setPz(
-                                                genout_.pcm[ 1 ][ 2 ] * GeV );
-        productionModelData.nucleusOutputParticleSCM.setE(
-                                                genout_.pcm[ 1 ][ 3 ] * GeV );
         for ( CexmcAngularRangeList::iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
         {
@@ -196,6 +187,15 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
                                                 k->top, k->bottom, k->index ) );
         }
     } while ( triggeredAngularRanges.empty() );
+
+    productionModelData.nucleusOutputParticleSCM.setPx(
+                                                genout_.pcm[ 1 ][ 0 ] * GeV );
+    productionModelData.nucleusOutputParticleSCM.setPy(
+                                                genout_.pcm[ 1 ][ 1 ] * GeV );
+    productionModelData.nucleusOutputParticleSCM.setPz(
+                                                genout_.pcm[ 1 ][ 2 ] * GeV );
+    productionModelData.nucleusOutputParticleSCM.setE(
+                                                genout_.pcm[ 1 ][ 3 ] * GeV );
 
     productionModelData.outputParticleLAB =
             productionModelData.outputParticleSCM;

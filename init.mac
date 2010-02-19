@@ -27,7 +27,7 @@
 #/cexmc/detector/VetoCounter/TP/verbose 1
 #/cexmc/detector/Calorimeter/TP/verbose 1
 
-/cexmc/detector/calorimeterTriggerAlgorithm all
+/cexmc/detector/calorimeterTriggerAlgorithm inner
 
 /cexmc/detector/Monitor/ED/threshold 125 keV
 /cexmc/detector/VetoCounter/ED/threshold 250 keV
@@ -47,10 +47,10 @@
 /cexmc/gun/position 0 0 -36 cm
 /cexmc/gun/direction 0 0 1
 /cexmc/gun/momentumAmp 730 MeV
-/cexmc/gun/fwhmPosX 3.5 cm
-/cexmc/gun/fwhmPosY 3.0 cm
-/cexmc/gun/fwhmDirX 1.35 deg
-/cexmc/gun/fwhmDirY 1.12 deg
+/cexmc/gun/fwhmPosX 3.0 cm
+/cexmc/gun/fwhmPosY 3.5 cm
+/cexmc/gun/fwhmDirX 1.12 deg
+/cexmc/gun/fwhmDirY 1.35 deg
 /cexmc/gun/fwhmMomentumAmp 0.015
 
 /cexmc/physics/applyFermiMotionInTarget false

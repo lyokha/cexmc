@@ -817,8 +817,12 @@ void  CexmcRunManager::PrintReadData( void ) const
     G4cout << "  -- Outer crystals veto algorithm "
               "(0 - none, 1 - max, 2 - fraction): " <<
               sObject.outerCrystalsVetoAlgorithm << G4endl;
-    G4cout << "  -- Outer crystals veto fraction: " <<
-              sObject.outerCrystalsVetoFraction << G4endl;
+    if ( sObject.outerCrystalsVetoAlgorithm ==
+         CexmcFractionOfEDInOuterCrystalsVeto )
+    {
+        G4cout << "  -- Outer crystals veto fraction: " <<
+                  sObject.outerCrystalsVetoFraction << G4endl;
+    }
     G4cout << "  -- Finite crystal resolution applied (0 - no, 1 - yes): " <<
               sObject.applyFiniteCrystalResolution << G4endl;
     if ( sObject.applyFiniteCrystalResolution )
@@ -835,10 +839,10 @@ void  CexmcRunManager::PrintReadData( void ) const
     G4cout << "     -- entry point depth definition algorithm "
                       "(0 - plain, 1 - sphere): " <<
                           sObject.epDepthDefinitionAlgorithm << G4endl;
-    G4cout << "     -- crystal selection algorithm (0 - all, 1 - adjacent): " <<
-              sObject.csAlgorithm << G4endl;
     G4cout << "     -- entry point depth: " <<
               G4BestUnit( sObject.epDepth, "Length" ) << G4endl;
+    G4cout << "     -- crystal selection algorithm (0 - all, 1 - adjacent): " <<
+              sObject.csAlgorithm << G4endl;
     G4cout << "     -- table mass of output particle used "
                       "(0 - no, 1 - yes): " << sObject.useTableMass << G4endl;
     G4cout << "     -- mass cut is enabled (0 - no, 1 - yes): " <<
