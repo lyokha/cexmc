@@ -157,8 +157,11 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     genin_.amass[ 1 ] = neutronMass / GeV;
     genin_.kgenev = 1;
 
+    /* epsilon is needed to compensate float to fortran real cast accuracy */
+    float  epsilon( 0.000003 );
     /* kinematically impossible */
-    if ( genin_.tecm <= genin_.amass[ 0 ] + genin_.amass[ 1 ] )
+    if ( genin_.tecm -( genin_.amass[ 0 ] + genin_.amass[ 1 ] ) <=
+         0.0f + epsilon )
     {
         theParticleChange.SetEnergyChange( kinEnergy );
         theParticleChange.SetMomentumChange(
