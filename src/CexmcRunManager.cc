@@ -46,6 +46,8 @@
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcEventAction.hh"
 #include "CexmcParticleGun.hh"
+#include "CexmcEnergyDepositStore.hh"
+#include "CexmcTrackPointsStore.hh"
 #include "CexmcCalorimeterGeometry.hh"
 #include "CexmcEventSObject.hh"
 #include "CexmcEventFastSObject.hh"
@@ -761,7 +763,7 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
 }
 
 
-void  CexmcRunManager::PrintReadData( void ) const
+void  CexmcRunManager::PrintReadRunData( void ) const
 {
     if ( ! ProjectIsRead() )
         return;
@@ -892,6 +894,47 @@ void  CexmcRunManager::PrintReadData( void ) const
 }
 
 
+void  CexmcRunManager::ReadAndPrintEventsData( void ) const
+{
+    CexmcEventSObject  evSObject;
+
+    /* read events data */
+    std::ifstream   eventsDataFile(
+                        ( projectsDir + "/" + rProject + ".edb" ).c_str() );
+    if ( ! eventsDataFile )
+        throw CexmcException( CexmcReadProjectIncompleteException );
+
+    boost::archive::binary_iarchive  evArchive( eventsDataFile );
+
+    for ( int  i( 0 ); i < sObject.nmbOfSavedEvents; ++i )
+    {
+        evArchive >> evSObject;
+
+        CexmcEnergyDepositStore  edStore( evSObject.monitorED,
+            evSObject.vetoCounterEDLeft, evSObject.vetoCounterEDRight,
+            evSObject.calorimeterEDLeft, evSObject.calorimeterEDRight,
+            0, 0, 0, 0, evSObject.calorimeterEDLeftCollection,
+            evSObject.calorimeterEDRightCollection );
+
+        CexmcTrackPointsStore    tpStore( evSObject.monitorTP,
+            evSObject.targetTPIncidentParticle,
+            evSObject.targetTPOutputParticle, evSObject.targetTPNucleusParticle,
+            evSObject.targetTPOutputParticleDecayProductParticle1,
+            evSObject.targetTPOutputParticleDecayProductParticle2,
+            evSObject.vetoCounterTPLeft, evSObject.vetoCounterTPRight,
+            evSObject.calorimeterTPLeft, evSObject.calorimeterTPRight );
+
+        const CexmcProductionModelData &  pmData(
+                                            evSObject.productionModelData );
+
+        G4cout << "Event " << evSObject.eventId << G4endl;
+        CexmcEventAction::PrintTrackPoints( &tpStore );
+        G4cout << " --- Production model data: " << pmData;
+        CexmcEventAction::PrintEnergyDeposit( &edStore );
+    }
+}
+
+
 void  CexmcRunManager::PrintReadData(
                             const CexmcOutputDataTypeSet &  outputData ) const
 {
@@ -905,6 +948,12 @@ void  CexmcRunManager::PrintReadData(
             G4cerr << "Failed to cat geometry data" << G4endl;
     }
 
+    found = outputData.find( CexmcOutputEvents );
+    if ( found != outputData.end() )
+    {
+        ReadAndPrintEventsData();
+    }
+
     found = outputData.find( CexmcOutputRun );
     if ( found != outputData.end() )
     {
@@ -915,7 +964,7 @@ void  CexmcRunManager::PrintReadData(
         {
             etaDecayTable->GetDecayChannel( k->first )->SetBR( k->second );
         }
-        PrintReadData();
+        PrintReadRunData();
     }
 }
 

@@ -78,7 +78,7 @@ void  CexmcEventAction::BeginOfEventAction( const G4Event * )
 
 
 CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
-                        const CexmcEnergyDepositDigitizer *  digitizer ) const
+                                const CexmcEnergyDepositDigitizer *  digitizer )
 {
     G4double  monitorED( digitizer->GetMonitorED() );
     G4double  vetoCounterEDLeft( digitizer->GetVetoCounterEDLeft() );
@@ -106,7 +106,7 @@ CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
 
 
 CexmcTrackPointsStore *  CexmcEventAction::MakeTrackPointsStore(
-                          const CexmcTrackPointsDigitizer *  digitizer ) const
+                                const CexmcTrackPointsDigitizer *  digitizer )
 {
     const CexmcTrackPointInfo &
                 monitorTP( digitizer->GetMonitorTP() );
@@ -151,7 +151,7 @@ CexmcTrackPointsStore *  CexmcEventAction::MakeTrackPointsStore(
 
 
 void  CexmcEventAction::PrintEnergyDeposit(
-                                const CexmcEnergyDepositStore *  edStore ) const
+                                    const CexmcEnergyDepositStore *  edStore )
 {
     G4cout << " --- Energy Deposit" << G4endl;
     G4cout << "       monitor : " <<
@@ -170,7 +170,7 @@ void  CexmcEventAction::PrintEnergyDeposit(
 
 
 void  CexmcEventAction::PrintTrackPoints(
-                                const CexmcTrackPointsStore *  tpStore ) const
+                                    const CexmcTrackPointsStore *  tpStore )
 {
     if ( ! tpStore )
         return;
@@ -201,8 +201,8 @@ void  CexmcEventAction::PrintTrackPoints(
 
 
 void  CexmcEventAction::PrintProductionModelData(
-                            const CexmcAngularRangeList &  angularRanges,
-                            const CexmcProductionModelData &  pmData ) const
+                                const CexmcAngularRangeList &  angularRanges,
+                                const CexmcProductionModelData &  pmData )
 {
     G4cout << " --- Triggered angular ranges: " << angularRanges;
     G4cout << " --- Production model data: " << pmData;

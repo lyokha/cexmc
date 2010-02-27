@@ -56,21 +56,6 @@ class  CexmcEventAction : public G4UserEventAction
         CexmcChargeExchangeReconstructor *  GetReconstructor( void );
 
     private:
-        CexmcEnergyDepositStore *  MakeEnergyDepositStore(
-                        const CexmcEnergyDepositDigitizer *  digitizer ) const;
-
-        CexmcTrackPointsStore *  MakeTrackPointsStore(
-                        const CexmcTrackPointsDigitizer *  digitizer ) const;
-
-        void  PrintEnergyDeposit( const CexmcEnergyDepositStore *  edStore )
-                                                                        const;
-
-        void  PrintTrackPoints( const CexmcTrackPointsStore *  tpStore ) const;
-
-        void  PrintProductionModelData(
-                        const CexmcAngularRangeList &  angularRanges,
-                        const CexmcProductionModelData &  pmData ) const;
-
         void  PrintReconstructedData(
                         const CexmcAngularRangeList &  angularRanges,
                         const CexmcAngularRange &  angularGap ) const;
@@ -112,6 +97,23 @@ class  CexmcEventAction : public G4UserEventAction
                              G4bool  edDigitizerHasTriggered,
                              G4bool  edDigitizerMonitorHasTriggered,
                              G4double  opCosThetaSCM );
+
+    public:
+        static CexmcEnergyDepositStore *  MakeEnergyDepositStore(
+                            const CexmcEnergyDepositDigitizer *  digitizer );
+
+        static CexmcTrackPointsStore *  MakeTrackPointsStore(
+                            const CexmcTrackPointsDigitizer *  digitizer );
+
+        static void  PrintEnergyDeposit(
+                            const CexmcEnergyDepositStore *  edStore );
+
+        static void  PrintTrackPoints(
+                            const CexmcTrackPointsStore *  tpStore );
+
+        static void  PrintProductionModelData(
+                            const CexmcAngularRangeList &  angularRanges,
+                            const CexmcProductionModelData &  pmData );
 
     private:
         CexmcPhysicsManager *               physicsManager;

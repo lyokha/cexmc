@@ -57,7 +57,9 @@ class  CexmcRunManager : public G4RunManager
 
         void  SaveProject( void );
 
-        void  PrintReadData( void ) const;
+        void  PrintReadRunData( void ) const;
+
+        void  ReadAndPrintEventsData( void ) const;
 
         void  PrintReadData( const CexmcOutputDataTypeSet &  outputData ) const;
 

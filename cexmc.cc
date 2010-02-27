@@ -243,6 +243,14 @@ int  main( int  argc, char **  argv )
 
         if ( outputDataOnly )
         {
+            /* we will need an arbitrary physics list to get access to particle
+             * table if events output was ordered */
+            CexmcOutputDataTypeSet::const_iterator  found(
+                            cmdLineData.outputData.find( CexmcOutputEvents ) );
+            if ( found != cmdLineData.outputData.end() )
+                runManager->SetUserInitialization(
+                                CexmcChargeExchangePMFactory::
+                                            Create( CexmcPionZeroProduction ) );
             runManager->PrintReadData( cmdLineData.outputData );
             delete runManager;
             return 0;
@@ -297,7 +305,7 @@ int  main( int  argc, char **  argv )
         if ( runManager->ProjectIsRead() )
         {
             runManager->ReadProject();
-            runManager->PrintReadData();
+            runManager->PrintReadRunData();
         }
 
         if ( cmdLineData.initMacro != "" )
