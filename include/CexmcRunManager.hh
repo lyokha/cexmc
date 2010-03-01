@@ -104,7 +104,7 @@ class  CexmcRunManager : public G4RunManager
 
         G4String                    gdmlFileName;
 
-        G4bool                      saveProject;
+        G4bool                      zipGdmlFile;
 
         G4String                    projectsDir;
 

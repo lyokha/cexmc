@@ -25,6 +25,7 @@
 enum  CexmcExceptionType
 {
     CexmcUnknownException,
+    CexmcSystemException,
     CexmcCmdLineParseException,
     CexmcPreinitException,
     CexmcFileCompressException,

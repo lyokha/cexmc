@@ -55,15 +55,23 @@
 #include "CexmcEventInfo.hh"
 
 
+namespace
+{
+    G4String  gdmlFileExtension( ".gdml" );
+    G4String  gdmlbz2FileExtension( ".gdml.bz2" );
+}
+
+
 CexmcRunManager::CexmcRunManager( const G4String &  projectId,
                                   const G4String &  rProject,
                                   G4bool  overrideExistingProject ) :
     productionModelType( CexmcUnknownProductionModel ),
-    gdmlFileName( "default.gdml" ), projectsDir( "." ), projectId( projectId ),
-    rProject( rProject ), eventCountPolicy( CexmcCountAllEvents ),
-    numberOfEventsProcessed( 0 ), numberOfEventsProcessedEffective( 0 ),
-    curEventRead( 0 ), eventsArchive( NULL ), fastEventsArchive( NULL ),
-    physicsManager( NULL ), messenger( NULL )
+    gdmlFileName( "default.gdml" ), zipGdmlFile( false ), projectsDir( "." ),
+    projectId( projectId ), rProject( rProject ),
+    eventCountPolicy( CexmcCountAllEvents ), numberOfEventsProcessed( 0 ),
+    numberOfEventsProcessedEffective( 0 ), curEventRead( 0 ),
+    eventsArchive( NULL ), fastEventsArchive( NULL ), physicsManager( NULL ),
+    messenger( NULL )
 {
     /* this exception must be caught before creating the object! */
     if ( rProject != "" && rProject == projectId )
@@ -88,10 +96,10 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
 
 CexmcRunManager::~CexmcRunManager()
 {
-    if ( ProjectIsRead() )
+    if ( ProjectIsRead() && zipGdmlFile )
     {
         G4String  cmd( G4String( "bzip2 " ) + projectsDir + "/" + rProject +
-                       ".gdml" );
+                       gdmlFileExtension );
         if ( system( cmd ) != 0 )
             G4cerr << "Failed to zip geometry data" << G4endl;
     }
@@ -119,17 +127,23 @@ void  CexmcRunManager::ReadPreinitProjectData( void )
     productionModelType = sObject.productionModelType;
 
     /* read gdml file */
+    G4String  fileExtension( zipGdmlFile ? gdmlbz2FileExtension :
+                                           gdmlFileExtension );
     G4String  cmd( G4String( "cp " ) + projectsDir + "/" + rProject +
-                   ".gdml.bz2 " + projectsDir + "/" + projectId +
-                   ".gdml.bz2" );
+                   fileExtension + " " + projectsDir + "/" + projectId +
+                   fileExtension );
     if ( ProjectIsSaved() && system( cmd ) != 0 )
         throw CexmcException( CexmcReadProjectIncompleteException );
 
-    cmd = G4String( "bunzip2 " ) + projectsDir + "/" + rProject + ".gdml.bz2";
-    if ( system( cmd ) != 0 )
-        throw CexmcException( CexmcFileCompressException );
+    if ( zipGdmlFile )
+    {
+        cmd = G4String( "bunzip2 " ) + projectsDir + "/" + rProject +
+                                                        gdmlbz2FileExtension;
+        if ( system( cmd ) != 0 )
+            throw CexmcException( CexmcFileCompressException );
+    }
 
-    gdmlFileName = projectsDir + "/" + rProject + ".gdml";
+    gdmlFileName = projectsDir + "/" + rProject + gdmlFileExtension;
 }
 
 
@@ -351,10 +365,18 @@ void  CexmcRunManager::SaveProject( void )
     }
 
     /* save gdml file */
-    G4String  cmd( G4String( "bzip2 -c " ) + gdmlFileName + " > " +
-                   projectsDir + "/" + projectId + ".gdml.bz2" );
+    G4String            cmd( G4String( "cp " ) + gdmlFileName + " " +
+                             projectsDir + "/" + projectId +
+                             gdmlFileExtension );
+    CexmcExceptionType  exceptionType( CexmcSystemException );
+    if ( zipGdmlFile )
+    {
+        cmd = G4String( "bzip2 -c " ) + gdmlFileName + " > " + projectsDir +
+                                        "/" + projectId + gdmlbz2FileExtension;
+        exceptionType = CexmcFileCompressException;
+    }
     if ( system( cmd ) != 0 )
-        throw CexmcException( CexmcFileCompressException );
+        throw CexmcException( exceptionType );
 }
 
 
@@ -943,7 +965,7 @@ void  CexmcRunManager::PrintReadData(
     if ( found != outputData.end() )
     {
         G4String  cmd( G4String( "cat " ) + projectsDir + "/" + rProject +
-                       ".gdml" );
+                       gdmlFileExtension );
         if ( system( cmd ) != 0 )
             G4cerr << "Failed to cat geometry data" << G4endl;
     }

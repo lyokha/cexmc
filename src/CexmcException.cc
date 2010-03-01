@@ -34,6 +34,8 @@ const char *  CexmcException::what( void ) const throw()
 {
     switch ( type )
     {
+    case CexmcSystemException :
+        return CEXMC_LINE_START "Unspecified system exception.";
     case CexmcCmdLineParseException :
         return CEXMC_LINE_START "Exception in command line arguments. "
                "Check your command line arguments.";

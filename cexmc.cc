@@ -53,7 +53,7 @@ struct  CexmcCmdLineData
     G4String  rProject;
     G4String  wProject;
     G4bool    overrideExistingProject;
-    std::set< CexmcOutputDataType >  outputData;
+    CexmcOutputDataTypeSet  outputData;
 };
 
 
