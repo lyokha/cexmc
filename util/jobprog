@@ -18,14 +18,31 @@ done
 i=1
 echo ---------------
 for job in $jobnames ; do
-    ordered=`head -120 $job | awk '/^\/run\/beamOn/ {print $2}'`
-    current=`tail -120 $job | grep ^Event | tail -1 | awk '{print $2}'`
+    msgperc="N/A"
+    fdbsize="N/A"
+    edbsize="N/A"
+    ordered=""
+    current=""
+    if [ -e "$job" ] ; then
+        ordered=`head -120 "$job" | awk '/^\/run\/beamOn/ {print $2}'`
+        current=`tail -120 "$job" | grep ^Event | tail -1 | awk '{print $2}'`
+    fi
+    if [ -z "$current" ] ; then
+        current=0
+    fi
+    if [ -n "$ordered" ] ; then
+        msgperc=$(( current * 100 / ordered ))%
+    fi
     jobbasename=`echo $jobbasenames | awk "{print \\$$i}"`
     jobbasename=${jobbasename/$CEXMC_PREFIX/}
     jobbasename=${jobbasename/\.job/}
-    fdbsize=`du -sh $CEXMC_PROJECTS_DIR/$jobbasename.fdb | awk '{print $1}'`
-    edbsize=`du -sh $CEXMC_PROJECTS_DIR/$jobbasename.edb | awk '{print $1}'`
-    echo $job:  $(( current * 100 / ordered ))%,    fdb: $fdbsize, edb: $edbsize
+    if [ -e $CEXMC_PROJECTS_DIR/$jobbasename.fdb ] ; then
+        fdbsize=`du -sh $CEXMC_PROJECTS_DIR/$jobbasename.fdb | awk '{print $1}'`
+    fi
+    if [ -e $CEXMC_PROJECTS_DIR/$jobbasename.edb ] ; then
+        edbsize=`du -sh $CEXMC_PROJECTS_DIR/$jobbasename.edb | awk '{print $1}'`
+    fi
+    echo $job:  $msgperc,    fdb: $fdbsize, edb: $edbsize
     (( ++i ))
 done
 

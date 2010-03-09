@@ -49,8 +49,6 @@ G4bool  CexmcSimpleEnergyDeposit::ProcessHits( G4Step *  step,
     if ( energyDeposit == 0. )
         return false;
 
-    energyDeposit *= step->GetPreStepPoint()->GetWeight();
-
     eventMap->add( GetIndex( step ), energyDeposit ); 
 
     return true; 
