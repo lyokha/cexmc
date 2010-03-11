@@ -26,7 +26,8 @@
 CexmcRunManagerMessenger::CexmcRunManagerMessenger(
                                 CexmcRunManager *  runManager ) :
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL ),
-    setEventCountPolicy( NULL ), replayEvents( NULL ), seekTo( NULL )
+    setGuiMacro( NULL ), setEventCountPolicy( NULL ), replayEvents( NULL ),
+    seekTo( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -40,6 +41,12 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     setGdmlFile->SetGuidance( "GDML file to read geometry from" );
     setGdmlFile->SetParameterName( "GdmlFile", false );
     setGdmlFile->AvailableForStates( G4State_PreInit );
+
+    setGuiMacro = new G4UIcmdWithAString(
+        ( CexmcMessenger::runDirName + "guiMacro" ).c_str(), this );
+    setGuiMacro->SetGuidance( "Set Gui macro file" );
+    setGuiMacro->SetParameterName( "GuiMacro", false );
+    setGuiMacro->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setEventCountPolicy = new G4UIcmdWithAString(
         ( CexmcMessenger::runDirName + "eventCountPolicy" ).c_str(), this );
@@ -81,6 +88,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
 {
     delete setProductionModel;
     delete setGdmlFile;
+    delete setGuiMacro;
     delete setEventCountPolicy;
     delete replayEvents;
     delete seekTo;
@@ -115,6 +123,11 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
         if ( cmd == setGdmlFile )
         {
             runManager->SetGdmlFileName( value );
+            break;
+        }
+        if ( cmd == setGuiMacro )
+        {
+            runManager->SetGuiMacroName( value );
             break;
         }
         if ( cmd == setEventCountPolicy )

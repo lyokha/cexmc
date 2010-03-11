@@ -23,6 +23,7 @@
 #include <G4UIsession.hh>
 #include <G4UIterminal.hh>
 #include <G4UItcsh.hh>
+#include <G4UIQt.hh>
 #include <G4VisExecutive.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcHistoManager.hh"
@@ -42,12 +43,13 @@
 
 struct  CexmcCmdLineData
 {
-    CexmcCmdLineData() : isInteractive( false ), preinitMacro( "" ),
-                         initMacro( "" ), rProject( "" ), wProject( "" ),
-                         overrideExistingProject( false )
+    CexmcCmdLineData() : isInteractive( false ), startQtSession( false ),
+                         preinitMacro( "" ), initMacro( "" ), rProject( "" ),
+                         wProject( "" ), overrideExistingProject( false )
     {}
 
     G4bool    isInteractive;
+    G4bool    startQtSession;
     G4String  preinitMacro;
     G4String  initMacro;
     G4String  rProject;
@@ -63,6 +65,8 @@ void  printUsage( void )
                            "[[-y] -w project] [-r project [-o list]]" << G4endl;
     G4cout << "or     cexmc [--help | -h]" << G4endl;
     G4cout << "           -i - run in interactive mode" << G4endl;
+    G4cout << "           -g - start graphical interface (Qt), implies "
+                              "interactive mode " << G4endl;
     G4cout << "           -p - use specified preinit macro file " << G4endl;
     G4cout << "           -m - use specified init macro file " << G4endl;
     G4cout << "           -w - save data in specified project files" << G4endl;
@@ -92,6 +96,12 @@ G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
             if ( G4String( argv[ i ], 2 ) == "-i" )
             {
                 cmdLineData.isInteractive = true;
+                break;
+            }
+            if ( G4String( argv[ i ], 2 ) == "-g" )
+            {
+                cmdLineData.isInteractive = true;
+                cmdLineData.startQtSession = true;
                 break;
             }
             if ( G4String( argv[ i ], 2 ) == "-p" )
@@ -226,7 +236,10 @@ int  main( int  argc, char **  argv )
 
     if ( ! outputDataOnly && cmdLineData.isInteractive )
     {
-        session = new G4UIterminal( new G4UItcsh );
+        if ( cmdLineData.startQtSession )
+            session = new G4UIterminal;
+        else
+            session = new G4UIterminal( new G4UItcsh );
     }
 
     CexmcRunManager *  runManager( NULL );
@@ -326,7 +339,17 @@ int  main( int  argc, char **  argv )
 
         if ( session )
         {
-            session->SessionStart();
+            if ( cmdLineData.startQtSession )
+            {
+                delete session;
+                session = new G4UIQt( argc, argv );
+                const G4String &  guiMacroName( runManager->GetGuiMacroName() );
+                if ( guiMacroName != "" )
+                    uiManager->ApplyCommand( "/control/execute " +
+                                             guiMacroName );
+            }
+            if ( session )
+                session->SessionStart();
         }
 
         if ( runManager->ProjectIsSaved() )

@@ -44,6 +44,8 @@ class  CexmcRunManagerMessenger : public G4UImessenger
 
         G4UIcmdWithAString *    setGdmlFile;
 
+        G4UIcmdWithAString *    setGuiMacro;
+
         G4UIcmdWithAString *    setEventCountPolicy;
 
         G4UIcmdWithAnInteger *  replayEvents;

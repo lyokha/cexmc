@@ -51,6 +51,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  SetGdmlFileName( const G4String &  gdmlFileName_ );
 
+        void  SetGuiMacroName( const G4String &  guiMacroName_ );
+
         void  SetEventCountPolicy( CexmcEventCountPolicy  eventCountPolicy_ );
 
         void  ReadProject( void );
@@ -73,6 +75,8 @@ class  CexmcRunManager : public G4RunManager
         CexmcProductionModelType  GetProductionModelType( void ) const;
 
         G4String                  GetGdmlFileName( void ) const;
+
+        G4String                  GetGuiMacroName( void ) const;
 
         G4bool                    ProjectIsSaved( void ) const;
 
@@ -111,6 +115,8 @@ class  CexmcRunManager : public G4RunManager
         G4String                    projectId;
 
         G4String                    rProject;
+
+        G4String                    guiMacroName;
 
         CexmcEventCountPolicy       eventCountPolicy;
 
@@ -162,6 +168,12 @@ inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
 }
 
 
+inline void  CexmcRunManager::SetGuiMacroName( const G4String &  guiMacroName_ )
+{
+    guiMacroName = guiMacroName_;
+}
+
+
 inline void  CexmcRunManager::SetEventCountPolicy(
                                 CexmcEventCountPolicy  eventCountPolicy_ )
 {
@@ -188,6 +200,12 @@ inline CexmcProductionModelType
 inline G4String  CexmcRunManager::GetGdmlFileName( void ) const
 {
     return gdmlFileName;
+}
+
+
+inline G4String  CexmcRunManager::GetGuiMacroName( void ) const
+{
+    return guiMacroName;
 }
 
 

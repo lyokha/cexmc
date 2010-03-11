@@ -67,7 +67,7 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
                                   G4bool  overrideExistingProject ) :
     productionModelType( CexmcUnknownProductionModel ),
     gdmlFileName( "default.gdml" ), zipGdmlFile( false ), projectsDir( "." ),
-    projectId( projectId ), rProject( rProject ),
+    projectId( projectId ), rProject( rProject ), guiMacroName( "" ),
     eventCountPolicy( CexmcCountAllEvents ), numberOfEventsProcessed( 0 ),
     numberOfEventsProcessedEffective( 0 ), curEventRead( 0 ),
     eventsArchive( NULL ), fastEventsArchive( NULL ), physicsManager( NULL ),
