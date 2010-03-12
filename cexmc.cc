@@ -234,14 +234,6 @@ int  main( int  argc, char **  argv )
         return 1;
     }
 
-    if ( ! outputDataOnly && cmdLineData.isInteractive )
-    {
-        if ( cmdLineData.startQtSession )
-            session = new G4UIterminal;
-        else
-            session = new G4UIterminal( new G4UItcsh );
-    }
-
     CexmcRunManager *  runManager( NULL );
     G4VisManager *     visManager( NULL );
 
@@ -337,19 +329,22 @@ int  main( int  argc, char **  argv )
             productionModel->PrintInitialData();
         }
 
-        if ( session )
+        if ( cmdLineData.isInteractive )
         {
             if ( cmdLineData.startQtSession )
             {
-                delete session;
                 session = new G4UIQt( argc, argv );
                 const G4String &  guiMacroName( runManager->GetGuiMacroName() );
                 if ( guiMacroName != "" )
                     uiManager->ApplyCommand( "/control/execute " +
                                              guiMacroName );
+                runManager->EnableLiveHistograms();
             }
-            if ( session )
-                session->SessionStart();
+            else
+            {
+                session = new G4UIterminal( new G4UItcsh );
+            }
+            session->SessionStart();
         }
 
         if ( runManager->ProjectIsSaved() )

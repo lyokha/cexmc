@@ -68,10 +68,10 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     productionModelType( CexmcUnknownProductionModel ),
     gdmlFileName( "default.gdml" ), zipGdmlFile( false ), projectsDir( "." ),
     projectId( projectId ), rProject( rProject ), guiMacroName( "" ),
-    eventCountPolicy( CexmcCountAllEvents ), numberOfEventsProcessed( 0 ),
-    numberOfEventsProcessedEffective( 0 ), curEventRead( 0 ),
-    eventsArchive( NULL ), fastEventsArchive( NULL ), physicsManager( NULL ),
-    messenger( NULL )
+    eventCountPolicy( CexmcCountAllEvents ), isLiveHistogramsEnabled( false ),
+    numberOfEventsProcessed( 0 ), numberOfEventsProcessedEffective( 0 ),
+    curEventRead( 0 ), eventsArchive( NULL ), fastEventsArchive( NULL ),
+    physicsManager( NULL ), messenger( NULL )
 {
     /* this exception must be caught before creating the object! */
     if ( rProject != "" && rProject == projectId )

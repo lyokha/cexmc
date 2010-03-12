@@ -28,7 +28,14 @@
 /vis/geometry/set/colour vVetoCounter 0 0.4 1.0 0.6 0.2
 /vis/geometry/set/colour vMonitorBack -1 0.4 1.0 0.6 0.0
 /vis/geometry/set/colour vTargetOuterCover -1 0.2 0.8 0.6 0.2
-/vis/geometry/set/colour vTargetInnerCover -1 0.4 1.0 0.6 0.2
+/vis/geometry/set/colour vTarget 0 0.4 1.0 0.6 0.2
+/vis/geometry/set/colour vInnerCuprumRing 0 0.8 0.5 0.0 0.3
+/vis/geometry/set/colour vTargetColumn 0 0.8 0.7 0.7 0.5
+/vis/geometry/set/colour vTargetInnerColumn 0 0.8 0.7 0.7 0.5
+/vis/geometry/set/colour vOuterFerrumRing 0 0.8 0.7 0.7 0.5
+/vis/geometry/set/colour vInnerFerrumRing 0 0.8 0.7 0.7 0.5
+/vis/geometry/set/colour vTargetWindow 0 0.8 0.7 0.7 0.5
+/vis/geometry/set/colour vTargetWindowCap 0 0.8 0.7 0.7 0.5
 
 /vis/modeling/trajectories/create/drawByParticleID
 /vis/modeling/trajectories/select drawByParticleID-0

@@ -25,6 +25,7 @@
 
 class  TFile;
 class  TH1;
+class  TQtWidget;
 class  CexmcHistoManagerMessenger;
 
 
@@ -112,6 +113,8 @@ class  CexmcHistoManager
 
         void  Print( const G4String &  value );
 
+        void  Draw( const G4String &  value );
+
     private:
         TFile *                       outFile;
 
@@ -197,6 +200,10 @@ class  CexmcHistoManager
         CexmcHistosMap                histos;
 
         bool                          isInitialized;
+
+    private:
+
+        TQtWidget *                   rootCanvas;
 
     private:
         CexmcHistoManagerMessenger *  messenger;

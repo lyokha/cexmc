@@ -69,6 +69,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  SeekTo( G4int  eventNmb = 1 );
 
+        void  EnableLiveHistograms( G4bool  on = true );
+
     public:
         CexmcPhysicsManager *     GetPhysicsManager( void );
 
@@ -89,6 +91,8 @@ class  CexmcRunManager : public G4RunManager
         boost::archive::binary_oarchive *  GetEventsArchive( void ) const;
 
         boost::archive::binary_oarchive *  GetFastEventsArchive( void ) const;
+
+        G4bool                    IsLiveHistogramsEnabled( void ) const;
 
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
@@ -119,6 +123,8 @@ class  CexmcRunManager : public G4RunManager
         G4String                    guiMacroName;
 
         CexmcEventCountPolicy       eventCountPolicy;
+
+        G4bool                      isLiveHistogramsEnabled;
 
         CexmcRunSObject             sObject;
 
@@ -265,6 +271,18 @@ inline void  CexmcRunManager::SeekTo( G4int  eventNmb )
         return;
 
     curEventRead = eventNmb;
+}
+
+
+inline void  CexmcRunManager::EnableLiveHistograms( G4bool  on )
+{
+    isLiveHistogramsEnabled = on;
+}
+
+
+inline G4bool  CexmcRunManager::IsLiveHistogramsEnabled( void ) const
+{
+    return isLiveHistogramsEnabled;
 }
 
 

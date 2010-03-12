@@ -13,7 +13,7 @@ CPPFLAGS += -I`root-config --incdir`
 
 EXTRALIBS = `cernlib geant321 phtools packlib kernlib`
 
-EXTRALIBS += `root-config --libs` -lboost_serialization
+EXTRALIBS += `root-config --libs` -lGQt -lboost_serialization
 
 ifeq ($(GCC_VERSION),3)
   EXTRALIBS += -lg2c

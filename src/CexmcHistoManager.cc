@@ -22,6 +22,10 @@
 #include <TH3F.h>
 #include <TFile.h>
 #include <TDirectory.h>
+#include <TQtWidget.h>
+#include <TCanvas.h>
+#include <QApplication>
+#include <QFont>
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4Box.hh>
@@ -55,6 +59,8 @@ namespace
     const G4double  CexmcHistoMissEnergyResolution( 0.2 * MeV );
     const G4double  CexmcHistoAngularResolution( 0.5 );
     const G4double  CexmcHistoAngularCResolution( 0.001 );
+    const G4int     CexmcHistoCanvasWidth( 800 );
+    const G4int     CexmcHistoCanvasHeight( 600 );
 }
 
 
@@ -78,7 +84,7 @@ void  CexmcHistoManager::Destroy( void )
 
 
 CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
-    isInitialized( false ), messenger( NULL )
+    isInitialized( false ), rootCanvas( NULL ), messenger( NULL )
 {
     histos.insert( CexmcHistoPair( CexmcMomentumIP_TPT_Histo, &momip_tpt ) );
     histos.insert( CexmcHistoPair( CexmcMomentumIP_RT_Histo, &momip_rt ) );
@@ -171,6 +177,7 @@ CexmcHistoManager::~CexmcHistoManager()
 
     /* all histograms will be deleted by outFile destructor! */
     delete outFile;
+    delete rootCanvas;
     delete messenger;
 }
 
@@ -857,5 +864,39 @@ void  CexmcHistoManager::Print( const G4String &  value )
     }
 
     histo->Print( "range" );
+}
+
+
+void  CexmcHistoManager::Draw( const G4String &  value )
+{
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    if ( ! runManager->IsLiveHistogramsEnabled() )
+    {
+        G4cout << "Live histograms option is disabled" << G4endl;
+        return;
+    }
+
+    TObject *  histo( gDirectory->FindObject( value.c_str() ) );
+
+    if ( ! histo )
+    {
+        G4cout << "Histogram '" << value << "' was not found" << G4endl;
+        return;
+    }
+
+    if ( ! rootCanvas )
+    {
+        /* save default application font because rootCanvas will break it */
+        QFont  defaultAppFont( QApplication::font() );
+        rootCanvas = new TQtWidget;
+        QApplication::setFont( defaultAppFont );
+        rootCanvas->resize( CexmcHistoCanvasWidth, CexmcHistoCanvasHeight );
+        rootCanvas->GetCanvas()->cd();
+    }
+
+    histo->Draw();
+    rootCanvas->show();
+    rootCanvas->GetCanvas()->Update();
 }
 

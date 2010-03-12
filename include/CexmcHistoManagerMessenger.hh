@@ -41,6 +41,8 @@ class  CexmcHistoManagerMessenger : public G4UImessenger
         G4UIcmdWithoutParameter *  listHistos;
 
         G4UIcmdWithAString *       printHisto;
+
+        G4UIcmdWithAString *       drawHisto;
 };
 
 
