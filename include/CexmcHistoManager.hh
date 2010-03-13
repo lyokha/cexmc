@@ -19,13 +19,17 @@
 #ifndef CEXMC_HISTO_MANAGER_HH
 #define CEXMC_HISTO_MANAGER_HH
 
+#ifdef CEXMC_USE_ROOT
+
 #include <vector>
 #include <map>
 #include "CexmcAngularRange.hh"
 
 class  TFile;
 class  TH1;
+#ifdef CEXMC_USE_ROOTQT
 class  TQtWidget;
+#endif
 class  CexmcHistoManagerMessenger;
 
 
@@ -113,7 +117,9 @@ class  CexmcHistoManager
 
         void  Print( const G4String &  value );
 
+#ifdef CEXMC_USE_ROOTQT
         void  Draw( const G4String &  value );
+#endif
 
     private:
         TFile *                       outFile;
@@ -201,9 +207,11 @@ class  CexmcHistoManager
 
         bool                          isInitialized;
 
+#ifdef CEXMC_USE_ROOTQT
     private:
 
         TQtWidget *                   rootCanvas;
+#endif
 
     private:
         CexmcHistoManagerMessenger *  messenger;
@@ -211,6 +219,8 @@ class  CexmcHistoManager
     private:
         static CexmcHistoManager *    instance;
 };
+
+#endif
 
 
 #endif

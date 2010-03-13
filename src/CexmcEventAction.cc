@@ -34,7 +34,9 @@
 #include "CexmcEventSObject.hh"
 #include "CexmcEventFastSObject.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
+#ifdef CEXMC_USE_ROOT
 #include "CexmcHistoManager.hh"
+#endif
 #include "CexmcRunManager.hh"
 #include "CexmcRun.hh"
 #include "CexmcPhysicsManager.hh"
@@ -251,6 +253,8 @@ void  CexmcEventAction::PrintReconstructedData(
         G4cout << triggeredRecAngularRanges;
 }
 
+
+#ifdef CEXMC_USE_ROOT
 
 void  CexmcEventAction::FillEDTHistos( const CexmcEnergyDepositStore *  edStore,
                 const CexmcAngularRangeList &  triggeredAngularRanges ) const
@@ -498,6 +502,8 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
                            reconstructor->GetCalorimeterEPRightPosition().y() );
     }
 }
+
+#endif
 
 
 void  CexmcEventAction::DrawTrajectories( const G4Event *  event )
@@ -858,9 +864,12 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( edDigitizerHasTriggered )
         {
             SaveEvent( event, edStore, tpStore, pmData );
+#ifdef CEXMC_USE_ROOT
             FillEDTHistos( edStore, triggeredAngularRanges );
+#endif
         }
 
+#ifdef CEXMC_USE_ROOT
         if ( tpDigitizerHasTriggered )
         {
             FillTPTHistos( tpStore, pmData, triggeredAngularRanges );
@@ -871,6 +880,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
             FillRTHistos( reconstructorHasFullTrigger, edStore, tpStore,
                           pmData, triggeredAngularRanges );
         }
+#endif
 
         G4Event *  theEvent( const_cast< G4Event * >( event ) );
         theEvent->SetUserInformation( new CexmcEventInfo(

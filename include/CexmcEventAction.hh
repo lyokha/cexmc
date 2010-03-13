@@ -60,6 +60,7 @@ class  CexmcEventAction : public G4UserEventAction
                         const CexmcAngularRangeList &  angularRanges,
                         const CexmcAngularRange &  angularGap ) const;
 
+#ifdef CEXMC_USE_ROOT
         void  FillEDTHistos( const CexmcEnergyDepositStore *  edStore,
                 const CexmcAngularRangeList &  triggeredAngularRanges ) const;
 
@@ -72,6 +73,7 @@ class  CexmcEventAction : public G4UserEventAction
                 const CexmcTrackPointsStore *  tpStore,
                 const CexmcProductionModelData &  pmData,
                 const CexmcAngularRangeList &  triggeredAngularRanges ) const;
+#endif
 
         void  DrawTrajectories( const G4Event *  event );
 

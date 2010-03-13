@@ -20,13 +20,23 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/archive_exception.hpp>
 #include <G4UImanager.hh>
+#ifdef G4UI_USE
 #include <G4UIsession.hh>
 #include <G4UIterminal.hh>
+#ifdef G4UI_USE_TCSH
 #include <G4UItcsh.hh>
+#endif
+#ifdef G4UI_USE_QT
 #include <G4UIQt.hh>
+#endif
+#endif
+#ifdef G4VIS_USE
 #include <G4VisExecutive.hh>
+#endif
 #include "CexmcRunManager.hh"
+#ifdef CEXMC_USE_ROOT
 #include "CexmcHistoManager.hh"
+#endif
 #include "CexmcSetup.hh"
 #include "CexmcPhysicsList.hh"
 #include "CexmcPhysicsManager.hh"
@@ -61,12 +71,18 @@ struct  CexmcCmdLineData
 
 void  printUsage( void )
 {
-    G4cout << "Usage: cexmc [-i] [-p preinit_macro] [-m init_macro] "
+    G4cout << "Usage: cexmc [-i] "
+#ifdef G4UI_USE_QT
+                           "[-g] "
+#endif
+                           "[-p preinit_macro] [-m init_macro] "
                            "[[-y] -w project] [-r project [-o list]]" << G4endl;
     G4cout << "or     cexmc [--help | -h]" << G4endl;
     G4cout << "           -i - run in interactive mode" << G4endl;
+#ifdef G4UI_USE_QT
     G4cout << "           -g - start graphical interface (Qt), implies "
                               "interactive mode " << G4endl;
+#endif
     G4cout << "           -p - use specified preinit macro file " << G4endl;
     G4cout << "           -m - use specified init macro file " << G4endl;
     G4cout << "           -w - save data in specified project files" << G4endl;
@@ -98,12 +114,14 @@ G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
                 cmdLineData.isInteractive = true;
                 break;
             }
+#ifdef G4UI_USE_QT
             if ( G4String( argv[ i ], 2 ) == "-g" )
             {
                 cmdLineData.isInteractive = true;
                 cmdLineData.startQtSession = true;
                 break;
             }
+#endif
             if ( G4String( argv[ i ], 2 ) == "-p" )
             {
                 cmdLineData.preinitMacro = argv[ i ] + 2;
@@ -202,7 +220,9 @@ G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
 
 int  main( int  argc, char **  argv )
 {
+#ifdef G4UI_USE
     G4UIsession *  session( NULL );
+#endif
 
     CexmcCmdLineData  cmdLineData;
     G4bool            outputDataOnly( false );
@@ -235,10 +255,14 @@ int  main( int  argc, char **  argv )
     }
 
     CexmcRunManager *  runManager( NULL );
+#ifdef G4VIS_USE
     G4VisManager *     visManager( NULL );
+#endif
 
     CexmcMessenger::Instance();
+#ifdef CEXMC_USE_ROOT
     CexmcHistoManager::Instance();
+#endif
 
     try
     {
@@ -299,13 +323,17 @@ int  main( int  argc, char **  argv )
 
         runManager->SetUserAction( new CexmcSteppingAction( physicsManager ) );
 
+#ifdef CEXMC_USE_ROOT
         CexmcHistoManager::Instance()->Initialize();
+#endif
 
+#ifdef G4VIS_USE
         if ( cmdLineData.isInteractive )
         {
             visManager = new G4VisExecutive;
             visManager->Initialize();
         }
+#endif
 
         if ( runManager->ProjectIsRead() )
         {
@@ -329,23 +357,34 @@ int  main( int  argc, char **  argv )
             productionModel->PrintInitialData();
         }
 
+#ifdef G4UI_USE
         if ( cmdLineData.isInteractive )
         {
             if ( cmdLineData.startQtSession )
             {
+#ifdef G4UI_USE_QT
                 session = new G4UIQt( argc, argv );
                 const G4String &  guiMacroName( runManager->GetGuiMacroName() );
                 if ( guiMacroName != "" )
                     uiManager->ApplyCommand( "/control/execute " +
                                              guiMacroName );
+#ifdef CEXMC_USE_ROOTQT
                 runManager->EnableLiveHistograms();
+#endif
+#endif
             }
             else
             {
+#ifdef G4UI_USE_TCSH
                 session = new G4UIterminal( new G4UItcsh );
+#else
+                session = new G4UIterminal;
+#endif
             }
-            session->SessionStart();
+            if ( session )
+                session->SessionStart();
         }
+#endif
 
         if ( runManager->ProjectIsSaved() )
         {
@@ -365,12 +404,18 @@ int  main( int  argc, char **  argv )
         G4cout << "Unknown exception caught" << G4endl;
     }
 
+#ifdef CEXMC_USE_ROOT
     CexmcHistoManager::Destroy();
+#endif
     CexmcMessenger::Destroy();
 
+#ifdef G4VIS_USE
     delete visManager;
+#endif
     delete runManager;
+#ifdef G4UI_USE
     delete session;
+#endif
 
     return 0;
 }

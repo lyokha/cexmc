@@ -24,7 +24,9 @@
 #include <G4ios.hh>
 #include "CexmcAngularRange.hh"
 #include "CexmcProductionModelData.hh"
+#ifdef CEXMC_USE_ROOT
 #include "CexmcHistoManager.hh"
+#endif
 #include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
@@ -132,7 +134,9 @@ inline void  CexmcProductionModel::SetAngularRange( G4double  top,
         curBottom -=  binWidth;
         angularRanges.push_back( CexmcAngularRange( curTop, curBottom, i ) );
     }
+#ifdef CEXMC_USE_ROOT
     CexmcHistoManager::Instance()->SetupARHistos( angularRanges );
+#endif
 }
 
 
@@ -141,7 +145,9 @@ inline void  CexmcProductionModel::SetAngularRanges(
 {
     angularRangesRef = angularRanges_;
     angularRanges = angularRangesRef;
+#ifdef CEXMC_USE_ROOT
     CexmcHistoManager::Instance()->SetupARHistos( angularRanges );
+#endif
 }
 
 
@@ -181,7 +187,9 @@ inline void  CexmcProductionModel::AddAngularRange( G4double  top,
         curBottom -= binWidth;
         CexmcAngularRange  aRange( curTop, curBottom, curIndex + i );
         angularRanges.push_back( aRange );
+#ifdef CEXMC_USE_ROOT
         CexmcHistoManager::Instance()->AddARHistos( aRange );
+#endif
     }
 }
 

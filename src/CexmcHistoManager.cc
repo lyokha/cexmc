@@ -16,16 +16,20 @@
  * ============================================================================
  */
 
+#ifdef CEXMC_USE_ROOT
+
 #include <TH1.h>
 #include <TH1F.h>
 #include <TH2F.h>
 #include <TH3F.h>
 #include <TFile.h>
 #include <TDirectory.h>
+#ifdef CEXMC_USE_ROOTQT
 #include <TQtWidget.h>
 #include <TCanvas.h>
 #include <QApplication>
 #include <QFont>
+#endif
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4Box.hh>
@@ -84,7 +88,11 @@ void  CexmcHistoManager::Destroy( void )
 
 
 CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
-    isInitialized( false ), rootCanvas( NULL ), messenger( NULL )
+    isInitialized( false ),
+#ifdef CEXMC_USE_ROOTQT
+    rootCanvas( NULL ),
+#endif
+    messenger( NULL )
 {
     histos.insert( CexmcHistoPair( CexmcMomentumIP_TPT_Histo, &momip_tpt ) );
     histos.insert( CexmcHistoPair( CexmcMomentumIP_RT_Histo, &momip_rt ) );
@@ -177,7 +185,9 @@ CexmcHistoManager::~CexmcHistoManager()
 
     /* all histograms will be deleted by outFile destructor! */
     delete outFile;
+#ifdef CEXMC_USE_ROOTQT
     delete rootCanvas;
+#endif
     delete messenger;
 }
 
@@ -867,6 +877,8 @@ void  CexmcHistoManager::Print( const G4String &  value )
 }
 
 
+#ifdef CEXMC_USE_ROOTQT
+
 void  CexmcHistoManager::Draw( const G4String &  value )
 {
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
@@ -899,4 +911,8 @@ void  CexmcHistoManager::Draw( const G4String &  value )
     rootCanvas->show();
     rootCanvas->GetCanvas()->Update();
 }
+
+#endif
+
+#endif
 

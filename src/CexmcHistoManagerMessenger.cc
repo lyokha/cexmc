@@ -16,6 +16,8 @@
  * ============================================================================
  */
 
+#ifdef CEXMC_USE_ROOT
+
 #include <G4UIcmdWithoutParameter.hh>
 #include <G4UIcmdWithAString.hh>
 #include "CexmcHistoManagerMessenger.hh"
@@ -24,7 +26,10 @@
 
 
 CexmcHistoManagerMessenger::CexmcHistoManagerMessenger() :
-    listHistos( NULL ), printHisto( NULL ), drawHisto( NULL )
+    listHistos( NULL ), printHisto( NULL )
+#ifdef CEXMC_USE_ROOTQT
+    , drawHisto( NULL )
+#endif
 {
     listHistos = new G4UIcmdWithoutParameter(
         ( CexmcMessenger::histoDirName + "list" ).c_str(), this );
@@ -37,12 +42,14 @@ CexmcHistoManagerMessenger::CexmcHistoManagerMessenger() :
     printHisto->SetParameterName( "PrintHisto", false );
     printHisto->AvailableForStates( G4State_Idle );
 
+#ifdef CEXMC_USE_ROOTQT
     drawHisto = new G4UIcmdWithAString(
         ( CexmcMessenger::histoDirName + "draw" ).c_str(), this );
     drawHisto->SetGuidance( "Draw specified histogram. Available only if the "
                             "program\n    was launched in graphical mode" );
     drawHisto->SetParameterName( "DrawHisto", false );
     drawHisto->AvailableForStates( G4State_Idle );
+#endif
 }
 
 
@@ -50,7 +57,9 @@ CexmcHistoManagerMessenger::~CexmcHistoManagerMessenger()
 {
     delete listHistos;
     delete printHisto;
+#ifdef CEXMC_USE_ROOTQT
     delete drawHisto;
+#endif
 }
 
 
@@ -69,10 +78,14 @@ void CexmcHistoManagerMessenger::SetNewValue(
         {
            histoManager->Print( value );
         }
+#ifdef CEXMC_USE_ROOTQT
         if ( cmd == drawHisto )
         {
            histoManager->Draw( value );
         }
+#endif
     } while ( false );
 }
+
+#endif
 

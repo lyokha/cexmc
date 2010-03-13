@@ -19,6 +19,8 @@
 #ifndef CEXMC_HISTO_MANAGER_MESSENGER_HH
 #define CEXMC_HISTO_MANAGER_MESSENGER_HH
 
+#ifdef CEXMC_USE_ROOT
+
 #include <G4UImessenger.hh>
 
 class  G4UIcommand;
@@ -42,8 +44,12 @@ class  CexmcHistoManagerMessenger : public G4UImessenger
 
         G4UIcmdWithAString *       printHisto;
 
+#ifdef CEXMC_USE_ROOTQT
         G4UIcmdWithAString *       drawHisto;
+#endif
 };
+
+#endif
 
 
 #endif
