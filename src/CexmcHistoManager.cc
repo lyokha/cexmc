@@ -25,10 +25,10 @@
 #include <TFile.h>
 #include <TDirectory.h>
 #ifdef CEXMC_USE_ROOTQT
-#include <TQtWidget.h>
 #include <TCanvas.h>
 #include <QApplication>
 #include <QFont>
+#include "CexmcHistoWidget.hh"
 #endif
 #include <G4LogicalVolume.hh>
 #include <G4LogicalVolumeStore.hh>
@@ -879,7 +879,8 @@ void  CexmcHistoManager::Print( const G4String &  value )
 
 #ifdef CEXMC_USE_ROOTQT
 
-void  CexmcHistoManager::Draw( const G4String &  value )
+void  CexmcHistoManager::Draw( const G4String &  histoName,
+                               const G4String &  histoDrawOptions )
 {
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
@@ -889,11 +890,11 @@ void  CexmcHistoManager::Draw( const G4String &  value )
         return;
     }
 
-    TObject *  histo( gDirectory->FindObject( value.c_str() ) );
+    TObject *  histo( gDirectory->FindObject( histoName ) );
 
     if ( ! histo )
     {
-        G4cout << "Histogram '" << value << "' was not found" << G4endl;
+        G4cout << "Histogram '" << histoName << "' was not found" << G4endl;
         return;
     }
 
@@ -901,13 +902,13 @@ void  CexmcHistoManager::Draw( const G4String &  value )
     {
         /* save default application font because rootCanvas will break it */
         QFont  defaultAppFont( QApplication::font() );
-        rootCanvas = new TQtWidget;
+        rootCanvas = new CexmcHistoWidget;
         QApplication::setFont( defaultAppFont );
         rootCanvas->resize( CexmcHistoCanvasWidth, CexmcHistoCanvasHeight );
         rootCanvas->GetCanvas()->cd();
     }
 
-    histo->Draw();
+    histo->Draw( histoDrawOptions );
     rootCanvas->show();
     rootCanvas->GetCanvas()->Update();
 }

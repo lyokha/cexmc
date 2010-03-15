@@ -118,7 +118,8 @@ class  CexmcHistoManager
         void  Print( const G4String &  value );
 
 #ifdef CEXMC_USE_ROOTQT
-        void  Draw( const G4String &  value );
+        void  Draw( const G4String &  histoName,
+                    const G4String &  histoDrawOptions = "" );
 #endif
 
     private:

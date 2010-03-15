@@ -26,7 +26,6 @@
 class  G4UIcommand;
 class  G4UIcmdWithoutParameter;
 class  G4UIcmdWithAString;
-class  G4String;
 
 
 class  CexmcHistoManagerMessenger : public G4UImessenger

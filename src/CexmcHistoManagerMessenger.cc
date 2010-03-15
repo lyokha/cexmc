@@ -18,8 +18,12 @@
 
 #ifdef CEXMC_USE_ROOT
 
+#include <vector>
+#include <string>
+#include <boost/algorithm/string.hpp>
 #include <G4UIcmdWithoutParameter.hh>
 #include <G4UIcmdWithAString.hh>
+#include <G4String.hh>
 #include "CexmcHistoManagerMessenger.hh"
 #include "CexmcHistoManager.hh"
 #include "CexmcMessenger.hh"
@@ -45,8 +49,10 @@ CexmcHistoManagerMessenger::CexmcHistoManagerMessenger() :
 #ifdef CEXMC_USE_ROOTQT
     drawHisto = new G4UIcmdWithAString(
         ( CexmcMessenger::histoDirName + "draw" ).c_str(), this );
-    drawHisto->SetGuidance( "Draw specified histogram. Available only if the "
-                            "program\n    was launched in graphical mode" );
+    drawHisto->SetGuidance( "Draw specified histogram. The first parameter is\n"
+                            "    the histogram name, the second is draw "
+                            "options.\n    Available only if the program was "
+                            "launched\n    in graphical mode" );
     drawHisto->SetParameterName( "DrawHisto", false );
     drawHisto->AvailableForStates( G4State_Idle );
 #endif
@@ -72,16 +78,25 @@ void CexmcHistoManagerMessenger::SetNewValue(
     {
         if ( cmd == listHistos )
         {
-           histoManager->List();
+            histoManager->List();
         }
         if ( cmd == printHisto )
         {
-           histoManager->Print( value );
+            histoManager->Print( value );
         }
 #ifdef CEXMC_USE_ROOTQT
         if ( cmd == drawHisto )
         {
-           histoManager->Draw( value );
+            G4String                    histoName;
+            G4String                    histoDrawOptions;
+            std::vector< std::string >  tokens;
+            boost::split( tokens, value, boost::is_any_of( " \t" ) );
+            size_t                      tokensSize( tokens.size() );
+            if ( tokensSize > 0 )
+                histoName = tokens[ 0 ];
+            if ( tokensSize > 1 )
+                histoDrawOptions = tokens[ 1 ];
+            histoManager->Draw( histoName, histoDrawOptions );
         }
 #endif
     } while ( false );
