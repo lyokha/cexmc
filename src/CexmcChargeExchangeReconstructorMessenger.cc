@@ -37,7 +37,7 @@ CexmcChargeExchangeReconstructorMessenger::
         ( CexmcMessenger::reconstructorDirName + "useTableMass" ).c_str(),
         this );
     useTableMass->SetGuidance( "\n    If true then reconstructor will use "
-        "table mass of output particle\n    when building output particle "
+        "table mass of output\n    particle when building output particle "
         "energy,\n    otherwise reconstructed mass will be used" );
     useTableMass->SetParameterName( "UseTableMass", false );
     useTableMass->SetDefaultValue( false );

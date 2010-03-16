@@ -148,10 +148,10 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setOuterCrystalsVetoAlgorithm->SetGuidance( "\n"
                 "    none - events will not be rejected by any algorithm,\n"
                 "    max - reject event trigger if crystal with maximum energy "
-                    "deposit\n          is one of outer crystals,\n"
+                    "\n          deposit is one of outer crystals,\n"
                 "    fraction - reject event trigger if energy deposit "
                     "fraction in\n               outer crystals is more than "
-                    "value of 'outerCrystalsVetoFraction'" );
+                    "value of\n               'outerCrystalsVetoFraction'" );
     setOuterCrystalsVetoAlgorithm->SetParameterName(
                                         "OuterCrystalsVetoAlgorithm", false );
     setOuterCrystalsVetoAlgorithm->SetDefaultValue( "none" );
@@ -162,11 +162,11 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setOuterCrystalsVetoFraction = new G4UIcmdWithADouble(
             ( CexmcMessenger::detectorDirName +
               "outerCrystalsVetoFraction" ).c_str(), this );
-    setOuterCrystalsVetoFraction->SetGuidance( "\n    fraction of whole energy "
+    setOuterCrystalsVetoFraction->SetGuidance( "\n    Fraction of whole energy "
             "deposit in one calorimeter\n    that belongs to outer crystals.\n"
             "    If 'outerCrystalsVetoAlgorithm' is 'fraction' and\n"
             "    the outer crystals energy deposit fraction exceeds "
-                "this value\n    then event won't trigger" );
+                "this\n    value then event won't trigger" );
     setOuterCrystalsVetoFraction->SetParameterName(
                                         "OuterCrystalsVetoFraction", false );
     setOuterCrystalsVetoFraction->SetDefaultValue( 0 );
@@ -176,7 +176,7 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     applyFiniteCrystalResolution = new G4UIcmdWithABool(
             ( CexmcMessenger::detectorDirName +
               "applyFiniteCrystalResolution" ).c_str(), this );
-    applyFiniteCrystalResolution->SetGuidance( "\n    specify if finite "
+    applyFiniteCrystalResolution->SetGuidance( "\n    Specify if finite "
             "energy resolution of the crystals\n    will be accounted" );
     applyFiniteCrystalResolution->SetParameterName(
                                         "ApplyFiniteCrystalResolution", false );
@@ -187,7 +187,7 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     addCrystalResolutionRange = new G4UIcmdWith3Vector(
             ( CexmcMessenger::detectorDirName +
               "addCrystalResolutionRange" ).c_str(), this );
-    addCrystalResolutionRange->SetGuidance( "\n    add new energy range "
+    addCrystalResolutionRange->SetGuidance( "\n    Add new energy range "
             "(in GeV!) with fwhm percentage\n    value of crystal resolution "
             "in this range" );
     addCrystalResolutionRange->SetParameterName(
@@ -202,7 +202,7 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     clearCrystalResolutionData = new G4UIcmdWithoutParameter(
             ( CexmcMessenger::detectorDirName +
               "clearCrystalResolutionData" ).c_str(), this );
-    clearCrystalResolutionData->SetGuidance( "\n    clear all crystal "
+    clearCrystalResolutionData->SetGuidance( "\n    Clear all crystal "
               "resolution ranges.\n    Can be used to redefine crystal "
               "resolution data" );
     clearCrystalResolutionData->AvailableForStates( G4State_PreInit,

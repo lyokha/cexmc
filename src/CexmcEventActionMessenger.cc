@@ -37,7 +37,7 @@ CexmcEventActionMessenger::CexmcEventActionMessenger(
                         "        (reconstructed data will also be printed in "
                                 "this case),\n"
                         "    3 - print messages if studied interaction or "
-                                "event triggered,\n"
+                                "event\n        triggered,\n"
                         "    4 - print messages on every event" );
     setVerboseLevel->SetParameterName( "Verbose", false );
     setVerboseLevel->SetDefaultValue( 0 );
@@ -48,13 +48,14 @@ CexmcEventActionMessenger::CexmcEventActionMessenger(
            ( CexmcMessenger::visDirName + "verbose" ).c_str() , this );
     setVerboseDrawLevel->SetGuidance( "\n    0 - draw nothing,\n"
                         "    1 - draw trajectories and track points if studied "
-                                "interaction triggered,\n"
+                                "interaction\n        triggered,\n"
                         "    2 - draw trajectories and track points on event "
                                 "trigger\n"
                         "        (reconstructed data will also be drawn in "
                                 "this case),\n"
                         "    3 - draw trajectories and track points if "
-                                "studied interaction or event triggered,\n"
+                                "studied interaction\n        or event "
+                                "triggered,\n"
                         "    4 - draw trajectories and/or track points on "
                                 "every event" );
     setVerboseDrawLevel->SetParameterName( "VerboseDraw", false );

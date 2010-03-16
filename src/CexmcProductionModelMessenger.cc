@@ -42,7 +42,8 @@ CexmcProductionModelMessenger::CexmcProductionModelMessenger(
     setAngularRange->SetGuidance(
         "\n    Set angular range of interest given in values of cosinus;\n"
         "    first two values give the range (descending or ascending),\n"
-        "    third value gives number of equal divisions within the range." );
+        "    third value gives number of equal divisions within the\n"
+        "    range." );
     setAngularRange->SetParameterName( "ARangeTop", "ARangeBottom",
                                        "ARangeNmbOfDivisions", false );
     setAngularRange->SetRange(
@@ -56,7 +57,8 @@ CexmcProductionModelMessenger::CexmcProductionModelMessenger(
     addAngularRange->SetGuidance(
         "\n    Add angular range of interest given in values of cosinus;\n"
         "    first two values give the range (descending or ascending),\n"
-        "    third value gives number of equal divisions within the range." );
+        "    third value gives number of equal divisions within the\n"
+        "    range." );
     addAngularRange->SetParameterName( "ARangeTop", "ARangeBottom",
                                        "ARangeNmbOfDivisions", false );
     addAngularRange->SetRange(

@@ -62,9 +62,9 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     replayEvents = new G4UIcmdWithAnInteger(
         ( CexmcMessenger::runDirName + "replay" ).c_str(), this );
     replayEvents->SetGuidance( "Replay specified number of events "
-           "(available only if a project is read).\n"
-           "  if number of events is 0 (or not specified) then all run will be "
-           "replayed" );
+           "\n  (available only if a project is read)."
+           "\n  If number of events is 0 (or not specified) then all"
+           "\n  run will be replayed" );
     replayEvents->SetParameterName( "ReplayEvents", true );
     replayEvents->SetDefaultValue( 0 );
     replayEvents->SetRange( "ReplayEvents >= 0" );
@@ -76,7 +76,7 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
            "(available only if a project is read).\n"
            "  'seekto 0' brings to the start of run, 'seekto 4' - to the first"
            "\n  recorded event with interaction after fourth recorded event "
-           "with trigger" );
+           "\n  with trigger" );
     seekTo->SetParameterName( "SeekTo", false );
     seekTo->SetDefaultValue( 0 );
     seekTo->SetRange( "SeekTo >= 0" );

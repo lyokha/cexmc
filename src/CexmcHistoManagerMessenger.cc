@@ -18,9 +18,11 @@
 
 #ifdef CEXMC_USE_ROOT
 
+#ifdef CEXMC_USE_ROOTQT
 #include <vector>
 #include <string>
 #include <boost/algorithm/string.hpp>
+#endif
 #include <G4UIcmdWithoutParameter.hh>
 #include <G4UIcmdWithAString.hh>
 #include <G4String.hh>

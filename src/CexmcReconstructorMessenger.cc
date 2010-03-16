@@ -34,16 +34,17 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         ( CexmcMessenger::reconstructorDirName + "entryPointDefinitionAlgo" ).
                 c_str(), this );
     setCalorimeterEntryPointDefinitionAlgorithm->SetGuidance(
-        "\n    Algorithm to reconstruct entry point of output particle decay "
-        "products\n    in calorimeter"
-        " (none of the following algorithms reconstruct directions)\n"
-        "    center - entry points defined in the center of the calorimeters,\n"
-        "    simple - entry points defined in the center of the crystal that \n"
-        "             has maximum energy deposit value,\n"
-        "    linear - entry points defined by linear weights of energy deposit "
-                     "in crystals,\n"
-        "    sqrt - entry points defined by square root weights of energy "
-                     "deposit in crystals" );
+        "\n    Algorithm to reconstruct entry point of output particle"
+        "\n    decay products in calorimeter"
+        "\n    (none of the following algorithms reconstruct directions)\n"
+        "    center - entry points defined in the center of the\n"
+        "             calorimeters,\n"
+        "    simple - entry points defined in the center of the crystal\n"
+        "             that has maximum energy deposit value,\n"
+        "    linear - entry points defined by linear weights of energy\n"
+        "             deposit in crystals,\n"
+        "    sqrt - entry points defined by square root weights of\n"
+        "           energy deposit in crystals" );
     setCalorimeterEntryPointDefinitionAlgorithm->SetDefaultValue( "sqrt" );
     setCalorimeterEntryPointDefinitionAlgorithm->SetParameterName(
                                             "EntryPointDefinitionAlgo", false );
@@ -56,15 +57,15 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         ( CexmcMessenger::reconstructorDirName +
                               "entryPointDepthDefinitionAlgo" ).c_str(), this );
     setCalorimeterEntryPointDepthDefinitionAlgorithm->SetGuidance(
-        "\n    Algorithm to reconstruct entry point depth of output particle "
-        "decay products\n    in calorimeter (value is defined by "
-                            "'entryPointDepth' parameter)\n"
+        "\n    Algorithm to reconstruct entry point depth of output\n"
+        "    particle decay products in calorimeter\n"
+        "    (value is defined by 'entryPointDepth' parameter)\n"
         "    plain - depth is a constant\n"
-        "    sphere - depth depends on X and Y of calorimeter entry points "
-        "and locates\n             on surface of a sphere with origin in the "
-        "center of the target;\n             radius of the sphere is sum of "
-        "distance to the calorimeter and\n             'entryPointDepth' "
-        "value" );
+        "    sphere - depth depends on X and Y of calorimeter entry\n"
+        "             points and locates on surface of a sphere\n"
+        "             with origin in the center of the target;\n"
+        "             radius of the sphere is sum of distance to\n"
+        "             the calorimeter and 'entryPointDepth' value" );
     setCalorimeterEntryPointDepthDefinitionAlgorithm->SetDefaultValue(
                                                                     "plain" );
     setCalorimeterEntryPointDepthDefinitionAlgorithm->SetParameterName(
@@ -78,11 +79,11 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         ( CexmcMessenger::reconstructorDirName + "crystalSelectionAlgo" ).
                 c_str(), this );
     setCrystalSelectionAlgorithm->SetGuidance(
-        "\n    Choose which crystals will be selected in entry point "
-              "reconstruction algorithm\n"
+        "\n    Choose which crystals will be selected in entry point\n"
+        "    reconstruction algorithm\n"
         "    all - all,\n"
-        "    adjacent - crystal with maximum energy deposit and adjacent "
-            "crystals" );
+        "    adjacent - crystal with maximum energy deposit and\n"
+        "               adjacent crystals" );
     setCrystalSelectionAlgorithm->SetDefaultValue( "all" );
     setCrystalSelectionAlgorithm->SetParameterName( "CrystalSelAlgo", false );
     setCrystalSelectionAlgorithm->SetCandidates( "all adjacent" );
@@ -93,8 +94,8 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         ( CexmcMessenger::reconstructorDirName + "entryPointDepth" ).c_str(),
         this );
     setCalorimeterEntryPointDepth->SetGuidance(
-        "\n    Depth of entry point used in reconstruction of angle between "
-        "output particle\n    decay products" );
+        "\n    Depth of entry point used in reconstruction of angle\n"
+        "    between output particle decay products" );
     setCalorimeterEntryPointDepth->SetParameterName( "EntryPointDepth", false );
     setCalorimeterEntryPointDepth->SetDefaultValue( 0 );
     setCalorimeterEntryPointDepth->SetDefaultUnit( "cm" );
