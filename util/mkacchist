@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+# Designed to read output of 'cexmc ...-orun...' program
+# Usage: ./mkacchist [-real] [macroName]
+
 my $floatregexp = qr/-?\d+\.\d+/o;
 my $col1regexp = qr/\s*(\d+)\s*\[($floatregexp), ($floatregexp)\)\s*/o;
 my $col2regexp = qr/\s*($floatregexp)\s*\(\s*(\d+) \/ (\d+)\s*\)\s*/o;
