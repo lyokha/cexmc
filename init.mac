@@ -19,6 +19,8 @@
 /particle/property/decay/br 0
 /particle/property/decay/dump
 
+/run/setCutForRegion Calorimeter 1 mm
+
 #/cexmc/detector/Monitor/ED/verbose 1
 #/cexmc/detector/VetoCounter/ED/verbose 1
 #/cexmc/detector/Calorimeter/ED/verbose 1
@@ -36,7 +38,7 @@
 /cexmc/detector/outerCrystalsVetoAlgorithm none
 /cexmc/detector/outerCrystalsVetoFraction 0.5
 
-/cexmc/detector/applyFiniteCrystalResolution false
+/cexmc/detector/applyFiniteCrystalResolution true
 /cexmc/detector/addCrystalResolutionRange 0.   0.04 0.48
 /cexmc/detector/addCrystalResolutionRange 0.04 0.06 0.27
 /cexmc/detector/addCrystalResolutionRange 0.06 0.10 0.22

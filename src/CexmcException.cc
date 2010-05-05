@@ -75,6 +75,9 @@ const char *  CexmcException::what( void ) const throw()
         return CEXMC_LINE_START "Bad outer crystals veto fraction. "
                 "Check specified outer crystals veto fraction (probably it "
                 "has higher value than in the read project).";
+    case CexmcCalorimeterRegionNotInitialized :
+        return CEXMC_LINE_START "Calorimeter sensitive region was not "
+                "initialized. Check gdml source file.";
     case CexmcWeirdException :
         return CEXMC_LINE_START "A weird exception occured. "
                 "The world must collapse now.";

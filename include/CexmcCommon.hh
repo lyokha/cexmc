@@ -37,6 +37,7 @@ const G4String  CexmcStudiedProcessFullName( CexmcStudiedProcessFirstName +
                                              CexmcStudiedProcessLastName );
 const G4String  CexmcEDDigitizerName( "EDDig" );
 const G4String  CexmcTPDigitizerName( "TPDig" );
+const G4String  CexmcCalorimeterRegionName( "Calorimeter" );
 
 const G4double  CexmcFwhmToStddev( 0.42466 );
 const G4double  CexmcInvalidCosTheta( 2.0 );

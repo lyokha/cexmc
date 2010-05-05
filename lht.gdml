@@ -28,6 +28,9 @@
         <constant name="VetoCounterTP" value="2"/>
         <constant name="CalorimeterTP" value="3"/>
 
+        <!-- region types -->
+        <constant name="CalorimeterRegion" value="0"/>
+
 
         <!-- these values are supposed to be changed -->
         <constant name="MonitorPosZ" value="-34.0"/>
@@ -442,6 +445,7 @@
                     <offset value="0" unit="cm"/>
                 </replicate_along_axis>
             </replicavol>
+            <auxiliary auxtype="SensitiveRegion" auxvalue="CalorimeterRegion"/>
         </volume>
         <volume name="vVetoCounter">
             <materialref ref="Scintillator"/>

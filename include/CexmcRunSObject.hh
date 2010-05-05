@@ -44,6 +44,7 @@ class  CexmcRunSObject
                          const CexmcSimpleDecayTableStore &  etaDecayTable,
                          const CexmcAngularRangeList &  angularRanges,
                          G4bool  fermiMotionIsOn,
+                         const std::vector< G4double > &  calorimeterRegCuts,
                          CexmcEventCountPolicy  eventCountPolicy,
                          const std::string &  incidentParticle,
                          const CexmcSimpleThreeVectorStore &  beamPos,
@@ -103,6 +104,8 @@ class  CexmcRunSObject
         CexmcAngularRangeList        angularRanges;
 
         G4bool                       fermiMotionIsOn;
+
+        std::vector< G4double >      calorimeterRegCuts;
 
         CexmcEventCountPolicy        eventCountPolicy;
 
@@ -213,6 +216,7 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & etaDecayTable;
     archive & angularRanges;
     archive & fermiMotionIsOn;
+    archive & calorimeterRegCuts;
     archive & eventCountPolicy;
     archive & incidentParticle;
     archive & beamPos;

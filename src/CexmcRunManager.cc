@@ -28,6 +28,9 @@
 #include <G4ParticleTable.hh>
 #include <G4UImanager.hh>
 #include <G4Timer.hh>
+#include <G4Region.hh>
+#include <G4RegionStore.hh>
+#include <G4ProductionCuts.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
 #include "CexmcRunAction.hh"
@@ -53,6 +56,7 @@
 #include "CexmcEventFastSObject.hh"
 #include "CexmcTrackPointInfo.hh"
 #include "CexmcEventInfo.hh"
+#include "CexmcException.hh"
 
 
 namespace
@@ -168,6 +172,14 @@ void  CexmcRunManager::ReadProject( void )
     physicsManager->GetProductionModel()->ApplyFermiMotion(
                                             sObject.fermiMotionIsOn, false );
     eventCountPolicy = sObject.eventCountPolicy;
+
+    G4Region *  region( G4RegionStore::GetInstance()->GetRegion(
+                                                CexmcCalorimeterRegionName ) );
+    if ( ! region )
+        throw CexmcException( CexmcCalorimeterRegionNotInitialized );
+
+    region->GetProductionCuts()->SetProductionCuts(
+                                                sObject.calorimeterRegCuts );
 
     const CexmcPrimaryGeneratorAction *  primaryGeneratorAction(
                             static_cast< const CexmcPrimaryGeneratorAction * >(
@@ -289,6 +301,11 @@ void  CexmcRunManager::SaveProject( void )
     CexmcChargeExchangeReconstructor *  reconstructor(
                                         theEventAction->GetReconstructor() );
 
+    G4Region *  region( G4RegionStore::GetInstance()->GetRegion(
+                                                CexmcCalorimeterRegionName ) );
+    if ( ! region )
+        throw CexmcException( CexmcCalorimeterRegionNotInitialized );
+
     CexmcNmbOfHitsInRanges  nmbOfHitsSampled;
     CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull;
     CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange;
@@ -316,7 +333,7 @@ void  CexmcRunManager::SaveProject( void )
         productionModelType, gdmlFileName, etaDecayTable,
         physicsManager->GetProductionModel()->GetAngularRanges(),
         physicsManager->GetProductionModel()->IsFermiMotionOn(),
-        eventCountPolicy,
+        region->GetProductionCuts()->GetProductionCuts(), eventCountPolicy,
         particleGun->GetParticleDefinition()->GetParticleName(),
         particleGun->GetOrigPosition(), particleGun->GetOrigDirection(),
         particleGun->GetOrigMomentumAmp(),
@@ -801,6 +818,13 @@ void  CexmcRunManager::PrintReadRunData( void ) const
     G4Eta::Definition()->GetDecayTable()->DumpInfo();
     G4cout << "  -- Fermi motion status (0 - disabled, 1 - enabled): " <<
               sObject.fermiMotionIsOn << G4endl;
+    if ( sObject.calorimeterRegCuts.size() < 4 )
+        throw CexmcException( CexmcWeirdException );
+    G4cout << "  -- Production cuts in calorimeter (gamma, e-, e+, p): " <<
+              G4BestUnit( sObject.calorimeterRegCuts[ 0 ], "Length" ) << ", " <<
+              G4BestUnit( sObject.calorimeterRegCuts[ 1 ], "Length" ) << ", " <<
+              G4BestUnit( sObject.calorimeterRegCuts[ 2 ], "Length" ) << ", " <<
+              G4BestUnit( sObject.calorimeterRegCuts[ 3 ], "Length" ) << G4endl;
     G4cout << "  -- Event count policy (0 - all, 1 - interaction, 2 - trigger)"
               ": " << sObject.eventCountPolicy << G4endl;
     G4cout << "  -- Number of events (processed / effective / ordered): " <<

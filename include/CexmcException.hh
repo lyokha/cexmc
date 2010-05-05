@@ -37,6 +37,7 @@ enum  CexmcExceptionType
     CexmcBadCalorimeterTriggerAlgorithm,
     CexmcBadOCVetoAlgorithm,
     CexmcBadOCVetoFraction,
+    CexmcCalorimeterRegionNotInitialized,
     CexmcWeirdException
 };
 

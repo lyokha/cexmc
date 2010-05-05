@@ -38,6 +38,9 @@ class  CexmcSetup : public G4VUserDetectorConstruction
         G4VPhysicalVolume *  world;
 
         G4String             gdmlFile;
+
+    private:
+        bool                 calorimeterRegionInitialized;
 };
 
 

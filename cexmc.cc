@@ -291,10 +291,6 @@ int  main( int  argc, char **  argv )
             uiManager->ApplyCommand( "/control/execute " +
                                      cmdLineData.preinitMacro );
 
-        CexmcSetup *   setup( new CexmcSetup( runManager->GetGdmlFileName() ) );
-
-        runManager->SetUserInitialization( setup );
-
         CexmcProductionModelType  productionModelType(
                                         runManager->GetProductionModelType() );
 
@@ -305,6 +301,10 @@ int  main( int  argc, char **  argv )
                                                 Create( productionModelType ) );
 
         runManager->SetUserInitialization( physicsList );
+
+        CexmcSetup *   setup( new CexmcSetup( runManager->GetGdmlFileName() ) );
+
+        runManager->SetUserInitialization( setup );
 
         runManager->Initialize();
 

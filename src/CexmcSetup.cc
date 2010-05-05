@@ -21,6 +21,11 @@
 #include <G4VPrimitiveScorer.hh>
 #include <G4SDManager.hh>
 #include <G4LogicalVolumeStore.hh>
+#include <G4Region.hh>
+#include <G4RegionStore.hh>
+#include <G4ProductionCuts.hh>
+#include <G4RunManager.hh>
+#include <G4VUserPhysicsList.hh>
 #include "CexmcSetup.hh"
 #include "CexmcTrackPoints.hh"
 #include "CexmcTrackPointsInLeftRightSet.hh"
@@ -29,11 +34,13 @@
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
+#include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 
+
 CexmcSetup::CexmcSetup( const G4String &  gdmlFile ) :
-    world( 0 ), gdmlFile( gdmlFile )
+    world( 0 ), gdmlFile( gdmlFile ), calorimeterRegionInitialized( false )
 {
 }
 
@@ -138,6 +145,43 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
                     }
                     break;
                 }
+                if ( pair->type == "SensitiveRegion" )
+                {
+                    G4cout << CEXMC_LINE_START "Sensitive Region for "
+                               "detector '" << detectorName << "'" << G4endl;
+                    do
+                    {
+                        if ( pair->value < 0.5 )
+                        {
+                            G4Region *  region( NULL );
+                            if ( calorimeterRegionInitialized )
+                            {
+                                region = G4RegionStore::GetInstance()->
+                                        GetRegion( CexmcCalorimeterRegionName );
+                            }
+                            else
+                            {
+                                region = new G4Region(
+                                                CexmcCalorimeterRegionName );
+                                G4ProductionCuts *  cuts(
+                                                        new G4ProductionCuts );
+                                G4double  defaultProductionCut( 1.0 * mm );
+                                const G4VUserPhysicsList *  physicsList(
+                                            G4RunManager::GetRunManager()->
+                                                        GetUserPhysicsList() );
+                                if ( physicsList )
+                                    defaultProductionCut =
+                                            physicsList->GetDefaultCutValue();
+                                cuts->SetProductionCut( defaultProductionCut );
+                                region->SetProductionCuts( cuts );
+                                calorimeterRegionInitialized = true;
+                            }
+                            region->AddRootLogicalVolume( *lvIter );
+                            break;
+                        }
+                    } while ( false );
+                    break;
+                }
             }
             while ( false );
 
@@ -155,5 +199,8 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
             ( *lvIter )->SetSensitiveDetector( detector );
         }
     }
+
+    if ( ! calorimeterRegionInitialized )
+        throw CexmcException( CexmcCalorimeterRegionNotInitialized );
 }
 
