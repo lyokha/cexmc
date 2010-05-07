@@ -19,18 +19,24 @@
 #ifndef CEXMC_BASIC_PHYSICS_SETTINGS_HH
 #define CEXMC_BASIC_PHYSICS_SETTINGS_HH
 
-/* standard physics list */
+#ifdef CEXMC_USE_QGSP_BIC_EMY
+/* this reference physics list promises higher accuracy for electrons, hadrons
+ * and ions tracking */
+#include <QGSP_BIC_EMY.hh>
+#else
+/* standard reference physics list */
 #include <QGSP_BERT.hh>
-/* this physics list promises higher accuracy for electron, hadron and ion
- * tracking */
-//#include <QGSP_BIC_EMY.hh>
+#endif
 #include <G4PionMinus.hh>
 #include "CexmcProductionModelFactory.hh"
 #include "CexmcStudiedPhysicsChargeExchange.hh"
 
 
+#ifdef CEXMC_USE_QGSP_BIC_EMY
+typedef QGSP_BIC_EMY  CexmcBasePhysics;
+#else
 typedef QGSP_BERT     CexmcBasePhysics;
-//typedef QGSP_BIC_EMY  CexmcBasePhysics;
+#endif
 typedef G4PionMinus   CexmcStudiedPhysicsStarterParticle;
 typedef CexmcProductionModelFactory< CexmcBasePhysics,
                                      CexmcStudiedPhysicsStarterParticle,

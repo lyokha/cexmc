@@ -19,7 +19,7 @@
 /particle/property/decay/br 0
 /particle/property/decay/dump
 
-/run/setCutForRegion Calorimeter 1 mm
+#/run/setCutForRegion Calorimeter 1 mm
 
 #/cexmc/detector/Monitor/ED/verbose 1
 #/cexmc/detector/VetoCounter/ED/verbose 1
