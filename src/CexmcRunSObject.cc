@@ -25,6 +25,7 @@ CexmcRunSObject::CexmcRunSObject()
 
 
 CexmcRunSObject::CexmcRunSObject(
+        CexmcBasePhysicsUsed  basePhysicsUsed,
         CexmcProductionModelType  productionModelType,
         const std::string &  gdmlFileName,
         const CexmcSimpleDecayTableStore &  etaDecayTable,
@@ -63,6 +64,7 @@ CexmcRunSObject::CexmcRunSObject(
         G4int  nmbOfSavedEvents, G4int  nmbOfSavedFastEvents,
         G4int  numberOfEventsProcessed, G4int  numberOfEventsProcessedEffective,
         G4int  numberOfEventsToBeProcessed ) :
+    basePhysicsUsed( basePhysicsUsed ),
     productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
     etaDecayTable( etaDecayTable ), angularRanges( angularRanges ),
     fermiMotionIsOn( fermiMotionIsOn ),

@@ -56,7 +56,7 @@
 #include "CexmcEventFastSObject.hh"
 #include "CexmcTrackPointInfo.hh"
 #include "CexmcEventInfo.hh"
-#include "CexmcException.hh"
+#include "CexmcBasicPhysicsSettings.hh"
 
 
 namespace
@@ -69,6 +69,7 @@ namespace
 CexmcRunManager::CexmcRunManager( const G4String &  projectId,
                                   const G4String &  rProject,
                                   G4bool  overrideExistingProject ) :
+    basePhysicsUsed( CexmcPMFactoryInstance::GetBasePhysics() ),
     productionModelType( CexmcUnknownProductionModel ),
     gdmlFileName( "default.gdml" ), zipGdmlFile( false ), projectsDir( "." ),
     projectId( projectId ), rProject( rProject ), guiMacroName( "" ),
@@ -127,6 +128,8 @@ void  CexmcRunManager::ReadPreinitProjectData( void )
         boost::archive::binary_iarchive  archive( runDataFile );
         archive >> sObject;
     }
+
+    basePhysicsUsed = sObject.basePhysicsUsed;
 
     productionModelType = sObject.productionModelType;
 
@@ -301,10 +304,20 @@ void  CexmcRunManager::SaveProject( void )
     CexmcChargeExchangeReconstructor *  reconstructor(
                                         theEventAction->GetReconstructor() );
 
-    G4Region *  region( G4RegionStore::GetInstance()->GetRegion(
+    std::vector< G4double >  calorimeterRegCuts( 4 );
+    if ( ProjectIsRead() )
+    {
+        calorimeterRegCuts = sObject.calorimeterRegCuts;
+    }
+    else
+    {
+        G4Region *  region( G4RegionStore::GetInstance()->GetRegion(
                                                 CexmcCalorimeterRegionName ) );
-    if ( ! region )
-        throw CexmcException( CexmcCalorimeterRegionNotInitialized );
+        if ( ! region )
+            throw CexmcException( CexmcCalorimeterRegionNotInitialized );
+
+        calorimeterRegCuts = region->GetProductionCuts()->GetProductionCuts();
+    }
 
     CexmcNmbOfHitsInRanges  nmbOfHitsSampled;
     CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull;
@@ -329,11 +342,11 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfSavedFastEvents = run->GetNmbOfSavedFastEvents();
     }
 
-    CexmcRunSObject  sObject(
-        productionModelType, gdmlFileName, etaDecayTable,
+    CexmcRunSObject  sObjectToWrite(
+        basePhysicsUsed, productionModelType, gdmlFileName, etaDecayTable,
         physicsManager->GetProductionModel()->GetAngularRanges(),
         physicsManager->GetProductionModel()->IsFermiMotionOn(),
-        region->GetProductionCuts()->GetProductionCuts(), eventCountPolicy,
+        calorimeterRegCuts, eventCountPolicy,
         particleGun->GetParticleDefinition()->GetParticleName(),
         particleGun->GetOrigPosition(), particleGun->GetOrigDirection(),
         particleGun->GetOrigMomentumAmp(),
@@ -378,7 +391,7 @@ void  CexmcRunManager::SaveProject( void )
 
     {
         boost::archive::binary_oarchive  archive( runDataFile );
-        archive << sObject;
+        archive << sObjectToWrite;
     }
 
     /* save gdml file */
@@ -513,9 +526,6 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
     {
         evFastArchive >> evFastSObject;
 
-        productionModel->SetTriggeredAngularRanges(
-                                                evFastSObject.opCosThetaSCM );
-
         if ( nEventCount < curEventRead )
         {
             if ( evFastSObject.edDigitizerHasTriggered )
@@ -527,6 +537,9 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         }
 
         ++iEvent;
+
+        productionModel->SetTriggeredAngularRanges(
+                                                evFastSObject.opCosThetaSCM );
 
         if ( ! evFastSObject.edDigitizerHasTriggered )
         {
@@ -809,6 +822,8 @@ void  CexmcRunManager::PrintReadRunData( void ) const
 
     G4cout << CEXMC_LINE_START << "Run data read from project '" << rProject <<
               "'" << G4endl;
+    G4cout << "  -- Base physics used (1 - QGSP_BERT, 2 - QGSP_BIC_EMY): " <<
+              sObject.basePhysicsUsed << G4endl;
     G4cout << "  -- Production model (1 - pi0, 2 - eta): " <<
               sObject.productionModelType << G4endl;
     G4cout << "  -- Geometry definition file: " << sObject.gdmlFileName <<

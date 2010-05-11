@@ -57,10 +57,10 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
             CexmcProductionModelType  productionModelType(
                                         runManager->GetProductionModelType() );
             G4ParticleDefinition *    outputParticle(
-                        CexmcChargeExchangePMFactory::GetOutputParticle(
+                        CexmcPMFactoryInstance::GetOutputParticle(
                                                         productionModelType ) );
             G4ParticleDefinition *    nucleusOutputParticle(
-                        CexmcChargeExchangePMFactory::GetNucleusOutputParticle(
+                        CexmcPMFactoryInstance::GetNucleusOutputParticle(
                                                         productionModelType ) );
             do
             {

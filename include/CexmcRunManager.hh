@@ -108,6 +108,8 @@ class  CexmcRunManager : public G4RunManager
         void  ReadPreinitProjectData( void );
 
     private:
+        CexmcBasePhysicsUsed        basePhysicsUsed;
+
         CexmcProductionModelType    productionModelType;
 
         G4String                    gdmlFileName;

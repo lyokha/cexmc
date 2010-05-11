@@ -43,6 +43,14 @@ const G4double  CexmcFwhmToStddev( 0.42466 );
 const G4double  CexmcInvalidCosTheta( 2.0 );
 
 
+enum CexmcBasePhysicsUsed
+{
+    CexmcNoBasePhysics,
+    Cexmc_QGSP_BERT,
+    Cexmc_QGSP_BIC_EMY
+};
+
+
 enum  CexmcProductionModelType
 {
     CexmcUnknownProductionModel,

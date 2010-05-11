@@ -27,6 +27,33 @@
 #include "CexmcCommon.hh"
 
 
+namespace  CexmcPrivate
+{
+    template  < typename  BasePhysics >
+    class  CexmcBasePhysicsInstance
+    {
+        public:
+            static const CexmcBasePhysicsUsed  value = CexmcNoBasePhysics;
+    };
+
+#ifdef CEXMC_USE_QGSP_BIC_EMY
+    template<>
+    class CexmcBasePhysicsInstance< QGSP_BIC_EMY >
+    {
+        public:
+            static const CexmcBasePhysicsUsed  value = Cexmc_QGSP_BIC_EMY;
+    };
+#else
+    template<>
+    class CexmcBasePhysicsInstance< QGSP_BERT >
+    {
+        public:
+            static const CexmcBasePhysicsUsed  value = Cexmc_QGSP_BERT;
+    };
+#endif
+}
+
+
 template  < typename  BasePhysics, typename  Particle,
             template  < typename, typename > class  StudiedPhysics >
 class  CexmcProductionModelFactory
@@ -46,6 +73,8 @@ class  CexmcProductionModelFactory
 
         static G4ParticleDefinition *  GetNucleusOutputParticle(
                                 CexmcProductionModelType  productionModelType );
+
+        static CexmcBasePhysicsUsed    GetBasePhysics( void );
 
     private:
         CexmcProductionModelFactory();
@@ -149,6 +178,16 @@ G4ParticleDefinition *
     default :
         return NULL;
     }
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics >
+CexmcBasePhysicsUsed
+    CexmcProductionModelFactory< BasePhysics, Particle, StudiedPhysics >::
+            GetBasePhysics( void )
+{
+    return CexmcPrivate::CexmcBasePhysicsInstance< BasePhysics >::value;
 }
 
 

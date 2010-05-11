@@ -39,7 +39,8 @@ class  CexmcRunSObject
     public:
         CexmcRunSObject();
 
-        CexmcRunSObject( CexmcProductionModelType  productionModelType,
+        CexmcRunSObject( CexmcBasePhysicsUsed  basePhysicsUsed,
+                         CexmcProductionModelType  productionModelType,
                          const std::string &  gdmlFileName,
                          const CexmcSimpleDecayTableStore &  etaDecayTable,
                          const CexmcAngularRangeList &  angularRanges,
@@ -95,6 +96,8 @@ class  CexmcRunSObject
         void  serialize( Archive &  archive, const unsigned int  version );
 
     private:
+        CexmcBasePhysicsUsed         basePhysicsUsed;
+
         CexmcProductionModelType     productionModelType;
 
         std::string                  gdmlFileName;
@@ -211,6 +214,7 @@ class  CexmcRunSObject
 template  < typename  Archive >
 void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
 {
+    archive & basePhysicsUsed;
     archive & productionModelType;
     archive & gdmlFileName;
     archive & etaDecayTable;

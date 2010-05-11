@@ -33,15 +33,16 @@
 
 
 #ifdef CEXMC_USE_QGSP_BIC_EMY
-typedef QGSP_BIC_EMY  CexmcBasePhysics;
+typedef QGSP_BIC_EMY                  CexmcBasePhysics;
 #else
-typedef QGSP_BERT     CexmcBasePhysics;
+typedef QGSP_BERT                     CexmcBasePhysics;
 #endif
-typedef G4PionMinus   CexmcStudiedPhysicsStarterParticle;
+typedef G4PionMinus                   CexmcStudiedPhysicsStarterParticle;
 typedef CexmcProductionModelFactory< CexmcBasePhysics,
                                      CexmcStudiedPhysicsStarterParticle,
                                      CexmcStudiedPhysicsChargeExchange >
-                     CexmcChargeExchangePMFactory;
+                                      CexmcChargeExchangePMFactory;
+typedef CexmcChargeExchangePMFactory  CexmcPMFactoryInstance;
 
 
 #endif

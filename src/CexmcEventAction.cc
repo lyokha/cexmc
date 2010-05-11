@@ -711,10 +711,7 @@ void  CexmcEventAction::SaveEventFast( const G4Event *  event,
     if ( archive )
     {
         if ( ! tpDigitizerHasTriggered )
-        {
             opCosThetaSCM = CexmcInvalidCosTheta;
-            edDigitizerMonitorHasTriggered = false;
-        }
 
         CexmcEventFastSObject  sObject( event->GetEventID(), opCosThetaSCM,
                                         edDigitizerHasTriggered,

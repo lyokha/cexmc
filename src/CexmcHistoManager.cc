@@ -202,10 +202,10 @@ void  CexmcHistoManager::Initialize( void )
     CexmcProductionModelType  productionModelType(
                                         runManager->GetProductionModelType() );
     G4ParticleDefinition *    outputParticle(
-                                CexmcChargeExchangePMFactory::
+                                CexmcPMFactoryInstance::
                                     GetOutputParticle( productionModelType ) );
     G4ParticleDefinition *    nucleusOutputParticle(
-                                CexmcChargeExchangePMFactory::
+                                CexmcPMFactoryInstance::
                                     GetNucleusOutputParticle(
                                                         productionModelType ) );
     if ( ! outputParticle || ! nucleusOutputParticle )
@@ -370,10 +370,10 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     CexmcProductionModelType  productionModelType(
                                         runManager->GetProductionModelType() );
     G4ParticleDefinition *    outputParticle(
-                                CexmcChargeExchangePMFactory::
+                                CexmcPMFactoryInstance::
                                     GetOutputParticle( productionModelType ) );
     G4ParticleDefinition *    nucleusOutputParticle(
-                                CexmcChargeExchangePMFactory::
+                                CexmcPMFactoryInstance::
                                     GetNucleusOutputParticle(
                                                         productionModelType ) );
     if ( ! outputParticle || ! nucleusOutputParticle )
