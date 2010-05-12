@@ -19,13 +19,14 @@
 #ifndef CEXMC_STUDIED_PROCESS_HH
 #define CEXMC_STUDIED_PROCESS_HH
 
-#include <G4WrapperProcess.hh>
 #include <Randomize.hh>
-#include "CexmcCommon.hh"
+#include "CexmcStudiedProcessBase.hh"
+#include "CexmcTrackInfo.hh"
+#include "CexmcException.hh"
 
 
 template  < typename  Particle >
-class  CexmcStudiedProcess : public G4WrapperProcess
+class  CexmcStudiedProcess : public CexmcStudiedProcessBase
 {
     public:
         CexmcStudiedProcess();
@@ -37,17 +38,18 @@ class  CexmcStudiedProcess : public G4WrapperProcess
         G4bool    IsApplicable( const G4ParticleDefinition &  particle );
 
     public:
-        void      SetStepSize( G4double  stepSize_ );
+        void      SetMaxStepSize( G4double  value );
 
     private:
+        G4double  maxStepSize;
+
         G4double  stepSize;
 };
 
 
 template  < typename  Particle >
 CexmcStudiedProcess< Particle >::CexmcStudiedProcess() :
-        G4WrapperProcess( CexmcStudiedProcessFirstName, fUserDefined ),
-        stepSize( DBL_MAX )
+        maxStepSize( DBL_MAX ), stepSize( DBL_MAX )
 {
 }
 
@@ -61,9 +63,22 @@ G4double  CexmcStudiedProcess< Particle >::
     G4WrapperProcess::PostStepGetPhysicalInteractionLength( track,
                                                 previousStepSize, condition );
 
+    CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
+                                                track.GetUserInformation() ) );
+
+    if ( ! trackInfo )
+        throw CexmcException( CexmcWeirdException );
+
+    if ( ! trackWatched )
+    {
+        stepSize = G4UniformRand() * maxStepSize +
+                                        trackInfo->GetTrackLengthInTarget();
+        trackWatched = true;
+    }
+
     *condition = NotForced;
-    G4double  curStepSize( G4UniformRand() * stepSize );
-    return curStepSize;
+
+    return stepSize - trackInfo->GetTrackLengthInTarget();
 }
 
 
@@ -76,9 +91,9 @@ G4bool  CexmcStudiedProcess< Particle >::IsApplicable(
 
 
 template  < typename  Particle >
-void  CexmcStudiedProcess< Particle >::SetStepSize( G4double  stepSize_ )
+void  CexmcStudiedProcess< Particle >::SetMaxStepSize( G4double  value )
 {
-    stepSize = stepSize_;
+    maxStepSize = value;
 }
 
 

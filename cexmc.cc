@@ -351,7 +351,6 @@ int  main( int  argc, char **  argv )
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );
 
-
         if ( cmdLineData.isInteractive )
         {
             productionModel->PrintInitialData();

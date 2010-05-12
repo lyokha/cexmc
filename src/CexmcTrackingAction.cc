@@ -48,14 +48,16 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
             trackInfo = new CexmcTrackInfo( CexmcIncidentParticleTrack );
             break;
         }
+
+        CexmcRunManager *         runManager(
+                                    static_cast< CexmcRunManager * >(
+                                        G4RunManager::GetRunManager() ) );
+        CexmcProductionModelType  productionModelType(
+                                    runManager->GetProductionModelType() );
+
         if ( track->GetCreatorProcess()->GetProcessName() ==
              CexmcStudiedProcessFullName )
         {
-            CexmcRunManager *         runManager(
-                                        static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-            CexmcProductionModelType  productionModelType(
-                                        runManager->GetProductionModelType() );
             G4ParticleDefinition *    outputParticle(
                         CexmcPMFactoryInstance::GetOutputParticle(
                                                         productionModelType ) );
@@ -84,6 +86,17 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
         {
             trackInfo = new CexmcTrackInfo(
                                         CexmcOutputParticleDecayProductTrack );
+            break;
+        }
+
+        G4ParticleDefinition *  incidentParticle(
+                        CexmcPMFactoryInstance::GetIncidentParticle(
+                                                        productionModelType ) );
+
+        if ( track->GetDefinition()->GetParticleName() ==
+             incidentParticle->GetParticleName() )
+        {
+            trackInfo = new CexmcTrackInfo( CexmcInsipidTrack );
             break;
         }
     } while ( false );

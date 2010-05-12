@@ -35,10 +35,16 @@ class  CexmcTrackInfo : public G4VUserTrackInformation
     public:
         CexmcTrackType  GetTrackType( void ) const;
 
-        void            SetTrackType( CexmcTrackType  trackType_ );
+        void            SetTrackType( CexmcTrackType  value );
+
+        G4double        GetTrackLengthInTarget( void ) const;
+
+        void            AddTrackLengthInTarget( G4double  value );
 
     private:
         CexmcTrackType  trackType;
+
+        G4double        trackLengthInTarget;
 };
 
 
@@ -48,9 +54,21 @@ inline CexmcTrackType  CexmcTrackInfo::GetTrackType( void ) const
 }
 
 
-inline void  CexmcTrackInfo::SetTrackType( CexmcTrackType  trackType_ )
+inline void  CexmcTrackInfo::SetTrackType( CexmcTrackType  value )
 {
-    trackType = trackType_;
+    trackType = value;
+}
+
+
+inline G4double  CexmcTrackInfo::GetTrackLengthInTarget( void ) const
+{
+    return trackLengthInTarget;
+}
+
+
+inline void  CexmcTrackInfo::AddTrackLengthInTarget( G4double  value )
+{
+    trackLengthInTarget += value;
 }
 
 

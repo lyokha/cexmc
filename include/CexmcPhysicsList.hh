@@ -94,8 +94,8 @@ void  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
 
             if ( ! processManager->GetProcessActivation( process ) )
             {
-                studiedProcess->SetStepSize( std::max( proposedMaxIL,
-                                                       maxStep ) );
+                studiedProcess->SetMaxStepSize( std::max( proposedMaxIL,
+                                                          maxStep ) );
             }
             processManager->SetProcessActivation( process, on );
             break;

@@ -28,8 +28,9 @@
 #include <G4AffineTransform.hh>
 #include <G4UnitsTable.hh>
 #include "CexmcSteppingAction.hh"
-#include "CexmcStudiedProcess.hh"
+#include "CexmcStudiedProcessBase.hh"
 #include "CexmcPhysicsManager.hh"
+#include "CexmcTrackInfo.hh"
 #include "CexmcCommon.hh"
 
 
@@ -72,25 +73,40 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
             firstTimeInTarget = false;
         }
 
-        for ( int  i( 0 ); i < processVectorSize; ++i )
+        if ( postStepPoint->GetStepStatus() == fGeomBoundary )
         {
-            if ( ( *processVector )[ i ]->GetProcessName() ==
-                                                CexmcStudiedProcessFullName )
+            for ( int  i( 0 ); i < processVectorSize; ++i )
             {
-                const G4AffineTransform &  transform(
-                                            postStepPoint->GetTouchable()->
-                                            GetHistory()->GetTopTransform() );
-                G4ThreeVector  position( transform.TransformPoint(
-                                    postStepPoint->GetPosition() ) );
-                G4ThreeVector  direction( transform.TransformAxis(
-                                    postStepPoint->GetMomentumDirection() ) );
-                distanceInTarget = targetSolid->DistanceToOut( position,
-                                                               direction );
-                if ( distanceInTarget > 0. )
-                    activateProcess = true;
-                break;
+                if ( ( *processVector )[ i ]->GetProcessName() ==
+                     CexmcStudiedProcessFullName )
+                {
+                    CexmcStudiedProcessBase *  studiedProcess(
+                                    static_cast< CexmcStudiedProcessBase * >(
+                                                    ( *processVector )[ i ] ) );
+                    if ( ! studiedProcess )
+                        break;
+
+                    studiedProcess->ResetTrackWatchedState();
+                    break;
+                }
             }
         }
+
+        CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
+                                                track->GetUserInformation() ) );
+
+        if ( trackInfo )
+            trackInfo->AddTrackLengthInTarget( step->GetStepLength() );
+
+        const G4AffineTransform &  transform( postStepPoint->GetTouchable()->
+                                              GetHistory()->GetTopTransform() );
+        G4ThreeVector  position( transform.TransformPoint(
+                                    postStepPoint->GetPosition() ) );
+        G4ThreeVector  direction( transform.TransformAxis(
+                                    postStepPoint->GetMomentumDirection() ) );
+        distanceInTarget = targetSolid->DistanceToOut( position, direction );
+        if ( distanceInTarget > 0. )
+            activateProcess = true;
     }
 
     physicsManager->ActivateStudiedProcess( activateProcess, distanceInTarget );
