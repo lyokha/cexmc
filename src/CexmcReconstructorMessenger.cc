@@ -16,6 +16,7 @@
  * ============================================================================
  */
 
+#include <G4UIcmdWithABool.hh>
 #include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
 #include "CexmcReconstructorMessenger.hh"
@@ -28,7 +29,8 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
                                         CexmcReconstructor *  reconstructor ) :
     reconstructor( reconstructor ),
     setCalorimeterEntryPointDefinitionAlgorithm( NULL ),
-    setCrystalSelectionAlgorithm( NULL ), setCalorimeterEntryPointDepth( NULL )
+    setCrystalSelectionAlgorithm( NULL ), useInnerMaxCrystal( NULL ),
+    setCalorimeterEntryPointDepth( NULL )
 {
     setCalorimeterEntryPointDefinitionAlgorithm = new G4UIcmdWithAString(
         ( CexmcMessenger::reconstructorDirName + "entryPointDefinitionAlgo" ).
@@ -79,8 +81,8 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         ( CexmcMessenger::reconstructorDirName + "crystalSelectionAlgo" ).
                 c_str(), this );
     setCrystalSelectionAlgorithm->SetGuidance(
-        "\n    Choose which crystals will be selected in entry point\n"
-        "    reconstruction algorithm\n"
+        "\n    Choose which crystals will be selected in weighted entry point\n"
+        "    reconstruction algorithms\n"
         "    all - all,\n"
         "    adjacent - crystal with maximum energy deposit and\n"
         "               adjacent crystals" );
@@ -89,6 +91,18 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
     setCrystalSelectionAlgorithm->SetCandidates( "all adjacent" );
     setCrystalSelectionAlgorithm->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
+
+    useInnerMaxCrystal = new G4UIcmdWithABool(
+        ( CexmcMessenger::reconstructorDirName + "useInnerMaxCrystal" ).
+                c_str(), this );
+    useInnerMaxCrystal->SetGuidance(
+        "\n    Defines that inner max crystal will be chosen for adjacent\n"
+        "    crystal selection algorithm and simple entry point definition\n"
+        "    algorithm. If not set then max crystal will be found from all\n"
+        "    crystals in calorimeter" );
+    useInnerMaxCrystal->SetDefaultValue( false );
+    useInnerMaxCrystal->SetParameterName( "UseInnerMaxCrystal", false );
+    useInnerMaxCrystal->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setCalorimeterEntryPointDepth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "entryPointDepth" ).c_str(),
@@ -110,6 +124,7 @@ CexmcReconstructorMessenger::~CexmcReconstructorMessenger()
     delete setCalorimeterEntryPointDefinitionAlgorithm;
     delete setCalorimeterEntryPointDepthDefinitionAlgorithm;
     delete setCrystalSelectionAlgorithm;
+    delete useInnerMaxCrystal;
     delete setCalorimeterEntryPointDepth;
 }
 
@@ -175,6 +190,12 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
                 }
             } while ( false );
             reconstructor->SetCrystalSelectionAlgorithm( csAlgorithm );
+            break;
+        }
+        if ( cmd == useInnerMaxCrystal )
+        {
+            reconstructor->UseInnerMaxCrystal(
+                        G4UIcmdWithABool::GetNewBoolValue( value ) );
             break;
         }
         if ( cmd == setCalorimeterEntryPointDepth )

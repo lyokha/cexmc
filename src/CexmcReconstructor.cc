@@ -27,9 +27,9 @@ CexmcReconstructor::CexmcReconstructor() :
     hasBasicTrigger( false ),
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
     epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain ),
-    csAlgorithm( CexmcSelectAllCrystals ), epDepth( 0 ), theAngle( 0 ),
-    nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ), crystalWidth( 0 ),
-    crystalHeight( 0 ), crystalLength( 0 ), messenger( NULL )
+    csAlgorithm( CexmcSelectAllCrystals ), useInnerMaxCrystal( false ),
+    epDepth( 0 ), theAngle( 0 ), nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ),
+    crystalWidth( 0 ), crystalHeight( 0 ), crystalLength( 0 ), messenger( NULL )
 {
     CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
                 nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );

@@ -61,6 +61,14 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
 
         G4int     GetCalorimeterEDRightMaxY( void ) const;
 
+        G4int     GetCalorimeterEDLeftInnerMaxX( void ) const;
+
+        G4int     GetCalorimeterEDLeftInnerMaxY( void ) const;
+
+        G4int     GetCalorimeterEDRightInnerMaxX( void ) const;
+
+        G4int     GetCalorimeterEDRightInnerMaxY( void ) const;
+
         const CexmcEnergyDepositCalorimeterCollection &
                                 GetCalorimeterEDLeftCollection( void ) const;
 
@@ -166,6 +174,14 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4int                                    calorimeterEDRightMaxX;
 
         G4int                                    calorimeterEDRightMaxY;
+
+        G4int                                    calorimeterEDLeftInnerMaxX;
+
+        G4int                                    calorimeterEDLeftInnerMaxY;
+
+        G4int                                    calorimeterEDRightInnerMaxX;
+
+        G4int                                    calorimeterEDRightInnerMaxY;
 
         G4bool                                   monitorHasTriggered;
 
@@ -276,6 +292,34 @@ inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDRightMaxY( void )
                                                                         const
 {
     return calorimeterEDRightMaxY;
+}
+
+
+inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDLeftInnerMaxX( void )
+                                                                        const
+{
+    return calorimeterEDLeftInnerMaxX;
+}
+
+
+inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDLeftInnerMaxY( void )
+                                                                        const
+{
+    return calorimeterEDLeftInnerMaxY;
+}
+
+
+inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDRightInnerMaxX(
+                                                                    void ) const
+{
+    return calorimeterEDRightInnerMaxX;
+}
+
+
+inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDRightInnerMaxY(
+                                                                    void ) const
+{
+    return calorimeterEDRightInnerMaxY;
 }
 
 

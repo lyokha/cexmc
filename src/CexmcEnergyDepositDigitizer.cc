@@ -36,6 +36,8 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     calorimeterEDLeft( 0 ), calorimeterEDRight( 0 ),
     calorimeterEDLeftMaxX( 0 ), calorimeterEDLeftMaxY( 0 ),
     calorimeterEDRightMaxX( 0 ), calorimeterEDRightMaxY( 0 ),
+    calorimeterEDLeftInnerMaxX( 0 ), calorimeterEDLeftInnerMaxY( 0 ),
+    calorimeterEDRightInnerMaxX( 0 ), calorimeterEDRightInnerMaxY( 0 ),
     monitorHasTriggered( false ), hasTriggered( false ),
     monitorEDThreshold( 0 ),
     vetoCounterEDLeftThreshold( 0 ), vetoCounterEDRightThreshold( 0 ),
@@ -101,6 +103,10 @@ void  CexmcEnergyDepositDigitizer::InitializeData( void )
     calorimeterEDLeftMaxY = 0;
     calorimeterEDRightMaxX = 0;
     calorimeterEDRightMaxY = 0;
+    calorimeterEDLeftInnerMaxX = 0;
+    calorimeterEDLeftInnerMaxY = 0;
+    calorimeterEDRightInnerMaxX = 0;
+    calorimeterEDRightInnerMaxY = 0;
     monitorHasTriggered = false;
     hasTriggered = false;
 
@@ -173,6 +179,8 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
 
     G4double  maxEDCrystalLeft( 0 );
     G4double  maxEDCrystalRight( 0 );
+    G4double  maxEDInnerCrystalLeft( 0 );
+    G4double  maxEDInnerCrystalRight( 0 );
     G4double  outerCrystalsEDLeft( 0 );
     G4double  outerCrystalsEDRight( 0 );
     G4double  innerCrystalsEDLeft( 0 );
@@ -228,6 +236,12 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                 }
                 else
                 {
+                    if ( value > maxEDInnerCrystalLeft )
+                    {
+                        calorimeterEDLeftInnerMaxX = column;
+                        calorimeterEDLeftInnerMaxY = row;
+                        maxEDInnerCrystalLeft = value;
+                    }
                     innerCrystalsEDLeft += value;
                 }
                 calorimeterEDLeft += value;
@@ -246,6 +260,12 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                 }
                 else
                 {
+                    if ( value > maxEDInnerCrystalRight )
+                    {
+                        calorimeterEDRightInnerMaxX = column;
+                        calorimeterEDRightInnerMaxY = row;
+                        maxEDInnerCrystalRight = value;
+                    }
                     innerCrystalsEDRight += value;
                 }
                 calorimeterEDRight += value;

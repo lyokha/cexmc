@@ -202,66 +202,79 @@ void  CexmcChargeExchangeReconstructorMessenger::SetNewValue(
         {
             reconstructor->UseTableMass(
                         G4UIcmdWithABool::GetNewBoolValue( value ) );
+            break;
         }
         if ( cmd == useMassCut )
         {
             reconstructor->UseMassCut(
                         G4UIcmdWithABool::GetNewBoolValue( value ) );
+            break;
         }
         if ( cmd == mCutOPCenter )
         {
             reconstructor->SetMassCutOPCenter(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == mCutNOPCenter )
         {
             reconstructor->SetMassCutNOPCenter(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == mCutOPWidth )
         {
             reconstructor->SetMassCutOPWidth(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == mCutNOPWidth )
         {
             reconstructor->SetMassCutNOPWidth(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == mCutAngle )
         {
             reconstructor->SetMassCutEllipseAngle(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == useAbsorbedEnergyCut )
         {
             reconstructor->UseAbsorbedEnergyCut(
                         G4UIcmdWithABool::GetNewBoolValue( value ) );
+            break;
         }
         if ( cmd == aeCutCLCenter )
         {
             reconstructor->SetAbsorbedEnergyCutCLCenter(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == aeCutCRCenter )
         {
             reconstructor->SetAbsorbedEnergyCutCRCenter(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == aeCutCLWidth )
         {
             reconstructor->SetAbsorbedEnergyCutCLWidth(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == aeCutCRWidth )
         {
             reconstructor->SetAbsorbedEnergyCutCRWidth(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
         if ( cmd == aeCutAngle )
         {
             reconstructor->SetAbsorbedEnergyCutEllipseAngle(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
         }
     } while ( false );
 }

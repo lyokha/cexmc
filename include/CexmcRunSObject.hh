@@ -31,6 +31,9 @@
 #include "CexmcCommon.hh"
 
 
+#define CEXMC_RUN_SOBJECT_VERSION 1
+
+
 class  CexmcRunSObject
 {
     friend class  boost::serialization::access;
@@ -72,13 +75,14 @@ class  CexmcRunSObject
                          CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
                                                     epDepthDefinitionAlgorithm,
                          CexmcCrystalSelectionAlgorithm  csAlgorithm,
-                         G4double  epDepth, G4bool  useTableMass,
-                         G4bool  useMassCut, G4double  mCutOPCenter,
-                         G4double  mCutNOPCenter, G4double  mCutOPWidth,
-                         G4double  mCutNOPWidth, G4double  mCutAngle,
-                         G4bool  useAbsorbedEnergyCut, G4double  aeCutCLCenter,
-                         G4double  aeCutCRCenter, G4double  aeCutCLWidth,
-                         G4double  aeCutCRWidth, G4double  aeCutAngle,
+                         G4bool  useInnerMaxCrystal, G4double  epDepth,
+                         G4bool  useTableMass, G4bool  useMassCut,
+                         G4double  mCutOPCenter, G4double  mCutNOPCenter,
+                         G4double  mCutOPWidth, G4double  mCutNOPWidth,
+                         G4double  mCutAngle, G4bool  useAbsorbedEnergyCut,
+                         G4double  aeCutCLCenter, G4double  aeCutCRCenter,
+                         G4double  aeCutCLWidth, G4double  aeCutCRWidth,
+                         G4double  aeCutAngle,
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
                          CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull,
                          CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange,
@@ -157,6 +161,8 @@ class  CexmcRunSObject
 
         CexmcCrystalSelectionAlgorithm  csAlgorithm;
 
+        G4bool                       useInnerMaxCrystal;
+
         G4double                     epDepth;
 
         G4bool                       useTableMass;
@@ -212,7 +218,8 @@ class  CexmcRunSObject
 
 
 template  < typename  Archive >
-void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
+void  CexmcRunSObject::serialize( Archive &  archive,
+                                  const unsigned int  version )
 {
     archive & basePhysicsUsed;
     archive & productionModelType;
@@ -244,6 +251,8 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & epDefinitionAlgorithm;
     archive & epDepthDefinitionAlgorithm;
     archive & csAlgorithm;
+    if ( version > 0 )
+        archive & useInnerMaxCrystal;
     archive & epDepth;
     archive & useTableMass;
     archive & useMassCut;
@@ -271,6 +280,9 @@ void  CexmcRunSObject::serialize( Archive &  archive, const unsigned int )
     archive & numberOfEventsProcessedEffective;
     archive & numberOfEventsToBeProcessed;
 }
+
+
+BOOST_CLASS_VERSION( CexmcRunSObject, CEXMC_RUN_SOBJECT_VERSION )
 
 
 #endif

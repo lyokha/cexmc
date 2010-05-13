@@ -80,7 +80,7 @@ void  CexmcEventAction::BeginOfEventAction( const G4Event * )
 
 
 CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
-                                const CexmcEnergyDepositDigitizer *  digitizer )
+    const CexmcEnergyDepositDigitizer *  digitizer, G4bool  useInnerMaxCrystal )
 {
     G4double  monitorED( digitizer->GetMonitorED() );
     G4double  vetoCounterEDLeft( digitizer->GetVetoCounterEDLeft() );
@@ -91,6 +91,13 @@ CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
     G4int     calorimeterEDLeftMaxY( digitizer->GetCalorimeterEDLeftMaxY() );
     G4int     calorimeterEDRightMaxX( digitizer->GetCalorimeterEDRightMaxX() );
     G4int     calorimeterEDRightMaxY( digitizer->GetCalorimeterEDRightMaxY() );
+    if ( useInnerMaxCrystal )
+    {
+        calorimeterEDLeftMaxX = digitizer->GetCalorimeterEDLeftInnerMaxX();
+        calorimeterEDLeftMaxY = digitizer->GetCalorimeterEDLeftInnerMaxY();
+        calorimeterEDRightMaxX = digitizer->GetCalorimeterEDRightInnerMaxX();
+        calorimeterEDRightMaxY = digitizer->GetCalorimeterEDRightInnerMaxY();
+    }
     const CexmcEnergyDepositCalorimeterCollection &
                 calorimeterEDLeftCollection(
                             digitizer->GetCalorimeterEDLeftCollection() );
@@ -746,9 +753,10 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
     G4bool  reconstructorHasFullTrigger( false );
 
     CexmcEnergyDepositStore *  edStore( MakeEnergyDepositStore(
-                                                    energyDepositDigitizer ) );
+                                    energyDepositDigitizer,
+                                    reconstructor->IsInnerMaxCrystalUsed() ) );
     CexmcTrackPointsStore *    tpStore( MakeTrackPointsStore(
-                                                    trackPointsDigitizer ) );
+                                    trackPointsDigitizer ) );
 
     try
     {

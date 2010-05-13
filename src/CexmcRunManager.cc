@@ -253,6 +253,7 @@ void  CexmcRunManager::ReadProject( void )
     reconstructor->SetCalorimeterEntryPointDepthDefinitionAlgorithm(
                                         sObject.epDepthDefinitionAlgorithm );
     reconstructor->SetCrystalSelectionAlgorithm( sObject.csAlgorithm );
+    reconstructor->UseInnerMaxCrystal( sObject.useInnerMaxCrystal );
     reconstructor->SetCalorimeterEntryPointDepth( sObject.epDepth );
     reconstructor->UseTableMass( sObject.useTableMass );
     reconstructor->UseMassCut( sObject.useMassCut );
@@ -368,6 +369,7 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetCalorimeterEntryPointDefinitionAlgorithm(),
         reconstructor->GetCalorimeterEntryPointDepthDefinitionAlgorithm(),
         reconstructor->GetCrystalSelectionAlgorithm(),
+        reconstructor->IsInnerMaxCrystalUsed(),
         reconstructor->GetCalorimeterEntryPointDepth(),
         reconstructor->IsTableMassUsed(), reconstructor->IsMassCutUsed(),
         reconstructor->GetMassCutOPCenter(),
@@ -904,8 +906,24 @@ void  CexmcRunManager::PrintReadRunData( void ) const
                           sObject.epDepthDefinitionAlgorithm << G4endl;
     G4cout << "     -- entry point depth: " <<
               G4BestUnit( sObject.epDepth, "Length" ) << G4endl;
-    G4cout << "     -- crystal selection algorithm (0 - all, 1 - adjacent): " <<
-              sObject.csAlgorithm << G4endl;
+    if ( sObject.epDefinitionAlgorithm == CexmcEntryPointByLinearEDWeights ||
+         sObject.epDefinitionAlgorithm == CexmcEntryPointBySqrtEDWeights )
+    {
+        G4cout <<
+            "     -- crystal selection algorithm (0 - all, 1 - adjacent): " <<
+            sObject.csAlgorithm << G4endl;
+    }
+    if ( sObject.epDefinitionAlgorithm ==
+                                CexmcEntryPointInTheCenterOfCrystalWithMaxED ||
+         ( ( sObject.epDefinitionAlgorithm == CexmcEntryPointBySqrtEDWeights ||
+             sObject.epDefinitionAlgorithm ==
+                                        CexmcEntryPointByLinearEDWeights ) &&
+               sObject.csAlgorithm == CexmcSelectAdjacentCrystals ) )
+    {
+        G4cout <<
+            "     -- inner crystal with max ED used (0 - no, 1 - yes): " <<
+            sObject.useInnerMaxCrystal << G4endl;
+    }
     G4cout << "     -- table mass of output particle used "
                       "(0 - no, 1 - yes): " << sObject.useTableMass << G4endl;
     G4cout << "     -- mass cut is enabled (0 - no, 1 - yes): " <<

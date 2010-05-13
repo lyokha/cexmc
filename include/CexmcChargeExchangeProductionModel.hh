@@ -160,7 +160,7 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     /* epsilon is needed to compensate float to fortran real cast accuracy */
     float  epsilon( 0.000003 );
     /* kinematically impossible */
-    if ( genin_.tecm -( genin_.amass[ 0 ] + genin_.amass[ 1 ] ) <=
+    if ( genin_.tecm - ( genin_.amass[ 0 ] + genin_.amass[ 1 ] ) <=
          0.0f + epsilon )
     {
         theParticleChange.SetEnergyChange( kinEnergy );
