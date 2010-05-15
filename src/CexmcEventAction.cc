@@ -39,6 +39,7 @@
 #endif
 #include "CexmcRunManager.hh"
 #include "CexmcRun.hh"
+#include "CexmcStudiedProcessBase.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcProductionModelData.hh"
@@ -75,6 +76,28 @@ CexmcEventAction::~CexmcEventAction()
 
 void  CexmcEventAction::BeginOfEventAction( const G4Event * )
 {
+    const G4ParticleDefinition *  particle(
+                                    physicsManager->GetIncidentParticleType() );
+    G4ProcessManager *  processManager( particle->GetProcessManager() );
+    G4ProcessVector *   processVector( processManager->GetProcessList() );
+    G4int               processVectorSize(
+                                    processManager->GetProcessListLength() );
+
+    for ( int  i( 0 ); i < processVectorSize; ++i )
+    {
+        G4VProcess *  process( ( *processVector )[ i ] );
+        if ( process->GetProcessName() == CexmcStudiedProcessFullName )
+        {
+            CexmcStudiedProcessBase *  studiedProcess(
+                dynamic_cast< CexmcStudiedProcessBase * >( process ) );
+            if ( ! studiedProcess )
+                break;
+
+            studiedProcess->ResetNumberOfTriggeredEvents();
+
+            break;
+        }
+    }
     physicsManager->ActivateStudiedProcess( false );
 }
 

@@ -73,8 +73,9 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
             firstTimeInTarget = false;
         }
 
-        if ( postStepPoint->GetStepStatus() == fGeomBoundary )
+        switch ( postStepPoint->GetStepStatus() )
         {
+        case fGeomBoundary :
             for ( int  i( 0 ); i < processVectorSize; ++i )
             {
                 if ( ( *processVector )[ i ]->GetProcessName() ==
@@ -90,6 +91,23 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
                     break;
                 }
             }
+            break;
+        case fPostStepDoItProc :
+            {
+                const G4VProcess *  process(
+                                    postStepPoint->GetProcessDefinedStep() );
+                if ( process &&
+                     process->GetProcessName() == CexmcStudiedProcessFullName )
+                {
+                    CexmcStudiedProcessBase *  theProcess(
+                            static_cast< CexmcStudiedProcessBase * >(
+                                    const_cast< G4VProcess * >( process ) ) );
+                    theProcess->IncrementNumberOfTriggeredEvents();
+                }
+            }
+            break;
+        default :
+            break;
         }
 
         CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(

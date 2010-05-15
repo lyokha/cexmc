@@ -22,7 +22,7 @@
 
 CexmcStudiedProcessBase::CexmcStudiedProcessBase() :
         G4WrapperProcess( CexmcStudiedProcessFirstName, fUserDefined ),
-        trackWatched( false )
+        trackWatched( false ), numberOfTriggeredEvents( 0 )
 {
 }
 
