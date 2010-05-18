@@ -21,7 +21,7 @@
 
 #include <Randomize.hh>
 #include "CexmcStudiedProcessBase.hh"
-#include "CexmcTrackInfo.hh"
+#include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcException.hh"
 
 
@@ -63,22 +63,22 @@ G4double  CexmcStudiedProcess< Particle >::
     G4WrapperProcess::PostStepGetPhysicalInteractionLength( track,
                                                 previousStepSize, condition );
 
-    CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
+    if ( numberOfTriggeredEvents > 0 )
+        return DBL_MAX;
+
+    CexmcIncidentParticleTrackInfo *  trackInfo(
+                    dynamic_cast< CexmcIncidentParticleTrackInfo * >(
                                                 track.GetUserInformation() ) );
 
     if ( ! trackInfo )
-        throw CexmcException( CexmcWeirdException );
+        return DBL_MAX;
 
-    if ( ! trackWatched )
-    {
-        stepSize = G4UniformRand() * maxStepSize +
-                                        trackInfo->GetTrackLengthInTarget();
-        trackWatched = true;
-    }
+    if ( ! trackInfo->IsStudiedProcessActivated() )
+        return DBL_MAX;
 
     *condition = NotForced;
 
-    return stepSize - trackInfo->GetTrackLengthInTarget();
+    return trackInfo->GetStepSize() - trackInfo->GetTrackLengthInTarget();
 }
 
 

@@ -39,8 +39,6 @@ class  CexmcPhysicsList : virtual public BasePhysics,
     public:
         const G4ParticleDefinition *  GetIncidentParticleType( void ) const;
 
-        void  ActivateStudiedProcess( G4bool  on, G4double  maxStep = DBL_MAX );
-
         CexmcProductionModel *  GetProductionModel( void );
 
     private:
@@ -66,51 +64,6 @@ inline const G4ParticleDefinition *
                 GetIncidentParticleType( void ) const
 {
     return Particle::Definition();
-}
-
-
-template  < typename  BasePhysics, typename  Particle,
-            template  < typename, typename > class  StudiedPhysics,
-            typename  ProductionModel >
-void  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
-                        ProductionModel >::
-                ActivateStudiedProcess( G4bool  on, G4double  maxStep )
-{
-    G4ParticleDefinition *  particle( Particle::Definition() );
-    G4ProcessManager *      processManager( particle->GetProcessManager() );
-    G4ProcessVector *       processVector( processManager->GetProcessList() );
-    G4int                   processVectorSize(
-                                    processManager->GetProcessListLength() );
-
-    for ( int  i( 0 ); i < processVectorSize; ++i )
-    {
-        G4VProcess *  process( ( *processVector )[ i ] );
-        if ( process->GetProcessName() == CexmcStudiedProcessFullName )
-        {
-            CexmcStudiedProcess< Particle > *  studiedProcess(
-                dynamic_cast< CexmcStudiedProcess< Particle > * >( process ) );
-            if ( ! studiedProcess )
-                break;
-
-            G4bool  isProcessActivated( processManager->GetProcessActivation(
-                                                                    process ) );
-
-            if ( studiedProcess->GetNumberOfTriggeredEvents() > 0 )
-                on = false;
-
-            if ( ( on && isProcessActivated ) ||
-                 ( ! on && ! isProcessActivated ) )
-                break;
-
-            if ( on )
-            {
-                studiedProcess->SetMaxStepSize( std::max( proposedMaxIL,
-                                                          maxStep ) );
-            }
-            processManager->SetProcessActivation( process, on );
-            break;
-        }
-    }
 }
 
 

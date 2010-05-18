@@ -20,7 +20,7 @@
 
 
 CexmcTrackInfo::CexmcTrackInfo( CexmcTrackType  trackType ) :
-    trackType( trackType ), trackLengthInTarget( 0 )
+    trackType( trackType )
 {
 }
 

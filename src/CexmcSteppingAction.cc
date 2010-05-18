@@ -17,12 +17,11 @@
  */
 
 #include <G4Step.hh>
-#include <G4VSolid.hh>
 #include <G4Track.hh>
+#include <G4VSolid.hh>
 #include <G4Tubs.hh>
 #include <G4ParticleDefinition.hh>
 #include <G4ProcessManager.hh>
-#include <G4ProcessVector.hh>
 #include <G4VTouchable.hh>
 #include <G4NavigationHistory.hh>
 #include <G4AffineTransform.hh>
@@ -30,37 +29,37 @@
 #include "CexmcSteppingAction.hh"
 #include "CexmcStudiedProcessBase.hh"
 #include "CexmcPhysicsManager.hh"
-#include "CexmcTrackInfo.hh"
+#include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcCommon.hh"
 
 
 CexmcSteppingAction::CexmcSteppingAction(
                                     CexmcPhysicsManager *  physicsManager ) :
-    physicsManager( physicsManager ), firstTimeInTarget( true )
+    physicsManager( physicsManager ), proposedMaxILInitialized( false ),
+    proposedMaxIL( DBL_MAX )
 {
 }
 
 
 void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
 {
-    G4StepPoint *           postStepPoint( step->GetPostStepPoint() );
-    const G4VTouchable *    touchable( postStepPoint->GetTouchable() );
-    G4VPhysicalVolume *     volume( touchable->GetVolume() );
-    G4Track *               track( step->GetTrack() );
-    G4ParticleDefinition *  particle( track->GetDefinition() );
-    G4ProcessManager *      processManager( particle->GetProcessManager() );
-    G4ProcessVector *       processVector( processManager->GetProcessList() );
-    G4int                   processVectorSize(
-                                    processManager->GetProcessListLength() );
-    G4bool                  activateProcess( false );
-    G4double                distanceInTarget( DBL_MAX );
+    G4Track *                         track( step->GetTrack() );
+    CexmcIncidentParticleTrackInfo *  trackInfo(
+                    dynamic_cast< CexmcIncidentParticleTrackInfo * >(
+                                                track->GetUserInformation() ) );
+    if ( ! trackInfo )
+        return;
 
-    if ( particle == physicsManager->GetIncidentParticleType() &&
-         volume && volume->GetName() == "Target" )
+    G4StepPoint *         postStepPoint( step->GetPostStepPoint() );
+    G4StepStatus          stepStatus( postStepPoint->GetStepStatus() );
+    const G4VTouchable *  touchable( postStepPoint->GetTouchable() );
+    G4VPhysicalVolume *   volume( touchable->GetVolume() );
+
+    if ( volume && volume->GetName() == "Target" )
     {
         G4VSolid *  targetSolid( volume->GetLogicalVolume()->GetSolid() );
 
-        if ( firstTimeInTarget )
+        if ( ! proposedMaxILInitialized )
         {
             G4double  targetRadius( DBL_MAX );
             G4Tubs *  targetTube( dynamic_cast< G4Tubs * >( targetSolid ) );
@@ -69,64 +68,53 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
             {
                 targetRadius = targetTube->GetOuterRadius();
             }
-            physicsManager->CalculateProposedMaxIL( targetRadius );
-            firstTimeInTarget = false;
+            proposedMaxIL = physicsManager->GetProposedMaxIL( targetRadius );
+            proposedMaxILInitialized = true;
         }
 
-        switch ( postStepPoint->GetStepStatus() )
+        if ( ! trackInfo->IsStudiedProcessActivated() )
         {
-        case fGeomBoundary :
-            for ( int  i( 0 ); i < processVectorSize; ++i )
-            {
-                if ( ( *processVector )[ i ]->GetProcessName() ==
-                     CexmcStudiedProcessFullName )
-                {
-                    CexmcStudiedProcessBase *  studiedProcess(
-                                    static_cast< CexmcStudiedProcessBase * >(
-                                                    ( *processVector )[ i ] ) );
-                    if ( ! studiedProcess )
-                        break;
-
-                    studiedProcess->ResetTrackWatchedState();
-                    break;
-                }
-            }
-            break;
-        case fPostStepDoItProc :
-            {
-                const G4VProcess *  process(
-                                    postStepPoint->GetProcessDefinedStep() );
-                if ( process &&
-                     process->GetProcessName() == CexmcStudiedProcessFullName )
-                {
-                    CexmcStudiedProcessBase *  theProcess(
-                            static_cast< CexmcStudiedProcessBase * >(
-                                    const_cast< G4VProcess * >( process ) ) );
-                    theProcess->IncrementNumberOfTriggeredEvents();
-                }
-            }
-            break;
-        default :
-            break;
+            trackInfo->ResetTrackLengthInTarget();
+            const G4AffineTransform &  transform(
+                        postStepPoint->GetTouchable()->GetHistory()->
+                        GetTopTransform() );
+            G4ThreeVector  position( transform.TransformPoint(
+                                        postStepPoint->GetPosition() ) );
+            G4ThreeVector  direction( transform.TransformAxis(
+                                    postStepPoint->GetMomentumDirection() ) );
+            G4double       distanceInTarget( targetSolid->DistanceToOut(
+                                                position, direction ) );
+            trackInfo->SetStepSize( G4UniformRand() *
+                        std::max( distanceInTarget, proposedMaxIL ) );
+            trackInfo->ActivateStudiedProcess();
         }
 
-        CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
-                                                track->GetUserInformation() ) );
+        if ( stepStatus == fPostStepDoItProc )
+        {
+            const G4VProcess *  process(
+                                    postStepPoint->GetProcessDefinedStep() );
+            if ( process &&
+                 process->GetProcessName() == CexmcStudiedProcessFullName )
+            {
+                CexmcStudiedProcessBase *  theProcess(
+                        static_cast< CexmcStudiedProcessBase * >(
+                                const_cast< G4VProcess * >( process ) ) );
+                theProcess->IncrementNumberOfTriggeredEvents();
+            }
+        }
 
-        if ( trackInfo )
+        if ( stepStatus != fGeomBoundary )
             trackInfo->AddTrackLengthInTarget( step->GetStepLength() );
-
-        const G4AffineTransform &  transform( postStepPoint->GetTouchable()->
-                                              GetHistory()->GetTopTransform() );
-        G4ThreeVector  position( transform.TransformPoint(
-                                    postStepPoint->GetPosition() ) );
-        G4ThreeVector  direction( transform.TransformAxis(
-                                    postStepPoint->GetMomentumDirection() ) );
-        distanceInTarget = targetSolid->DistanceToOut( position, direction );
-        if ( distanceInTarget > 0. )
-            activateProcess = true;
     }
 
-    physicsManager->ActivateStudiedProcess( activateProcess, distanceInTarget );
+    G4StepPoint *  preStepPoint( step->GetPreStepPoint() );
+    touchable = preStepPoint->GetTouchable();
+    volume = touchable->GetVolume();
+
+    if ( volume && volume->GetName() == "Target" )
+    {
+        if ( stepStatus == fGeomBoundary )
+            trackInfo->ActivateStudiedProcess( false );
+    }
 }
 

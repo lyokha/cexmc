@@ -34,11 +34,7 @@ class  CexmcStudiedProcessBase : public G4WrapperProcess
 
         void   ResetNumberOfTriggeredEvents( void );
 
-        void   ResetTrackWatchedState( void );
-
     protected:
-        G4bool  trackWatched;
-
         G4int   numberOfTriggeredEvents;
 };
 
@@ -58,12 +54,6 @@ inline void  CexmcStudiedProcessBase::IncrementNumberOfTriggeredEvents( void )
 inline void  CexmcStudiedProcessBase::ResetNumberOfTriggeredEvents( void )
 {
     numberOfTriggeredEvents = 0;
-}
-
-
-inline void  CexmcStudiedProcessBase::ResetTrackWatchedState( void )
-{
-    trackWatched = false;
 }
 
 

@@ -37,16 +37,23 @@ class  CexmcPhysicsManager
         virtual const G4ParticleDefinition *
                         GetIncidentParticleType( void ) const = 0;
 
-        virtual void  ActivateStudiedProcess( G4bool  on,
-                                              G4double  maxStep = DBL_MAX ) = 0;
-
         virtual CexmcProductionModel *  GetProductionModel( void ) = 0;
 
-        virtual void  CalculateProposedMaxIL( G4double  targetRadius );
+        virtual G4double  GetProposedMaxIL( G4double  targetRadius );
 
-    protected:
-        G4double  proposedMaxIL;
+    public:
+        G4bool  OnlyIncidentParticleCanTriggerStudiedProcess( void ) const;
+
+    private:
+        G4bool  onlyIncidentParticleCanTriggerStudiedProcess;
 };
+
+
+inline G4bool  CexmcPhysicsManager::
+                    OnlyIncidentParticleCanTriggerStudiedProcess( void ) const
+{
+    return onlyIncidentParticleCanTriggerStudiedProcess;
+}
 
 
 #endif

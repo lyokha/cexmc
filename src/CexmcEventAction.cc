@@ -33,6 +33,7 @@
 #include "CexmcEventInfo.hh"
 #include "CexmcEventSObject.hh"
 #include "CexmcEventFastSObject.hh"
+#include "CexmcTrackingAction.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
 #ifdef CEXMC_USE_ROOT
 #include "CexmcHistoManager.hh"
@@ -76,6 +77,13 @@ CexmcEventAction::~CexmcEventAction()
 
 void  CexmcEventAction::BeginOfEventAction( const G4Event * )
 {
+    G4RunManager *         runManager( G4RunManager::GetRunManager() );
+    CexmcTrackingAction *  trackingAction
+            ( static_cast< CexmcTrackingAction * >(
+                        const_cast< G4UserTrackingAction * >(
+                                    runManager->GetUserTrackingAction() ) ) );
+    trackingAction->ResetOutputParticleTrackId();
+
     const G4ParticleDefinition *  particle(
                                     physicsManager->GetIncidentParticleType() );
     G4ProcessManager *  processManager( particle->GetProcessManager() );
@@ -98,7 +106,6 @@ void  CexmcEventAction::BeginOfEventAction( const G4Event * )
             break;
         }
     }
-    physicsManager->ActivateStudiedProcess( false );
 }
 
 

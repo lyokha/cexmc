@@ -18,7 +18,8 @@
 
 #include "CexmcPhysicsManager.hh"
 
-CexmcPhysicsManager::CexmcPhysicsManager() : proposedMaxIL( DBL_MAX )
+CexmcPhysicsManager::CexmcPhysicsManager() :
+    onlyIncidentParticleCanTriggerStudiedProcess( false )
 {
 }
 
@@ -28,9 +29,9 @@ CexmcPhysicsManager::~CexmcPhysicsManager()
 }
 
 
-void  CexmcPhysicsManager::CalculateProposedMaxIL( G4double  targetRadius )
+G4double  CexmcPhysicsManager::GetProposedMaxIL( G4double  targetRadius )
 
 {
-    proposedMaxIL = targetRadius * 2;
+    return targetRadius * 2;
 }
 

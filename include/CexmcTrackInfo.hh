@@ -37,14 +37,8 @@ class  CexmcTrackInfo : public G4VUserTrackInformation
 
         void            SetTrackType( CexmcTrackType  value );
 
-        G4double        GetTrackLengthInTarget( void ) const;
-
-        void            AddTrackLengthInTarget( G4double  value );
-
     private:
         CexmcTrackType  trackType;
-
-        G4double        trackLengthInTarget;
 };
 
 
@@ -57,18 +51,6 @@ inline CexmcTrackType  CexmcTrackInfo::GetTrackType( void ) const
 inline void  CexmcTrackInfo::SetTrackType( CexmcTrackType  value )
 {
     trackType = value;
-}
-
-
-inline G4double  CexmcTrackInfo::GetTrackLengthInTarget( void ) const
-{
-    return trackLengthInTarget;
-}
-
-
-inline void  CexmcTrackInfo::AddTrackLengthInTarget( G4double  value )
-{
-    trackLengthInTarget += value;
 }
 
 

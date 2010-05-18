@@ -319,7 +319,7 @@ int  main( int  argc, char **  argv )
 
         runManager->SetUserAction( new CexmcRunAction( physicsManager ) );
 
-        runManager->SetUserAction( new CexmcTrackingAction );
+        runManager->SetUserAction( new CexmcTrackingAction( physicsManager ) );
 
         runManager->SetUserAction( new CexmcSteppingAction( physicsManager ) );
 
