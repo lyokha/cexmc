@@ -29,63 +29,66 @@ class  CexmcIncidentParticleTrackInfo : public CexmcTrackInfo
                                                             CexmcInsipidTrack );
 
     public:
-        G4double  GetTrackLengthInTarget( void ) const;
+        G4double  GetCurrentTrackLengthInTarget( void ) const;
 
         void      AddTrackLengthInTarget( G4double  value );
 
-        G4double  GetStepSize( void ) const;
+        G4double  GetFinalTrackLengthInTarget( void ) const;
 
-        void      SetStepSize( G4double  value );
+        void      SetFinalTrackLengthInTarget( G4double  value );
 
-        void      ResetTrackLengthInTarget( void );
+        void      ResetCurrentTrackLengthInTarget( void );
 
         G4bool    IsStudiedProcessActivated( void ) const;
 
         void      ActivateStudiedProcess( G4bool  on = true );
 
     private:
-        G4double  trackLengthInTarget;
+        G4double  currentTrackLengthInTarget;
 
-        G4double  stepSize;
+        G4double  finalTrackLengthInTarget;
 
         G4bool    isStudiedProcessActivated;
 };
 
 
-inline G4double  CexmcIncidentParticleTrackInfo::GetTrackLengthInTarget( void )
-                                                                        const
+inline G4double  CexmcIncidentParticleTrackInfo::GetCurrentTrackLengthInTarget(
+                                                                    void ) const
 {
-    return trackLengthInTarget;
+    return currentTrackLengthInTarget;
 }
 
 
 inline void  CexmcIncidentParticleTrackInfo::AddTrackLengthInTarget(
                                                             G4double  value )
 {
-    trackLengthInTarget += value;
+    currentTrackLengthInTarget += value;
 }
 
 
-inline G4double  CexmcIncidentParticleTrackInfo::GetStepSize( void ) const
+inline G4double  CexmcIncidentParticleTrackInfo::GetFinalTrackLengthInTarget(
+                                                                    void ) const
 {
-    return stepSize;
+    return finalTrackLengthInTarget;
 }
 
 
-inline void  CexmcIncidentParticleTrackInfo::SetStepSize( G4double  value )
+inline void  CexmcIncidentParticleTrackInfo::SetFinalTrackLengthInTarget(
+                                                            G4double  value )
 {
-    stepSize = value;
+    finalTrackLengthInTarget = value;
 }
 
 
-inline void  CexmcIncidentParticleTrackInfo::ResetTrackLengthInTarget( void )
+inline void  CexmcIncidentParticleTrackInfo::ResetCurrentTrackLengthInTarget(
+                                                                        void )
 {
-    trackLengthInTarget = 0.;
+    currentTrackLengthInTarget = 0.;
 }
 
 
-inline G4bool  CexmcIncidentParticleTrackInfo::IsStudiedProcessActivated( void )
-                                                                        const
+inline G4bool  CexmcIncidentParticleTrackInfo::IsStudiedProcessActivated(
+                                                                    void ) const
 {
     return isStudiedProcessActivated;
 }

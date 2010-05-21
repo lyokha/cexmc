@@ -37,9 +37,9 @@ class  CexmcStudiedPhysicsChargeExchange :
         void  ApplyInteractionModel( G4HadronicProcess *  process );
 
     private:
-        G4int                               verbose;
+        G4int              verbose;
 
-        ProductionModel *                   productionModel;
+        ProductionModel *  productionModel;
 };
 
 

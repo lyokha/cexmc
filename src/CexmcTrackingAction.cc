@@ -149,7 +149,8 @@ void  CexmcTrackingAction::SetupIncidentParticleTrackInfo(
             if ( targetTube )
                 targetRadius = targetTube->GetOuterRadius();
 
-            proposedMaxIL = physicsManager->GetProposedMaxIL( targetRadius );
+            proposedMaxIL = physicsManager->GetProposedMaxIL(
+                                                        targetRadius  * 2 );
             proposedMaxILInitialized = true;
         }
 
@@ -164,8 +165,8 @@ void  CexmcTrackingAction::SetupIncidentParticleTrackInfo(
                                     track->GetMomentumDirection() ) );
             G4double       distanceInTarget( targetSolid->DistanceToOut(
                                                 position, direction ) );
-            trackInfo->SetStepSize( G4UniformRand() *
-                        std::max( distanceInTarget, proposedMaxIL ) );
+            trackInfo->SetFinalTrackLengthInTarget( G4UniformRand() *
+                                std::max( distanceInTarget, proposedMaxIL ) );
             trackInfo->ActivateStudiedProcess();
         }
     }

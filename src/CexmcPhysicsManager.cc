@@ -29,9 +29,9 @@ CexmcPhysicsManager::~CexmcPhysicsManager()
 }
 
 
-G4double  CexmcPhysicsManager::GetProposedMaxIL( G4double  targetRadius )
+G4double  CexmcPhysicsManager::GetProposedMaxIL( G4double  dimension )
 
 {
-    return targetRadius * 2;
+    return dimension;
 }
 

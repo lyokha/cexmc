@@ -68,13 +68,14 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
             {
                 targetRadius = targetTube->GetOuterRadius();
             }
-            proposedMaxIL = physicsManager->GetProposedMaxIL( targetRadius );
+            proposedMaxIL = physicsManager->GetProposedMaxIL(
+                                                        targetRadius * 2 );
             proposedMaxILInitialized = true;
         }
 
         if ( ! trackInfo->IsStudiedProcessActivated() )
         {
-            trackInfo->ResetTrackLengthInTarget();
+            trackInfo->ResetCurrentTrackLengthInTarget();
             const G4AffineTransform &  transform(
                         postStepPoint->GetTouchable()->GetHistory()->
                         GetTopTransform() );
@@ -84,8 +85,8 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
                                     postStepPoint->GetMomentumDirection() ) );
             G4double       distanceInTarget( targetSolid->DistanceToOut(
                                                 position, direction ) );
-            trackInfo->SetStepSize( G4UniformRand() *
-                        std::max( distanceInTarget, proposedMaxIL ) );
+            trackInfo->SetFinalTrackLengthInTarget( G4UniformRand() *
+                                std::max( distanceInTarget, proposedMaxIL ) );
             trackInfo->ActivateStudiedProcess();
         }
 

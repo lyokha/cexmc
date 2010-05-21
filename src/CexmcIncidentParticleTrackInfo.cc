@@ -21,8 +21,8 @@
 
 CexmcIncidentParticleTrackInfo::CexmcIncidentParticleTrackInfo(
                                                 CexmcTrackType  trackType ) :
-    CexmcTrackInfo( trackType ), trackLengthInTarget( 0. ), stepSize( 0. ),
-    isStudiedProcessActivated( false )
+    CexmcTrackInfo( trackType ), currentTrackLengthInTarget( 0. ),
+    finalTrackLengthInTarget( 0. ), isStudiedProcessActivated( false )
 {
 }
 

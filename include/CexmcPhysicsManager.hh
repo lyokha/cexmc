@@ -39,7 +39,7 @@ class  CexmcPhysicsManager
 
         virtual CexmcProductionModel *  GetProductionModel( void ) = 0;
 
-        virtual G4double  GetProposedMaxIL( G4double  targetRadius );
+        virtual G4double  GetProposedMaxIL( G4double  dimension );
 
     public:
         G4bool  OnlyIncidentParticleCanTriggerStudiedProcess( void ) const;

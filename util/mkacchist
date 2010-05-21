@@ -83,7 +83,7 @@ while ( <> )
     }
 }
 
-return 1 if $nOfBins == 0;
+die "Corrupted input" if $nOfBins == 0;
 
 push @histoData, 0;
 push @histoErrors, 0;
