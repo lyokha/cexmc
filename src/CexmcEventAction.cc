@@ -17,17 +17,14 @@
  */
 
 #include <boost/archive/binary_oarchive.hpp>
-#include <G4ParticleDefinition.hh>
-#include <G4HadronicInteraction.hh>
-#include <G4ProcessManager.hh>
-#include <G4ProcessVector.hh>
 #include <G4DigiManager.hh>
 #include <G4Event.hh>
-#include <G4VVisManager.hh>
 #include <G4Circle.hh>
 #include <G4VisAttributes.hh>
+#include <G4VisManager.hh>
 #include <G4VTrajectory.hh>
 #include <G4TrajectoryContainer.hh>
+#include <G4Colour.hh>
 #include "CexmcEventAction.hh"
 #include "CexmcEventActionMessenger.hh"
 #include "CexmcEventInfo.hh"
@@ -40,7 +37,6 @@
 #endif
 #include "CexmcRunManager.hh"
 #include "CexmcRun.hh"
-#include "CexmcStudiedProcessBase.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcProductionModelData.hh"
@@ -51,6 +47,15 @@
 #include "CexmcTrackPointInfo.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
+
+
+namespace
+{
+    G4double  CexmcSmallCircleScreenSize( 5.0 );
+    G4double  CexmcBigCircleScreenSize( 10.0 );
+    G4Colour  CexmcTrackPointsMarkerColour( 0.0, 1.0, 0.4 );
+    G4Colour  CexmcRecTrackPointsMarkerColour( 1.0, 0.4, 0.0 );
+}
 
 
 CexmcEventAction::CexmcEventAction( CexmcPhysicsManager *  physicsManager,
@@ -84,28 +89,7 @@ void  CexmcEventAction::BeginOfEventAction( const G4Event * )
                                     runManager->GetUserTrackingAction() ) ) );
     trackingAction->ResetOutputParticleTrackId();
 
-    const G4ParticleDefinition *  particle(
-                                    physicsManager->GetIncidentParticleType() );
-    G4ProcessManager *  processManager( particle->GetProcessManager() );
-    G4ProcessVector *   processVector( processManager->GetProcessList() );
-    G4int               processVectorSize(
-                                    processManager->GetProcessListLength() );
-
-    for ( int  i( 0 ); i < processVectorSize; ++i )
-    {
-        G4VProcess *  process( ( *processVector )[ i ] );
-        if ( process->GetProcessName() == CexmcStudiedProcessFullName )
-        {
-            CexmcStudiedProcessBase *  studiedProcess(
-                dynamic_cast< CexmcStudiedProcessBase * >( process ) );
-            if ( ! studiedProcess )
-                break;
-
-            studiedProcess->ResetNumberOfTriggeredEvents();
-
-            break;
-        }
-    }
+    physicsManager->ResetNumberOfTriggeredStudiedInteractions();
 }
 
 
@@ -545,7 +529,9 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
 
 void  CexmcEventAction::DrawTrajectories( const G4Event *  event )
 {
-    if ( ! G4VVisManager::GetConcreteInstance() )
+    G4VisManager *  visManager( static_cast< G4VisManager * >(
+                                    G4VVisManager::GetConcreteInstance() ) );
+    if ( ! visManager || ! visManager->GetCurrentGraphicsSystem() )
         return;
 
     G4int                    nTraj( 0 );
@@ -569,14 +555,14 @@ void  CexmcEventAction::DrawTrajectories( const G4Event *  event )
 void  CexmcEventAction::DrawTrackPoints(
                                 const CexmcTrackPointsStore *  tpStore ) const
 {
-    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
-
-    if ( ! visManager )
+    G4VisManager *  visManager( static_cast< G4VisManager * >(
+                                    G4VVisManager::GetConcreteInstance() ) );
+    if ( ! visManager || ! visManager->GetCurrentGraphicsSystem() )
         return;
 
     G4Circle         circle;
-    G4VisAttributes  visAttributes( G4Color( 0.0, 1.0, 0.4 ) );
-    circle.SetScreenSize( 5.0 );
+    G4VisAttributes  visAttributes( CexmcTrackPointsMarkerColour );
+    circle.SetScreenSize( CexmcSmallCircleScreenSize );
     circle.SetFillStyle( G4Circle::filled );
     circle.SetVisAttributes( visAttributes );
 
@@ -626,19 +612,19 @@ void  CexmcEventAction::DrawTrackPoints(
 
 void  CexmcEventAction::DrawReconstructionData( void )
 {
-    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
-
-    if ( ! visManager )
+    G4VisManager *  visManager( static_cast< G4VisManager * >(
+                                    G4VVisManager::GetConcreteInstance() ) );
+    if ( ! visManager || ! visManager->GetCurrentGraphicsSystem() )
         return;
 
     G4Circle  circle( reconstructor->GetTargetEPWorldPosition() );
-    circle.SetScreenSize( 5.0 );
+    circle.SetScreenSize( CexmcSmallCircleScreenSize );
     circle.SetFillStyle( G4Circle::filled );
-    G4VisAttributes  visAttributes( G4Color( 1.0, 0.4, 0.0 ) );
+    G4VisAttributes  visAttributes( CexmcRecTrackPointsMarkerColour );
     circle.SetVisAttributes( visAttributes );
     visManager->Draw( circle );
 
-    circle.SetScreenSize( 10.0 );
+    circle.SetScreenSize( CexmcBigCircleScreenSize );
     circle.SetPosition( reconstructor->GetCalorimeterEPLeftWorldPosition() );
     visManager->Draw( circle );
 

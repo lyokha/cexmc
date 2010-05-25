@@ -35,10 +35,6 @@ class  CexmcSteppingAction : public G4UserSteppingAction
 
     private:
         CexmcPhysicsManager *  physicsManager;
-
-        G4bool                 proposedMaxILInitialized;
-
-        G4double               proposedMaxIL;
 };
 
 

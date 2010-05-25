@@ -3,12 +3,14 @@
 ###################################################
 
 /tracking/storeTrajectory 1
+/tracking/verbose 0
 
 /vis/scene/create
 /vis/scene/add/volume WorldVisible
 
 # Create a scene handler for Qt OpenGL graphics
 /vis/open OGLSQt 600x600-0+0
+/vis/ogl/set/transparency true
 
 # draw scene
 /vis/viewer/zoom 2.0
@@ -18,6 +20,7 @@
 /vis/viewer/set/edge true
 /vis/viewer/set/auxiliaryEdge false
 /vis/viewer/set/lightsMove cam
+/vis/viewer/set/hiddenMarker false
 
 /vis/geometry/set/forceWireframe vWorldVisible 0 true
 /vis/geometry/set/forceWireframe vCalorimeter 0 true

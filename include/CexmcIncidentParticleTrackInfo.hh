@@ -33,11 +33,15 @@ class  CexmcIncidentParticleTrackInfo : public CexmcTrackInfo
 
         void      AddTrackLengthInTarget( G4double  value );
 
+        void      SetNeedsTrackLengthResampling( G4bool  on = true );
+
         G4double  GetFinalTrackLengthInTarget( void ) const;
 
         void      SetFinalTrackLengthInTarget( G4double  value );
 
         void      ResetCurrentTrackLengthInTarget( void );
+
+        G4bool    NeedsTrackLengthResampling( void ) const;
 
         G4bool    IsStudiedProcessActivated( void ) const;
 
@@ -49,6 +53,8 @@ class  CexmcIncidentParticleTrackInfo : public CexmcTrackInfo
         G4double  finalTrackLengthInTarget;
 
         G4bool    isStudiedProcessActivated;
+
+        G4bool    needsTrackLengthResampling;
 };
 
 
@@ -63,6 +69,13 @@ inline void  CexmcIncidentParticleTrackInfo::AddTrackLengthInTarget(
                                                             G4double  value )
 {
     currentTrackLengthInTarget += value;
+}
+
+
+inline void  CexmcIncidentParticleTrackInfo::SetNeedsTrackLengthResampling(
+                                                                    G4bool  on )
+{
+    needsTrackLengthResampling = on;
 }
 
 
@@ -84,6 +97,13 @@ inline void  CexmcIncidentParticleTrackInfo::ResetCurrentTrackLengthInTarget(
                                                                         void )
 {
     currentTrackLengthInTarget = 0.;
+}
+
+
+inline G4bool  CexmcIncidentParticleTrackInfo::NeedsTrackLengthResampling(
+                                                                    void ) const
+{
+    return needsTrackLengthResampling;
 }
 
 

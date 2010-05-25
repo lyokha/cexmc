@@ -29,7 +29,8 @@ class  CexmcStudiedPhysicsChargeExchange :
             public CexmcStudiedPhysics< Particle, CexmcChargeExchangeProcess >
 {
     public:
-        explicit CexmcStudiedPhysicsChargeExchange( G4int verbose = 0 );
+        explicit CexmcStudiedPhysicsChargeExchange(
+                    CexmcPhysicsManager *  physicsManager, G4int  verbose = 0 );
 
         ~CexmcStudiedPhysicsChargeExchange();
 
@@ -45,7 +46,10 @@ class  CexmcStudiedPhysicsChargeExchange :
 
 template  < typename  Particle, typename  ProductionModel >
 CexmcStudiedPhysicsChargeExchange< Particle, ProductionModel >::
-    CexmcStudiedPhysicsChargeExchange( G4int  verbose ) :
+            CexmcStudiedPhysicsChargeExchange(
+                    CexmcPhysicsManager *  physicsManager, G4int  verbose ) :
+    CexmcStudiedPhysics< Particle, CexmcChargeExchangeProcess >(
+                                                        physicsManager ),
     verbose( verbose ), productionModel( NULL )
 {
     if ( verbose > 1 )

@@ -24,7 +24,6 @@
 class  G4ParticleDefinition;
 class  G4Track;
 class  CexmcPhysicsManager;
-class  CexmcIncidentParticleTrackInfo;
 
 
 class  CexmcTrackingAction : public G4UserTrackingAction
@@ -38,17 +37,12 @@ class  CexmcTrackingAction : public G4UserTrackingAction
         void  ResetOutputParticleTrackId( void );
 
     private:
-        void  SetupIncidentParticleTrackInfo( const G4Track *  track,
-                                CexmcIncidentParticleTrackInfo *  trackInfo );
+        void  SetupIncidentParticleTrackInfo( const G4Track *  track );
 
     private:
         CexmcPhysicsManager *  physicsManager;
 
-        G4int     outputParticleTrackId;
-
-        G4bool    proposedMaxILInitialized;
-
-        G4double  proposedMaxIL;
+        G4int                  outputParticleTrackId;
 };
 
 

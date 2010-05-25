@@ -19,11 +19,19 @@
 #ifndef CEXMC_PHYSICS_LIST_HH
 #define CEXMC_PHYSICS_LIST_HH
 
+#include <Randomize.hh>
 #include <G4VModularPhysicsList.hh>
+#include <G4Track.hh>
+#include <G4StepPoint.hh>
+#include <G4VPhysicalVolume.hh>
+#include <G4Tubs.hh>
+#include <G4AffineTransform.hh>
+#include <G4NavigationHistory.hh>
 #include "CexmcStudiedPhysics.hh"
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
+#include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcCommon.hh"
 
 
@@ -39,10 +47,20 @@ class  CexmcPhysicsList : virtual public BasePhysics,
     public:
         const G4ParticleDefinition *  GetIncidentParticleType( void ) const;
 
-        CexmcProductionModel *  GetProductionModel( void );
+        CexmcProductionModel *        GetProductionModel( void );
+
+        G4bool                        IsStudiedProcessAllowed( void ) const;
+
+        void                          ResampleTrackLengthInTarget(
+                                            const G4Track *  track,
+                                            const G4StepPoint *  stepPoint );
 
     private:
         CexmcProductionModel *  productionModel;
+
+        G4bool                  proposedMaxILInitialized;
+
+        G4double                proposedMaxIL;
 };
 
 
@@ -50,9 +68,11 @@ template  < typename  BasePhysics, typename  Particle,
             template  < typename, typename > class  StudiedPhysics,
             typename  ProductionModel >
 CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics, ProductionModel >::
-                CexmcPhysicsList() : productionModel( NULL )
+                CexmcPhysicsList() : productionModel( NULL ),
+                    proposedMaxILInitialized( false ), proposedMaxIL( DBL_MAX )
 {
-    this->RegisterPhysics( new StudiedPhysics< Particle, ProductionModel > );
+    this->RegisterPhysics( new StudiedPhysics< Particle, ProductionModel >(
+                                                                    this ) );
 }
 
 
@@ -106,6 +126,81 @@ CexmcProductionModel *  CexmcPhysicsList< BasePhysics, Particle,
     }
 
     return productionModel;
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics,
+            typename  ProductionModel >
+G4bool  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
+                        ProductionModel >::
+                IsStudiedProcessAllowed( void ) const
+{
+    return numberOfTriggeredStudiedInteractions == 0;
+}
+
+
+template  < typename  BasePhysics, typename  Particle,
+            template  < typename, typename > class  StudiedPhysics,
+            typename  ProductionModel >
+void  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
+                        ProductionModel >::
+                ResampleTrackLengthInTarget( const G4Track *  track,
+                                             const G4StepPoint *  stepPoint )
+{
+    CexmcIncidentParticleTrackInfo *  trackInfo(
+                dynamic_cast< CexmcIncidentParticleTrackInfo * >(
+                                                track->GetUserInformation() ) );
+
+    if ( ! trackInfo )
+        return;
+
+    G4VPhysicalVolume *  volume( NULL );
+
+    if ( stepPoint )
+        volume = stepPoint->GetTouchable()->GetVolume();
+    else
+        volume = track->GetVolume();
+
+    G4VSolid *  targetSolid( volume->GetLogicalVolume()->GetSolid() );
+
+    if ( ! proposedMaxILInitialized )
+    {
+        G4double  targetRadius( DBL_MAX );
+        G4Tubs *  targetTube( dynamic_cast< G4Tubs * >( targetSolid ) );
+
+        if ( targetTube )
+            targetRadius = targetTube->GetOuterRadius();
+
+        proposedMaxIL = GetProposedMaxIL( targetRadius * 2 );
+        proposedMaxILInitialized = true;
+    }
+
+    G4ThreeVector  position;
+    G4ThreeVector  direction;
+
+    if ( stepPoint )
+    {
+        const G4AffineTransform &  transform( stepPoint->GetTouchable()->
+                                              GetHistory()->GetTopTransform() );
+        position = transform.TransformPoint( stepPoint->GetPosition() );
+        direction = transform.TransformPoint(
+                                        stepPoint->GetMomentumDirection() );
+    }
+    else
+    {
+        const G4AffineTransform &  transform( track->GetTouchable()->
+                                              GetHistory()->GetTopTransform() );
+        position = transform.TransformPoint( track->GetPosition() );
+        direction = transform.TransformPoint( track->GetMomentumDirection() );
+    }
+
+    G4double  distanceInTarget( targetSolid->DistanceToOut( position,
+                                                            direction ) );
+    trackInfo->ResetCurrentTrackLengthInTarget();
+    trackInfo->SetFinalTrackLengthInTarget( G4UniformRand() *
+                                std::max( distanceInTarget, proposedMaxIL ) );
+    trackInfo->SetNeedsTrackLengthResampling( false );
 }
 
 

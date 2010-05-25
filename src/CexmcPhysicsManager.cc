@@ -19,6 +19,7 @@
 #include "CexmcPhysicsManager.hh"
 
 CexmcPhysicsManager::CexmcPhysicsManager() :
+    numberOfTriggeredStudiedInteractions( 0 ),
     onlyIncidentParticleCanTriggerStudiedProcess( false )
 {
 }
@@ -30,7 +31,6 @@ CexmcPhysicsManager::~CexmcPhysicsManager()
 
 
 G4double  CexmcPhysicsManager::GetProposedMaxIL( G4double  dimension )
-
 {
     return dimension;
 }

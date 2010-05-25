@@ -19,11 +19,10 @@
 #include <G4ParticleDefinition.hh>
 #include <G4VProcess.hh>
 #include <G4Track.hh>
-#include <G4VSolid.hh>
-#include <G4Tubs.hh>
 #include "CexmcTrackingAction.hh"
 #include "CexmcTrackInfo.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
+#include "CexmcPhysicsManager.hh"
 #include "CexmcRunManager.hh"
 #include "CexmcBasicPhysicsSettings.hh"
 #include "CexmcCommon.hh"
@@ -31,8 +30,7 @@
 
 CexmcTrackingAction::CexmcTrackingAction(
                                     CexmcPhysicsManager *  physicsManager ) :
-    physicsManager( physicsManager ), outputParticleTrackId( -1 ),
-    proposedMaxILInitialized( false ), proposedMaxIL( DBL_MAX )
+    physicsManager( physicsManager ), outputParticleTrackId( -1 )
 {
 }
 
@@ -44,6 +42,8 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
 
     if ( trackInfo )
         return;
+
+    G4Track *  theTrack( const_cast< G4Track * >( track ) );
 
     do
     {
@@ -63,10 +63,8 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
             {
                 trackInfo = new CexmcIncidentParticleTrackInfo(
                                                 CexmcIncidentParticleTrack );
-                CexmcIncidentParticleTrackInfo *  theTrackInfo(
-                            static_cast< CexmcIncidentParticleTrackInfo * >(
-                                                                trackInfo ) );
-                SetupIncidentParticleTrackInfo( track, theTrackInfo );
+                theTrack->SetUserInformation( trackInfo );
+                SetupIncidentParticleTrackInfo( track );
             }
             else
             {
@@ -116,9 +114,8 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
                  OnlyIncidentParticleCanTriggerStudiedProcess() )
                 break;
             trackInfo = new CexmcIncidentParticleTrackInfo( CexmcInsipidTrack );
-            CexmcIncidentParticleTrackInfo *  theTrackInfo(
-                static_cast< CexmcIncidentParticleTrackInfo * >( trackInfo ) );
-            SetupIncidentParticleTrackInfo( track, theTrackInfo );
+            theTrack->SetUserInformation( trackInfo );
+            SetupIncidentParticleTrackInfo( track );
             break;
         }
     } while ( false );
@@ -126,49 +123,27 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
     if ( ! trackInfo )
         return;
 
-    G4Track *  theTrack( const_cast< G4Track * >( track ) );
-    theTrack->SetUserInformation( trackInfo );
+    if ( ! track->GetUserInformation() )
+        theTrack->SetUserInformation( trackInfo );
 }
 
 
 void  CexmcTrackingAction::SetupIncidentParticleTrackInfo(
-                                const G4Track *  track,
-                                CexmcIncidentParticleTrackInfo *  trackInfo )
+                                                    const G4Track *  track )
 {
+    CexmcIncidentParticleTrackInfo *  trackInfo(
+                    static_cast< CexmcIncidentParticleTrackInfo * >(
+                                                track->GetUserInformation() ) );
+
+    if ( ! trackInfo )
+        return;
+
     G4VPhysicalVolume *  volume( track->GetVolume() );
 
     if ( volume && volume->GetName() == "Target" )
     {
-        G4VSolid *  targetSolid( volume->GetLogicalVolume()->GetSolid() );
-
-        if ( ! proposedMaxILInitialized )
-        {
-            G4double  targetRadius( DBL_MAX );
-            G4Tubs *  targetTube( dynamic_cast< G4Tubs * >( targetSolid ) );
-
-            if ( targetTube )
-                targetRadius = targetTube->GetOuterRadius();
-
-            proposedMaxIL = physicsManager->GetProposedMaxIL(
-                                                        targetRadius  * 2 );
-            proposedMaxILInitialized = true;
-        }
-
-        if ( ! trackInfo->IsStudiedProcessActivated() )
-        {
-            const G4AffineTransform &  transform(
-                        track->GetTouchable()->GetHistory()->
-                        GetTopTransform() );
-            G4ThreeVector  position( transform.TransformPoint(
-                                              track->GetPosition() ) );
-            G4ThreeVector  direction( transform.TransformAxis(
-                                    track->GetMomentumDirection() ) );
-            G4double       distanceInTarget( targetSolid->DistanceToOut(
-                                                position, direction ) );
-            trackInfo->SetFinalTrackLengthInTarget( G4UniformRand() *
-                                std::max( distanceInTarget, proposedMaxIL ) );
-            trackInfo->ActivateStudiedProcess();
-        }
+        physicsManager->ResampleTrackLengthInTarget( track );
+        trackInfo->ActivateStudiedProcess();
     }
 }
 

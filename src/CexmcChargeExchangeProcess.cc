@@ -16,22 +16,22 @@
  * ============================================================================
  */
 
-#include <G4HadronElasticDataSet.hh>
 #include <G4ParticleChange.hh>
 #include <G4Track.hh>
 #include <G4Step.hh>
-#include <G4HadronicWhiteBoard.hh>
-#include <G4HadReentrentException.hh>
+#include <G4Element.hh>
+#include <G4StableIsotopes.hh>
 #include "CexmcChargeExchangeProcess.hh"
 #include "CexmcProductionModel.hh"
+#include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcException.hh"
 
 
 CexmcChargeExchangeProcess::CexmcChargeExchangeProcess(
                                                     const G4String &  name ) :
-    G4HadronicProcess( name ), productionModel( NULL )
+    G4HadronicProcess( name ), productionModel( NULL ), theTotalResult( NULL ),
+    isInitialized( false )
 {
-    AddDataSet( new G4HadronElasticDataSet );
     theTotalResult = new G4ParticleChange();
 }
 
@@ -50,23 +50,46 @@ void  CexmcChargeExchangeProcess::RegisterProductionModel(
 }
 
 
+void  CexmcChargeExchangeProcess::CalculateTargetNucleus(
+                                                const G4Material *  material )
+{
+    G4int  numberOfElements( material->GetNumberOfElements() );
+    if ( numberOfElements > 1 )
+    {
+        G4cout << CEXMC_LINE_START "WARNING: Number of elements in target "
+                  "material is more than 1.\n              Only the first "
+                  "element will be chosen for target nucleus" << G4endl;
+    }
+
+    const G4Element *  element( material->GetElement( 0 ) );
+    G4double           ZZ( element->GetZ() );
+    G4int              Z( G4int( ZZ + 0.5 ) );
+
+    G4StableIsotopes  stableIsotopes;
+    G4int             index( stableIsotopes.GetFirstIsotope( Z ) );
+    G4double          AA( stableIsotopes.GetIsotopeNucleonCount( index ) );
+
+    targetNucleus.SetParameters( AA, ZZ );
+}
+
+
 void  CexmcChargeExchangeProcess::FillTotalResult(
                     G4HadFinalState *  hadFinalState, const G4Track &  track )
 {
+    G4int  numberOfSecondaries( hadFinalState->GetNumberOfSecondaries() );
+
     theTotalResult->Clear();
-    theTotalResult->ProposeLocalEnergyDeposit( 0. );
     theTotalResult->Initialize( track );
     theTotalResult->SetSecondaryWeightByProcess( true );
-    theTotalResult->ProposeTrackStatus( fAlive );
-
-    theTotalResult->ProposeTrackStatus( fStopAndKill );
-    theTotalResult->ProposeEnergy( 0.0 );
     theTotalResult->ProposeLocalEnergyDeposit(
                                     hadFinalState->GetLocalEnergyDeposit() );
-    theTotalResult->SetNumberOfSecondaries(
-                                    hadFinalState->GetNumberOfSecondaries() );
+    theTotalResult->SetNumberOfSecondaries( numberOfSecondaries );
+    theTotalResult->ProposeEnergy( hadFinalState->GetEnergyChange() );
+    theTotalResult->ProposeTrackStatus( fAlive );
+    if ( hadFinalState->GetStatusChange() == stopAndKill )
+        theTotalResult->ProposeTrackStatus( fStopAndKill );
 
-    for( G4int i( 0 ); i < hadFinalState->GetNumberOfSecondaries(); ++i )
+    for( G4int  i( 0 ); i < numberOfSecondaries; ++i )
     {
         G4double   time( hadFinalState->GetSecondary( i )->GetTime() );
         if ( time < 0 )
@@ -87,103 +110,50 @@ void  CexmcChargeExchangeProcess::FillTotalResult(
 }
 
 
-/* mostly adopted from G4HadronicProcess::PostStepDoIt() */
-G4ParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
-                                        const G4Track &  track, const G4Step & )
+G4VParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
+                                const G4Track &  track, const G4Step & )
 {
     if ( track.GetTrackStatus() != fAlive &&
          track.GetTrackStatus() != fSuspend )
     {
-        if ( track.GetTrackStatus() == fStopAndKill ||
-             track.GetTrackStatus() == fKillTrackAndSecondaries ||
-             track.GetTrackStatus() == fPostponeToNextEvent)
-        {
-            G4cerr << "G4HadronicProcess: track in unusable state - " <<
-                      track.GetTrackStatus() << G4endl;
-            G4cerr << "G4HadronicProcess: returning unchanged track " << G4endl;
-            G4Exception( "G4HadronicProcess", "001", JustWarning,
-                         "bailing out" );
-        }
-        // No warning for fStopButAlive which is a legal status here
         theTotalResult->Clear();
         theTotalResult->Initialize( track );
+
         return theTotalResult;
     }
 
-    const G4DynamicParticle *  particle( track.GetDynamicParticle() );
-    G4Material *               material( track.GetMaterial() );
-    G4double                   originalEnergy( particle->GetKineticEnergy() );
-    G4Nucleus                  targetNucleus;
+    /* NB: the target nucleus is chosen only once, it means that it will always
+     * have same Z and A, practically the first stable isotope of the first
+     * element in elements vector will be chosen. This simplification prompts
+     * the user to choose simple single-element material for the target, for
+     * example liquid hydrogen. On the other hand target nucleus is supposedly
+     * only needed if user decides to turn Fermi motion on, so this
+     * simplification should not be very harmful */
+    if ( ! isInitialized )
+    {
+        CalculateTargetNucleus( track.GetMaterial() );
+        isInitialized = true;
+    }
 
-    G4HadProjectile            projectile( track );
-    G4HadFinalState *          result( 0 );
-    G4int                      reentryCount( 0 );
-
+    G4HadProjectile          projectile( track );
     G4HadronicInteraction *  theInteraction(
                 dynamic_cast< G4HadronicInteraction * >( productionModel ) );
     if ( ! theInteraction )
         throw CexmcException( CexmcWeirdException );
 
-    do
-    {
-        try
-        {
-            result = theInteraction->ApplyYourself( projectile, targetNucleus );
-        }
-        catch ( G4HadReentrentException &  e )
-        {
-            G4HadronicWhiteBoard &  theBoard(
-                                            G4HadronicWhiteBoard::Instance() );
-            theBoard.SetProjectile( projectile );
-            theBoard.SetTargetNucleus( targetNucleus );
-            theBoard.SetProcessName( GetProcessName() );
-            theBoard.SetModelName( theInteraction->GetModelName() );
-
-            e.Report( G4cout );
-            G4cout << " G4HadronicProcess re-entering the ApplyYourself call "
-                      "for " << G4endl;
-            G4cout << " - Particle energy[GeV] = " << originalEnergy / GeV <<
-                      G4endl;
-            G4cout << " - Material = " << material->GetName() << G4endl;
-            G4cout << " - Particle type = " <<
-                      particle->GetDefinition()->GetParticleName() << G4endl;
-            result = 0; // here would still be leaking...
-
-            if ( reentryCount > 100 )
-            {
-                G4Exception( "G4HadronicProcess", "007", FatalException,
-                             "GetHadronicProcess: Reentering ApplyYourself too "
-                             "often - PostStepDoIt failed." );  
-            }
-            G4Exception( "G4HadronicProcess", "007", FatalException,
-                         "GetHadronicProcess: PostStepDoIt failed "
-                         "(Reentering ApplyYourself not yet supported.)" );  
-        }
-        catch ( G4HadronicException &  e )
-        {
-            G4HadronicWhiteBoard &  theBoard(
-                                            G4HadronicWhiteBoard::Instance() );
-            theBoard.SetProjectile( projectile );
-            theBoard.SetTargetNucleus( targetNucleus );
-            theBoard.SetProcessName( GetProcessName() );
-            theBoard.SetModelName( theInteraction->GetModelName() );
-
-            e.Report( G4cout );
-            G4cout << " G4HadronicProcess failed in ApplyYourself call for" <<
-                      G4endl;
-            G4cout << " - Particle energy[GeV] = "<< originalEnergy / GeV <<
-                      G4endl;
-            G4cout << " - Material = " << material->GetName() << G4endl;
-            G4cout << " - Particle type = " <<
-                      particle->GetDefinition()->GetParticleName() << G4endl;
-            G4Exception( "G4HadronicProcess", "007", FatalException,
-                         "PostStepDoIt failed." );
-        }
-    } while( ! result );
-
-    ClearNumberOfInteractionLengthLeft();
+    G4HadFinalState *        result( theInteraction->ApplyYourself(
+                                               projectile, targetNucleus ) );
 
     FillTotalResult( result, track );
+
+    if ( theTotalResult->GetTrackStatus() != fStopAndKill )
+    {
+        CexmcIncidentParticleTrackInfo *  trackInfo(
+                    dynamic_cast< CexmcIncidentParticleTrackInfo * >(
+                                                track.GetUserInformation() ) );
+        if ( trackInfo )
+            trackInfo->SetNeedsTrackLengthResampling();
+    }
 
     return theTotalResult;
 }

@@ -23,6 +23,7 @@
 #include <G4ProcessManager.hh>
 #include <G4HadronicProcess.hh>
 #include "CexmcStudiedProcess.hh"
+#include "CexmcPhysicsManager.hh"
 
 
 template  < typename  Particle, typename  Process >
@@ -32,7 +33,7 @@ class  CexmcStudiedPhysics : public G4VPhysicsConstructor
         typedef Process  ProcessType;
 
     public:
-        CexmcStudiedPhysics();
+        explicit CexmcStudiedPhysics( CexmcPhysicsManager *  physicsManager );
 
         virtual ~CexmcStudiedPhysics();
 
@@ -44,14 +45,19 @@ class  CexmcStudiedPhysics : public G4VPhysicsConstructor
     protected:
         virtual void  ApplyInteractionModel( G4HadronicProcess *  process );
 
+    protected:
+        CexmcPhysicsManager *  physicsManager;
+
     private:
-        G4bool  wasActivated;
+        G4bool                 wasActivated;
 };
 
 
 template  < typename  Particle, typename  Process >
-CexmcStudiedPhysics< Particle, Process >::CexmcStudiedPhysics() :
-    G4VPhysicsConstructor( "studiedPhysics" ), wasActivated( false )
+CexmcStudiedPhysics< Particle, Process >::CexmcStudiedPhysics(
+                                    CexmcPhysicsManager *  physicsManager ) :
+    G4VPhysicsConstructor( "studiedPhysics" ), physicsManager( physicsManager ),
+    wasActivated( false )
 {
 }
 
@@ -80,7 +86,7 @@ void  CexmcStudiedPhysics< Particle, Process >::ConstructProcess( void )
     Process *  process( new Process );
 
     CexmcStudiedProcess< Particle > *  studiedProcess(
-                                        new CexmcStudiedProcess< Particle > );
+                        new CexmcStudiedProcess< Particle >( physicsManager ) );
 
     ApplyInteractionModel( process );
 
