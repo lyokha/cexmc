@@ -99,7 +99,9 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "\n    Defines that inner max crystal will be chosen for adjacent\n"
         "    crystal selection algorithm and simple entry point definition\n"
         "    algorithm. If not set then max crystal will be found from all\n"
-        "    crystals in calorimeter" );
+        "    crystals in calorimeter. Inner max crystal is chosen from inner\n"
+        "    crystals as the closest adjacent crystal to the crystal with max\n"
+        "    energy deposit\n" );
     useInnerMaxCrystal->SetDefaultValue( false );
     useInnerMaxCrystal->SetParameterName( "UseInnerMaxCrystal", false );
     useInnerMaxCrystal->AvailableForStates( G4State_PreInit, G4State_Idle );

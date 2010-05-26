@@ -40,7 +40,7 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         ~CexmcEnergyDepositDigitizer();
 
     public:
-        void  Digitize( void );
+        void      Digitize( void );
 
     public:
         G4double  GetMonitorED( void ) const;
@@ -60,14 +60,6 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4int     GetCalorimeterEDRightMaxX( void ) const;
 
         G4int     GetCalorimeterEDRightMaxY( void ) const;
-
-        G4int     GetCalorimeterEDLeftInnerMaxX( void ) const;
-
-        G4int     GetCalorimeterEDLeftInnerMaxY( void ) const;
-
-        G4int     GetCalorimeterEDRightInnerMaxX( void ) const;
-
-        G4int     GetCalorimeterEDRightInnerMaxY( void ) const;
 
         const CexmcEnergyDepositCalorimeterCollection &
                                 GetCalorimeterEDLeftCollection( void ) const;
@@ -147,7 +139,10 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
                   GetCrystalResolutionData( void ) const;
 
     public:
-        G4bool    IsOuterCrystal( G4int  column, G4int  row );
+        G4bool    IsOuterCrystal( G4int  column, G4int  row ) const;
+
+        void      TransformToAdjacentInnerCrystal( G4int &  column,
+                                                   G4int &  row ) const;
 
     private:
         void      InitializeData( void );
@@ -174,14 +169,6 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
         G4int                                    calorimeterEDRightMaxX;
 
         G4int                                    calorimeterEDRightMaxY;
-
-        G4int                                    calorimeterEDLeftInnerMaxX;
-
-        G4int                                    calorimeterEDLeftInnerMaxY;
-
-        G4int                                    calorimeterEDRightInnerMaxX;
-
-        G4int                                    calorimeterEDRightInnerMaxY;
 
         G4bool                                   monitorHasTriggered;
 
@@ -292,34 +279,6 @@ inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDRightMaxY( void )
                                                                         const
 {
     return calorimeterEDRightMaxY;
-}
-
-
-inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDLeftInnerMaxX( void )
-                                                                        const
-{
-    return calorimeterEDLeftInnerMaxX;
-}
-
-
-inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDLeftInnerMaxY( void )
-                                                                        const
-{
-    return calorimeterEDLeftInnerMaxY;
-}
-
-
-inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDRightInnerMaxX(
-                                                                    void ) const
-{
-    return calorimeterEDRightInnerMaxX;
-}
-
-
-inline G4int  CexmcEnergyDepositDigitizer::GetCalorimeterEDRightInnerMaxY(
-                                                                    void ) const
-{
-    return calorimeterEDRightInnerMaxY;
 }
 
 
@@ -584,10 +543,24 @@ inline void  CexmcEnergyDepositDigitizer::SetCrystalResolutionData(
 
 
 inline G4bool  CexmcEnergyDepositDigitizer::IsOuterCrystal( G4int  column,
-                                                            G4int  row )
+                                                            G4int  row ) const
 {
     return column == 0 || column == nCrystalsInRow - 1 ||
            row == 0 || row == nCrystalsInColumn - 1;
+}
+
+
+inline void  CexmcEnergyDepositDigitizer::TransformToAdjacentInnerCrystal(
+                                        G4int &  column, G4int &  row ) const
+{
+    if ( column == 0 )
+        ++column;
+    if ( column == nCrystalsInRow - 1 )
+        --column;
+    if ( row == 0 )
+        ++row;
+    if ( row == nCrystalsInColumn - 1 )
+        --row;
 }
 
 

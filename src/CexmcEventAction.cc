@@ -107,10 +107,10 @@ CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
     G4int     calorimeterEDRightMaxY( digitizer->GetCalorimeterEDRightMaxY() );
     if ( useInnerMaxCrystal )
     {
-        calorimeterEDLeftMaxX = digitizer->GetCalorimeterEDLeftInnerMaxX();
-        calorimeterEDLeftMaxY = digitizer->GetCalorimeterEDLeftInnerMaxY();
-        calorimeterEDRightMaxX = digitizer->GetCalorimeterEDRightInnerMaxX();
-        calorimeterEDRightMaxY = digitizer->GetCalorimeterEDRightInnerMaxY();
+        digitizer->TransformToAdjacentInnerCrystal( calorimeterEDLeftMaxX,
+                                                    calorimeterEDLeftMaxY );
+        digitizer->TransformToAdjacentInnerCrystal( calorimeterEDRightMaxX,
+                                                    calorimeterEDRightMaxY );
     }
     const CexmcEnergyDepositCalorimeterCollection &
                 calorimeterEDLeftCollection(
