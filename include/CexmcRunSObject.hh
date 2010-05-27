@@ -75,7 +75,7 @@ class  CexmcRunSObject
                          CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
                                                     epDepthDefinitionAlgorithm,
                          CexmcCrystalSelectionAlgorithm  csAlgorithm,
-                         G4bool  useInnerMaxCrystal, G4double  epDepth,
+                         G4bool  useInnerRefCrystal, G4double  epDepth,
                          G4bool  useTableMass, G4bool  useMassCut,
                          G4double  mCutOPCenter, G4double  mCutNOPCenter,
                          G4double  mCutOPWidth, G4double  mCutNOPWidth,
@@ -161,7 +161,7 @@ class  CexmcRunSObject
 
         CexmcCrystalSelectionAlgorithm  csAlgorithm;
 
-        G4bool                       useInnerMaxCrystal;
+        G4bool                       useInnerRefCrystal;
 
         G4double                     epDepth;
 
@@ -252,7 +252,7 @@ void  CexmcRunSObject::serialize( Archive &  archive,
     archive & epDepthDefinitionAlgorithm;
     archive & csAlgorithm;
     if ( version > 0 )
-        archive & useInnerMaxCrystal;
+        archive & useInnerRefCrystal;
     archive & epDepth;
     archive & useTableMass;
     archive & useMassCut;

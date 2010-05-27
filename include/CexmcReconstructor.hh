@@ -47,7 +47,7 @@ class  CexmcReconstructor
         void  SetCrystalSelectionAlgorithm(
                     CexmcCrystalSelectionAlgorithm  algo );
 
-        void  UseInnerMaxCrystal( G4bool  on = true );
+        void  UseInnerRefCrystal( G4bool  on = true );
 
         void  SetCalorimeterEntryPointDepth( G4double  depth );
 
@@ -60,7 +60,7 @@ class  CexmcReconstructor
         CexmcCrystalSelectionAlgorithm
                     GetCrystalSelectionAlgorithm( void ) const;
 
-        G4bool    IsInnerMaxCrystalUsed( void ) const;
+        G4bool    IsInnerRefCrystalUsed( void ) const;
 
         G4double  GetCalorimeterEntryPointDepth( void ) const;
 
@@ -116,7 +116,7 @@ class  CexmcReconstructor
 
         CexmcCrystalSelectionAlgorithm                 csAlgorithm;
 
-        G4bool                                         useInnerMaxCrystal;
+        G4bool                                         useInnerRefCrystal;
 
         G4double                                       epDepth;
 
@@ -192,9 +192,9 @@ inline void  CexmcReconstructor::SetCrystalSelectionAlgorithm(
 }
 
 
-inline void  CexmcReconstructor::UseInnerMaxCrystal( G4bool  on )
+inline void  CexmcReconstructor::UseInnerRefCrystal( G4bool  on )
 {
-    useInnerMaxCrystal = on;
+    useInnerRefCrystal = on;
 }
 
 
@@ -228,9 +228,9 @@ inline CexmcCrystalSelectionAlgorithm
 }
 
 
-inline G4bool  CexmcReconstructor::IsInnerMaxCrystalUsed( void ) const
+inline G4bool  CexmcReconstructor::IsInnerRefCrystalUsed( void ) const
 {
-    return useInnerMaxCrystal;
+    return useInnerRefCrystal;
 }
 
 

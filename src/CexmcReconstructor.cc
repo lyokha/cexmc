@@ -27,7 +27,7 @@ CexmcReconstructor::CexmcReconstructor() :
     hasBasicTrigger( false ),
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
     epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain ),
-    csAlgorithm( CexmcSelectAllCrystals ), useInnerMaxCrystal( false ),
+    csAlgorithm( CexmcSelectAllCrystals ), useInnerRefCrystal( false ),
     epDepth( 0 ), theAngle( 0 ), nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ),
     crystalWidth( 0 ), crystalHeight( 0 ), crystalLength( 0 ), messenger( NULL )
 {

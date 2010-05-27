@@ -253,7 +253,7 @@ void  CexmcRunManager::ReadProject( void )
     reconstructor->SetCalorimeterEntryPointDepthDefinitionAlgorithm(
                                         sObject.epDepthDefinitionAlgorithm );
     reconstructor->SetCrystalSelectionAlgorithm( sObject.csAlgorithm );
-    reconstructor->UseInnerMaxCrystal( sObject.useInnerMaxCrystal );
+    reconstructor->UseInnerRefCrystal( sObject.useInnerRefCrystal );
     reconstructor->SetCalorimeterEntryPointDepth( sObject.epDepth );
     reconstructor->UseTableMass( sObject.useTableMass );
     reconstructor->UseMassCut( sObject.useMassCut );
@@ -369,7 +369,7 @@ void  CexmcRunManager::SaveProject( void )
         reconstructor->GetCalorimeterEntryPointDefinitionAlgorithm(),
         reconstructor->GetCalorimeterEntryPointDepthDefinitionAlgorithm(),
         reconstructor->GetCrystalSelectionAlgorithm(),
-        reconstructor->IsInnerMaxCrystalUsed(),
+        reconstructor->IsInnerRefCrystalUsed(),
         reconstructor->GetCalorimeterEntryPointDepth(),
         reconstructor->IsTableMassUsed(), reconstructor->IsMassCutUsed(),
         reconstructor->GetMassCutOPCenter(),
@@ -921,8 +921,8 @@ void  CexmcRunManager::PrintReadRunData( void ) const
                sObject.csAlgorithm == CexmcSelectAdjacentCrystals ) )
     {
         G4cout <<
-            "     -- inner crystal with max ED used (0 - no, 1 - yes): " <<
-            sObject.useInnerMaxCrystal << G4endl;
+            "     -- inner crystal used as reference (0 - no, 1 - yes): " <<
+            sObject.useInnerRefCrystal << G4endl;
     }
     G4cout << "     -- table mass of output particle used "
                       "(0 - no, 1 - yes): " << sObject.useTableMass << G4endl;

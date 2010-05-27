@@ -29,7 +29,7 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
                                         CexmcReconstructor *  reconstructor ) :
     reconstructor( reconstructor ),
     setCalorimeterEntryPointDefinitionAlgorithm( NULL ),
-    setCrystalSelectionAlgorithm( NULL ), useInnerMaxCrystal( NULL ),
+    setCrystalSelectionAlgorithm( NULL ), useInnerRefCrystal( NULL ),
     setCalorimeterEntryPointDepth( NULL )
 {
     setCalorimeterEntryPointDefinitionAlgorithm = new G4UIcmdWithAString(
@@ -92,19 +92,19 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
     setCrystalSelectionAlgorithm->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
-    useInnerMaxCrystal = new G4UIcmdWithABool(
-        ( CexmcMessenger::reconstructorDirName + "useInnerMaxCrystal" ).
+    useInnerRefCrystal = new G4UIcmdWithABool(
+        ( CexmcMessenger::reconstructorDirName + "useInnerRefCrystal" ).
                 c_str(), this );
-    useInnerMaxCrystal->SetGuidance(
-        "\n    Defines that inner max crystal will be chosen for adjacent\n"
-        "    crystal selection algorithm and simple entry point definition\n"
-        "    algorithm. If not set then max crystal will be found from all\n"
-        "    crystals in calorimeter. Inner max crystal is chosen from inner\n"
-        "    crystals as the closest adjacent crystal to the crystal with max\n"
-        "    energy deposit\n" );
-    useInnerMaxCrystal->SetDefaultValue( false );
-    useInnerMaxCrystal->SetParameterName( "UseInnerMaxCrystal", false );
-    useInnerMaxCrystal->AvailableForStates( G4State_PreInit, G4State_Idle );
+    useInnerRefCrystal->SetGuidance(
+        "\n    Defines that if the crystal with maximum energy deposit in\n"
+        "    calorimeter is an outer crystal then the closest inner crystal\n"
+        "    will be chosen as the reference for adjacent crystal selection\n"
+        "    algorithm and simple entry point definition algorithm.\n"
+        "    If not set then the reference crystal will be found from all\n"
+        "    crystals in calorimeter" );
+    useInnerRefCrystal->SetDefaultValue( false );
+    useInnerRefCrystal->SetParameterName( "UseInnerRefCrystal", false );
+    useInnerRefCrystal->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setCalorimeterEntryPointDepth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "entryPointDepth" ).c_str(),
@@ -126,7 +126,7 @@ CexmcReconstructorMessenger::~CexmcReconstructorMessenger()
     delete setCalorimeterEntryPointDefinitionAlgorithm;
     delete setCalorimeterEntryPointDepthDefinitionAlgorithm;
     delete setCrystalSelectionAlgorithm;
-    delete useInnerMaxCrystal;
+    delete useInnerRefCrystal;
     delete setCalorimeterEntryPointDepth;
 }
 
@@ -194,9 +194,9 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
             reconstructor->SetCrystalSelectionAlgorithm( csAlgorithm );
             break;
         }
-        if ( cmd == useInnerMaxCrystal )
+        if ( cmd == useInnerRefCrystal )
         {
-            reconstructor->UseInnerMaxCrystal(
+            reconstructor->UseInnerRefCrystal(
                         G4UIcmdWithABool::GetNewBoolValue( value ) );
             break;
         }

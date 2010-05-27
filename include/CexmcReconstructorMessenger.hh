@@ -49,7 +49,7 @@ class  CexmcReconstructorMessenger : public G4UImessenger
 
         G4UIcmdWithAString *   setCrystalSelectionAlgorithm;
 
-        G4UIcmdWithABool *     useInnerMaxCrystal;
+        G4UIcmdWithABool *     useInnerRefCrystal;
 
         G4UIcmdWithADoubleAndUnit *  setCalorimeterEntryPointDepth;
 };

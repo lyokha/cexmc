@@ -63,7 +63,7 @@
 
 /cexmc/reconstructor/entryPointDefinitionAlgo sqrt
 /cexmc/reconstructor/crystalSelectionAlgo all
-/cexmc/reconstructor/useInnerMaxCrystal true
+/cexmc/reconstructor/useInnerRefCrystal true
 /cexmc/reconstructor/entryPointDepthDefinitionAlgo plain
 /cexmc/reconstructor/entryPointDepth 0 cm
 /cexmc/reconstructor/useTableMass false

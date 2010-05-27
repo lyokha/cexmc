@@ -49,7 +49,7 @@ CexmcRunSObject::CexmcRunSObject(
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm,
         CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
                                                     epDepthDefinitionAlgorithm,
-        CexmcCrystalSelectionAlgorithm  csAlgorithm, G4bool  useInnerMaxCrystal,
+        CexmcCrystalSelectionAlgorithm  csAlgorithm, G4bool  useInnerRefCrystal,
         G4double  epDepth, G4bool  useTableMass, G4bool  useMassCut,
         G4double  mCutOPCenter, G4double  mCutNOPCenter, G4double  mCutOPWidth,
         G4double  mCutNOPWidth, G4double  mCutAngle,
@@ -86,7 +86,7 @@ CexmcRunSObject::CexmcRunSObject(
     crystalResolutionData( crystalResolutionData ),
     epDefinitionAlgorithm( epDefinitionAlgorithm ),
     epDepthDefinitionAlgorithm( epDepthDefinitionAlgorithm ),
-    csAlgorithm( csAlgorithm ), useInnerMaxCrystal( useInnerMaxCrystal ),
+    csAlgorithm( csAlgorithm ), useInnerRefCrystal( useInnerRefCrystal ),
     epDepth( epDepth ), useTableMass( useTableMass ), useMassCut( useMassCut ),
     mCutOPCenter( mCutOPCenter ), mCutNOPCenter( mCutNOPCenter ),
     mCutOPWidth( mCutOPWidth ), mCutNOPWidth( mCutNOPWidth ),
