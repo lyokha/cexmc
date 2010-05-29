@@ -24,8 +24,18 @@ endif
 
 GCC_VERSION := $(shell gcc --version | head -1 | awk '{ printf $$3 }' | awk -F"." '{ printf $$1 }')
 
-ifeq ($(GCC_VERSION),3)
-  EXTRALIBS += -lg2c
+ifdef CEXMC_FORTRAN_LIB
+  EXTRALIBS += $(CEXMC_FORTRAN_LIB)
+else
+# try to setup fortran lib automatically
+# WARNING: the following is not robust check because cernlib can be built
+# against libg2c even when using gcc-4 series
+# Please define CEXMC_FORTRAN_LIB if the check fails
+  ifeq ($(GCC_VERSION),3)
+    EXTRALIBS += -lg2c
+  else
+    EXTRALIBS += -lgfortran
+  endif
 endif
 
 #CPPFLAGS += -DCEXMC_USE_QGSP_BIC_EMY
