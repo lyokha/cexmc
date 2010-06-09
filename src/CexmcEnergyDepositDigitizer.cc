@@ -17,6 +17,7 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include <G4DigiManager.hh>
 #include <G4String.hh>
 #include <Randomize.hh>

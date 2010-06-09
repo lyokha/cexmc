@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include "CexmcAngularRange.hh"
 
 
@@ -90,8 +91,9 @@ std::ostream &  operator<<( std::ostream &  out,
 
     out.precision( 4 );
     out << std::fixed;
-    out << angularRange.index + 1 << " [" << angularRange.top << ", " <<
-               angularRange.bottom << ")";
+    out << std::setw( 2 ) << angularRange.index + 1 << " [" << std::setw( 7 ) <<
+           angularRange.top << ", " << std::setw( 7 ) << angularRange.bottom <<
+           ")";
 
     out.precision( prec );
     out.flags( savedFlags );

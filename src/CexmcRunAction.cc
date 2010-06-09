@@ -17,6 +17,10 @@
  */
 
 #include <limits>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <boost/format.hpp>
 #include "CexmcRunAction.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
@@ -46,16 +50,12 @@ void  CexmcRunAction::PrintResults(
                     G4int  nmbOfFalseHitsTriggeredEDT,
                     G4int  nmbOfFalseHitsTriggeredRec )
 {
-    std::ostream::fmtflags  savedFlags( G4cout.flags() );
-    std::streamsize  prec( G4cout.precision() );
-
-    G4cout.precision( 8 );
-    G4cout << std::fixed;
+    std::vector< std::string >  auxStrings;
+    size_t                      maxSize( 0 );
 
     for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
     {
-        G4cout << "       " << *k;
         G4int     total( 0 );
         G4int     totalFull( 0 );
         G4int     triggered( 0 );
@@ -84,7 +84,14 @@ void  CexmcRunAction::PrintResults(
                 acc = G4double( triggered ) / total;
         }
 
-        G4cout << "  | " << acc << " ( " << triggered << " / " << total << " )";
+        std::ostringstream  auxString;
+        auxString << "  | " << boost::format( "%|1$.8f| ( %2% / %3% )" ) %
+                                   acc % triggered % total;
+        auxStrings.push_back( auxString.str() );
+
+        size_t  size( auxString.str().size() );
+        maxSize = maxSize > size ? maxSize : size;
+        auxString.str( "" );
 
         triggered = 0;
         acc = accSave;
@@ -96,8 +103,20 @@ void  CexmcRunAction::PrintResults(
                 acc = G4double( triggered ) / total;
         }
 
-        G4cout << "  | " << acc << " ( " << triggered << " / " << total <<
-                  " / " << totalFull << " )" << G4endl;
+        auxString << "  | " << boost::format( "%|1$.8f| ( %2% / %3% / %4% )" ) %
+                                   acc % triggered % total % totalFull;
+        auxStrings.push_back( auxString.str() );
+    }
+
+    G4int  i( 0 );
+    for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
+                                                k != angularRanges.end(); ++k )
+    {
+        G4cout << "       " << *k;
+        std::ostringstream  formatString;
+        formatString << "%1%%|" << maxSize << "t|";
+        G4cout << boost::format( formatString.str() ) % auxStrings[ i++ ];
+        G4cout << auxStrings[ i++ ] << G4endl;
     }
 
     CexmcAngularRangeList  angularGaps;
@@ -125,9 +144,6 @@ void  CexmcRunAction::PrintResults(
     G4cout << "       ---" << G4endl;
     G4cout << "       False hits (edt, rec):  " << nmbOfFalseHitsTriggeredEDT <<
               " | " << nmbOfFalseHitsTriggeredRec << G4endl;
-
-    G4cout.precision( prec );
-    G4cout.flags( savedFlags );
 }
 
 
