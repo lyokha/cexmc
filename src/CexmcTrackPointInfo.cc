@@ -47,9 +47,10 @@ std::ostream &  operator<<( std::ostream &  out,
     }
 
     std::ostream::fmtflags  savedFlags( out.flags() );
-    std::streamsize  prec( out.precision() );
+    std::streamsize         prec( out.precision() );
 
     out.precision( 4 );
+
     out << trackPointInfo.particle->GetParticleName() << " [" <<
            trackPointInfo.trackId << "," << trackTypeInfo << "] " <<
            G4BestUnit( trackPointInfo.momentumAmp, "Energy" ) << " :  " <<

@@ -57,11 +57,12 @@ std::ostream &  operator<<( std::ostream &  out,
                             const CexmcProductionModelData &  data )
 {
     std::ostream::fmtflags  savedFlags( out.flags() );
-    std::streamsize  prec( out.precision() );
+    std::streamsize         prec( out.precision() );
 
     out.precision( 4 );
-    out << std::endl << std::fixed;
+    out.flags( std::ios::fixed );
 
+    out << std::endl;
     out << "       Incident particle       (LAB) : " <<
            data.incidentParticle->GetParticleName() << " " <<
            G4BestUnit( data.incidentParticleLAB, "Energy" ) << " -- " <<

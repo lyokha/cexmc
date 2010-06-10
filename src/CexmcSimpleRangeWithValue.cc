@@ -24,10 +24,11 @@ std::ostream &  operator<<( std::ostream &  out,
                         const CexmcEnergyRangeWithDoubleValue &  range )
 {
     std::ostream::fmtflags  savedFlags( out.flags() );
-    std::streamsize  prec( out.precision() );
+    std::streamsize         prec( out.precision() );
 
     out.precision( 6 );
-    out << std::fixed;
+    out.flags( std::ios::fixed );
+
     out << " [" << G4BestUnit( range.bottom, "Energy" ) << ", " <<
                    G4BestUnit( range.top, "Energy" ) << ")  " << range.value;
 

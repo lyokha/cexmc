@@ -20,7 +20,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <boost/format.hpp>
+#include <iomanip>
 #include "CexmcRunAction.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
@@ -50,8 +50,19 @@ void  CexmcRunAction::PrintResults(
                     G4int  nmbOfFalseHitsTriggeredEDT,
                     G4int  nmbOfFalseHitsTriggeredRec )
 {
-    std::vector< std::string >  auxStrings;
-    size_t                      maxSize( 0 );
+    const size_t                               nmbOfAuxColumns( 7 );
+    const std::streamsize                      prec( 8 );
+    std::vector< std::vector< std::string > >  auxStrings;
+    size_t                                     maxSize[ nmbOfAuxColumns ];
+
+    for ( size_t  i( 0 ); i < nmbOfAuxColumns; ++i )
+        maxSize[ i ] = 0;
+
+    /* addition of 2 (for '0.') for acceptances, that are floating point
+     * numbers, is correct as far as ios::fixed will be used, and no negative
+     * values are expected, and values will be less than 1. */
+    maxSize[ 0 ] = prec + 2;
+    maxSize[ 3 ] = prec + 2;
 
     for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
@@ -84,14 +95,23 @@ void  CexmcRunAction::PrintResults(
                 acc = G4double( triggered ) / total;
         }
 
-        std::ostringstream  auxString;
-        auxString << "  | " << boost::format( "%|1$.8f| ( %2% / %3% )" ) %
-                                   acc % triggered % total;
-        auxStrings.push_back( auxString.str() );
+        std::ostringstream  auxStringStream[ nmbOfAuxColumns ];
 
-        size_t  size( auxString.str().size() );
-        maxSize = maxSize > size ? maxSize : size;
-        auxString.str( "" );
+        for ( size_t  i( 0 ); i < nmbOfAuxColumns; ++i )
+        {
+            auxStringStream[ i ].precision( prec );
+            auxStringStream[ i ].flags( std::ios::fixed );
+        }
+
+        G4int  i( 0 );
+
+        auxStringStream[ i ] << acc;
+        auxStringStream[ ++i ] << triggered;
+        size_t  size( auxStringStream[ i ].str().size() );
+        maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
+        auxStringStream[ ++i ] << total;
+        size = auxStringStream[ i ].str().size();
+        maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
 
         triggered = 0;
         acc = accSave;
@@ -103,9 +123,23 @@ void  CexmcRunAction::PrintResults(
                 acc = G4double( triggered ) / total;
         }
 
-        auxString << "  | " << boost::format( "%|1$.8f| ( %2% / %3% / %4% )" ) %
-                                   acc % triggered % total % totalFull;
-        auxStrings.push_back( auxString.str() );
+        auxStringStream[ ++i ] << acc;
+        auxStringStream[ ++i ] << triggered;
+        size = auxStringStream[ i ].str().size();
+        maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
+        auxStringStream[ ++i ] << total;
+        size = auxStringStream[ i ].str().size();
+        maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
+        auxStringStream[ ++i ] << totalFull;
+        size = auxStringStream[ i ].str().size();
+        maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
+
+        std::vector< std::string >  auxString( nmbOfAuxColumns );
+
+        for ( size_t  i( 0 ); i < nmbOfAuxColumns; ++i )
+            auxString[ i ] = auxStringStream[ i ].str();
+
+        auxStrings.push_back( auxString );
     }
 
     G4int  i( 0 );
@@ -113,10 +147,21 @@ void  CexmcRunAction::PrintResults(
                                                 k != angularRanges.end(); ++k )
     {
         G4cout << "       " << *k;
-        std::ostringstream  formatString;
-        formatString << "%1%%|" << maxSize << "t|";
-        G4cout << boost::format( formatString.str() ) % auxStrings[ i++ ];
-        G4cout << auxStrings[ i++ ] << G4endl;
+        G4int  j( 0 );
+        G4cout << "  | " << std::setw( maxSize[ j ] );
+        G4cout << auxStrings[ i ][ j++ ];
+        G4cout << " ( " << std::setw( maxSize[ j ] );
+        G4cout << auxStrings[ i ][ j++ ];
+        G4cout << " / " << std::setw( maxSize[ j ] );
+        G4cout << auxStrings[ i ][ j++ ];
+        G4cout << " )  | " << std::setw( maxSize[ j ] );
+        G4cout << auxStrings[ i ][ j++ ];
+        G4cout << " ( " << std::setw( maxSize[ j ] );
+        G4cout << auxStrings[ i ][ j++ ];
+        G4cout << " / " << std::setw( maxSize[ j ] );
+        G4cout << auxStrings[ i ][ j++ ];
+        G4cout << " / " << std::setw( maxSize[ j ] );
+        G4cout << auxStrings[ i++ ][ j++ ] << " )" << G4endl;
     }
 
     CexmcAngularRangeList  angularGaps;

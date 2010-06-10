@@ -18,6 +18,8 @@
 
 #ifdef CEXMC_USE_ROOT
 
+#include <iostream>
+#include <iomanip>
 #include <TH1.h>
 #include <TH1F.h>
 #include <TH2F.h>

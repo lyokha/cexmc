@@ -87,10 +87,11 @@ std::ostream &  operator<<( std::ostream &  out,
                             const CexmcAngularRange &  angularRange )
 {
     std::ostream::fmtflags  savedFlags( out.flags() );
-    std::streamsize  prec( out.precision() );
+    std::streamsize         prec( out.precision() );
 
     out.precision( 4 );
-    out << std::fixed;
+    out.flags( std::ios::fixed );
+
     out << std::setw( 2 ) << angularRange.index + 1 << " [" << std::setw( 7 ) <<
            angularRange.top << ", " << std::setw( 7 ) << angularRange.bottom <<
            ")";
