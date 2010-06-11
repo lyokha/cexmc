@@ -50,7 +50,16 @@ void  CexmcRunAction::PrintResults(
                     G4int  nmbOfFalseHitsTriggeredEDT,
                     G4int  nmbOfFalseHitsTriggeredRec )
 {
-    const size_t                               nmbOfAuxColumns( 7 );
+    /* there are 7 auxiliary columns:
+     * 1. acc real, [floating point number]
+     * 2. triggered real,
+     * 3. total hits sampled and monitored,
+     * 5. acc reconstructed, [floating point number]
+     * 4. triggered reconstructed,
+     * 6. total hits sampled and monitored (identical with #3),
+     * 7. total hits sampled.
+     * As far as #3 and #6 are identical, nmbOfAuxColumns = 6 */
+    const size_t                               nmbOfAuxColumns( 6 );
     const std::streamsize                      prec( 8 );
     std::vector< std::vector< std::string > >  auxStrings;
     size_t                                     maxSize[ nmbOfAuxColumns ];
@@ -127,9 +136,6 @@ void  CexmcRunAction::PrintResults(
         auxStringStream[ ++i ] << triggered;
         size = auxStringStream[ i ].str().size();
         maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
-        auxStringStream[ ++i ] << total;
-        size = auxStringStream[ i ].str().size();
-        maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
         auxStringStream[ ++i ] << totalFull;
         size = auxStringStream[ i ].str().size();
         maxSize[ i ] = maxSize[ i ] > size ? maxSize[ i ] : size;
@@ -158,8 +164,8 @@ void  CexmcRunAction::PrintResults(
         G4cout << auxStrings[ i ][ j++ ];
         G4cout << " ( " << std::setw( maxSize[ j ] );
         G4cout << auxStrings[ i ][ j++ ];
-        G4cout << " / " << std::setw( maxSize[ j ] );
-        G4cout << auxStrings[ i ][ j++ ];
+        G4cout << " / " << std::setw( maxSize[ 2 ] );
+        G4cout << auxStrings[ i ][ 2 ];
         G4cout << " / " << std::setw( maxSize[ j ] );
         G4cout << auxStrings[ i++ ][ j++ ] << " )" << G4endl;
     }
