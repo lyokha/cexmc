@@ -16,24 +16,17 @@
  * =============================================================================
  */
 
-#include "CexmcSimpleRangeWithValue.hh"
+#include <iomanip>
 #include <G4UnitsTable.hh>
+#include "CexmcSimpleRangeWithValue.hh"
 
 
 std::ostream &  operator<<( std::ostream &  out,
                         const CexmcEnergyRangeWithDoubleValue &  range )
 {
-    std::ostream::fmtflags  savedFlags( out.flags() );
-    std::streamsize         prec( out.precision() );
-
-    out.precision( 6 );
-    out.flags( std::ios::fixed );
-
-    out << " [" << G4BestUnit( range.bottom, "Energy" ) << ", " <<
-                   G4BestUnit( range.top, "Energy" ) << ")  " << range.value;
-
-    out.precision( prec );
-    out.flags( savedFlags );
+    out << "[ " << std::setw( 3 ) << G4BestUnit( range.bottom, "Energy" ) <<
+           ", " << std::setw( 3 ) << G4BestUnit( range.top, "Energy" ) <<
+           " )   " << range.value;
 
     return out;
 }
@@ -46,7 +39,7 @@ std::ostream &  operator<<( std::ostream &  out,
     for ( CexmcEnergyRangeWithDoubleValueList::const_iterator
                                   k( ranges.begin() ); k != ranges.end(); ++k )
     {
-        out << "                 " << *k << std::endl;
+        out << "          " << *k << std::endl;
     }
 
     return out;
