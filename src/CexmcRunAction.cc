@@ -54,8 +54,8 @@ void  CexmcRunAction::PrintResults(
      * 1. acc real, [floating point number]
      * 2. triggered real,
      * 3. total hits sampled and monitored,
-     * 5. acc reconstructed, [floating point number]
-     * 4. triggered reconstructed,
+     * 4. acc reconstructed, [floating point number]
+     * 5. triggered reconstructed,
      * 6. total hits sampled and monitored (identical with #3),
      * 7. total hits sampled.
      * As far as #3 and #6 are identical, nmbOfAuxColumns = 6 */
