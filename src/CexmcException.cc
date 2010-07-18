@@ -78,6 +78,21 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcCalorimeterRegionNotInitialized :
         return CEXMC_LINE_START "Calorimeter sensitive region was not "
                 "initialized. Check gdml source file.";
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    case CexmcCFUnexpectedFunction :
+        return CEXMC_LINE_START "A function is unknown or in wrong type "
+                "context. Check your custom filter script.";
+    case CexmcCFUnexpectedVariable :
+        return CEXMC_LINE_START "A variable is unknown or in wrong type "
+                "context. Check your custom filter script.";
+    case CexmcCFUnexpectedVariableUsage :
+        return CEXMC_LINE_START "A variable is used in wrong context (scalar "
+                "when vector is expected or vice versa). Check your custom "
+                "filter script.";
+    case CexmcCFUnexpectedVectorIndex :
+        return CEXMC_LINE_START "A vector variable with wrong index. Indices "
+                "of vectors start from 1. Check your custom filter script.";
+#endif
     case CexmcWeirdException :
         return CEXMC_LINE_START "A weird exception occured. "
                 "The world must collapse now.";

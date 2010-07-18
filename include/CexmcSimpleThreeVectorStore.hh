@@ -25,7 +25,10 @@
 
 class  CexmcSimpleThreeVectorStore
 {
-    friend class boost::serialization::access;
+    friend class  boost::serialization::access;
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    friend class  CexmcASTEval;
+#endif
 
     public:
         CexmcSimpleThreeVectorStore();

@@ -31,7 +31,7 @@ typedef std::map< G4int, G4double >  CexmcDecayBranchesStore;
 
 class  CexmcSimpleDecayTableStore
 {
-    friend class boost::serialization::access;
+    friend class  boost::serialization::access;
 
     public:
         CexmcSimpleDecayTableStore();

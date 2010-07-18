@@ -33,6 +33,9 @@ class  CexmcEventSObject
 {
     friend class  boost::serialization::access;
     friend class  CexmcRunManager;
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    friend class  CexmcASTEval;
+#endif
 
     public:
         CexmcEventSObject();

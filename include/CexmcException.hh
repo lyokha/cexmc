@@ -38,6 +38,12 @@ enum  CexmcExceptionType
     CexmcBadOCVetoAlgorithm,
     CexmcBadOCVetoFraction,
     CexmcCalorimeterRegionNotInitialized,
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    CexmcCFUnexpectedFunction,
+    CexmcCFUnexpectedVariable,
+    CexmcCFUnexpectedVariableUsage,
+    CexmcCFUnexpectedVectorIndex,
+#endif
     CexmcWeirdException
 };
 
