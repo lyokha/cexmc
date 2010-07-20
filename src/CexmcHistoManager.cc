@@ -886,7 +886,7 @@ void  CexmcHistoManager::Draw( const G4String &  histoName,
 {
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
-    if ( ! runManager->IsLiveHistogramsEnabled() )
+    if ( ! runManager->AreLiveHistogramsEnabled() )
     {
         G4cout << "Live histograms option is disabled" << G4endl;
         return;

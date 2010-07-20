@@ -121,15 +121,16 @@ namespace
 const G4double CexmcASTEval::constants[] = { eV, keV, MeV, GeV, mm, cm, m };
 
 
+CexmcASTEval::CexmcASTEval( const CexmcEventFastSObject *  evFastSObject,
+                            const CexmcEventSObject *  evSObject ) :
+    evFastSObject( evFastSObject ), evSObject( evSObject )
+{
+}
+
+
 CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetFunScalarValue(
                                         const CexmcAST::Subtree &  ast ) const
 {
-    bool             evalResult( false );
-    ScalarValueType  result( GetBasicFunScalarValue( ast, evalResult ) );
-
-    if ( evalResult )
-        return result;
-
     const CexmcAST::Function &  fun( boost::get< CexmcAST::Function >(
                                                                 ast.type ) );
 
@@ -143,11 +144,17 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetFunScalarValue(
         for ( CexmcEnergyDepositCalorimeterCollection::iterator
                                     k( edCol.begin() ); k != edCol.end(); ++k )
         {
-            result += std::accumulate( k->begin(), k->end(), 0 );
+            result += std::accumulate( k->begin(), k->end(), G4double( 0. ) );
         }
 
         return result;
     }
+
+    bool             evalResult( false );
+    ScalarValueType  result( GetBasicFunScalarValue( ast, evalResult ) );
+
+    if ( evalResult )
+        return result;
 
     throw CexmcException( CexmcCFUnexpectedFunction );
 
@@ -158,6 +165,9 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetFunScalarValue(
 CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
                                         const CexmcAST::Variable &  var ) const
 {
+    if ( evFastSObject == NULL || evSObject == NULL )
+        throw CexmcException( CexmcCFUninitialized );
+
     /* Variables with initialized address */
 
     const int * const *  addr( boost::get< const int * >( &var.addr ) );
@@ -188,7 +198,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
             {
                 if ( var.index1 == 0 || var.index2 == 0 )
                     throw CexmcException( CexmcCFUnexpectedVectorIndex );
-                return ( *addr )->at( var.index1 ).at( var.index2 );
+                return ( *addr )->at( var.index1 - 1 ).at( var.index2 - 1 );
             }
         }
         else
@@ -207,618 +217,618 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
 
     if ( var.name == CexmcCFVarEvent )
     {
-        theVar.addr = &eventFastSObject.eventId;
-        return eventFastSObject.eventId;
+        theVar.addr = &evFastSObject->eventId;
+        return evFastSObject->eventId;
     }
     if ( var.name == CexmcCFVarOpCosThetaSCM )
     {
-        theVar.addr = &eventFastSObject.opCosThetaSCM;
-        return eventFastSObject.opCosThetaSCM;
+        theVar.addr = &evFastSObject->opCosThetaSCM;
+        return evFastSObject->opCosThetaSCM;
     }
     if ( var.name == CexmcCFVarEDT )
     {
         theVarAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                        &eventFastSObject.edDigitizerHasTriggered ) );
-        return eventFastSObject.edDigitizerHasTriggered;
+                        &evFastSObject->edDigitizerHasTriggered ) );
+        return evFastSObject->edDigitizerHasTriggered;
     } 
     if ( var.name == CexmcCFVarMonT )
     {
         theVarAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                        &eventFastSObject.edDigitizerMonitorHasTriggered ) );
-        return eventFastSObject.edDigitizerMonitorHasTriggered;
+                        &evFastSObject->edDigitizerMonitorHasTriggered ) );
+        return evFastSObject->edDigitizerMonitorHasTriggered;
     }
     if ( var.name == CexmcCFVarMonED )
     {
-        theVar.addr = &eventSObject.monitorED;
-        return eventSObject.monitorED;
+        theVar.addr = &evSObject->monitorED;
+        return evSObject->monitorED;
     }
     if ( var.name == CexmcCFVarVclED )
     {
-        theVar.addr = &eventSObject.vetoCounterEDLeft;
-        return eventSObject.vetoCounterEDLeft;
+        theVar.addr = &evSObject->vetoCounterEDLeft;
+        return evSObject->vetoCounterEDLeft;
     }
     if ( var.name == CexmcCFVarVcrED )
     {
-        theVar.addr = &eventSObject.vetoCounterEDRight;
-        return eventSObject.vetoCounterEDRight;
+        theVar.addr = &evSObject->vetoCounterEDRight;
+        return evSObject->vetoCounterEDRight;
     }
     if ( var.name == CexmcCFVarClED )
     {
-        theVar.addr = &eventSObject.calorimeterEDLeft;
-        return eventSObject.calorimeterEDLeft;
+        theVar.addr = &evSObject->calorimeterEDLeft;
+        return evSObject->calorimeterEDLeft;
     }
     if ( var.name == CexmcCFVarCrED )
     {
-        theVar.addr = &eventSObject.calorimeterEDRight;
-        return eventSObject.calorimeterEDRight;
+        theVar.addr = &evSObject->calorimeterEDRight;
+        return evSObject->calorimeterEDRight;
     }
     if ( var.name == CexmcCFVarClEDCol )
     {
         if ( var.index1 == 0 || var.index2 == 0 )
             throw CexmcException( CexmcCFUnexpectedVectorIndex );
         theVarAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                                &eventSObject.calorimeterEDLeftCollection ) );
-        return eventSObject.calorimeterEDLeftCollection.at( var.index1 - 1 ).
-                                                        at( var.index2 - 1 );
+                                &evSObject->calorimeterEDLeftCollection ) );
+        return evSObject->calorimeterEDLeftCollection.at( var.index1 - 1 ).
+                                                      at( var.index2 - 1 );
     }
     if ( var.name == CexmcCFVarCrEDCol )
     {
         if ( var.index1 == 0 || var.index2 == 0 )
             throw CexmcException( CexmcCFUnexpectedVectorIndex );
         theVarAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                                &eventSObject.calorimeterEDRightCollection ) );
-        return eventSObject.calorimeterEDRightCollection.at( var.index1 - 1 ).
-                                                         at( var.index2 - 1 );
+                                &evSObject->calorimeterEDRightCollection ) );
+        return evSObject->calorimeterEDRightCollection.at( var.index1 - 1 ).
+                                                       at( var.index2 - 1 );
     }
     if ( var.name == CexmcCFVarIpMonPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.monitorTP.positionLocal, var.index1 );
+                        evSObject->monitorTP.positionLocal, var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.monitorTP.positionLocal, var.index1 );
+                        evSObject->monitorTP.positionLocal, var.index1 );
     }
     if ( var.name == CexmcCFVarIpMonPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.monitorTP.positionWorld, var.index1 );
+                        evSObject->monitorTP.positionWorld, var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.monitorTP.positionWorld, var.index1 );
+                        evSObject->monitorTP.positionWorld, var.index1 );
     }
     if ( var.name == CexmcCFVarIpMonDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.monitorTP.directionLocal, var.index1 );
+                        evSObject->monitorTP.directionLocal, var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.monitorTP.directionLocal, var.index1 );
+                        evSObject->monitorTP.directionLocal, var.index1 );
     }
     if ( var.name == CexmcCFVarIpMonDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.monitorTP.directionWorld, var.index1 );
+                        evSObject->monitorTP.directionWorld, var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.monitorTP.directionWorld, var.index1 );
+                        evSObject->monitorTP.directionWorld, var.index1 );
     }
     if ( var.name == CexmcCFVarIpMonMom )
     {
-        theVar.addr = &eventSObject.monitorTP.momentumAmp;
-        return eventSObject.monitorTP.momentumAmp;
+        theVar.addr = &evSObject->monitorTP.momentumAmp;
+        return evSObject->monitorTP.momentumAmp;
     }
     if ( var.name == CexmcCFVarIpMonTid )
     {
-        theVar.addr = &eventSObject.monitorTP.trackId;
-        return eventSObject.monitorTP.trackId;
+        theVar.addr = &evSObject->monitorTP.trackId;
+        return evSObject->monitorTP.trackId;
     }
     if ( var.name == CexmcCFVarIpTgtPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPIncidentParticle.positionLocal,
+                        evSObject->targetTPIncidentParticle.positionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPIncidentParticle.positionLocal,
+                        evSObject->targetTPIncidentParticle.positionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarIpTgtPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPIncidentParticle.positionWorld,
+                        evSObject->targetTPIncidentParticle.positionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPIncidentParticle.positionWorld,
+                        evSObject->targetTPIncidentParticle.positionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarIpTgtDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPIncidentParticle.directionLocal,
+                        evSObject->targetTPIncidentParticle.directionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPIncidentParticle.directionLocal,
+                        evSObject->targetTPIncidentParticle.directionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarIpTgtDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPIncidentParticle.directionWorld,
+                        evSObject->targetTPIncidentParticle.directionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPIncidentParticle.directionWorld,
+                        evSObject->targetTPIncidentParticle.directionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarIpTgtMom )
     {
-        theVar.addr = &eventSObject.targetTPIncidentParticle.momentumAmp;
-        return eventSObject.targetTPIncidentParticle.momentumAmp;
+        theVar.addr = &evSObject->targetTPIncidentParticle.momentumAmp;
+        return evSObject->targetTPIncidentParticle.momentumAmp;
     }
     if ( var.name == CexmcCFVarIpTgtTid )
     {
-        theVar.addr = &eventSObject.targetTPIncidentParticle.trackId;
-        return eventSObject.targetTPIncidentParticle.trackId;
+        theVar.addr = &evSObject->targetTPIncidentParticle.trackId;
+        return evSObject->targetTPIncidentParticle.trackId;
     }
     if ( var.name == CexmcCFVarOpTgtPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPOutputParticle.positionLocal,
+                        evSObject->targetTPOutputParticle.positionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPOutputParticle.positionLocal,
+                        evSObject->targetTPOutputParticle.positionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpTgtPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPOutputParticle.positionWorld,
+                        evSObject->targetTPOutputParticle.positionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPOutputParticle.positionWorld,
+                        evSObject->targetTPOutputParticle.positionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpTgtDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPOutputParticle.directionLocal,
+                        evSObject->targetTPOutputParticle.directionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPOutputParticle.directionLocal,
+                        evSObject->targetTPOutputParticle.directionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpTgtDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPOutputParticle.directionWorld,
+                        evSObject->targetTPOutputParticle.directionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPOutputParticle.directionWorld,
+                        evSObject->targetTPOutputParticle.directionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpTgtMom )
     {
-        theVar.addr = &eventSObject.targetTPOutputParticle.momentumAmp;
-        return eventSObject.targetTPOutputParticle.momentumAmp;
+        theVar.addr = &evSObject->targetTPOutputParticle.momentumAmp;
+        return evSObject->targetTPOutputParticle.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpTgtTid )
     {
-        theVar.addr = &eventSObject.targetTPOutputParticle.trackId;
-        return eventSObject.targetTPOutputParticle.trackId;
+        theVar.addr = &evSObject->targetTPOutputParticle.trackId;
+        return evSObject->targetTPOutputParticle.trackId;
     }
     if ( var.name == CexmcCFVarNpTgtPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPNucleusParticle.positionLocal,
+                        evSObject->targetTPNucleusParticle.positionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPNucleusParticle.positionLocal,
+                        evSObject->targetTPNucleusParticle.positionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarNpTgtPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPNucleusParticle.positionWorld,
+                        evSObject->targetTPNucleusParticle.positionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPNucleusParticle.positionWorld,
+                        evSObject->targetTPNucleusParticle.positionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarNpTgtDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPNucleusParticle.directionLocal,
+                        evSObject->targetTPNucleusParticle.directionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPNucleusParticle.directionLocal,
+                        evSObject->targetTPNucleusParticle.directionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarNpTgtDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.targetTPNucleusParticle.directionWorld,
+                        evSObject->targetTPNucleusParticle.directionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.targetTPNucleusParticle.directionWorld,
+                        evSObject->targetTPNucleusParticle.directionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarNpTgtMom )
     {
-        theVar.addr = &eventSObject.targetTPNucleusParticle.momentumAmp;
-        return eventSObject.targetTPNucleusParticle.momentumAmp;
+        theVar.addr = &evSObject->targetTPNucleusParticle.momentumAmp;
+        return evSObject->targetTPNucleusParticle.momentumAmp;
     }
     if ( var.name == CexmcCFVarNpTgtTid )
     {
-        theVar.addr = &eventSObject.targetTPNucleusParticle.trackId;
-        return eventSObject.targetTPNucleusParticle.trackId;
+        theVar.addr = &evSObject->targetTPNucleusParticle.trackId;
+        return evSObject->targetTPNucleusParticle.trackId;
     }
     if ( var.name == CexmcCFVarOpdp1TgtPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     positionLocal, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     positionLocal, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp1TgtPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     positionWorld, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     positionWorld, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp1TgtDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     directionLocal, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     directionLocal, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp1TgtDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     directionWorld, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle1.
+                    evSObject->targetTPOutputParticleDecayProductParticle1.
                     directionWorld, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp1TgtMom )
     {
-        theVar.addr = &eventSObject.targetTPOutputParticleDecayProductParticle1.
+        theVar.addr = &evSObject->targetTPOutputParticleDecayProductParticle1.
                     momentumAmp;
-        return eventSObject.targetTPOutputParticleDecayProductParticle1.
+        return evSObject->targetTPOutputParticleDecayProductParticle1.
                     momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdp1TgtTid )
     {
-        theVar.addr = &eventSObject.targetTPOutputParticleDecayProductParticle1.
+        theVar.addr = &evSObject->targetTPOutputParticleDecayProductParticle1.
                     trackId;
-        return eventSObject.targetTPOutputParticleDecayProductParticle1.trackId;
+        return evSObject->targetTPOutputParticleDecayProductParticle1.trackId;
     }
     if ( var.name == CexmcCFVarOpdp2TgtPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     positionLocal, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     positionLocal, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp2TgtPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     positionWorld, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     positionWorld, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp2TgtDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     directionLocal, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     directionLocal, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp2TgtDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     directionWorld, var.index1 );
         return GetThreeVectorElementByIndex(
-                    eventSObject.targetTPOutputParticleDecayProductParticle2.
+                    evSObject->targetTPOutputParticleDecayProductParticle2.
                     directionWorld, var.index1 );
     }
     if ( var.name == CexmcCFVarOpdp2TgtMom )
     {
-        theVar.addr = &eventSObject.targetTPOutputParticleDecayProductParticle2.
+        theVar.addr = &evSObject->targetTPOutputParticleDecayProductParticle2.
                     momentumAmp;
-        return eventSObject.targetTPOutputParticleDecayProductParticle2.
+        return evSObject->targetTPOutputParticleDecayProductParticle2.
                     momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdp2TgtTid )
     {
-        theVar.addr = &eventSObject.targetTPOutputParticleDecayProductParticle2.
+        theVar.addr = &evSObject->targetTPOutputParticleDecayProductParticle2.
                     trackId;
-        return eventSObject.targetTPOutputParticleDecayProductParticle2.trackId;
+        return evSObject->targetTPOutputParticleDecayProductParticle2.trackId;
     }
     if ( var.name == CexmcCFVarOpdpVclPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPLeft.positionLocal,
+                        evSObject->vetoCounterTPLeft.positionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPLeft.positionLocal,
+                        evSObject->vetoCounterTPLeft.positionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVclPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPLeft.positionWorld,
+                        evSObject->vetoCounterTPLeft.positionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPLeft.positionWorld,
+                        evSObject->vetoCounterTPLeft.positionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVclDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPLeft.directionLocal,
+                        evSObject->vetoCounterTPLeft.directionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPLeft.directionLocal,
+                        evSObject->vetoCounterTPLeft.directionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVclDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPLeft.directionWorld,
+                        evSObject->vetoCounterTPLeft.directionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPLeft.directionWorld,
+                        evSObject->vetoCounterTPLeft.directionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVclMom )
     {
-        theVar.addr = &eventSObject.vetoCounterTPLeft.momentumAmp;
-        return eventSObject.vetoCounterTPLeft.momentumAmp;
+        theVar.addr = &evSObject->vetoCounterTPLeft.momentumAmp;
+        return evSObject->vetoCounterTPLeft.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdpVclTid )
     {
-        theVar.addr = &eventSObject.vetoCounterTPLeft.trackId;
-        return eventSObject.vetoCounterTPLeft.trackId;
+        theVar.addr = &evSObject->vetoCounterTPLeft.trackId;
+        return evSObject->vetoCounterTPLeft.trackId;
     }
     if ( var.name == CexmcCFVarOpdpVcrPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPRight.positionLocal,
+                        evSObject->vetoCounterTPRight.positionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPRight.positionLocal,
+                        evSObject->vetoCounterTPRight.positionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVcrPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPRight.positionWorld,
+                        evSObject->vetoCounterTPRight.positionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPRight.positionWorld,
+                        evSObject->vetoCounterTPRight.positionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVcrDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPRight.directionLocal,
+                        evSObject->vetoCounterTPRight.directionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPRight.directionLocal,
+                        evSObject->vetoCounterTPRight.directionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVcrDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.vetoCounterTPRight.directionWorld,
+                        evSObject->vetoCounterTPRight.directionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.vetoCounterTPRight.directionWorld,
+                        evSObject->vetoCounterTPRight.directionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpVcrMom )
     {
-        theVar.addr = &eventSObject.vetoCounterTPRight.momentumAmp;
-        return eventSObject.vetoCounterTPRight.momentumAmp;
+        theVar.addr = &evSObject->vetoCounterTPRight.momentumAmp;
+        return evSObject->vetoCounterTPRight.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdpVcrTid )
     {
-        theVar.addr = &eventSObject.vetoCounterTPRight.trackId;
-        return eventSObject.vetoCounterTPRight.trackId;
+        theVar.addr = &evSObject->vetoCounterTPRight.trackId;
+        return evSObject->vetoCounterTPRight.trackId;
     }
     if ( var.name == CexmcCFVarOpdpClPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPLeft.positionLocal,
+                        evSObject->calorimeterTPLeft.positionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPLeft.positionLocal,
+                        evSObject->calorimeterTPLeft.positionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpClPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPLeft.positionWorld,
+                        evSObject->calorimeterTPLeft.positionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPLeft.positionWorld,
+                        evSObject->calorimeterTPLeft.positionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpClDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPLeft.directionLocal,
+                        evSObject->calorimeterTPLeft.directionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPLeft.directionLocal,
+                        evSObject->calorimeterTPLeft.directionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpClDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPLeft.directionWorld,
+                        evSObject->calorimeterTPLeft.directionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPLeft.directionWorld,
+                        evSObject->calorimeterTPLeft.directionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpClMom )
     {
-        theVar.addr = &eventSObject.calorimeterTPLeft.momentumAmp;
-        return eventSObject.calorimeterTPLeft.momentumAmp;
+        theVar.addr = &evSObject->calorimeterTPLeft.momentumAmp;
+        return evSObject->calorimeterTPLeft.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdpClTid )
     {
-        theVar.addr = &eventSObject.calorimeterTPLeft.trackId;
-        return eventSObject.calorimeterTPLeft.trackId;
+        theVar.addr = &evSObject->calorimeterTPLeft.trackId;
+        return evSObject->calorimeterTPLeft.trackId;
     }
     if ( var.name == CexmcCFVarOpdpCrPosL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPRight.positionLocal,
+                        evSObject->calorimeterTPRight.positionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPRight.positionLocal,
+                        evSObject->calorimeterTPRight.positionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpCrPosW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPRight.positionWorld,
+                        evSObject->calorimeterTPRight.positionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPRight.positionWorld,
+                        evSObject->calorimeterTPRight.positionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpCrDirL )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPRight.directionLocal,
+                        evSObject->calorimeterTPRight.directionLocal,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPRight.directionLocal,
+                        evSObject->calorimeterTPRight.directionLocal,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpCrDirW )
     {
         theVar.addr = GetThreeVectorElementAddrByIndex(
-                        eventSObject.calorimeterTPRight.directionWorld,
+                        evSObject->calorimeterTPRight.directionWorld,
                         var.index1 );
         return GetThreeVectorElementByIndex(
-                        eventSObject.calorimeterTPRight.directionWorld,
+                        evSObject->calorimeterTPRight.directionWorld,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpdpCrMom )
     {
-        theVar.addr = &eventSObject.calorimeterTPRight.momentumAmp;
-        return eventSObject.calorimeterTPRight.momentumAmp;
+        theVar.addr = &evSObject->calorimeterTPRight.momentumAmp;
+        return evSObject->calorimeterTPRight.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdpCrTid )
     {
-        theVar.addr = &eventSObject.calorimeterTPRight.trackId;
-        return eventSObject.calorimeterTPRight.trackId;
+        theVar.addr = &evSObject->calorimeterTPRight.trackId;
+        return evSObject->calorimeterTPRight.trackId;
     }
     if ( var.name == CexmcCFVarIpSCM )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                        eventSObject.productionModelData.incidentParticleSCM,
+                        evSObject->productionModelData.incidentParticleSCM,
                         var.index1 );
         return GetLorentzVectorElementByIndex(
-                        eventSObject.productionModelData.incidentParticleSCM,
+                        evSObject->productionModelData.incidentParticleSCM,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarIpLAB )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                        eventSObject.productionModelData.incidentParticleLAB,
+                        evSObject->productionModelData.incidentParticleLAB,
                         var.index1 );
         return GetLorentzVectorElementByIndex(
-                        eventSObject.productionModelData.incidentParticleLAB,
+                        evSObject->productionModelData.incidentParticleLAB,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarNpSCM )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                        eventSObject.productionModelData.nucleusParticleSCM,
+                        evSObject->productionModelData.nucleusParticleSCM,
                         var.index1 );
         return GetLorentzVectorElementByIndex(
-                        eventSObject.productionModelData.nucleusParticleSCM,
+                        evSObject->productionModelData.nucleusParticleSCM,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarNpLAB )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                        eventSObject.productionModelData.nucleusParticleLAB,
+                        evSObject->productionModelData.nucleusParticleLAB,
                         var.index1 );
         return GetLorentzVectorElementByIndex(
-                        eventSObject.productionModelData.nucleusParticleLAB,
+                        evSObject->productionModelData.nucleusParticleLAB,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpSCM )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                        eventSObject.productionModelData.outputParticleSCM,
+                        evSObject->productionModelData.outputParticleSCM,
                         var.index1 );
         return GetLorentzVectorElementByIndex(
-                        eventSObject.productionModelData.outputParticleSCM,
+                        evSObject->productionModelData.outputParticleSCM,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarOpLAB )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                        eventSObject.productionModelData.outputParticleLAB,
+                        evSObject->productionModelData.outputParticleLAB,
                         var.index1 );
         return GetLorentzVectorElementByIndex(
-                        eventSObject.productionModelData.outputParticleLAB,
+                        evSObject->productionModelData.outputParticleLAB,
                         var.index1 );
     }
     if ( var.name == CexmcCFVarNopSCM )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                    eventSObject.productionModelData.nucleusOutputParticleSCM,
+                    evSObject->productionModelData.nucleusOutputParticleSCM,
                     var.index1 );
         return GetLorentzVectorElementByIndex(
-                    eventSObject.productionModelData.nucleusOutputParticleSCM,
+                    evSObject->productionModelData.nucleusOutputParticleSCM,
                     var.index1 );
     }
     if ( var.name == CexmcCFVarNopLAB )
     {
         theVar.addr = GetLorentzVectorElementAddrByIndex(
-                    eventSObject.productionModelData.nucleusOutputParticleLAB,
+                    evSObject->productionModelData.nucleusOutputParticleLAB,
                     var.index1 );
         return GetLorentzVectorElementByIndex(
-                    eventSObject.productionModelData.nucleusOutputParticleLAB,
+                    evSObject->productionModelData.nucleusOutputParticleLAB,
                     var.index1 );
     }
     if ( var.name == CexmcCFVarIpId )
     {
-        theVar.addr = &eventSObject.productionModelData.incidentParticle;
-        return eventSObject.productionModelData.incidentParticle;
+        theVar.addr = &evSObject->productionModelData.incidentParticle;
+        return evSObject->productionModelData.incidentParticle;
     }
     if ( var.name == CexmcCFVarNpId )
     {
-        theVar.addr = &eventSObject.productionModelData.nucleusParticle;
-        return eventSObject.productionModelData.nucleusParticle;
+        theVar.addr = &evSObject->productionModelData.nucleusParticle;
+        return evSObject->productionModelData.nucleusParticle;
     }
     if ( var.name == CexmcCFVarOpId )
     {
-        theVar.addr = &eventSObject.productionModelData.outputParticle;
-        return eventSObject.productionModelData.outputParticle;
+        theVar.addr = &evSObject->productionModelData.outputParticle;
+        return evSObject->productionModelData.outputParticle;
     }
     if ( var.name == CexmcCFVarNopId )
     {
-        theVar.addr = &eventSObject.productionModelData.nucleusOutputParticle;
-        return eventSObject.productionModelData.nucleusOutputParticle;
+        theVar.addr = &evSObject->productionModelData.nucleusOutputParticle;
+        return evSObject->productionModelData.nucleusOutputParticle;
     }
     if ( var.name == CexmcCFVarConst_eV )
     {
@@ -865,6 +875,9 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
 void  CexmcASTEval::GetEDCollectionValue( const CexmcAST::Node &  node,
                         CexmcEnergyDepositCalorimeterCollection &  edCol ) const
 {
+    if ( evSObject == NULL )
+        throw CexmcException( CexmcCFUninitialized );
+
     const CexmcAST::Subtree *  ast( boost::get< CexmcAST::Subtree >( &node ) );
 
     if ( ast )
@@ -933,8 +946,8 @@ void  CexmcASTEval::GetEDCollectionValue( const CexmcAST::Node &  node,
             if ( var.index1 != 0 || var.index2 != 0 )
                 throw CexmcException( CexmcCFUnexpectedVariableUsage );
             theVarAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                                &eventSObject.calorimeterEDLeftCollection ) );
-            edCol = eventSObject.calorimeterEDLeftCollection;
+                                &evSObject->calorimeterEDLeftCollection ) );
+            edCol = evSObject->calorimeterEDLeftCollection;
             return;
         }
         if ( var.name == CexmcCFVarCrEDCol )
@@ -942,8 +955,8 @@ void  CexmcASTEval::GetEDCollectionValue( const CexmcAST::Node &  node,
             if ( var.index1 != 0 || var.index2 != 0 )
                 throw CexmcException( CexmcCFUnexpectedVariableUsage );
             theVarAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                                &eventSObject.calorimeterEDRightCollection ) );
-            edCol = eventSObject.calorimeterEDRightCollection;
+                                &evSObject->calorimeterEDRightCollection ) );
+            edCol = evSObject->calorimeterEDRightCollection;
             return;
         }
     }

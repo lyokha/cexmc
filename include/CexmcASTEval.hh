@@ -40,9 +40,14 @@ class  CexmcASTEval : public CexmcAST::BasicEval
         typedef std::map< std::string, VarAddr >  VarAddrMap;
 
     public:
-        CexmcEventFastSObject &  GetEventFastSObject( void );
+        explicit CexmcASTEval(
+                        const CexmcEventFastSObject *  evFastSObject = NULL,
+                        const CexmcEventSObject *  evSObject = NULL );
 
-        CexmcEventSObject &      GetEventSObject( void );
+    public:
+        void  SetAddressedData(
+                        const CexmcEventFastSObject *  evFastSObject_ = NULL,
+                        const CexmcEventSObject *  evSObject_ = NULL );
 
     private:
         ScalarValueType  GetFunScalarValue( const CexmcAST::Subtree &  ast )
@@ -72,31 +77,28 @@ class  CexmcASTEval : public CexmcAST::BasicEval
                                     G4int  index ) const;
 
     private:
-        CexmcEventFastSObject  eventFastSObject;
+        const CexmcEventFastSObject *  evFastSObject;
 
-        CexmcEventSObject      eventSObject;
-
-    private:
-        VarAddrMap             varAddrMap;
+        const CexmcEventSObject *      evSObject;
 
     private:
-        static const G4double  constants[];
+        VarAddrMap                     varAddrMap;
+
+    private:
+        static const G4double          constants[];
 };
 
 
-inline CexmcEventFastSObject &  CexmcASTEval::GetEventFastSObject( void )
+inline void  CexmcASTEval::SetAddressedData(
+                                const CexmcEventFastSObject *  evFastSObject_,
+                                const CexmcEventSObject *  evSObject_ )
 {
-    return eventFastSObject;
+    evFastSObject = evFastSObject_;
+    evSObject = evSObject_;
 }
 
 
-inline CexmcEventSObject &  CexmcASTEval::GetEventSObject( void )
-{
-    return eventSObject;
-}
-
-
-inline  G4double  CexmcASTEval::GetThreeVectorElementByIndex(
+inline G4double  CexmcASTEval::GetThreeVectorElementByIndex(
                                 const CexmcSimpleThreeVectorStore &  vect,
                                 G4int  index ) const
 {
@@ -115,7 +117,7 @@ inline  G4double  CexmcASTEval::GetThreeVectorElementByIndex(
 }
 
 
-inline  G4double  CexmcASTEval::GetLorentzVectorElementByIndex(
+inline G4double  CexmcASTEval::GetLorentzVectorElementByIndex(
                                 const CexmcSimpleLorentzVectorStore &  vect,
                                 G4int  index ) const
 {
@@ -136,7 +138,7 @@ inline  G4double  CexmcASTEval::GetLorentzVectorElementByIndex(
 }
 
 
-inline  const G4double *  CexmcASTEval::GetThreeVectorElementAddrByIndex(
+inline const G4double *  CexmcASTEval::GetThreeVectorElementAddrByIndex(
                                 const CexmcSimpleThreeVectorStore &  vect,
                                 G4int  index ) const
 {
@@ -155,7 +157,7 @@ inline  const G4double *  CexmcASTEval::GetThreeVectorElementAddrByIndex(
 }
 
 
-inline  const G4double *  CexmcASTEval::GetLorentzVectorElementAddrByIndex(
+inline const G4double *  CexmcASTEval::GetLorentzVectorElementAddrByIndex(
                                 const CexmcSimpleLorentzVectorStore &  vect,
                                 G4int  index ) const
 {

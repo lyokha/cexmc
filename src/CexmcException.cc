@@ -79,6 +79,14 @@ const char *  CexmcException::what( void ) const throw()
         return CEXMC_LINE_START "Calorimeter sensitive region was not "
                 "initialized. Check gdml source file.";
 #ifdef CEXMC_USE_CUSTOM_FILTER
+    case CexmcCFBadSource :
+        return CEXMC_LINE_START "Custom filter source file does not exist or "
+                "damaged. Check your command line arguments or source file.";
+    case CexmcCFParseError :
+        return CEXMC_LINE_START "Custom filter source file contains errors. "
+                "Check your custom filter source file.";
+    case CexmcCFUninitialized :
+        return CEXMC_LINE_START "Custom filter was not properly initialized.";
     case CexmcCFUnexpectedFunction :
         return CEXMC_LINE_START "A function is unknown or in wrong type "
                 "context. Check your custom filter script.";

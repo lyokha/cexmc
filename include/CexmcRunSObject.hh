@@ -31,7 +31,7 @@
 #include "CexmcCommon.hh"
 
 
-#define CEXMC_RUN_SOBJECT_VERSION 1
+#define CEXMC_RUN_SOBJECT_VERSION 2
 
 
 class  CexmcRunSObject
@@ -93,7 +93,10 @@ class  CexmcRunSObject
                          G4int  nmbOfSavedEvents, G4int  nmbOfSavedFastEvents,
                          G4int  numberOfEventsProcessed,
                          G4int  numberOfEventsProcessedEffective,
-                         G4int  numberOfEventsToBeProcessed );
+                         G4int  numberOfEventsToBeProcessed,
+                         const std::string &  rProject,
+                         G4bool  interactionsWithoutEDTWereSkipped,
+                         const std::string &  cfFileName );
 
     private:
         template  < typename  Archive >
@@ -214,6 +217,12 @@ class  CexmcRunSObject
         G4int                        numberOfEventsProcessedEffective;
 
         G4int                        numberOfEventsToBeProcessed;
+
+        std::string                  rProject;
+
+        G4bool                       interactionsWithoutEDTWereSkipped;
+
+        std::string                  cfFileName;
 };
 
 
@@ -279,6 +288,12 @@ void  CexmcRunSObject::serialize( Archive &  archive,
     archive & numberOfEventsProcessed;
     archive & numberOfEventsProcessedEffective;
     archive & numberOfEventsToBeProcessed;
+    if ( version > 1 )
+    {
+        archive & rProject;
+        archive & interactionsWithoutEDTWereSkipped;
+        archive & cfFileName;
+    }
 }
 
 

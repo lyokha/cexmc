@@ -18,6 +18,7 @@
 
 #include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithAnInteger.hh>
+#include <G4UIcmdWithABool.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
 #include "CexmcMessenger.hh"
@@ -27,7 +28,7 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
                                 CexmcRunManager *  runManager ) :
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL ),
     setGuiMacro( NULL ), setEventCountPolicy( NULL ), replayEvents( NULL ),
-    seekTo( NULL )
+    seekTo( NULL ), skipInteractionsWithoutEDT( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -81,6 +82,18 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     seekTo->SetDefaultValue( 0 );
     seekTo->SetRange( "SeekTo >= 0" );
     seekTo->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    skipInteractionsWithoutEDT = new G4UIcmdWithABool(
+        ( CexmcMessenger::runDirName + "skipInteractionsWithoutEDT" ).c_str(),
+        this );
+    skipInteractionsWithoutEDT->SetGuidance( "effective only when a project is "
+        "read and then written to\nanother project. Do not write interactions "
+        "into .fdb file if\nevent was not triggered" );
+    skipInteractionsWithoutEDT->SetParameterName( "skipInteractionsWithoutEDT",
+                                                  true );
+    skipInteractionsWithoutEDT->SetDefaultValue( true );
+    skipInteractionsWithoutEDT->AvailableForStates( G4State_PreInit,
+                                                    G4State_Idle );
 }
 
 
@@ -92,6 +105,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
     delete setEventCountPolicy;
     delete replayEvents;
     delete seekTo;
+    delete skipInteractionsWithoutEDT;
 }
 
 
@@ -158,6 +172,12 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
         if ( cmd == seekTo )
         {
             runManager->SeekTo( G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+            break;
+        }
+        if ( cmd == skipInteractionsWithoutEDT )
+        {
+            runManager->SkipInteractionsWithoutEDTonWrite(
+                                G4UIcmdWithABool::GetNewBoolValue( value ) );
             break;
         }
     } while ( false );

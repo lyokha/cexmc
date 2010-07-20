@@ -55,17 +55,19 @@ struct  CexmcCmdLineData
 {
     CexmcCmdLineData() : isInteractive( false ), startQtSession( false ),
                          preinitMacro( "" ), initMacro( "" ), rProject( "" ),
-                         wProject( "" ), overrideExistingProject( false )
+                         wProject( "" ), overrideExistingProject( false ),
+                         customFilter( "" )
     {}
 
-    G4bool    isInteractive;
-    G4bool    startQtSession;
-    G4String  preinitMacro;
-    G4String  initMacro;
-    G4String  rProject;
-    G4String  wProject;
-    G4bool    overrideExistingProject;
+    G4bool                  isInteractive;
+    G4bool                  startQtSession;
+    G4String                preinitMacro;
+    G4String                initMacro;
+    G4String                rProject;
+    G4String                wProject;
+    G4bool                  overrideExistingProject;
     CexmcOutputDataTypeSet  outputData;
+    G4String                customFilter;
 };
 
 
@@ -76,7 +78,12 @@ void  printUsage( void )
                            "[-g] "
 #endif
                            "[-p preinit_macro] [-m init_macro] "
-                           "[[-y] -w project] [-r project [-o list]]" << G4endl;
+                           "[[-y] -w project]" << G4endl <<
+              "             [-r project "
+#ifdef CEXMC_USE_CUSTOM_FILTER
+                           "[-f filter_script] "
+#endif
+                           "[-o list]]" << G4endl;
     G4cout << "or     cexmc [--help | -h]" << G4endl;
     G4cout << "           -i - run in interactive mode" << G4endl;
 #ifdef G4UI_USE_QT
@@ -88,6 +95,9 @@ void  printUsage( void )
     G4cout << "           -w - save data in specified project files" << G4endl;
     G4cout << "           -r - read data from specified project files" <<
               G4endl;
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    G4cout << "           -f - use specified custom filter script" << G4endl;
+#endif
     G4cout << "           -o - comma-separated list of data to output, "
                               "possible values: run, geom, events" << G4endl;
     G4cout << "           -y - force project override" << G4endl;
@@ -208,6 +218,19 @@ G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
                 }
                 break;
             }
+#ifdef CEXMC_USE_CUSTOM_FILTER
+            if ( G4String( argv[ i ], 2 ) == "-f" )
+            {
+                cmdLineData.customFilter = argv[ i ] + 2;
+                if ( cmdLineData.customFilter == "" )
+                {
+                    if ( ++i >= argc )
+                        throw CexmcException( CexmcCmdLineParseException );
+                    cmdLineData.customFilter = argv[ i ];
+                }
+                break;
+            }
+#endif
 
             throw CexmcException( CexmcCmdLineParseException );
 
@@ -239,6 +262,10 @@ int  main( int  argc, char **  argv )
             throw CexmcException( CexmcCmdLineParseException );
         if ( cmdLineData.rProject == "" && ! cmdLineData.outputData.empty() )
             throw CexmcException( CexmcCmdLineParseException );
+#ifdef CEXMC_USE_CUSTOM_FILTER
+        if ( cmdLineData.rProject == "" && ! cmdLineData.customFilter.empty() )
+            throw CexmcException( CexmcCmdLineParseException );
+#endif
         if ( cmdLineData.wProject != "" && ! cmdLineData.outputData.empty() )
             throw CexmcException( CexmcCmdLineParseException );
         outputDataOnly = ! cmdLineData.outputData.empty();
@@ -269,6 +296,9 @@ int  main( int  argc, char **  argv )
         runManager = new CexmcRunManager( cmdLineData.wProject,
                                           cmdLineData.rProject,
                                           cmdLineData.overrideExistingProject );
+#ifdef CEXMC_USE_CUSTOM_FILTER
+        runManager->SetCustomFilter( cmdLineData.customFilter );
+#endif
 
         if ( outputDataOnly )
         {

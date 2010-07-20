@@ -25,6 +25,7 @@ class  CexmcRunManager;
 class  G4UIcommand;
 class  G4UIcmdWithAString;
 class  G4UIcmdWithAnInteger;
+class  G4UIcmdWithABool;
 
 
 class  CexmcRunManagerMessenger : public G4UImessenger
@@ -51,6 +52,8 @@ class  CexmcRunManagerMessenger : public G4UImessenger
         G4UIcmdWithAnInteger *  replayEvents;
 
         G4UIcmdWithAnInteger *  seekTo;
+
+        G4UIcmdWithABool *      skipInteractionsWithoutEDT;   
 };
 
 

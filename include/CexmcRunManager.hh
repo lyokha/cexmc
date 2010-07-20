@@ -29,6 +29,10 @@
 
 class  CexmcRunManagerMessenger;
 class  CexmcPhysicsManager;
+class  CexmcEventFastSObject;
+#ifdef CEXMC_USE_CUSTOM_FILTER
+class  CexmcCustomFilterEval;
+#endif
 
 
 typedef std::set< CexmcOutputDataType >  CexmcOutputDataTypeSet;
@@ -53,6 +57,10 @@ class  CexmcRunManager : public G4RunManager
 
         void  SetGuiMacroName( const G4String &  guiMacroName_ );
 
+#ifdef CEXMC_USE_CUSTOM_FILTER
+        void  SetCustomFilter( const G4String &  cfFileName_ );
+#endif
+
         void  SetEventCountPolicy( CexmcEventCountPolicy  eventCountPolicy_ );
 
         void  ReadProject( void );
@@ -70,6 +78,8 @@ class  CexmcRunManager : public G4RunManager
         void  SeekTo( G4int  eventNmb = 1 );
 
         void  EnableLiveHistograms( G4bool  on = true );
+
+        void  SkipInteractionsWithoutEDTonWrite( G4bool  on = true );
 
     public:
         CexmcPhysicsManager *     GetPhysicsManager( void );
@@ -92,7 +102,7 @@ class  CexmcRunManager : public G4RunManager
 
         boost::archive::binary_oarchive *  GetFastEventsArchive( void ) const;
 
-        G4bool                    IsLiveHistogramsEnabled( void ) const;
+        G4bool                    AreLiveHistogramsEnabled( void ) const;
 
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
@@ -103,6 +113,10 @@ class  CexmcRunManager : public G4RunManager
                                  G4int  nSelect );
 
         void  DoReadEventLoop( G4int  nEvent );
+
+        void  SaveCurrentTPTEvent( const CexmcEventFastSObject &  evFastSObject,
+                                   const CexmcAngularRangeList &  angularRanges,
+                                   bool  writeToDatabase );
 
     private:
         void  ReadPreinitProjectData( void );
@@ -124,9 +138,17 @@ class  CexmcRunManager : public G4RunManager
 
         G4String                    guiMacroName;
 
+        G4String                    cfFileName;
+
+#ifdef CEXMC_USE_CUSTOM_FILTER
+        CexmcCustomFilterEval *     customFilter;
+#endif
+
         CexmcEventCountPolicy       eventCountPolicy;
 
-        G4bool                      isLiveHistogramsEnabled;
+        G4bool                      areLiveHistogramsEnabled;
+
+        G4bool                      skipInteractionsWithoutEDTonWrite;
 
         CexmcRunSObject             sObject;
 
@@ -278,13 +300,19 @@ inline void  CexmcRunManager::SeekTo( G4int  eventNmb )
 
 inline void  CexmcRunManager::EnableLiveHistograms( G4bool  on )
 {
-    isLiveHistogramsEnabled = on;
+    areLiveHistogramsEnabled = on;
 }
 
 
-inline G4bool  CexmcRunManager::IsLiveHistogramsEnabled( void ) const
+inline G4bool  CexmcRunManager::AreLiveHistogramsEnabled( void ) const
 {
-    return isLiveHistogramsEnabled;
+    return areLiveHistogramsEnabled;
+}
+
+
+inline void  CexmcRunManager::SkipInteractionsWithoutEDTonWrite( G4bool  on )
+{
+    skipInteractionsWithoutEDTonWrite = on;
 }
 
 

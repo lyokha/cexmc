@@ -45,20 +45,21 @@ namespace  CexmcCustomFilter
 
     enum  Action
     {
-        Keep,
-        DeleteTpt,
-        DeleteEdt
+        KeepTPT,
+        KeepEDT,
+        DeleteTPT,
+        DeleteEDT
     };
 
 
     struct  ParseResult
     {
-        ParseResult() : action( Keep )
+        ParseResult() : action( KeepTPT )
         {}
 
         void  Initialize( void )
         {
-            action = Keep;
+            action = KeepTPT;
             expression.children.clear();
             expression.type = Uninitialized;
         }
@@ -155,10 +156,12 @@ namespace  CexmcCustomFilter
         statement = action[ op( _val, _1 ) ] >>
                                         *( condition[ op( _val, _1 ) ] );
 
-        action = lit( "keep" )[ _val = Keep ] |
-                 ( lit( "delete" )[ _val = DeleteEdt ] >>
-                   -( lit ( "tpt" )[ _val = DeleteTpt ] |
-                      lit ( "edt" ) ) );
+        action = lit( "keep" ) >>
+                ( lit( "tpt" )[ _val = KeepTPT ] |
+                  lit( "edt" )[ _val = KeepEDT ] ) |
+                lit( "delete" ) >>
+                ( lit ( "tpt" )[ _val = DeleteTPT ] |
+                  lit ( "edt" )[ _val = DeleteEDT ] );
 
         condition = lit( "if" ) >> expression[ op( _val, _1 ) ];
 
@@ -175,9 +178,9 @@ namespace  CexmcCustomFilter
         constant %= strict_double | int_;
 
         variable = identifier[ op( _val, _1 ) ] >>
-                -( lit( '[' ) >> uint_[ op( _val, _1, 0 ) ] - lit( '0' ) >>
-                   -( lit( ',' ) >> uint_[ op( _val, _1, 1 ) ] -
-                      lit( '0' ) ) >> lit( ']' ) );
+                -( lit( '[' ) >> ( uint_[ op( _val, _1, 0 ) ] - lit( '0' ) ) >>
+                   -( lit( ',' ) >> ( uint_[ op( _val, _1, 1 ) ] -
+                      lit( '0' ) ) ) >> lit( ']' ) );
 
         function1 = ( identifier >> lit( '(' ) >> expression >> lit( ')' ) )
                     [ op( _val, _2, _1 ) ];

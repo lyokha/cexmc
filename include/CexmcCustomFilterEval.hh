@@ -22,6 +22,7 @@
 #ifdef CEXMC_USE_CUSTOM_FILTER
 
 #include <vector>
+#include <string>
 #include "CexmcASTEval.hh"
 #include "CexmcCustomFilter.hh"
 
@@ -36,27 +37,34 @@ class  CexmcCustomFilterEval : public CexmcAST::BasicEval
                                                         ParseResultVector;
 
     public:
-        CexmcEventFastSObject &  GetEventFastSObject( void );
+        explicit CexmcCustomFilterEval( const G4String &  sourceFileName,
+                            const CexmcEventFastSObject *  evFastSObject = NULL,
+                            const CexmcEventSObject *  evSObject = NULL );
 
-        CexmcEventSObject &      GetEventSObject( void );
+    public:
+        void  SetAddressedData( const CexmcEventFastSObject *  evFastSObject,
+                                const CexmcEventSObject *  evSObject );
+
+        bool  EvalTPT( void ) const;
+
+        bool  EvalEDT( void ) const;
 
     private:
         CexmcASTEval       astEval;
 
-        ParseResultVector  parseResult; 
+        ParseResultVector  parseResultTPT;
+
+        ParseResultVector  parseResultEDT;
+
+        CexmcCustomFilter::Grammar< std::string::const_iterator >  grammar;
 };
 
 
-inline CexmcEventFastSObject &  CexmcCustomFilterEval::GetEventFastSObject(
-                                                                        void )
+inline void  CexmcCustomFilterEval::SetAddressedData(
+                                const CexmcEventFastSObject *  evFastSObject,
+                                const CexmcEventSObject *  evSObject )
 {
-    return astEval.GetEventFastSObject();
-}
-
-
-inline CexmcEventSObject &  CexmcCustomFilterEval::GetEventSObject( void )
-{
-    return astEval.GetEventSObject();
+    astEval.SetAddressedData( evFastSObject, evSObject );
 }
 
 #endif

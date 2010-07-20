@@ -6,7 +6,15 @@ ifndef G4INSTALL
   G4INSTALL = ../../..
 endif
 
+ifdef BOOST_INCLUDE_PATH
+  CPPFLAGS += -I$(BOOST_INCLUDE_PATH)
+endif
+
 EXTRALIBS = `cernlib geant321 phtools packlib kernlib`
+
+ifdef BOOST_INCLUDE_PATH
+  EXTRALIBS += -L$(BOOST_LIBRARY_PATH)
+endif
 EXTRALIBS += -lboost_serialization
 
 USE_ROOT := $(shell which root-config 2>/dev/null)
@@ -41,7 +49,8 @@ endif
 #CPPFLAGS += -DCEXMC_USE_QGSP_BIC_EMY
 
 CPPFLAGS += -DCEXMC_USE_CUSTOM_FILTER
-CPPFLAGS += -DCEXMC_DEBUG_CF
+
+#CPPFLAGS += -DCEXMC_DEBUG_CF
 CPPFLAGS += -DCEXMC_DEBUG_TP
 
 .PHONY: all

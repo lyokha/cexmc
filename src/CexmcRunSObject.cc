@@ -63,7 +63,9 @@ CexmcRunSObject::CexmcRunSObject(
         G4int  nmbOfFalseHitsTriggeredEDT, G4int  nmbOfFalseHitsTriggeredRec,
         G4int  nmbOfSavedEvents, G4int  nmbOfSavedFastEvents,
         G4int  numberOfEventsProcessed, G4int  numberOfEventsProcessedEffective,
-        G4int  numberOfEventsToBeProcessed ) :
+        G4int  numberOfEventsToBeProcessed, const std::string &  rProject,
+        G4bool  interactionsWithoutEDTWereSkipped,
+        const std::string &  cfFileName ) :
     basePhysicsUsed( basePhysicsUsed ),
     productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
     etaDecayTable( etaDecayTable ), angularRanges( angularRanges ),
@@ -104,7 +106,10 @@ CexmcRunSObject::CexmcRunSObject(
     nmbOfSavedFastEvents( nmbOfSavedFastEvents ),
     numberOfEventsProcessed( numberOfEventsProcessed ),
     numberOfEventsProcessedEffective( numberOfEventsProcessedEffective ),
-    numberOfEventsToBeProcessed( numberOfEventsToBeProcessed )
+    numberOfEventsToBeProcessed( numberOfEventsToBeProcessed ),
+    rProject( rProject ),
+    interactionsWithoutEDTWereSkipped( interactionsWithoutEDTWereSkipped ),
+    cfFileName( cfFileName )
 {
 }
 

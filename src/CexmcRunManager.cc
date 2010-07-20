@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <fstream>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <G4Eta.hh>
@@ -58,6 +59,10 @@
 #include "CexmcEventInfo.hh"
 #include "CexmcBasicPhysicsSettings.hh"
 
+#ifdef CEXMC_USE_CUSTOM_FILTER
+#include "CexmcCustomFilterEval.hh"
+#endif
+
 
 namespace
 {
@@ -73,10 +78,12 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     productionModelType( CexmcUnknownProductionModel ),
     gdmlFileName( "default.gdml" ), zipGdmlFile( false ), projectsDir( "." ),
     projectId( projectId ), rProject( rProject ), guiMacroName( "" ),
-    eventCountPolicy( CexmcCountAllEvents ), isLiveHistogramsEnabled( false ),
-    numberOfEventsProcessed( 0 ), numberOfEventsProcessedEffective( 0 ),
-    curEventRead( 0 ), eventsArchive( NULL ), fastEventsArchive( NULL ),
-    physicsManager( NULL ), messenger( NULL )
+    cfFileName( "" ), eventCountPolicy( CexmcCountAllEvents ),
+    areLiveHistogramsEnabled( false ),
+    skipInteractionsWithoutEDTonWrite( true ), numberOfEventsProcessed( 0 ),
+    numberOfEventsProcessedEffective( 0 ), curEventRead( 0 ),
+    eventsArchive( NULL ), fastEventsArchive( NULL ), physicsManager( NULL ),
+    messenger( NULL )
 {
     /* this exception must be caught before creating the object! */
     if ( rProject != "" && rProject == projectId )
@@ -108,6 +115,10 @@ CexmcRunManager::~CexmcRunManager()
         if ( system( cmd ) != 0 )
             G4cerr << "Failed to zip geometry data" << G4endl;
     }
+
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    delete customFilter;
+#endif
 
     delete messenger;
 }
@@ -386,7 +397,8 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfHitsTriggeredRecRange, nmbOfOrphanHits, nmbOfFalseHitsTriggeredEDT,
         nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
         numberOfEventsProcessed, numberOfEventsProcessedEffective,
-        numberOfEventToBeProcessed );
+        numberOfEventToBeProcessed, rProject,
+        skipInteractionsWithoutEDTonWrite, cfFileName );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -524,6 +536,11 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterTP );
 
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    if ( customFilter )
+        customFilter->SetAddressedData( &evFastSObject, &evSObject );
+#endif
+
     for ( int  i( 0 ); i < sObject.nmbOfSavedFastEvents; ++i )
     {
         evFastArchive >> evFastSObject;
@@ -542,26 +559,32 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
         productionModel->SetTriggeredAngularRanges(
                                                 evFastSObject.opCosThetaSCM );
+        const CexmcAngularRangeList &  triggeredAngularRanges(
+                                productionModel->GetTriggeredAngularRanges() );
 
         if ( ! evFastSObject.edDigitizerHasTriggered )
         {
-            const CexmcAngularRangeList &  triggeredAngularRanges(
-                                productionModel->GetTriggeredAngularRanges() );
-            for ( CexmcAngularRangeList::const_iterator
-                        k( triggeredAngularRanges.begin() );
-                                        k != triggeredAngularRanges.end(); ++k )
-            {
-                const CexmcRun *  run( static_cast< const CexmcRun * >(
-                                                            GetCurrentRun() ) );
-                CexmcRun *  theRun( const_cast< CexmcRun * >( run ) );
-                theRun->IncrementNmbOfHitsSampledFull( k->index );
-                if ( evFastSObject.edDigitizerMonitorHasTriggered )
-                    theRun->IncrementNmbOfHitsSampled( k->index );
-            }
+#ifdef CEXMC_USE_CUSTOM_FILTER
+            if ( customFilter && ! customFilter->EvalTPT() )
+                continue;
+#endif
+            SaveCurrentTPTEvent( evFastSObject, triggeredAngularRanges,
+                     ProjectIsSaved() && ! skipInteractionsWithoutEDTonWrite );
             continue;
         }
 
         evArchive >> evSObject;
+
+#ifdef CEXMC_USE_CUSTOM_FILTER
+        if ( customFilter && ! customFilter->EvalTPT() )
+            continue;
+        if ( customFilter && ! customFilter->EvalEDT() )
+        {
+            SaveCurrentTPTEvent( evFastSObject, triggeredAngularRanges,
+                                 ProjectIsSaved() );
+            continue;
+        }
+#endif
 
         event.SetEventID( evSObject.eventId );
 
@@ -723,6 +746,35 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
     numberOfEventsProcessed = iEvent;
     numberOfEventsProcessedEffective = iEventEffective;
+
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    if ( customFilter )
+        customFilter->SetAddressedData( NULL, NULL );
+#endif
+}
+
+
+void  CexmcRunManager::SaveCurrentTPTEvent(
+                                const CexmcEventFastSObject &  evFastSObject,
+                                const CexmcAngularRangeList &  angularRanges,
+                                bool  writeToDatabase )
+{
+    const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
+    CexmcRun *        theRun( const_cast< CexmcRun * >( run ) );
+
+    for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
+                                                k != angularRanges.end(); ++k )
+    {
+        theRun->IncrementNmbOfHitsSampledFull( k->index );
+        if ( evFastSObject.edDigitizerMonitorHasTriggered )
+            theRun->IncrementNmbOfHitsSampled( k->index );
+    }
+
+    if ( writeToDatabase )
+    {
+        fastEventsArchive->operator<<( evFastSObject );
+        theRun->IncrementNmbOfSavedFastEvents();
+    }
 }
 
 
@@ -824,6 +876,18 @@ void  CexmcRunManager::PrintReadRunData( void ) const
 
     G4cout << CEXMC_LINE_START << "Run data read from project '" << rProject <<
               "'" << G4endl;
+    if ( ! sObject.rProject.empty() )
+    {
+        G4cout << "  -- Based on project '" << sObject.rProject << "'" <<
+                  G4endl;
+        G4cout << "  -- (fdb file contains " <<
+                  ( sObject.interactionsWithoutEDTWereSkipped ?
+                    "only interactions when an event was triggered" :
+                    "all interactions" ) << ")" << std::endl;
+        if ( ! sObject.cfFileName.empty() )
+            G4cout << "  -- Custom filter script '" << sObject.cfFileName <<
+                      "' was used" << G4endl;
+    }
     G4cout << "  -- Base physics used (1 - QGSP_BERT, 2 - QGSP_BIC_EMY): " <<
               sObject.basePhysicsUsed << G4endl;
     G4cout << "  -- Production model (1 - pi0, 2 - eta): " <<
@@ -1046,4 +1110,23 @@ void  CexmcRunManager::PrintReadData(
         PrintReadRunData();
     }
 }
+
+
+#ifdef CEXMC_USE_CUSTOM_FILTER
+
+void  CexmcRunManager::SetCustomFilter( const G4String &  cfFileName_ )
+{
+    if ( cfFileName_.empty() )
+        return;
+
+    /* should not get here */
+    if ( ! ProjectIsRead() )
+        throw CexmcException( CexmcCmdIsNotAllowed );
+
+    cfFileName = cfFileName_;
+
+    customFilter = new CexmcCustomFilterEval( cfFileName );
+}
+
+#endif
 

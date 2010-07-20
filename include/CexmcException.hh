@@ -39,6 +39,9 @@ enum  CexmcExceptionType
     CexmcBadOCVetoFraction,
     CexmcCalorimeterRegionNotInitialized,
 #ifdef CEXMC_USE_CUSTOM_FILTER
+    CexmcCFBadSource,
+    CexmcCFParseError,
+    CexmcCFUninitialized,
     CexmcCFUnexpectedFunction,
     CexmcCFUnexpectedVariable,
     CexmcCFUnexpectedVariableUsage,

@@ -124,13 +124,6 @@ namespace  CexmcAST
         if ( ! intRetval )
             doubleRetval = boost::get< double >( &retval );
 
-#ifdef CEXMC_DEBUG_CF
-        if ( doubleRetval )
-            std::cout << "Evaluated to double " << *doubleRetval << std::endl;
-        else
-            std::cout << "Evaluated to int " << *intRetval << std::endl;
-#endif
-
         return doubleRetval ? bool( *doubleRetval ) : bool( *intRetval );
     }
 
