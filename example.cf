@@ -1,3 +1,7 @@
 delete edt if Sum( clEDcol ) > 350 * MeV
 keep edt if clEDcol[2,2] + clEDcol[2,3] > Sum( Outer( clEDcol ) )
 delete edt if Sum( Inner( crEDcol ) ) > 200 * MeV
+#delete tpt if op_cosTh_SCM < 0
+#delete tpt if event > 500
+#delete tpt if ! mon
+#delete tpt if ! tpt

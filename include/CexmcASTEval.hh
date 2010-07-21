@@ -34,7 +34,8 @@
 class  CexmcASTEval : public CexmcAST::BasicEval
 {
     private:
-        typedef boost::variant< const CexmcEnergyDepositCalorimeterCollection *,
+        typedef boost::variant< const double *, const int *,
+                                const CexmcEnergyDepositCalorimeterCollection *,
                                 const bool * >    VarAddr;
 
         typedef std::map< std::string, VarAddr >  VarAddrMap;
@@ -82,7 +83,7 @@ class  CexmcASTEval : public CexmcAST::BasicEval
         const CexmcEventSObject *      evSObject;
 
     private:
-        VarAddrMap                     varAddrMap;
+        mutable VarAddrMap             varAddrMap;
 
     private:
         static const G4double          constants[];
@@ -93,6 +94,7 @@ inline void  CexmcASTEval::SetAddressedData(
                                 const CexmcEventFastSObject *  evFastSObject_,
                                 const CexmcEventSObject *  evSObject_ )
 {
+    varAddrMap.clear();
     evFastSObject = evFastSObject_;
     evSObject = evSObject_;
 }
