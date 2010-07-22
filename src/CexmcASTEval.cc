@@ -201,6 +201,8 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
                 {
                     if ( *addr )
                     {
+                        if ( ( *addr )->size() == 0 )
+                            throw CexmcException( CexmcCFUninitializedVector );
                         if ( var.index1 == 0 || var.index2 == 0 )
                             throw CexmcException(
                                             CexmcCFUnexpectedVectorIndex );
@@ -284,6 +286,8 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarClEDCol )
     {
+        if ( evSObject->calorimeterEDLeftCollection.size() == 0 )
+            throw CexmcException( CexmcCFUninitializedVector );
         if ( var.index1 == 0 || var.index2 == 0 )
             throw CexmcException( CexmcCFUnexpectedVectorIndex );
         varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
@@ -293,6 +297,8 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarCrEDCol )
     {
+        if ( evSObject->calorimeterEDRightCollection.size() == 0 )
+            throw CexmcException( CexmcCFUninitializedVector );
         if ( var.index1 == 0 || var.index2 == 0 )
             throw CexmcException( CexmcCFUnexpectedVectorIndex );
         varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,

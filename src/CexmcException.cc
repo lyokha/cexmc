@@ -87,19 +87,27 @@ const char *  CexmcException::what( void ) const throw()
                 "Check your custom filter source file.";
     case CexmcCFUninitialized :
         return CEXMC_LINE_START "Custom filter was not properly initialized.";
+    case CexmcCFUninitializedVector :
+        return CEXMC_LINE_START "Custom filter: A vector variable was not "
+                "initialized.";
+    case CexmcCFUnexpectedContext :
+        return CEXMC_LINE_START "Custom filter: a variable or function call is "
+                "in wrong type context (scalar when a vector is expected or "
+                "vice versa). Check your custom filter script.";
     case CexmcCFUnexpectedFunction :
-        return CEXMC_LINE_START "A function is unknown or in wrong type "
-                "context. Check your custom filter script.";
+        return CEXMC_LINE_START "Custom filter: a function is unknown or in "
+                "wrong type context. Check your custom filter script.";
     case CexmcCFUnexpectedVariable :
-        return CEXMC_LINE_START "A variable is unknown or in wrong type "
-                "context. Check your custom filter script.";
+        return CEXMC_LINE_START "Custom filter: a variable is unknown or in "
+                "wrong type context. Check your custom filter script.";
     case CexmcCFUnexpectedVariableUsage :
-        return CEXMC_LINE_START "A variable is used in wrong context (scalar "
-                "when vector is expected or vice versa). Check your custom "
-                "filter script.";
+        return CEXMC_LINE_START "Custom filter: a variable is used in wrong "
+                "type context (scalar when a vector is expected or vice "
+                "versa). Check your custom filter script.";
     case CexmcCFUnexpectedVectorIndex :
-        return CEXMC_LINE_START "A vector variable with wrong index. Indices "
-                "of vectors start from 1. Check your custom filter script.";
+        return CEXMC_LINE_START "Custom filter: a vector variable with wrong "
+                "index. Indices of vectors should start from 1. Check your "
+                "custom filter script.";
 #endif
     case CexmcWeirdException :
         return CEXMC_LINE_START "A weird exception occured. "

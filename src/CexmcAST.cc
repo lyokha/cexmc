@@ -151,7 +151,11 @@ namespace  CexmcAST
                     left = GetScalarValue( ast->children[ 0 ] );
                     intLeft = boost::get< int >( &left );
                     if ( ! intLeft )
+                    {
                         doubleLeft = boost::get< double >( &left );
+                        if ( ! doubleLeft )
+                            throw CexmcException( CexmcCFUnexpectedContext );
+                    }
                 }
 
                 switch ( *op )
@@ -165,7 +169,12 @@ namespace  CexmcAST
                         right = GetScalarValue( ast->children[ 1 ] );
                         intRight = boost::get< int >( &right );
                         if ( ! intRight )
+                        {
                             doubleRight = boost::get< double >( &right );
+                            if ( ! doubleRight )
+                                throw CexmcException(
+                                                CexmcCFUnexpectedContext );
+                        }
                     }
                     isDoubleRetval = doubleLeft || doubleRight;
                     break;
@@ -261,7 +270,11 @@ namespace  CexmcAST
                     right = GetScalarValue( ast->children[ 1 ] );
                     intRight = boost::get< int >( &right );
                     if ( ! intRight )
+                    {
                         doubleRight = boost::get< double >( &right );
+                        if ( ! doubleRight )
+                            throw CexmcException( CexmcCFUnexpectedContext );
+                    }
                     if ( doubleRight )
                     {
                         if ( *doubleRight )
@@ -287,7 +300,11 @@ namespace  CexmcAST
                     right = GetScalarValue( ast->children[ 1 ] );
                     intRight = boost::get< int >( &right );
                     if ( ! intRight )
+                    {
                         doubleRight = boost::get< double >( &right );
+                        if ( ! doubleRight )
+                            throw CexmcException( CexmcCFUnexpectedContext );
+                    }
                     if ( doubleRight )
                     {
                         if ( *doubleRight )

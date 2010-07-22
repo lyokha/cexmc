@@ -42,6 +42,8 @@ enum  CexmcExceptionType
     CexmcCFBadSource,
     CexmcCFParseError,
     CexmcCFUninitialized,
+    CexmcCFUninitializedVector,
+    CexmcCFUnexpectedContext,
     CexmcCFUnexpectedFunction,
     CexmcCFUnexpectedVariable,
     CexmcCFUnexpectedVariableUsage,
