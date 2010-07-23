@@ -36,9 +36,11 @@ class  CexmcASTEval : public CexmcAST::BasicEval
     private:
         typedef boost::variant< const double *, const int *,
                                 const CexmcEnergyDepositCalorimeterCollection *,
-                                const bool * >    VarAddr;
+                                const bool * >     VarAddr;
 
-        typedef std::map< std::string, VarAddr >  VarAddrMap;
+        typedef std::map< std::string, VarAddr >   VarAddrMap;
+
+        typedef std::pair< std::string, VarAddr >  VarAddrMapData;
 
     public:
         explicit CexmcASTEval(

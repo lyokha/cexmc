@@ -232,55 +232,55 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
 
     if ( var.name == CexmcCFVarEvent )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evFastSObject->eventId ) );
         return evFastSObject->eventId;
     }
     if ( var.name == CexmcCFVarOpCosThetaSCM )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evFastSObject->opCosThetaSCM ) );
         return evFastSObject->opCosThetaSCM;
     }
     if ( var.name == CexmcCFVarEDT )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evFastSObject->edDigitizerHasTriggered ) );
         return evFastSObject->edDigitizerHasTriggered;
     } 
     if ( var.name == CexmcCFVarMon )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evFastSObject->edDigitizerMonitorHasTriggered ) );
         return evFastSObject->edDigitizerMonitorHasTriggered;
     }
     if ( var.name == CexmcCFVarMonED )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->monitorED ) );
         return evSObject->monitorED;
     }
     if ( var.name == CexmcCFVarVclED )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->vetoCounterEDLeft ) );
         return evSObject->vetoCounterEDLeft;
     }
     if ( var.name == CexmcCFVarVcrED )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->vetoCounterEDRight ) );
         return evSObject->vetoCounterEDRight;
     }
     if ( var.name == CexmcCFVarClED )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->calorimeterEDLeft ) );
         return evSObject->calorimeterEDLeft;
     }
     if ( var.name == CexmcCFVarCrED )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->calorimeterEDRight ) );
         return evSObject->calorimeterEDRight;
     }
@@ -290,7 +290,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
             throw CexmcException( CexmcCFUninitializedVector );
         if ( var.index1 == 0 || var.index2 == 0 )
             throw CexmcException( CexmcCFUnexpectedVectorIndex );
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                                 &evSObject->calorimeterEDLeftCollection ) );
         return evSObject->calorimeterEDLeftCollection.at( var.index1 - 1 ).
                                                       at( var.index2 - 1 );
@@ -301,14 +301,14 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
             throw CexmcException( CexmcCFUninitializedVector );
         if ( var.index1 == 0 || var.index2 == 0 )
             throw CexmcException( CexmcCFUnexpectedVectorIndex );
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                                 &evSObject->calorimeterEDRightCollection ) );
         return evSObject->calorimeterEDRightCollection.at( var.index1 - 1 ).
                                                        at( var.index2 - 1 );
     }
     if ( var.name == CexmcCFVarIpMonPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->monitorTP.positionLocal, var.index1 ) ) );
         return GetThreeVectorElementByIndex(
@@ -316,7 +316,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpMonPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->monitorTP.positionWorld, var.index1 ) ) );
         return GetThreeVectorElementByIndex(
@@ -324,7 +324,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpMonDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->monitorTP.directionLocal, var.index1 ) ) );
         return GetThreeVectorElementByIndex(
@@ -332,7 +332,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpMonDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->monitorTP.directionWorld, var.index1 ) ) );
         return GetThreeVectorElementByIndex(
@@ -340,19 +340,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpMonMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->monitorTP.momentumAmp ) );
         return evSObject->monitorTP.momentumAmp;
     }
     if ( var.name == CexmcCFVarIpMonTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->monitorTP.trackId ) );
         return evSObject->monitorTP.trackId;
     }
     if ( var.name == CexmcCFVarIpTgtPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPIncidentParticle.positionLocal,
                         var.index1 ) ) );
@@ -362,7 +362,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpTgtPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPIncidentParticle.positionWorld,
                         var.index1 ) ) );
@@ -372,7 +372,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpTgtDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPIncidentParticle.directionLocal,
                         var.index1 ) ) );
@@ -382,7 +382,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpTgtDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPIncidentParticle.directionWorld,
                         var.index1 ) ) );
@@ -392,19 +392,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpTgtMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->targetTPIncidentParticle.momentumAmp ) );
         return evSObject->targetTPIncidentParticle.momentumAmp;
     }
     if ( var.name == CexmcCFVarIpTgtTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->targetTPIncidentParticle.trackId ) );
         return evSObject->targetTPIncidentParticle.trackId;
     }
     if ( var.name == CexmcCFVarOpTgtPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticle.positionLocal,
                         var.index1 ) ) );
@@ -414,7 +414,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpTgtPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticle.positionWorld,
                         var.index1 ) ) );
@@ -424,7 +424,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpTgtDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticle.directionLocal,
                         var.index1 ) ) );
@@ -434,7 +434,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpTgtDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticle.directionWorld,
                         var.index1 ) ) );
@@ -444,19 +444,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpTgtMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->targetTPOutputParticle.momentumAmp ) );
         return evSObject->targetTPOutputParticle.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpTgtTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->targetTPOutputParticle.trackId ) );
         return evSObject->targetTPOutputParticle.trackId;
     }
     if ( var.name == CexmcCFVarNpTgtPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPNucleusParticle.positionLocal,
                         var.index1 ) ) );
@@ -466,7 +466,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNpTgtPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPNucleusParticle.positionWorld,
                         var.index1 ) ) );
@@ -476,7 +476,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNpTgtDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPNucleusParticle.directionLocal,
                         var.index1 ) ) );
@@ -486,7 +486,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNpTgtDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPNucleusParticle.directionWorld,
                         var.index1 ) ) );
@@ -496,19 +496,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNpTgtMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->targetTPNucleusParticle.momentumAmp ) );
         return evSObject->targetTPNucleusParticle.momentumAmp;
     }
     if ( var.name == CexmcCFVarNpTgtTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->targetTPNucleusParticle.trackId ) );
         return evSObject->targetTPNucleusParticle.trackId;
     }
     if ( var.name == CexmcCFVarOpdp1TgtPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle1.
                                     positionLocal, var.index1 ) ) );
@@ -518,7 +518,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp1TgtPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle1.
                                     positionWorld, var.index1 ) ) );
@@ -528,7 +528,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp1TgtDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle1.
                                     directionLocal, var.index1 ) ) );
@@ -538,7 +538,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp1TgtDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle1.
                                     directionWorld, var.index1 ) ) );
@@ -548,7 +548,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp1TgtMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     &evSObject->targetTPOutputParticleDecayProductParticle1.
                     momentumAmp ) );
         return evSObject->targetTPOutputParticleDecayProductParticle1.
@@ -556,14 +556,14 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp1TgtTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     &evSObject->targetTPOutputParticleDecayProductParticle1.
                     trackId ) );
         return evSObject->targetTPOutputParticleDecayProductParticle1.trackId;
     }
     if ( var.name == CexmcCFVarOpdp2TgtPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle2.
                                     positionLocal, var.index1 ) ) );
@@ -573,7 +573,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp2TgtPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle2.
                                     positionWorld, var.index1 ) ) );
@@ -583,7 +583,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp2TgtDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle2.
                                     directionLocal, var.index1 ) ) );
@@ -593,7 +593,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp2TgtDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->targetTPOutputParticleDecayProductParticle2.
                                     directionWorld, var.index1 ) ) );
@@ -603,7 +603,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp2TgtMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     &evSObject->targetTPOutputParticleDecayProductParticle2.
                     momentumAmp ) );
         return evSObject->targetTPOutputParticleDecayProductParticle2.
@@ -611,14 +611,14 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdp2TgtTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     &evSObject->targetTPOutputParticleDecayProductParticle2.
                     trackId ) );
         return evSObject->targetTPOutputParticleDecayProductParticle2.trackId;
     }
     if ( var.name == CexmcCFVarOpdpVclPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPLeft.positionLocal,
                         var.index1 ) ) );
@@ -628,7 +628,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVclPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPLeft.positionWorld,
                         var.index1 ) ) );
@@ -638,7 +638,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVclDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPLeft.directionLocal,
                         var.index1 ) ) );
@@ -648,7 +648,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVclDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPLeft.directionWorld,
                         var.index1 ) ) );
@@ -658,19 +658,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVclMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->vetoCounterTPLeft.momentumAmp ) );
         return evSObject->vetoCounterTPLeft.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdpVclTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->vetoCounterTPLeft.trackId ) );
         return evSObject->vetoCounterTPLeft.trackId;
     }
     if ( var.name == CexmcCFVarOpdpVcrPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPRight.positionLocal,
                         var.index1 ) ) );
@@ -680,7 +680,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVcrPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPRight.positionWorld,
                         var.index1 ) ) );
@@ -690,7 +690,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVcrDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPRight.directionLocal,
                         var.index1 ) ) );
@@ -700,7 +700,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVcrDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->vetoCounterTPRight.directionWorld,
                         var.index1 ) ) );
@@ -710,19 +710,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpVcrMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->vetoCounterTPRight.trackId ) );
         return evSObject->vetoCounterTPRight.trackId;
     }
     if ( var.name == CexmcCFVarOpdpVcrTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->vetoCounterTPRight.trackId ) );
         return evSObject->vetoCounterTPRight.trackId;
     }
     if ( var.name == CexmcCFVarOpdpClPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPLeft.positionLocal,
                         var.index1 ) ) );
@@ -732,7 +732,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpClPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPLeft.positionWorld,
                         var.index1 ) ) );
@@ -742,7 +742,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpClDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPLeft.directionLocal,
                         var.index1 ) ) );
@@ -752,7 +752,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpClDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPLeft.directionWorld,
                         var.index1 ) ) );
@@ -762,19 +762,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpClMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->calorimeterTPLeft.momentumAmp ) );
         return evSObject->calorimeterTPLeft.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdpClTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->calorimeterTPLeft.trackId ) );
         return evSObject->calorimeterTPLeft.trackId;
     }
     if ( var.name == CexmcCFVarOpdpCrPosL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPRight.positionLocal,
                         var.index1 ) ) );
@@ -784,7 +784,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpCrPosW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPRight.positionWorld,
                         var.index1 ) ) );
@@ -794,7 +794,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpCrDirL )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPRight.directionLocal,
                         var.index1 ) ) );
@@ -804,7 +804,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpCrDirW )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetThreeVectorElementAddrByIndex(
                         evSObject->calorimeterTPRight.directionWorld,
                         var.index1 ) ) );
@@ -814,19 +814,19 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpdpCrMom )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->calorimeterTPRight.momentumAmp ) );
         return evSObject->calorimeterTPRight.momentumAmp;
     }
     if ( var.name == CexmcCFVarOpdpCrTid )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->calorimeterTPRight.trackId ) );
         return evSObject->calorimeterTPRight.trackId;
     }
     if ( var.name == CexmcCFVarIpSCM )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.incidentParticleSCM,
                         var.index1 ) ) );
@@ -836,7 +836,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpLAB )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.incidentParticleLAB,
                         var.index1 ) ) );
@@ -846,7 +846,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNpSCM )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.nucleusParticleSCM,
                         var.index1 ) ) );
@@ -856,7 +856,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNpLAB )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.nucleusParticleLAB,
                         var.index1 ) ) );
@@ -866,7 +866,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpSCM )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.outputParticleSCM,
                         var.index1 ) ) );
@@ -876,7 +876,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarOpLAB )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.outputParticleLAB,
                         var.index1 ) ) );
@@ -886,7 +886,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNopSCM )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.nucleusOutputParticleSCM,
                         var.index1 ) ) );
@@ -896,7 +896,7 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarNopLAB )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     GetLorentzVectorElementAddrByIndex(
                         evSObject->productionModelData.nucleusOutputParticleLAB,
                         var.index1 ) ) );
@@ -906,68 +906,61 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
     }
     if ( var.name == CexmcCFVarIpId )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->productionModelData.incidentParticle ) );
         return evSObject->productionModelData.incidentParticle;
     }
     if ( var.name == CexmcCFVarNpId )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->productionModelData.nucleusParticle ) );
         return evSObject->productionModelData.nucleusParticle;
     }
     if ( var.name == CexmcCFVarOpId )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                            &evSObject->productionModelData.outputParticle ) );
         return evSObject->productionModelData.outputParticle;
     }
     if ( var.name == CexmcCFVarNopId )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+        varAddrMap.insert( VarAddrMapData( var.name,
                     &evSObject->productionModelData.nucleusOutputParticle ) );
         return evSObject->productionModelData.nucleusOutputParticle;
     }
     if ( var.name == CexmcCFVarConst_eV )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                           &constants[ 0 ] ) );
+        varAddrMap.insert( VarAddrMapData( var.name, &constants[ 0 ] ) );
         return constants[ 0 ];
     }
     if ( var.name == CexmcCFVarConst_keV )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                           &constants[ 1 ] ) );
+        varAddrMap.insert( VarAddrMapData( var.name, &constants[ 1 ] ) );
         return constants[ 1 ];
     }
     if ( var.name == CexmcCFVarConst_MeV )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                           &constants[ 2 ] ) );
+        varAddrMap.insert( VarAddrMapData( var.name, &constants[ 2 ] ) );
         return constants[ 2 ];
     }
     if ( var.name == CexmcCFVarConst_GeV )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                           &constants[ 3 ] ) );
+        varAddrMap.insert( VarAddrMapData( var.name, &constants[ 3 ] ) );
         return constants[ 3 ];
     }
     if ( var.name == CexmcCFVarConst_mm )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                           &constants[ 4 ] ) );
+        varAddrMap.insert( VarAddrMapData( var.name, &constants[ 4 ] ) );
         return constants[ 4 ];
     }
     if ( var.name == CexmcCFVarConst_cm )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                           &constants[ 5 ] ) );
+        varAddrMap.insert( VarAddrMapData( var.name, &constants[ 5 ] ) );
         return constants[ 5 ];
     }
     if ( var.name == CexmcCFVarConst_m )
     {
-        varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
-                           &constants[ 6 ] ) );
+        varAddrMap.insert( VarAddrMapData( var.name, &constants[ 6 ] ) );
         return constants[ 6 ];
     }
 
@@ -1048,7 +1041,7 @@ void  CexmcASTEval::GetEDCollectionValue( const CexmcAST::Node &  node,
         {
             if ( var.index1 != 0 || var.index2 != 0 )
                 throw CexmcException( CexmcCFUnexpectedVariableUsage );
-            varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+            varAddrMap.insert( VarAddrMapData( var.name,
                                 &evSObject->calorimeterEDLeftCollection ) );
             edCol = evSObject->calorimeterEDLeftCollection;
             return;
@@ -1057,7 +1050,7 @@ void  CexmcASTEval::GetEDCollectionValue( const CexmcAST::Node &  node,
         {
             if ( var.index1 != 0 || var.index2 != 0 )
                 throw CexmcException( CexmcCFUnexpectedVariableUsage );
-            varAddrMap.insert( std::pair< std::string, VarAddr >( var.name,
+            varAddrMap.insert( VarAddrMapData( var.name,
                                 &evSObject->calorimeterEDRightCollection ) );
             edCol = evSObject->calorimeterEDRightCollection;
             return;
