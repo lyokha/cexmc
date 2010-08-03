@@ -59,14 +59,6 @@ class  CexmcCustomFilterEval : public CexmcAST::BasicEval
         CexmcCustomFilter::Grammar< std::string::const_iterator >  grammar;
 };
 
-
-inline void  CexmcCustomFilterEval::SetAddressedData(
-                                const CexmcEventFastSObject *  evFastSObject,
-                                const CexmcEventSObject *  evSObject )
-{
-    astEval.SetAddressedData( evFastSObject, evSObject );
-}
-
 #endif
 
 #endif

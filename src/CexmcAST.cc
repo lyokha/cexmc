@@ -58,7 +58,7 @@ namespace  CexmcAST
         std::cout << boost::format( format.str() ) << value.str() << std::endl;
 
         for ( std::vector< Node >::const_iterator  k( children.begin() );
-              k != children.end(); ++k )
+                                                      k != children.end(); ++k )
         {
             const Subtree *  subtree( boost::get< Subtree >( &*k ) );
 

@@ -81,6 +81,31 @@ CexmcCustomFilterEval::CexmcCustomFilterEval( const G4String &  sourceFileName,
 }
 
 
+void  CexmcCustomFilterEval::SetAddressedData(
+                                const CexmcEventFastSObject *  evFastSObject,
+                                const CexmcEventSObject *  evSObject )
+{
+    astEval.SetAddressedData( evFastSObject, evSObject );
+
+    for ( ParseResultVector::iterator  k( parseResultTPT.begin() );
+          k != parseResultTPT.end(); ++k )
+    {
+        if ( evFastSObject == NULL || evSObject == NULL )
+            astEval.ResetAddressBinding( k->expression );
+        else
+            astEval.BindAddresses( k->expression );
+    }
+    for ( ParseResultVector::iterator  k( parseResultEDT.begin() );
+          k != parseResultEDT.end(); ++k )
+    {
+        if ( evFastSObject == NULL || evSObject == NULL )
+            astEval.ResetAddressBinding( k->expression );
+        else
+            astEval.BindAddresses( k->expression );
+    }
+}
+
+
 bool  CexmcCustomFilterEval::EvalTPT( void ) const
 {
     for ( ParseResultVector::const_iterator  k( parseResultTPT.begin() );

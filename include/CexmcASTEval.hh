@@ -34,8 +34,7 @@
 class  CexmcASTEval : public CexmcAST::BasicEval
 {
     private:
-        typedef boost::variant< const double *, const int *,
-                                const CexmcEnergyDepositCalorimeterCollection *,
+        typedef boost::variant< const CexmcEnergyDepositCalorimeterCollection *,
                                 const bool * >     VarAddr;
 
         typedef std::map< std::string, VarAddr >   VarAddrMap;
@@ -52,6 +51,10 @@ class  CexmcASTEval : public CexmcAST::BasicEval
                         const CexmcEventFastSObject *  evFastSObject_ = NULL,
                         const CexmcEventSObject *  evSObject_ = NULL );
 
+        void  BindAddresses( CexmcAST::Subtree &  ast );
+
+        void  ResetAddressBinding( CexmcAST::Subtree &  ast );
+
     private:
         ScalarValueType  GetFunScalarValue( const CexmcAST::Subtree &  ast )
                                                                         const;
@@ -63,14 +66,6 @@ class  CexmcASTEval : public CexmcAST::BasicEval
                     CexmcEnergyDepositCalorimeterCollection &  edCol ) const;
 
     private:
-        G4double          GetThreeVectorElementByIndex(
-                                    const CexmcSimpleThreeVectorStore &  vect,
-                                    G4int  index ) const;
-
-        G4double          GetLorentzVectorElementByIndex(
-                                    const CexmcSimpleLorentzVectorStore &  vect,
-                                    G4int  index ) const;
-
         const G4double *  GetThreeVectorElementAddrByIndex(
                                     const CexmcSimpleThreeVectorStore &  vect,
                                     G4int  index ) const;
@@ -85,7 +80,7 @@ class  CexmcASTEval : public CexmcAST::BasicEval
         const CexmcEventSObject *      evSObject;
 
     private:
-        mutable VarAddrMap             varAddrMap;
+        VarAddrMap                     varAddrMap;
 
     private:
         static const G4double          constants[];
@@ -99,46 +94,6 @@ inline void  CexmcASTEval::SetAddressedData(
     varAddrMap.clear();
     evFastSObject = evFastSObject_;
     evSObject = evSObject_;
-}
-
-
-inline G4double  CexmcASTEval::GetThreeVectorElementByIndex(
-                                const CexmcSimpleThreeVectorStore &  vect,
-                                G4int  index ) const
-{
-    switch ( index )
-    {
-    case 1 :
-        return vect.x;
-    case 2 :
-        return vect.y;
-    case 3 :
-        return vect.z;
-    default :
-        throw CexmcException( CexmcCFUnexpectedVectorIndex );
-        return 0;
-    }
-}
-
-
-inline G4double  CexmcASTEval::GetLorentzVectorElementByIndex(
-                                const CexmcSimpleLorentzVectorStore &  vect,
-                                G4int  index ) const
-{
-    switch ( index )
-    {
-    case 1 :
-        return vect.px;
-    case 2 :
-        return vect.py;
-    case 3 :
-        return vect.pz;
-    case 4 :
-        return vect.e;
-    default :
-        throw CexmcException( CexmcCFUnexpectedVectorIndex );
-        return 0;
-    }
 }
 
 

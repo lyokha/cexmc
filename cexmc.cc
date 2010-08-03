@@ -19,6 +19,9 @@
 #include <set>
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/archive_exception.hpp>
+#ifdef CEXMC_USE_CUSTOM_FILTER
+#include <boost/variant/get.hpp>
+#endif
 #include <G4UImanager.hh>
 #ifdef G4UI_USE
 #include <G4UIsession.hh>
@@ -426,8 +429,16 @@ int  main( int  argc, char **  argv )
     }
     catch ( boost::archive::archive_exception &  e )
     {
-        G4cout << e.what() << G4endl;
+        G4cout << CEXMC_LINE_START << "Serialization error: " << e.what() <<
+                  G4endl;
     }
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    catch ( boost::bad_get &  e )
+    {
+        G4cout << CEXMC_LINE_START << "Custom filter error: " << e.what() <<
+                  G4endl;
+    }
+#endif
     catch ( ... )
     {
         G4cout << "Unknown exception caught" << G4endl;
