@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 #include "CexmcAngularRange.hh"
 
 
@@ -31,15 +32,18 @@ void  GetNormalizedAngularRange( const CexmcAngularRangeList &  src,
 
     std::sort( dst.begin(), dst.end() );
 
+    const G4double  epsilon( 1E-7 );
+
     for ( CexmcAngularRangeList::iterator  k( dst.begin() + 1 );
                                                             k != dst.end(); )
     {
-        if ( k->top == ( k - 1 )->top || k->bottom >= ( k - 1 )->bottom )
+        if ( std::fabs( k->top - ( k - 1 )->top ) < epsilon ||
+             k->bottom + epsilon >= ( k - 1 )->bottom )
         {
             dst.erase( k );
             continue;
         }
-        if ( k->top >= ( k - 1 )->bottom )
+        if ( k->top + epsilon >= ( k - 1 )->bottom )
         {
             ( k - 1 )->bottom = k->bottom;
             dst.erase( k );

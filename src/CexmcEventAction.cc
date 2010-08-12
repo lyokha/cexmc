@@ -340,6 +340,10 @@ void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
         }
         if ( tpStore->targetTPOutputParticle.IsValid() )
         {
+            histoManager->Add( CexmcTPInTarget_ARReal_TPT_Histo, k->index,
+                           tpStore->targetTPOutputParticle.positionLocal.x(),
+                           tpStore->targetTPOutputParticle.positionLocal.y(),
+                           tpStore->targetTPOutputParticle.positionLocal.z() );
             G4double  momentumAmp(
                                 tpStore->targetTPOutputParticle.momentumAmp );
             G4double  mass( tpStore->targetTPOutputParticle.particle->
@@ -461,6 +465,10 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
         }
         if ( tpStore->targetTPOutputParticle.IsValid() )
         {
+            histoManager->Add( CexmcTPInTarget_ARReal_RT_Histo, k->index,
+                           tpStore->targetTPOutputParticle.positionLocal.x(),
+                           tpStore->targetTPOutputParticle.positionLocal.y(),
+                           tpStore->targetTPOutputParticle.positionLocal.z() );
             G4double  momentumAmp(
                                 tpStore->targetTPOutputParticle.momentumAmp );
             G4double  mass( tpStore->targetTPOutputParticle.particle->

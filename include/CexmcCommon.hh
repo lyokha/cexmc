@@ -59,6 +59,14 @@ enum  CexmcProductionModelType
 };
 
 
+enum  CexmcTriggerType
+{
+    CexmcTPT,
+    CexmcEDT,
+    CexmcRT
+};
+
+
 enum  CexmcEventCountPolicy
 {
     CexmcCountAllEvents,

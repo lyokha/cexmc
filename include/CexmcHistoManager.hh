@@ -23,7 +23,9 @@
 
 #include <vector>
 #include <map>
+#include <Rtypes.h>
 #include "CexmcAngularRange.hh"
+#include "CexmcCommon.hh"
 
 class  TFile;
 class  TH1;
@@ -73,17 +75,82 @@ enum  CexmcHistoType
     CexmcOpenAngle_ARReal_TPT_Histo,
     CexmcOpenAngle_ARReal_RT_Histo,
     CexmcRecOpenAngle_ARReal_RT_Histo,
-    CexmcDiffOpenAngle_ARReal_RT_Histo
+    CexmcDiffOpenAngle_ARReal_RT_Histo,
+    CexmcTPInTarget_ARReal_TPT_Histo,
+    CexmcTPInTarget_ARReal_RT_Histo,
+    CexmcHistoType_SIZE
 };
-
-
-typedef std::vector< TH1 * >                             CexmcHistoVector;
-typedef std::map< CexmcHistoType, CexmcHistoVector * >   CexmcHistosMap;
-typedef std::pair< CexmcHistoType, CexmcHistoVector * >  CexmcHistoPair;
 
 
 class  CexmcHistoManager
 {
+    private:
+        typedef std::vector< TH1 * >                           CexmcHistoVector;
+
+        typedef std::map< CexmcHistoType, CexmcHistoVector >   CexmcHistosMap;
+
+        typedef std::pair< CexmcHistoType, CexmcHistoVector >  CexmcHistoPair;
+
+        struct  CexmcHistoAxisData
+        {
+            CexmcHistoAxisData() : nBins( 0 ), nBinsMin( 0 ), nBinsMax( 0 )
+            {}
+
+            CexmcHistoAxisData( Int_t  nBins, Double_t  nBinsMin,
+                                Double_t  nBinsMax ) :
+                nBins( nBins ), nBinsMin( nBinsMin ), nBinsMax( nBinsMax )
+            {}
+
+            Int_t     nBins;
+
+            Double_t  nBinsMin;
+
+            Double_t  nBinsMax;
+        };
+
+        typedef std::vector< CexmcHistoAxisData >              CexmcHistoAxes;
+
+        enum  CexmcHistoImpl
+        {
+            Cexmc_TH1F,
+            Cexmc_TH2F,
+            Cexmc_TH3F
+        };
+
+        struct  CexmcHistoData
+        {
+            CexmcHistoData() :
+                type( CexmcHistoType_SIZE ), impl( Cexmc_TH1F ),
+                isARHisto( false ), isARRec( false ), triggerType( CexmcTPT )
+            {}
+
+            CexmcHistoData( CexmcHistoType  type, CexmcHistoImpl  impl,
+                            bool  isARHisto, bool  isARRec,
+                            CexmcTriggerType  triggerType,
+                            const G4String &  name, const G4String &  title,
+                            const CexmcHistoAxes &  axes ) :
+                type( type ), impl( impl ), isARHisto( isARHisto ),
+                isARRec( isARRec ), triggerType( triggerType ), name( name ),
+                title( title ), axes( axes )
+            {}
+
+            CexmcHistoType    type;
+
+            CexmcHistoImpl    impl;
+
+            bool              isARHisto;
+
+            bool              isARRec;
+
+            CexmcTriggerType  triggerType;
+
+            G4String          name;
+
+            G4String          title;
+
+            CexmcHistoAxes    axes;
+        };
+
     public:
         static CexmcHistoManager *  Instance( void );
 
@@ -123,85 +190,16 @@ class  CexmcHistoManager
 #endif
 
     private:
+        void  AddHisto( const CexmcHistoData &  data,
+                    const CexmcAngularRange &  aRange = CexmcAngularRange() );
+
+        void  CreateHisto( CexmcHistoVector &  histoVector,
+                           CexmcHistoImpl  histoImpl, const G4String &  name,
+                           const G4String &  title,
+                           const CexmcHistoAxes &  axes );
+
+    private:
         TFile *                       outFile;
-
-        CexmcHistoVector              momip_tpt;
-
-        CexmcHistoVector              momip_rt;
-
-        CexmcHistoVector              tpmon_tpt;
-
-        CexmcHistoVector              tptar_tpt;
-
-        CexmcHistoVector              tptar_rt;
-
-        CexmcHistoVector              recmasses_edt;
-
-        CexmcHistoVector              recmasses_rt;
-
-        CexmcHistoVector              ae_edt;
-
-        CexmcHistoVector              ae_rt;
-
-        CexmcHistoVector              recmassop_arreal_rt;
-
-        CexmcHistoVector              recmassnop_arreal_rt;
-
-        CexmcHistoVector              opdpcl_arreal_edt;
-
-        CexmcHistoVector              opdpcr_arreal_edt;
-
-        CexmcHistoVector              opdpcl_arreal_rt;
-
-        CexmcHistoVector              opdpcr_arreal_rt;
-
-        CexmcHistoVector              recopdpcl_arreal_edt;
-
-        CexmcHistoVector              recopdpcr_arreal_edt;
-
-        CexmcHistoVector              recopdpcl_arreal_rt;
-
-        CexmcHistoVector              recopdpcr_arreal_rt;
-
-        CexmcHistoVector              kecl_arreal_tpt;
-
-        CexmcHistoVector              kecr_arreal_tpt;
-
-        CexmcHistoVector              kecl_arreal_rt;
-
-        CexmcHistoVector              kecr_arreal_rt;
-
-        CexmcHistoVector              aecl_arreal_edt;
-
-        CexmcHistoVector              aecr_arreal_edt;
-
-        CexmcHistoVector              aecl_arreal_rt;
-
-        CexmcHistoVector              aecr_arreal_rt;
-
-        CexmcHistoVector              mecl_arreal_rt;
-
-        CexmcHistoVector              mecr_arreal_rt;
-
-        CexmcHistoVector              keop_lab_arreal_tpt;
-
-        CexmcHistoVector              keop_lab_arreal_rt;
-
-        CexmcHistoVector              aop_scm_arreal_tpt;
-
-        CexmcHistoVector              aop_scm_arreal_rt;
-
-        CexmcHistoVector              recaop_scm_arreal_rt;
-
-        CexmcHistoVector              diffaop_scm_arreal_rt;
-
-        CexmcHistoVector              oa_arreal_tpt;
-
-        CexmcHistoVector              oa_arreal_rt;
-
-        CexmcHistoVector              recoa_arreal_rt;
-
-        CexmcHistoVector              diffoa_arreal_rt;
 
     private:
         CexmcHistosMap                histos;

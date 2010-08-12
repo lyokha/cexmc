@@ -157,8 +157,10 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     genin_.amass[ 1 ] = neutronMass / GeV;
     genin_.kgenev = 1;
 
-    /* epsilon is needed to compensate float to fortran real cast accuracy */
-    float  epsilon( 0.000003 );
+    /* epsilon is needed to compensate float to fortran real cast accuracy,
+     * the value 3E-6 was found experimentally, maybe has to be made bigger,
+     * but not smaller */
+    const float  epsilon( 3E-6 );
     /* kinematically impossible */
     if ( genin_.tecm - ( genin_.amass[ 0 ] + genin_.amass[ 1 ] ) <=
          0.0f + epsilon )
