@@ -88,7 +88,8 @@ void  CexmcHistoManager::Destroy( void )
 
 
 CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
-    isInitialized( false ),
+    isInitialized( false ), opName( "" ), nopName( "" ), opMass( 0. ),
+    nopMass( 0. ),
 #ifdef CEXMC_USE_ROOTQT
     rootCanvas( NULL ),
 #endif
@@ -252,11 +253,15 @@ void  CexmcHistoManager::Initialize( void )
                                 CexmcPMFactoryInstance::
                                     GetNucleusOutputParticle(
                                                         productionModelType ) );
+
     if ( ! outputParticle || ! nucleusOutputParticle )
         throw CexmcException ( CexmcWeirdException );
-    G4String                  opName( outputParticle->GetParticleName() );
-    G4String                  nopName(
-                                    nucleusOutputParticle->GetParticleName() );
+
+    opName = outputParticle->GetParticleName();
+    nopName = nucleusOutputParticle->GetParticleName();
+    opMass = outputParticle->GetPDGMass();
+    nopMass = nucleusOutputParticle->GetPDGMass();
+
     G4String                  title;
     Int_t                     nBinsX;
     Int_t                     nBinsY;
@@ -321,8 +326,6 @@ void  CexmcHistoManager::Initialize( void )
         false, CexmcRT, "tptar", "Track points (tar)", axes ) );
 
     title = "Reconstructed masses (" + nopName + " vs. " + opName + ")";
-    G4double  opMass( outputParticle->GetPDGMass() );
-    G4double  nopMass( nucleusOutputParticle->GetPDGMass() );
     nBinsMinX = opMass / 2;
     nBinsMaxX = opMass + opMass / 2;
     nBinsMinY = nopMass / 2;
@@ -381,44 +384,10 @@ void  CexmcHistoManager::SetupARHistos( const CexmcAngularRangeList &  aRanges )
         if ( k->second.empty() )
             continue;
 
-        switch ( k->first )
+        if ( k->first >= CexmcHistoType_ARReal_START &&
+             k->first <= CexmcHistoType_ARReal_END )
         {
-        case CexmcRecMassOP_ARReal_RT_Histo :
-        case CexmcRecMassNOP_ARReal_RT_Histo :
-        case CexmcOPDPAtLeftCalorimeter_ARReal_EDT_Histo :
-        case CexmcOPDPAtRightCalorimeter_ARReal_EDT_Histo :
-        case CexmcOPDPAtLeftCalorimeter_ARReal_RT_Histo :
-        case CexmcOPDPAtRightCalorimeter_ARReal_RT_Histo :
-        case CexmcRecOPDPAtLeftCalorimeter_ARReal_EDT_Histo :
-        case CexmcRecOPDPAtRightCalorimeter_ARReal_EDT_Histo :
-        case CexmcRecOPDPAtLeftCalorimeter_ARReal_RT_Histo :
-        case CexmcRecOPDPAtRightCalorimeter_ARReal_RT_Histo :
-        case CexmcKinEnAtLeftCalorimeter_ARReal_TPT_Histo :
-        case CexmcKinEnAtRightCalorimeter_ARReal_TPT_Histo :
-        case CexmcKinEnAtLeftCalorimeter_ARReal_RT_Histo :
-        case CexmcKinEnAtRightCalorimeter_ARReal_RT_Histo :
-        case CexmcAbsEnInLeftCalorimeter_ARReal_EDT_Histo :
-        case CexmcAbsEnInRightCalorimeter_ARReal_EDT_Histo :
-        case CexmcAbsEnInLeftCalorimeter_ARReal_RT_Histo :
-        case CexmcAbsEnInRightCalorimeter_ARReal_RT_Histo :
-        case CexmcMissEnFromLeftCalorimeter_ARReal_RT_Histo :
-        case CexmcMissEnFromRightCalorimeter_ARReal_RT_Histo :
-        case CexmcKinEnOP_LAB_ARReal_TPT_Histo :
-        case CexmcKinEnOP_LAB_ARReal_RT_Histo :
-        case CexmcAngleOP_SCM_ARReal_TPT_Histo :
-        case CexmcAngleOP_SCM_ARReal_RT_Histo :
-        case CexmcRecAngleOP_SCM_ARReal_RT_Histo :
-        case CexmcDiffAngleOP_SCM_ARReal_RT_Histo :
-        case CexmcOpenAngle_ARReal_TPT_Histo :
-        case CexmcOpenAngle_ARReal_RT_Histo :
-        case CexmcRecOpenAngle_ARReal_RT_Histo :
-        case CexmcDiffOpenAngle_ARReal_RT_Histo :
-        case CexmcTPInTarget_ARReal_TPT_Histo :
-        case CexmcTPInTarget_ARReal_RT_Histo :
             k->second.clear();
-            break;
-        default :
-            break;
         }
     }
 
@@ -432,23 +401,6 @@ void  CexmcHistoManager::SetupARHistos( const CexmcAngularRangeList &  aRanges )
 
 void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
 {
-    CexmcRunManager *         runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-    CexmcProductionModelType  productionModelType(
-                                        runManager->GetProductionModelType() );
-    G4ParticleDefinition *    outputParticle(
-                                CexmcPMFactoryInstance::
-                                    GetOutputParticle( productionModelType ) );
-    G4ParticleDefinition *    nucleusOutputParticle(
-                                CexmcPMFactoryInstance::
-                                    GetNucleusOutputParticle(
-                                                        productionModelType ) );
-    if ( ! outputParticle || ! nucleusOutputParticle )
-        throw CexmcException ( CexmcWeirdException );
-    G4String                  opName( outputParticle->GetParticleName() );
-    G4String                  nopName(
-                                    nucleusOutputParticle->GetParticleName() );
-    G4String                  name;
     G4String                  title;
     Int_t                     nBinsX;
     Double_t                  nBinsMinX;
@@ -456,7 +408,6 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     CexmcHistoAxes            axes;
 
     title = "Reconstructed mass of " + opName;
-    G4double  opMass( outputParticle->GetPDGMass() );
     nBinsMinX = opMass / 2;
     nBinsMaxX = opMass + opMass / 2;
     nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoMassResolution );
@@ -465,7 +416,6 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
         false, CexmcRT, "recmassop", title, axes ), aRange );
 
     title = "Reconstructed mass of " + nopName;
-    G4double  nopMass( nucleusOutputParticle->GetPDGMass() );
     nBinsMinX = nopMass / 2;
     nBinsMaxX = nopMass + nopMass / 2;
     nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) / CexmcHistoMassResolution );
@@ -489,7 +439,7 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     axes.push_back( CexmcHistoAxisData( nBinsX, -halfWidth, halfWidth ) );
     axes.push_back( CexmcHistoAxisData( nBinsY, -halfHeight, halfHeight ) );
 
-    /* looks like there is no possibility to draw descending xaxis in root,
+    /* looks like there is no possibility to draw descending xaxis in ROOT,
      * so imagine that you look at calorimeters from behind, i.e. your face to
      * the beam */
     AddHisto( CexmcHistoData( CexmcOPDPAtLeftCalorimeter_ARReal_EDT_Histo,

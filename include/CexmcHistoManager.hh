@@ -24,6 +24,7 @@
 #include <vector>
 #include <map>
 #include <Rtypes.h>
+#include <G4String.hh>
 #include "CexmcAngularRange.hh"
 #include "CexmcCommon.hh"
 
@@ -46,7 +47,8 @@ enum  CexmcHistoType
     CexmcRecMasses_RT_Histo,
     CexmcAbsorbedEnergy_EDT_Histo,
     CexmcAbsorbedEnergy_RT_Histo,
-    CexmcRecMassOP_ARReal_RT_Histo,
+    CexmcHistoType_ARReal_START,
+    CexmcRecMassOP_ARReal_RT_Histo = CexmcHistoType_ARReal_START,
     CexmcRecMassNOP_ARReal_RT_Histo,
     CexmcOPDPAtLeftCalorimeter_ARReal_EDT_Histo,
     CexmcOPDPAtRightCalorimeter_ARReal_EDT_Histo,
@@ -78,6 +80,7 @@ enum  CexmcHistoType
     CexmcDiffOpenAngle_ARReal_RT_Histo,
     CexmcTPInTarget_ARReal_TPT_Histo,
     CexmcTPInTarget_ARReal_RT_Histo,
+    CexmcHistoType_ARReal_END = CexmcTPInTarget_ARReal_RT_Histo,
     CexmcHistoType_SIZE
 };
 
@@ -205,6 +208,14 @@ class  CexmcHistoManager
         CexmcHistosMap                histos;
 
         bool                          isInitialized;
+
+        G4String                      opName;
+
+        G4String                      nopName;
+
+        G4double                      opMass;
+
+        G4double                      nopMass;
 
 #ifdef CEXMC_USE_ROOTQT
     private:
