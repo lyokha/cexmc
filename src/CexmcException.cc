@@ -41,7 +41,8 @@ const char *  CexmcException::what( void ) const throw()
                "Check your command line arguments.";
     case CexmcPreinitException :
         return CEXMC_LINE_START "Exception in PreInit phase. "
-               "Check your preinit macro validity.";
+               "Probably you did not specify preinit macro or production model "
+               "in it.";
     case CexmcFileCompressException :
         return CEXMC_LINE_START "File compress exception. "
                "Check if the file exists and output directory is writable.";

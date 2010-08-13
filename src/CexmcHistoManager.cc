@@ -25,9 +25,11 @@
 #include <TH2F.h>
 #include <TH3F.h>
 #include <TFile.h>
-#include <TKey.h>
+#include <TObject.h>
 #include <TCollection.h>
 #include <TDirectory.h>
+#include <TString.h>
+#include <TRegexp.h>
 #ifdef CEXMC_USE_ROOTQT
 #include <TCanvas.h>
 #include <QApplication>
@@ -178,10 +180,18 @@ void  CexmcHistoManager::AddHisto( const CexmcHistoData &  data,
 
     if ( data.isARHisto )
     {
-        if ( ! gDirectory->GetKey( fullName ) )
-            gDirectory->mkdir( fullName, fullTitle );
+        G4bool  dirOk( false );
 
-        gDirectory->cd( fullName );
+        if ( outFile )
+        {
+            dirOk = gDirectory->Get( fullName ) != NULL;
+
+            if ( ! dirOk )
+                dirOk = ( gDirectory->mkdir( fullName, fullTitle ) != NULL );
+
+            if ( dirOk )
+                gDirectory->cd( fullName );
+        }
 
         std::ostringstream  histoName;
         std::ostringstream  histoTitle;
@@ -194,7 +204,11 @@ void  CexmcHistoManager::AddHisto( const CexmcHistoData &  data,
         CreateHisto( histoVector, data.impl, histoName.str(), histoTitle.str(),
                      data.axes );
 
-        gDirectory->cd( ".." );
+        if ( outFile )
+        {
+            if ( dirOk )
+                gDirectory->cd( ".." );
+        }
     }
     else
     {
@@ -363,18 +377,29 @@ void  CexmcHistoManager::Initialize( void )
 
 void  CexmcHistoManager::SetupARHistos( const CexmcAngularRangeList &  aRanges )
 {
-    TIter      keys( gDirectory->GetListOfKeys() );
+    TIter      objs( gDirectory->GetList() );
     TObject *  obj( NULL );
 
-    while ( ( obj = ( TObject * )keys() ) )
+    while ( ( obj = ( TObject * )objs() ) )
     {
-        G4String   name( obj->GetName() );
-        if ( obj->IsFolder() && ( name.contains( "_arreal_" ) ||
-                                  name.contains( "_arrec_" ) ) )
+        TString   name( obj->GetName() );
+
+        if ( outFile )
         {
-            gDirectory->cd( name );
-            gDirectory->DeleteAll();
-            gDirectory->cd( ".." );
+            if ( obj->IsFolder() && ( name.Contains( TString( "_arreal_" ) ) ||
+                                      name.Contains( TString( "_arrec_" ) ) ) )
+            {
+                gDirectory->cd( name );
+                gDirectory->DeleteAll();
+                gDirectory->cd( ".." );
+            }
+        }
+        else
+        {
+            if ( name.Contains( TRegexp( "_r[0-9]+" ) ) )
+            {
+                gDirectory->Remove( obj );
+            }
         }
     }
 
@@ -649,7 +674,7 @@ void  CexmcHistoManager::List( void ) const
 
 void  CexmcHistoManager::Print( const G4String &  value )
 {
-    TObject *  histo( gDirectory->FindObject( value.c_str() ) );
+    TObject *  histo( gDirectory->FindObjectAny( value.c_str() ) );
 
     if ( ! histo )
     {
@@ -674,7 +699,7 @@ void  CexmcHistoManager::Draw( const G4String &  histoName,
         return;
     }
 
-    TObject *  histo( gDirectory->FindObject( histoName ) );
+    TObject *  histo( gDirectory->FindObjectAny( histoName ) );
 
     if ( ! histo )
     {

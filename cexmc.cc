@@ -102,7 +102,8 @@ void  printUsage( void )
     G4cout << "           -f - use specified custom filter script" << G4endl;
 #endif
     G4cout << "           -o - comma-separated list of data to output, "
-                              "possible values: run, geom, events" << G4endl;
+                              "possible values:" << G4endl <<
+              "                run, geom, events" << G4endl;
     G4cout << "           -y - force project override" << G4endl;
     G4cout << "  --help | -h - print this message and exit " << G4endl;
 }
@@ -110,6 +111,9 @@ void  printUsage( void )
 
 G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
 {
+    if ( argc < 2 )
+        return false;
+
     for ( G4int  i( 1 ); i < argc; ++i )
     {
         do
