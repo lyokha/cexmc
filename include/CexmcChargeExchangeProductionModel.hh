@@ -53,8 +53,7 @@ extern struct  genbod_out_data
 
 
 template  < typename  OutputParticle >
-class  CexmcChargeExchangeProductionModel :
-                                    virtual public G4HadronicInteraction,
+class  CexmcChargeExchangeProductionModel : public G4HadronicInteraction,
                                             public CexmcProductionModel
 {
     public:

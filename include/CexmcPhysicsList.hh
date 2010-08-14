@@ -38,8 +38,7 @@
 template  < typename  BasePhysics, typename  Particle,
             template  < typename, typename > class  StudiedPhysics,
             typename  ProductionModel >
-class  CexmcPhysicsList : virtual public BasePhysics,
-                                  public CexmcPhysicsManager
+class  CexmcPhysicsList : public BasePhysics, public CexmcPhysicsManager
 {
     public:
         CexmcPhysicsList();
