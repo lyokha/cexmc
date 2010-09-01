@@ -221,7 +221,8 @@ CexmcAST::BasicEval::ScalarValueType  CexmcASTEval::GetVarScalarValue(
 
     if ( var.name == CexmcCFVarTPT )
     {
-        return int( evSObject->targetTPOutputParticle.trackId != -1 );
+        return int( evSObject->targetTPOutputParticle.trackId !=
+                    CexmcInvalidTrackId );
     } 
 
     throw CexmcException( CexmcCFUnexpectedVariable );

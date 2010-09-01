@@ -96,7 +96,8 @@ class  CexmcRunSObject
                          G4int  numberOfEventsToBeProcessed,
                          const std::string &  rProject,
                          G4bool  interactionsWithoutEDTWereSkipped,
-                         const std::string &  cfFileName );
+                         const std::string &  cfFileName,
+                         CexmcEventDataVerboseLevel  evDataVerboseLevel );
 
     private:
         template  < typename  Archive >
@@ -223,6 +224,8 @@ class  CexmcRunSObject
         G4bool                       interactionsWithoutEDTWereSkipped;
 
         std::string                  cfFileName;
+
+        CexmcEventDataVerboseLevel   evDataVerboseLevel;
 };
 
 
@@ -293,6 +296,7 @@ void  CexmcRunSObject::serialize( Archive &  archive,
         archive & rProject;
         archive & interactionsWithoutEDTWereSkipped;
         archive & cfFileName;
+        archive & evDataVerboseLevel;
     }
 }
 

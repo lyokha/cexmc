@@ -35,7 +35,10 @@ CexmcSimpleTrackPointInfoStore::CexmcSimpleTrackPointInfoStore(
     directionLocal = tpInfo.directionLocal;
     directionWorld = tpInfo.directionWorld;
     momentumAmp = tpInfo.momentumAmp;
-    particlePDGEncoding = tpInfo.particle->GetPDGEncoding();
+    if ( tpInfo.trackId == CexmcInvalidTrackId )
+        particlePDGEncoding = 0;
+    else
+        particlePDGEncoding = tpInfo.particle->GetPDGEncoding();
     trackId = tpInfo.trackId;
     trackType = tpInfo.trackType;
 }
@@ -46,7 +49,7 @@ CexmcSimpleTrackPointInfoStore::operator CexmcTrackPointInfo() const
     G4ParticleDefinition *  particleDefinition(
                     G4ParticleTable::GetParticleTable()->FindParticle(
                                                         particlePDGEncoding ) );
-    if ( ! particleDefinition )
+    if ( ! particleDefinition && trackId != CexmcInvalidTrackId )
         throw CexmcException( CexmcWeirdException );
 
     return CexmcTrackPointInfo( positionLocal, positionWorld, directionLocal,

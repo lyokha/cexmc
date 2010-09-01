@@ -80,7 +80,9 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     projectId( projectId ), rProject( rProject ), guiMacroName( "" ),
     cfFileName( "" ), eventCountPolicy( CexmcCountAllEvents ),
     areLiveHistogramsEnabled( false ),
-    skipInteractionsWithoutEDTonWrite( true ), numberOfEventsProcessed( 0 ),
+    skipInteractionsWithoutEDTonWrite( true ),
+    evDataVerboseLevel( CexmcWriteEventDataOnEveryEDT ),
+    rEvDataVerboseLevel( CexmcWriteNoEventData ), numberOfEventsProcessed( 0 ),
     numberOfEventsProcessedEffective( 0 ), curEventRead( 0 ),
     eventsArchive( NULL ), fastEventsArchive( NULL ), physicsManager( NULL ),
     messenger( NULL )
@@ -279,6 +281,9 @@ void  CexmcRunManager::ReadProject( void )
     reconstructor->SetAbsorbedEnergyCutCLWidth( sObject.aeCutCLWidth );
     reconstructor->SetAbsorbedEnergyCutCRWidth( sObject.aeCutCRWidth );
     reconstructor->SetAbsorbedEnergyCutEllipseAngle( sObject.aeCutAngle );
+
+    rEvDataVerboseLevel = sObject.evDataVerboseLevel;
+    evDataVerboseLevel = rEvDataVerboseLevel;
 }
 
 
@@ -397,8 +402,8 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfHitsTriggeredRecRange, nmbOfOrphanHits, nmbOfFalseHitsTriggeredEDT,
         nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
         numberOfEventsProcessed, numberOfEventsProcessedEffective,
-        numberOfEventToBeProcessed, rProject,
-        skipInteractionsWithoutEDTonWrite, cfFileName );
+        numberOfEventToBeProcessed, rProject, skipInteractionsWithoutEDTonWrite,
+        cfFileName, evDataVerboseLevel );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -541,16 +546,23 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         customFilter->SetAddressedData( &evFastSObject, &evSObject );
 #endif
 
-    for ( int  i( 0 ); i < sObject.nmbOfSavedFastEvents; ++i )
+    G4int   nmbOfSavedEvents( rEvDataVerboseLevel == CexmcWriteNoEventData ? 0 :
+                             sObject.nmbOfSavedFastEvents );
+    G4bool  eventDataWrittenOnEveryTPT( rEvDataVerboseLevel ==
+                                        CexmcWriteEventDataOnEveryTPT );
+
+    for ( int  i( 0 ); i < nmbOfSavedEvents; ++i )
     {
         evFastArchive >> evFastSObject;
 
         if ( nEventCount < curEventRead )
         {
-            if ( evFastSObject.edDigitizerHasTriggered )
+            if ( eventDataWrittenOnEveryTPT ||
+                 evFastSObject.edDigitizerHasTriggered )
             {
                 evArchive >> evSObject;
-                ++nEventCount;
+                if ( evFastSObject.edDigitizerHasTriggered )
+                    ++nEventCount;
             }
             continue;
         }
@@ -562,9 +574,15 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         const CexmcAngularRangeList &  triggeredAngularRanges(
                                 productionModel->GetTriggeredAngularRanges() );
 
-        if ( ! evFastSObject.edDigitizerHasTriggered )
+        if ( ! eventDataWrittenOnEveryTPT &&
+             ! evFastSObject.edDigitizerHasTriggered )
         {
 #ifdef CEXMC_USE_CUSTOM_FILTER
+            /* user must be aware that using tpt commands in custom filter
+             * scripts for poor event data sets can easily lead to logical
+             * errors! This is because most of tpt data is only available for
+             * events with EDT trigger. There is no such problem if event data
+             * was written on every TPT event. */
             if ( customFilter && ! customFilter->EvalTPT() )
                 continue;
 #endif
@@ -575,14 +593,20 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
         evArchive >> evSObject;
 
+        G4bool  skipEDTOnThisEvent( false );
+
 #ifdef CEXMC_USE_CUSTOM_FILTER
         if ( customFilter && ! customFilter->EvalTPT() )
             continue;
         if ( customFilter && ! customFilter->EvalEDT() )
         {
-            SaveCurrentTPTEvent( evFastSObject, triggeredAngularRanges,
-                                 ProjectIsSaved() );
-            continue;
+            if ( ! eventDataWrittenOnEveryTPT )
+            {
+                SaveCurrentTPTEvent( evFastSObject, triggeredAngularRanges,
+                                     ProjectIsSaved() );
+                continue;
+            }
+            skipEDTOnThisEvent = true;
         }
 #endif
 
@@ -715,7 +739,23 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         const CexmcEventAction *  eventAction(
                 static_cast< const CexmcEventAction * >( userEventAction ) );
         if ( ! eventAction )
-            throw CexmcException( CexmcWeirdException );
+        {
+            /* all hits collections must be cleared before throwing anything
+             * from here, otherwise ~THitsMap() will try to delete local
+             * variable evSObject's fields like monitorED etc. */
+            monitorED->GetMap()->clear();
+            vetoCounterED->GetMap()->clear();
+            calorimeterED->GetMap()->clear();
+            monitorTP->GetMap()->clear();
+            targetTP->GetMap()->clear();
+            vetoCounterTP->GetMap()->clear();
+            calorimeterTP->GetMap()->clear();
+            throw CexmcException( CexmcEventActionIsNotInitialized );
+        }
+
+        if ( skipEDTOnThisEvent )
+            event.SetUserInformation( new CexmcEventInfo( false, false,
+                                                          false ) );
 
         CexmcEventAction *  theEventAction( const_cast< CexmcEventAction * >(
                                                                 eventAction ) );
@@ -727,7 +767,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         if ( eventInfo->EdTriggerIsOk() )
             ++iEventEffective;
 
-        delete event.GetUserInformation();
+        delete eventInfo;
         event.SetUserInformation( NULL );
 
         monitorED->GetMap()->clear();
@@ -880,13 +920,21 @@ void  CexmcRunManager::PrintReadRunData( void ) const
     {
         G4cout << "  -- Based on project '" << sObject.rProject << "'" <<
                   G4endl;
-        G4cout << "  -- (fdb file contains " <<
-                  ( sObject.interactionsWithoutEDTWereSkipped ?
-                    "only interactions when an event was triggered" :
-                    "all interactions" ) << ")" << std::endl;
         if ( ! sObject.cfFileName.empty() )
             G4cout << "  -- Custom filter script '" << sObject.cfFileName <<
                       "' was used" << G4endl;
+    }
+    G4cout << "  -- Event data verbose level (0 - not saved, 1 - triggers, "
+              "2 - interactions): " << sObject.evDataVerboseLevel << G4endl;
+    if ( ! sObject.rProject.empty() )
+    {
+        if ( sObject.evDataVerboseLevel == CexmcWriteEventDataOnEveryEDT )
+        {
+            G4cout << "  -- (fdb file contains " <<
+                      ( sObject.interactionsWithoutEDTWereSkipped ?
+                        "only interactions when an event was triggered" :
+                        "all interactions" ) << ")" << std::endl;
+        }
     }
     G4cout << "  -- Base physics used (1 - QGSP_BERT, 2 - QGSP_BIC_EMY): " <<
               sObject.basePhysicsUsed << G4endl;
@@ -1053,6 +1101,9 @@ void  CexmcRunManager::ReadAndPrintEventsData( void ) const
     {
         evArchive >> evSObject;
 
+        if ( ! evSObject.edDigitizerMonitorHasTriggered )
+            continue;
+
         CexmcEnergyDepositStore  edStore( evSObject.monitorED,
             evSObject.vetoCounterEDLeft, evSObject.vetoCounterEDRight,
             evSObject.calorimeterEDLeft, evSObject.calorimeterEDRight,
@@ -1081,6 +1132,8 @@ void  CexmcRunManager::ReadAndPrintEventsData( void ) const
 void  CexmcRunManager::PrintReadData(
                             const CexmcOutputDataTypeSet &  outputData ) const
 {
+    G4bool  addSpace( false );
+
     CexmcOutputDataTypeSet::const_iterator  found(
                                     outputData.find( CexmcOutputGeometry ) );
     if ( found != outputData.end() )
@@ -1089,17 +1142,27 @@ void  CexmcRunManager::PrintReadData(
                        gdmlFileExtension );
         if ( system( cmd ) != 0 )
             G4cerr << "Failed to cat geometry data" << G4endl;
+
+        addSpace = true;
     }
 
     found = outputData.find( CexmcOutputEvents );
     if ( found != outputData.end() )
     {
+        if ( addSpace )
+            G4cout << G4endl << G4endl;
+
         ReadAndPrintEventsData();
+
+        addSpace = true;
     }
 
     found = outputData.find( CexmcOutputRun );
     if ( found != outputData.end() )
     {
+        if ( addSpace )
+            G4cout << G4endl << G4endl;
+
         G4DecayTable *  etaDecayTable( G4Eta::Definition()->GetDecayTable() );
         for ( CexmcDecayBranchesStore::const_iterator
                 k( sObject.etaDecayTable.GetDecayBranches().begin() );

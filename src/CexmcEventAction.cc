@@ -693,6 +693,7 @@ void  CexmcEventAction::UpdateRunHits(
 
 
 void  CexmcEventAction::SaveEvent( const G4Event *  event,
+                                   G4bool  edDigitizerHasTriggered,
                                    const CexmcEnergyDepositStore *  edStore,
                                    const CexmcTrackPointsStore *  tpStore,
                                    const CexmcProductionModelData &  pmData )
@@ -702,11 +703,19 @@ void  CexmcEventAction::SaveEvent( const G4Event *  event,
     if ( ! runManager->ProjectIsSaved() )
         return;
 
+    if ( runManager->GetEventDataVerboseLevel() == CexmcWriteNoEventData )
+        return;
+
+    if ( ! edDigitizerHasTriggered && runManager->GetEventDataVerboseLevel() !=
+                                                CexmcWriteEventDataOnEveryTPT )
+        return;
+
     boost::archive::binary_oarchive *  archive(
                                             runManager->GetEventsArchive() );
     if ( archive )
     {
-        CexmcEventSObject  sObject( event->GetEventID(), edStore->monitorED,
+        CexmcEventSObject  sObject( event->GetEventID(),
+            edDigitizerHasTriggered, edStore->monitorED,
             edStore->vetoCounterEDLeft, edStore->vetoCounterEDRight,
             edStore->calorimeterEDLeft, edStore->calorimeterEDRight,
             edStore->calorimeterEDLeftCollection,
@@ -735,6 +744,9 @@ void  CexmcEventAction::SaveEventFast( const G4Event *  event,
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
     if ( ! runManager->ProjectIsSaved() )
+        return;
+
+    if ( runManager->GetEventDataVerboseLevel() == CexmcWriteNoEventData )
         return;
 
     boost::archive::binary_oarchive *  archive(
@@ -771,7 +783,13 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 
     G4bool  edDigitizerMonitorHasTriggered(
                                 energyDepositDigitizer->MonitorHasTriggered() );
-    G4bool  edDigitizerHasTriggered( energyDepositDigitizer->HasTriggered() );
+    G4bool  edDigitizerHasTriggered( false );
+
+    CexmcEventInfo *  eventInfo( static_cast< CexmcEventInfo * >(
+                                                event->GetUserInformation() ) );
+    if ( ! eventInfo || eventInfo->EdTriggerIsOk() )
+        edDigitizerHasTriggered = energyDepositDigitizer->HasTriggered();
+
     G4bool  tpDigitizerHasTriggered( trackPointsDigitizer->HasTriggered() );
     G4bool  reconstructorHasBasicTrigger( false );
     G4bool  reconstructorHasFullTrigger( false );
@@ -888,11 +906,12 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
                            edDigitizerHasTriggered,
                            edDigitizerMonitorHasTriggered,
                            pmData.outputParticleSCM.cosTheta() );
+            SaveEvent( event, edDigitizerHasTriggered, edStore, tpStore,
+                       pmData );
         }
 
         if ( edDigitizerHasTriggered )
         {
-            SaveEvent( event, edStore, tpStore, pmData );
 #ifdef CEXMC_USE_ROOT
             FillEDTHistos( edStore, triggeredAngularRanges );
 #endif
@@ -912,6 +931,11 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 #endif
 
         G4Event *  theEvent( const_cast< G4Event * >( event ) );
+        if ( eventInfo )
+        {
+            delete eventInfo;
+            theEvent->SetUserInformation( NULL );
+        }
         theEvent->SetUserInformation( new CexmcEventInfo(
                                                 edDigitizerHasTriggered,
                                                 tpDigitizerHasTriggered,

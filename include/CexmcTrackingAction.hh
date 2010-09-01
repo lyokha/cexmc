@@ -20,6 +20,7 @@
 #define CEXMC_TRACKING_ACTION_HH
 
 #include <G4UserTrackingAction.hh>
+#include "CexmcCommon.hh"
 
 class  G4ParticleDefinition;
 class  G4Track;
@@ -48,7 +49,7 @@ class  CexmcTrackingAction : public G4UserTrackingAction
 
 inline void  CexmcTrackingAction::ResetOutputParticleTrackId( void )
 {
-    outputParticleTrackId = -1;
+    outputParticleTrackId = CexmcInvalidTrackId;
 }
 
 

@@ -61,7 +61,9 @@ class  CexmcRunManager : public G4RunManager
         void  SetCustomFilter( const G4String &  cfFileName_ );
 #endif
 
-        void  SetEventCountPolicy( CexmcEventCountPolicy  eventCountPolicy_ );
+        void  SetEventCountPolicy( CexmcEventCountPolicy  value );
+
+        void  SetEventDataVerboseLevel( CexmcEventDataVerboseLevel  value );
 
         void  ReadProject( void );
 
@@ -103,6 +105,8 @@ class  CexmcRunManager : public G4RunManager
         boost::archive::binary_oarchive *  GetFastEventsArchive( void ) const;
 
         G4bool                    AreLiveHistogramsEnabled( void ) const;
+
+        CexmcEventDataVerboseLevel  GetEventDataVerboseLevel( void ) const;
 
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
@@ -149,6 +153,10 @@ class  CexmcRunManager : public G4RunManager
         G4bool                      areLiveHistogramsEnabled;
 
         G4bool                      skipInteractionsWithoutEDTonWrite;
+
+        CexmcEventDataVerboseLevel  evDataVerboseLevel;
+
+        CexmcEventDataVerboseLevel  rEvDataVerboseLevel;
 
         CexmcRunSObject             sObject;
 
@@ -205,12 +213,22 @@ inline void  CexmcRunManager::SetGuiMacroName( const G4String &  guiMacroName_ )
 
 
 inline void  CexmcRunManager::SetEventCountPolicy(
-                                CexmcEventCountPolicy  eventCountPolicy_ )
+                                            CexmcEventCountPolicy  value )
 {
     if ( ProjectIsRead() )
         throw CexmcException( CexmcCmdIsNotAllowed );
 
-    eventCountPolicy = eventCountPolicy_;
+    eventCountPolicy = value;
+}
+
+
+inline void  CexmcRunManager::SetEventDataVerboseLevel(
+                                            CexmcEventDataVerboseLevel  value )
+{
+    if ( ProjectIsRead() && value > rEvDataVerboseLevel )
+        throw CexmcException( CexmcPoorEventData );
+
+    evDataVerboseLevel = value;
 }
 
 
@@ -307,6 +325,13 @@ inline void  CexmcRunManager::EnableLiveHistograms( G4bool  on )
 inline G4bool  CexmcRunManager::AreLiveHistogramsEnabled( void ) const
 {
     return areLiveHistogramsEnabled;
+}
+
+
+inline CexmcEventDataVerboseLevel  CexmcRunManager::GetEventDataVerboseLevel(
+                                                                    void ) const
+{
+    return evDataVerboseLevel;
 }
 
 

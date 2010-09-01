@@ -30,7 +30,7 @@
 
 struct  CexmcTrackPointInfo
 {
-    CexmcTrackPointInfo() : trackId( -1 )
+    CexmcTrackPointInfo() : trackId( CexmcInvalidTrackId )
     {}
 
     CexmcTrackPointInfo( const G4ThreeVector &  positionLocal,
@@ -48,7 +48,7 @@ struct  CexmcTrackPointInfo
 
     G4bool  IsValid( void ) const
     {
-        return trackId != -1;
+        return trackId != CexmcInvalidTrackId;
     }
 
     void *  operator new( size_t  size );

@@ -42,6 +42,8 @@ const G4String  CexmcCalorimeterRegionName( "Calorimeter" );
 const G4double  CexmcFwhmToStddev( 0.42466 );
 const G4double  CexmcInvalidCosTheta( 2.0 );
 
+const G4int     CexmcInvalidTrackId( -1 );
+
 
 enum CexmcBasePhysicsUsed
 {
@@ -127,6 +129,14 @@ enum  CexmcCrystalSelectionAlgorithm
 {
     CexmcSelectAllCrystals,
     CexmcSelectAdjacentCrystals
+};
+
+
+enum  CexmcEventDataVerboseLevel
+{
+    CexmcWriteNoEventData,
+    CexmcWriteEventDataOnEveryEDT,
+    CexmcWriteEventDataOnEveryTPT
 };
 
 

@@ -25,6 +25,8 @@
 #include "CexmcSimpleProductionModelDataStore.hh"
 #include "CexmcCommon.hh"
 
+#define CEXMC_EVENT_SOBJECT_VERSION 1
+
 class  CexmcTrackPointInfo;
 class  CexmcProductionModelData;
 
@@ -40,7 +42,8 @@ class  CexmcEventSObject
     public:
         CexmcEventSObject();
 
-        CexmcEventSObject( G4int  eventId, G4double  monitorED,
+        CexmcEventSObject( G4int  eventId,
+                G4bool  edDigitizerMonitorHasTriggered, G4double  monitorED,
                 G4double  vetoCounterEDLeft, G4double  vetoCounterEDRight,
                 G4double  calorimeterEDLeft, G4double  calorimeterEDRight,
                 const CexmcEnergyDepositCalorimeterCollection &
@@ -67,6 +70,8 @@ class  CexmcEventSObject
 
     private:
         G4int                                    eventId;
+
+        G4bool                                   edDigitizerMonitorHasTriggered;
 
         G4double                                 monitorED;
 
@@ -109,9 +114,12 @@ class  CexmcEventSObject
 
 
 template  < typename  Archive >
-void  CexmcEventSObject::serialize( Archive &  archive, const unsigned int )
+void  CexmcEventSObject::serialize( Archive &  archive,
+                                    const unsigned int  version )
 {
     archive & eventId;
+    if ( version > 0 )
+        archive & edDigitizerMonitorHasTriggered;
     archive & monitorED;
     archive & vetoCounterEDLeft;
     archive & vetoCounterEDRight;
@@ -131,6 +139,9 @@ void  CexmcEventSObject::serialize( Archive &  archive, const unsigned int )
     archive & calorimeterTPRight;
     archive & productionModelData;
 }
+
+
+BOOST_CLASS_VERSION( CexmcEventSObject, CEXMC_EVENT_SOBJECT_VERSION )
 
 
 #endif

@@ -30,7 +30,8 @@
 
 CexmcTrackingAction::CexmcTrackingAction(
                                     CexmcPhysicsManager *  physicsManager ) :
-    physicsManager( physicsManager ), outputParticleTrackId( -1 )
+    physicsManager( physicsManager ),
+    outputParticleTrackId( CexmcInvalidTrackId )
 {
 }
 

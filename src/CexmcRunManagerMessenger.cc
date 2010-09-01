@@ -27,8 +27,9 @@
 CexmcRunManagerMessenger::CexmcRunManagerMessenger(
                                 CexmcRunManager *  runManager ) :
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL ),
-    setGuiMacro( NULL ), setEventCountPolicy( NULL ), replayEvents( NULL ),
-    seekTo( NULL ), skipInteractionsWithoutEDT( NULL )
+    setGuiMacro( NULL ), setEventCountPolicy( NULL ),
+    setEventDataVerboseLevel( NULL ),replayEvents( NULL ), seekTo( NULL ),
+    skipInteractionsWithoutEDT( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -60,6 +61,20 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     setEventCountPolicy->SetCandidates( "all interaction trigger" );
     setEventCountPolicy->AvailableForStates( G4State_PreInit, G4State_Idle );
 
+    setEventDataVerboseLevel = new G4UIcmdWithAString(
+        ( CexmcMessenger::runDirName + "eventDataVerboseLevel" ).c_str(),
+        this );
+    setEventDataVerboseLevel->SetGuidance( "When events will be saved.\n"
+            "  nosave - never,\n"
+            "  trigger - when energy deposit triggered (EDT),\n"
+            "  interaction - when studied interaction triggered (TPT)" );
+    setEventDataVerboseLevel->SetParameterName( "EventDataVerboseLevel",
+                                                false );
+    setEventDataVerboseLevel->SetDefaultValue( "trigger" );
+    setEventDataVerboseLevel->SetCandidates( "nosave trigger interaction" );
+    setEventDataVerboseLevel->AvailableForStates( G4State_PreInit,
+                                                  G4State_Idle );
+
     replayEvents = new G4UIcmdWithAnInteger(
         ( CexmcMessenger::runDirName + "replay" ).c_str(), this );
     replayEvents->SetGuidance( "Replay specified number of events "
@@ -86,9 +101,10 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     skipInteractionsWithoutEDT = new G4UIcmdWithABool(
         ( CexmcMessenger::runDirName + "skipInteractionsWithoutEDT" ).c_str(),
         this );
-    skipInteractionsWithoutEDT->SetGuidance( "effective only when a project is "
-        "read and then written to\nanother project. Do not write interactions "
-        "into .fdb file if\nevent was not triggered" );
+    skipInteractionsWithoutEDT->SetGuidance( "Do not write interactions into "
+        ".fdb file if event was not\ntriggered (effective only when a project "
+        "is read and then\nwritten to another project and only if event data "
+        "verbose\nlevel is 'trigger')" );
     skipInteractionsWithoutEDT->SetParameterName( "skipInteractionsWithoutEDT",
                                                   true );
     skipInteractionsWithoutEDT->SetDefaultValue( true );
@@ -103,6 +119,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
     delete setGdmlFile;
     delete setGuiMacro;
     delete setEventCountPolicy;
+    delete setEventDataVerboseLevel;
     delete replayEvents;
     delete seekTo;
     delete skipInteractionsWithoutEDT;
@@ -161,6 +178,31 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
                 }
             } while ( false );
             runManager->SetEventCountPolicy( eventCountPolicy );
+            break;
+        }
+        if ( cmd == setEventDataVerboseLevel )
+        {
+            CexmcEventDataVerboseLevel  eventDataVerboseLevel(
+                                                CexmcWriteEventDataOnEveryEDT );
+            do
+            {
+                if ( value == "nosave" )
+                {
+                    eventDataVerboseLevel = CexmcWriteNoEventData;
+                    break;
+                }
+                if ( value == "trigger" )
+                {
+                    eventDataVerboseLevel = CexmcWriteEventDataOnEveryEDT;
+                    break;
+                }
+                if ( value == "interaction" )
+                {
+                    eventDataVerboseLevel = CexmcWriteEventDataOnEveryTPT;
+                    break;
+                }
+            } while ( false );
+            runManager->SetEventDataVerboseLevel( eventDataVerboseLevel );
             break;
         }
         if ( cmd == replayEvents )

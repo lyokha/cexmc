@@ -90,6 +90,7 @@ class  CexmcEventAction : public G4UserEventAction
                              const CexmcAngularRange &  aGap );
 
         void  SaveEvent( const G4Event *  event,
+                         G4bool  edDigitizerMonitorHasTriggered,
                          const CexmcEnergyDepositStore *  edStore,
                          const CexmcTrackPointsStore *  tpStore,
                          const CexmcProductionModelData &  pmData );

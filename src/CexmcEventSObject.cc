@@ -20,12 +20,13 @@
 #include "CexmcTrackPointInfo.hh"
 
 
-CexmcEventSObject::CexmcEventSObject()
+CexmcEventSObject::CexmcEventSObject() : edDigitizerMonitorHasTriggered( true )
 {
 }
 
 
-CexmcEventSObject::CexmcEventSObject( G4int  eventId, G4double  monitorED,
+CexmcEventSObject::CexmcEventSObject( G4int  eventId,
+        G4bool  edDigitizerMonitorHasTriggered, G4double  monitorED,
         G4double  vetoCounterEDLeft, G4double  vetoCounterEDRight,
         G4double  calorimeterEDLeft, G4double  calorimeterEDRight,
         const CexmcEnergyDepositCalorimeterCollection &
@@ -45,8 +46,9 @@ CexmcEventSObject::CexmcEventSObject( G4int  eventId, G4double  monitorED,
         const CexmcTrackPointInfo &  calorimeterTPLeft,
         const CexmcTrackPointInfo &  calorimeterTPRight,
         const CexmcProductionModelData &  productionModelData ) :
-    eventId( eventId ), monitorED( monitorED ),
-    vetoCounterEDLeft( vetoCounterEDLeft ),
+    eventId( eventId ),
+    edDigitizerMonitorHasTriggered( edDigitizerMonitorHasTriggered ),
+    monitorED( monitorED ), vetoCounterEDLeft( vetoCounterEDLeft ),
     vetoCounterEDRight( vetoCounterEDRight ),
     calorimeterEDLeft( calorimeterEDLeft ),
     calorimeterEDRight( calorimeterEDRight ),

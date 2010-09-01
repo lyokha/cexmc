@@ -26,6 +26,7 @@ enum  CexmcExceptionType
 {
     CexmcUnknownException,
     CexmcSystemException,
+    CexmcEventActionIsNotInitialized,
     CexmcCmdLineParseException,
     CexmcPreinitException,
     CexmcFileCompressException,
@@ -38,6 +39,7 @@ enum  CexmcExceptionType
     CexmcBadOCVetoAlgorithm,
     CexmcBadOCVetoFraction,
     CexmcCalorimeterRegionNotInitialized,
+    CexmcPoorEventData,
 #ifdef CEXMC_USE_CUSTOM_FILTER
     CexmcCFBadSource,
     CexmcCFParseError,

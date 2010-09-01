@@ -1,6 +1,10 @@
-delete edt if Sum( clEDcol ) > 350 * MeV
-keep edt if clEDcol[2,2] + clEDcol[2,3] > Sum( Outer( clEDcol ) )
-delete edt if Sum( Inner( crEDcol ) ) > 200 * MeV
+#delete edt if Sum( clEDcol ) > 350 * MeV
+#keep edt if clEDcol[2,2] + clEDcol[2,3] > Sum( Outer( clEDcol ) )
+#delete edt if Sum( Inner( crEDcol ) ) > 200 * MeV
+
+delete tpt if ip_mon_posl[1] < ip_mon_posl[2]
+delete tpt if Sqrt(Sqr(op_tgt_posl[1]) + Sqr(op_tgt_posl[2]) + Sqr(op_tgt_posl[3])) > 2 * cm
+
 #delete tpt if op_cosTh_SCM < 0
 #delete tpt if event > 500
 #delete tpt if ! mon

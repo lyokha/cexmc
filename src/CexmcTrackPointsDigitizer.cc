@@ -38,16 +38,18 @@ CexmcTrackPointsDigitizer::CexmcTrackPointsDigitizer( const G4String &  name ) :
 
 void  CexmcTrackPointsDigitizer::InitializeData( void )
 {
-    monitorTP.trackId = -1;
-    targetTPIncidentParticle.trackId = -1;
-    targetTPOutputParticle.trackId = -1;
-    targetTPNucleusParticle.trackId = -1;
-    targetTPOutputParticleDecayProductParticle[ 0 ].trackId = -1;
-    targetTPOutputParticleDecayProductParticle[ 1 ].trackId = -1;
-    vetoCounterTPLeft.trackId = -1;
-    vetoCounterTPRight.trackId = -1;
-    calorimeterTPLeft.trackId = -1;
-    calorimeterTPRight.trackId = -1;
+    monitorTP.trackId = CexmcInvalidTrackId;
+    targetTPIncidentParticle.trackId = CexmcInvalidTrackId;
+    targetTPOutputParticle.trackId = CexmcInvalidTrackId;
+    targetTPNucleusParticle.trackId = CexmcInvalidTrackId;
+    targetTPOutputParticleDecayProductParticle[ 0 ].trackId =
+                                                        CexmcInvalidTrackId;
+    targetTPOutputParticleDecayProductParticle[ 1 ].trackId =
+                                                        CexmcInvalidTrackId;
+    vetoCounterTPLeft.trackId = CexmcInvalidTrackId;
+    vetoCounterTPRight.trackId = CexmcInvalidTrackId;
+    calorimeterTPLeft.trackId = CexmcInvalidTrackId;
+    calorimeterTPRight.trackId = CexmcInvalidTrackId;
     hasTriggered = false;
 }
 

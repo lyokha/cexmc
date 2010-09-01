@@ -83,6 +83,7 @@
 /cexmc/reconstructor/aeCutAngle 45 deg
 
 /cexmc/run/eventCountPolicy trigger
+/cexmc/run/eventDataVerboseLevel trigger
 /cexmc/event/verbose 2
 /cexmc/vis/verbose 2
 

@@ -36,6 +36,8 @@ const char *  CexmcException::what( void ) const throw()
     {
     case CexmcSystemException :
         return CEXMC_LINE_START "Unspecified system exception.";
+    case CexmcEventActionIsNotInitialized :
+        return CEXMC_LINE_START "Event action is not initialized.";
     case CexmcCmdLineParseException :
         return CEXMC_LINE_START "Exception in command line arguments. "
                "Check your command line arguments.";
@@ -79,6 +81,9 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcCalorimeterRegionNotInitialized :
         return CEXMC_LINE_START "Calorimeter sensitive region was not "
                 "initialized. Check gdml source file.";
+    case CexmcPoorEventData :
+        return CEXMC_LINE_START "Cannot create rich event data from poor "
+                "original data. Set less value of event data verbose level.";
 #ifdef CEXMC_USE_CUSTOM_FILTER
     case CexmcCFBadSource :
         return CEXMC_LINE_START "Custom filter source file does not exist or "
