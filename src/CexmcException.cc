@@ -37,7 +37,7 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcSystemException :
         return CEXMC_LINE_START "Unspecified system exception.";
     case CexmcEventActionIsNotInitialized :
-        return CEXMC_LINE_START "Event action is not initialized.";
+        return CEXMC_LINE_START "Event action was not initialized.";
     case CexmcCmdLineParseException :
         return CEXMC_LINE_START "Exception in command line arguments. "
                "Check your command line arguments.";
@@ -50,14 +50,14 @@ const char *  CexmcException::what( void ) const throw()
                "Check if the file exists and output directory is writable.";
     case CexmcReadProjectIncompleteException :
         return CEXMC_LINE_START "Read project is incomplete. "
-               "Check if the read project has complete data files.";
+               "Check if the read project has complete set of data files.";
     case CexmcProjectExists :
         return CEXMC_LINE_START "Project you try to write exists. "
-               "Use command line '-y' to force project override.";
+               "Use command line option '-y' to force project override.";
     case CexmcCmdIsNotAllowed :
         return CEXMC_LINE_START "Command is not allowed here. "
-                "Probably you try to issue a command which will override "
-                "read-only settings in the read project).";
+                "Probably you tried to issue a command which would override "
+                "read-only settings in the read project.";
     case CexmcBadAngularRange :
         return CEXMC_LINE_START "Bad angular range. "
                 "Check specified angular ranges (probably they mismatch ranges "
