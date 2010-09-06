@@ -29,7 +29,7 @@ CexmcCustomFilterEval::CexmcCustomFilterEval( const G4String &  sourceFileName,
                                   const CexmcEventSObject *  evSObject ) :
     astEval( evFastSObject, evSObject )
 {
-    std::string     line;
+    std::string     command;
     std::ifstream   sourceFile( sourceFileName );
 
     if ( ! sourceFile )
@@ -37,23 +37,43 @@ CexmcCustomFilterEval::CexmcCustomFilterEval( const G4String &  sourceFileName,
 
     while ( ! sourceFile.eof() )
     {
+        std::string  line;
         std::getline( sourceFile, line );
+
         size_t  commentStartPos( line.find_first_of( '#' ) );
         if ( commentStartPos != std::string::npos )
             line.erase( commentStartPos );
 
-        if ( ! line.empty() )
+        command += line;
+
+        if ( ! command.empty() )
         {
+            size_t  length( command.length() );
+
+            if ( command[ length - 1 ] == '\\' )
+            {
+                command.erase( length - 1 );
+                continue;
+            }
+
             CexmcCustomFilter::ParseResult  curParseResult;
 
-            std::string::const_iterator   begin( line.begin() );
-            std::string::const_iterator   end( line.end() );
+            std::string::const_iterator   begin( command.begin() );
+            std::string::const_iterator   end( command.end() );
 
-            if ( ! CexmcCustomFilter::phrase_parse( begin, end, grammar,
-                                CexmcCustomFilter::space, curParseResult ) ||
-                 begin != end )
+            try
             {
-                throw CexmcException( CexmcCFParseError );
+                if ( ! CexmcCustomFilter::phrase_parse( begin, end, grammar,
+                                CexmcCustomFilter::space, curParseResult ) ||
+                     begin != end )
+                {
+                    throw CexmcException( CexmcCFParseError );
+                }
+            }
+            catch ( ... )
+            {
+                sourceFile.close();
+                throw;
             }
 
 #ifdef CEXMC_DEBUG_CF
@@ -75,6 +95,8 @@ CexmcCustomFilterEval::CexmcCustomFilterEval( const G4String &  sourceFileName,
                 break;
             }
         }
+
+        command = "";
     }
 
     sourceFile.close();

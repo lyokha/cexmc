@@ -78,7 +78,11 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
     productionModelType( CexmcUnknownProductionModel ),
     gdmlFileName( "default.gdml" ), zipGdmlFile( false ), projectsDir( "." ),
     projectId( projectId ), rProject( rProject ), guiMacroName( "" ),
-    cfFileName( "" ), eventCountPolicy( CexmcCountAllEvents ),
+    cfFileName( "" ),
+#ifdef CEXMC_USE_CUSTOM_FILTER
+    customFilter( NULL ),
+#endif
+    eventCountPolicy( CexmcCountAllEvents ),
     areLiveHistogramsEnabled( false ),
     skipInteractionsWithoutEDTonWrite( true ),
     evDataVerboseLevel( CexmcWriteEventDataOnEveryEDT ),
@@ -1179,6 +1183,12 @@ void  CexmcRunManager::PrintReadData(
 
 void  CexmcRunManager::SetCustomFilter( const G4String &  cfFileName_ )
 {
+    if ( customFilter )
+    {
+        delete customFilter;
+        customFilter = NULL;
+    }
+
     if ( cfFileName_.empty() )
         return;
 
