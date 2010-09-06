@@ -616,6 +616,11 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
         event.SetEventID( evSObject.eventId );
 
+        /* AAA: beware! If something throws an exception between AAA and CCC
+         * then there would be segmentation violation in ~THitsMap() as it
+         * would try to delete local variable evSObject's fields.
+         * See also BBB */
+
         monitorED->GetMap()->operator[]( 0 ) = &evSObject.monitorED;
         vetoCounterED->GetMap()->operator[]( 0 ) = &evSObject.vetoCounterEDLeft;
         vetoCounterED->GetMap()->operator[]( 1 <<
@@ -744,9 +749,9 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
                 static_cast< const CexmcEventAction * >( userEventAction ) );
         if ( ! eventAction )
         {
-            /* all hits collections must be cleared before throwing anything
-             * from here, otherwise ~THitsMap() will try to delete local
-             * variable evSObject's fields like monitorED etc. */
+            /* BBB: all hits collections must be cleared before throwing
+             * anything from here, otherwise ~THitsMap() will try to delete
+             * local variable evSObject's fields like monitorED etc. */
             monitorED->GetMap()->clear();
             vetoCounterED->GetMap()->clear();
             calorimeterED->GetMap()->clear();
@@ -781,6 +786,8 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         targetTP->GetMap()->clear();
         vetoCounterTP->GetMap()->clear();
         calorimeterTP->GetMap()->clear();
+
+        /* CCC: see AAA */
 
         if ( nEvent > 0 && iEventEffective == nEvent )
             break;
