@@ -68,6 +68,9 @@ class  CexmcProductionModel
         void    SetTriggeredAngularRanges( G4double  opCosThetaSCM );
 
     protected:
+        virtual void  FermiMotionStatusChangeHook( void );
+
+    protected:
         G4bool                    fermiMotionIsOn;
 
         CexmcAngularRangeList     angularRanges;
@@ -95,6 +98,8 @@ inline void  CexmcProductionModel::ApplyFermiMotion( G4bool  on,
     }
 
     fermiMotionIsOn = on;
+
+    FermiMotionStatusChangeHook();
 }
 
 

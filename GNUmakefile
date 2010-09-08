@@ -2,6 +2,10 @@ name := cexmc
 G4TARGET := $(name)
 G4EXLIB := true
 
+# if CEXMC_USE_GENBOD is set then original FORTRAN routine GENBOD() will be used
+# as phase space generator
+#CEXMC_USE_GENBOD := yes
+
 ifndef G4INSTALL
   G4INSTALL = ../../..
 endif
@@ -10,7 +14,10 @@ ifdef BOOST_INCLUDE_PATH
   CPPFLAGS += -I$(BOOST_INCLUDE_PATH)
 endif
 
-EXTRALIBS = `cernlib geant321 phtools packlib kernlib`
+ifdef CEXMC_USE_GENBOD
+  CPPFLAGS += -DCEXMC_USE_GENBOD
+  EXTRALIBS = `cernlib geant321 phtools packlib kernlib`
+endif
 
 ifdef BOOST_INCLUDE_PATH
   EXTRALIBS += -L$(BOOST_LIBRARY_PATH)

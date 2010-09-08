@@ -349,7 +349,8 @@ void  CexmcRunManager::SaveProject( void )
     G4int                   nmbOfFalseHitsTriggeredRec( 0 );
     G4int                   nmbOfSavedEvents( 0 );
     G4int                   nmbOfSavedFastEvents( 0 );
-    const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
+    CexmcRun *              run( static_cast< CexmcRun * >( currentRun ) );
+
     if ( run )
     {
         nmbOfHitsSampled = run->GetNmbOfHitsSampled();
@@ -810,21 +811,23 @@ void  CexmcRunManager::SaveCurrentTPTEvent(
                                 const CexmcAngularRangeList &  angularRanges,
                                 bool  writeToDatabase )
 {
-    const CexmcRun *  run( static_cast< const CexmcRun * >( GetCurrentRun() ) );
-    CexmcRun *        theRun( const_cast< CexmcRun * >( run ) );
+    CexmcRun *  run( static_cast< const CexmcRun * >( currentRun ) );
+
+    if ( ! run )
+        return;
 
     for ( CexmcAngularRangeList::const_iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
     {
-        theRun->IncrementNmbOfHitsSampledFull( k->index );
+        run->IncrementNmbOfHitsSampledFull( k->index );
         if ( evFastSObject.edDigitizerMonitorHasTriggered )
-            theRun->IncrementNmbOfHitsSampled( k->index );
+            run->IncrementNmbOfHitsSampled( k->index );
     }
 
     if ( writeToDatabase )
     {
         fastEventsArchive->operator<<( evFastSObject );
-        theRun->IncrementNmbOfSavedFastEvents();
+        run->IncrementNmbOfSavedFastEvents();
     }
 }
 

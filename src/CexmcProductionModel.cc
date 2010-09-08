@@ -47,3 +47,8 @@ void  CexmcProductionModel::SetTriggeredAngularRanges( G4double  opCosThetaSCM )
     }
 }
 
+
+void  CexmcProductionModel::FermiMotionStatusChangeHook( void )
+{
+}
+

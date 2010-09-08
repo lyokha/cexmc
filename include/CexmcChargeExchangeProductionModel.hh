@@ -26,30 +26,9 @@
 #include <G4Proton.hh>
 #include <G4Neutron.hh>
 #include "CexmcProductionModel.hh"
+#include "CexmcGenbod.hh"
+#include "CexmcReimplementedGenbod.hh"
 #include "CexmcException.hh"
-
-/* Old Fortran routine GENBOD() is used here to sample kinematics in
- * CM system */
-
-
-extern "C"
-{
-    extern int  genbod_( void );
-}
-
-extern struct  genbod_in_data
-{
-    int    np;
-    float  tecm;
-    float  amass[ 18 ];
-    int    kgenev;
-}  genin_;
-
-extern struct  genbod_out_data
-{
-    float  pcm[ 18 ][ 5 ];
-    float  wt;
-}  genout_;
 
 
 template  < typename  OutputParticle >
@@ -58,6 +37,8 @@ class  CexmcChargeExchangeProductionModel : public G4HadronicInteraction,
 {
     public:
         CexmcChargeExchangeProductionModel();
+
+        ~CexmcChargeExchangeProductionModel();
 
     public:
         G4HadFinalState *  ApplyYourself( const G4HadProjectile &  projectile,
@@ -73,13 +54,16 @@ class  CexmcChargeExchangeProductionModel : public G4HadronicInteraction,
         static G4ParticleDefinition *  GetNucleusOutputParticle( void );
 
     private:
-        G4ParticleDefinition *  thePiMinus;
+        CexmcPhaseSpaceGenerator *  phaseSpaceGenerator;
 
-        G4ParticleDefinition *  theProton;
+    private:
+        G4ParticleDefinition *      thePiMinus;
 
-        G4ParticleDefinition *  theNeutron;
+        G4ParticleDefinition *      theProton;
 
-        G4ParticleDefinition *  theOutputParticle;
+        G4ParticleDefinition *      theNeutron;
+
+        G4ParticleDefinition *      theOutputParticle;
 };
 
 
@@ -87,10 +71,39 @@ template  < typename  OutputParticle >
 CexmcChargeExchangeProductionModel< OutputParticle >::
                                         CexmcChargeExchangeProductionModel() :
     G4HadronicInteraction( "Studied Charge Exchange" ),
-    thePiMinus( G4PionMinus::Definition() ),
+    phaseSpaceGenerator( NULL ), thePiMinus( G4PionMinus::Definition() ),
     theProton( G4Proton::Definition() ), theNeutron( G4Neutron::Definition() ),
     theOutputParticle( OutputParticle::Definition() )
 {
+    CexmcPhaseSpaceInVector   inVec;
+
+    inVec.push_back( &productionModelData.incidentParticleSCM );
+    inVec.push_back( &productionModelData.nucleusParticleSCM );
+
+    CexmcPhaseSpaceOutVector  outVec;
+
+    outVec.push_back( CexmcPhaseSpaceOutVectorElement(
+                            &productionModelData.outputParticleSCM,
+                            theOutputParticle->GetPDGMass() ) );
+    outVec.push_back( CexmcPhaseSpaceOutVectorElement(
+                            &productionModelData.nucleusOutputParticleSCM,
+                            theNeutron->GetPDGMass() ) );
+
+#ifdef CEXMC_USE_GENBOD
+    phaseSpaceGenerator = new CexmcGenbod;
+#else
+    phaseSpaceGenerator = new CexmcReimplementedGenbod;
+#endif
+
+    phaseSpaceGenerator->SetParticles( inVec, outVec );
+}
+
+
+template  < typename  OutputParticle >
+CexmcChargeExchangeProductionModel< OutputParticle >::
+                                        ~CexmcChargeExchangeProductionModel()
+{
+    delete phaseSpaceGenerator;
 }
 
 
@@ -104,13 +117,9 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
 
     theParticleChange.Clear();
 
-    G4double         kinEnergy( projectile.GetKineticEnergy() );
-
-    G4double         protonMass( theProton->GetPDGMass() );
-    G4double         neutronMass( theNeutron->GetPDGMass() );
-    G4double         outputParticleMass( theOutputParticle->GetPDGMass() );
-
-    G4HadProjectile &          theProjectile( const_cast< G4HadProjectile & >(
+    G4double           kinEnergy( projectile.GetKineticEnergy() );
+    G4double           protonMass( theProton->GetPDGMass() );
+    G4HadProjectile &  theProjectile( const_cast< G4HadProjectile & >(
                                                                 projectile ) );
     const G4LorentzRotation &  projToLab(
                                     const_cast< const G4LorentzRotation & >(
@@ -145,24 +154,9 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     productionModelData.incidentParticleSCM.boost( -boostVec );
     productionModelData.nucleusParticleSCM.boost( -boostVec );
 
-    G4double   totalEnergy( productionModelData.incidentParticleSCM.e() +
-                            productionModelData.nucleusParticleSCM.e() );
-
     triggeredAngularRanges.clear();
 
-    genin_.np = 2;
-    genin_.tecm = totalEnergy / GeV;
-    genin_.amass[ 0 ] = outputParticleMass / GeV;
-    genin_.amass[ 1 ] = neutronMass / GeV;
-    genin_.kgenev = 1;
-
-    /* epsilon is needed to compensate float to fortran real cast accuracy,
-     * the value 3E-6 was found experimentally, maybe has to be made bigger,
-     * but not smaller */
-    const float  epsilon( 3E-6 );
-    /* kinematically impossible */
-    if ( genin_.tecm - ( genin_.amass[ 0 ] + genin_.amass[ 1 ] ) <=
-         0.0f + epsilon )
+    if ( ! phaseSpaceGenerator->CheckKinematics() )
     {
         theParticleChange.SetEnergyChange( kinEnergy );
         theParticleChange.SetMomentumChange(
@@ -172,15 +166,7 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
 
     do
     {
-        genbod_();
-        productionModelData.outputParticleSCM.setPx(
-                                                genout_.pcm[ 0 ][ 0 ] * GeV );
-        productionModelData.outputParticleSCM.setPy(
-                                                genout_.pcm[ 0 ][ 1 ] * GeV );
-        productionModelData.outputParticleSCM.setPz(
-                                                genout_.pcm[ 0 ][ 2 ] * GeV );
-        productionModelData.outputParticleSCM.setE(
-                                                genout_.pcm[ 0 ][ 3 ] * GeV );
+        phaseSpaceGenerator->Generate();
         for ( CexmcAngularRangeList::iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
         {
@@ -191,15 +177,6 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
                                                 k->top, k->bottom, k->index ) );
         }
     } while ( triggeredAngularRanges.empty() );
-
-    productionModelData.nucleusOutputParticleSCM.setPx(
-                                                genout_.pcm[ 1 ][ 0 ] * GeV );
-    productionModelData.nucleusOutputParticleSCM.setPy(
-                                                genout_.pcm[ 1 ][ 1 ] * GeV );
-    productionModelData.nucleusOutputParticleSCM.setPz(
-                                                genout_.pcm[ 1 ][ 2 ] * GeV );
-    productionModelData.nucleusOutputParticleSCM.setE(
-                                                genout_.pcm[ 1 ][ 3 ] * GeV );
 
     productionModelData.outputParticleLAB =
             productionModelData.outputParticleSCM;

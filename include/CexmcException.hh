@@ -39,6 +39,7 @@ enum  CexmcExceptionType
     CexmcBadOCVetoAlgorithm,
     CexmcBadOCVetoFraction,
     CexmcCalorimeterRegionNotInitialized,
+    CexmcKinematicsException,
     CexmcPoorEventData,
 #ifdef CEXMC_USE_CUSTOM_FILTER
     CexmcCFBadSource,
