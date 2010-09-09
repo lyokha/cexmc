@@ -25,6 +25,15 @@
 #include <G4UnitsTable.hh>
 
 
+/* TODO: the data model is very restrictive for generic use, there should be
+ * possible to generate more than one output particles. The simplest solution is
+ * to add here other fields and constructors; if number of fields will be
+ * excessive for simple models like charge exchange then they won't be stored in
+ * persistent storage. Other solution is to move production model data field
+ * from base class CexmcProductionModel to its ancestors that can decide
+ * themselves which concrete data capacity they require. */
+
+
 struct  CexmcProductionModelData
 {
     CexmcProductionModelData();
