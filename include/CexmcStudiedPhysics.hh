@@ -86,7 +86,8 @@ void  CexmcStudiedPhysics< Particle, Process >::ConstructProcess( void )
     Process *  process( new Process );
 
     CexmcStudiedProcess< Particle > *  studiedProcess(
-                        new CexmcStudiedProcess< Particle >( physicsManager ) );
+                        new CexmcStudiedProcess< Particle >(
+                                physicsManager, process->GetProcessType() ) );
 
     ApplyInteractionModel( process );
 
@@ -107,7 +108,7 @@ void  CexmcStudiedPhysics< Particle, Process >::ConstructProcess( void )
 
 template  < typename  Particle, typename  Process >
 void  CexmcStudiedPhysics< Particle, Process >::
-                    ApplyInteractionModel( G4HadronicProcess * )
+                                ApplyInteractionModel( G4HadronicProcess * )
 {
 }
 

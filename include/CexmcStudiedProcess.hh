@@ -21,6 +21,7 @@
 
 #include <G4VParticleChange.hh>
 #include <G4WrapperProcess.hh>
+#include <G4ProcessType.hh>
 #include "CexmcPhysicsManager.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcException.hh"
@@ -30,7 +31,8 @@ template  < typename  Particle >
 class  CexmcStudiedProcess : public G4WrapperProcess
 {
     public:
-        explicit  CexmcStudiedProcess( CexmcPhysicsManager *  physicsManager );
+        explicit  CexmcStudiedProcess( CexmcPhysicsManager *  physicsManager,
+                                   G4ProcessType  processType = fUserDefined );
 
     public:
         G4double  PostStepGetPhysicalInteractionLength( const G4Track &  track,
@@ -48,8 +50,8 @@ class  CexmcStudiedProcess : public G4WrapperProcess
 
 template  < typename  Particle >
 CexmcStudiedProcess< Particle >::CexmcStudiedProcess(
-                                    CexmcPhysicsManager *  physicsManager ) :
-    G4WrapperProcess( CexmcStudiedProcessFirstName, fUserDefined ),
+        CexmcPhysicsManager *  physicsManager, G4ProcessType  processType ) :
+    G4WrapperProcess( CexmcStudiedProcessFirstName, processType ),
     physicsManager( physicsManager )
 {
 }
