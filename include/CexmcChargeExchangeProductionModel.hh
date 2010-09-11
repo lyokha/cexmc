@@ -167,11 +167,10 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     do
     {
         phaseSpaceGenerator->Generate();
+        G4double  cosTheta( productionModelData.outputParticleSCM.cosTheta() );
         for ( CexmcAngularRangeList::iterator  k( angularRanges.begin() );
                                                 k != angularRanges.end(); ++k )
         {
-            G4double  cosTheta(
-                            productionModelData.outputParticleSCM.cosTheta() );
             if ( cosTheta <= k->top && cosTheta > k->bottom )
                 triggeredAngularRanges.push_back( CexmcAngularRange(
                                                 k->top, k->bottom, k->index ) );

@@ -21,6 +21,7 @@
 #include <G4Step.hh>
 #include <G4Element.hh>
 #include <G4StableIsotopes.hh>
+#include <G4TrackStatus.hh>
 #include "CexmcChargeExchangeProcess.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
@@ -113,8 +114,9 @@ void  CexmcChargeExchangeProcess::FillTotalResult(
 G4VParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
                                 const G4Track &  track, const G4Step & )
 {
-    if ( track.GetTrackStatus() != fAlive &&
-         track.GetTrackStatus() != fSuspend )
+    G4TrackStatus  trackStatus( track.GetTrackStatus() );
+
+    if ( trackStatus != fAlive && trackStatus != fSuspend )
     {
         theTotalResult->Clear();
         theTotalResult->Initialize( track );

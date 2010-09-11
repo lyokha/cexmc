@@ -25,6 +25,7 @@
 #include "CexmcPhysicsManager.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcException.hh"
+#include "CexmcCommon.hh"
 
 
 template  < typename  Particle >
@@ -65,17 +66,17 @@ G4double  CexmcStudiedProcess< Particle >::
     *condition = NotForced;
 
     if ( ! physicsManager->IsStudiedProcessAllowed() )
-        return DBL_MAX;
+        return CexmcDblMax;
 
     CexmcIncidentParticleTrackInfo *  trackInfo(
                     dynamic_cast< CexmcIncidentParticleTrackInfo * >(
                                                 track.GetUserInformation() ) );
 
     if ( ! trackInfo )
-        return DBL_MAX;
+        return CexmcDblMax;
 
     if ( ! trackInfo->IsStudiedProcessActivated() )
-        return DBL_MAX;
+        return CexmcDblMax;
 
     return trackInfo->GetFinalTrackLengthInTarget() -
             trackInfo->GetCurrentTrackLengthInTarget();

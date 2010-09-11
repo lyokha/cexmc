@@ -67,8 +67,9 @@ template  < typename  BasePhysics, typename  Particle,
             template  < typename, typename > class  StudiedPhysics,
             typename  ProductionModel >
 CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics, ProductionModel >::
-                CexmcPhysicsList() : productionModel( NULL ),
-                    proposedMaxILInitialized( false ), proposedMaxIL( DBL_MAX )
+                CexmcPhysicsList() :
+    productionModel( NULL ), proposedMaxILInitialized( false ),
+    proposedMaxIL( CexmcDblMax )
 {
     this->RegisterPhysics( new StudiedPhysics< Particle, ProductionModel >(
                                                                     this ) );
@@ -165,7 +166,7 @@ void  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
 
     if ( ! proposedMaxILInitialized )
     {
-        G4double  targetRadius( DBL_MAX );
+        G4double  targetRadius( CexmcDblMax );
         G4Tubs *  targetTube( dynamic_cast< G4Tubs * >( targetSolid ) );
 
         if ( targetTube )

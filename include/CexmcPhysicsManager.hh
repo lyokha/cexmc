@@ -20,7 +20,6 @@
 #define CEXMC_PHYSICS_MANAGER_HH
 
 #include <G4Types.hh>
-#include <templates.hh>
 
 class  G4ParticleDefinition;
 class  G4Track;
