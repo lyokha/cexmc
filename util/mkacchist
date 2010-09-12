@@ -4,9 +4,10 @@
 # Usage: ./mkacchist [-real] [macroName]
 
 my $floatregexp = qr/-?\d+\.\d+/o;
-my $col1regexp = qr/\s*(\d+)\s*\[($floatregexp), ($floatregexp)\)\s*/o;
-my $col2regexp = qr/\s*($floatregexp)\s*\(\s*(\d+) \/ (\d+)\s*\)\s*/o;
-my $col3regexp = qr/\s*($floatregexp)\s*\(\s*(\d+) \/ \d+ \/ \d+\s*\)\s*/o;
+my $col1regexp = qr/^\s*(\d+)\s*\[\s*($floatregexp),\s*($floatregexp)\)\s*/o;
+my $col2regexp = qr/\s*($floatregexp)\s*\(\s*(\d+)\s*\/\s*(\d+)\s*\)\s*/o;
+my $col3regexp =
+            qr/\s*($floatregexp)\s*\(\s*(\d+)\s*\/\s*\d+\s*\/\s*\d+\s*\)\s*/o;
 my $accregexp = qr/$col1regexp\|$col2regexp\|$col3regexp/o;
 
 my $xMin = 1.5;
