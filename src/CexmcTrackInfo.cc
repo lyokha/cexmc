@@ -29,3 +29,9 @@ void  CexmcTrackInfo::Print( void ) const
 {
 }
 
+
+G4int  CexmcTrackInfo::GetTypeInfo( void ) const
+{
+    return CexmcBasicTrackType;
+}
+

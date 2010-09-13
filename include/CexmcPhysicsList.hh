@@ -148,8 +148,10 @@ void  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
                 ResampleTrackLengthInTarget( const G4Track *  track,
                                              const G4StepPoint *  stepPoint )
 {
+    /* all callers must ensure that track info object is of type
+     * CexmcIncidentParticleTrackInfo*, so we can use static_cast<> here */
     CexmcIncidentParticleTrackInfo *  trackInfo(
-                dynamic_cast< CexmcIncidentParticleTrackInfo * >(
+                static_cast< CexmcIncidentParticleTrackInfo * >(
                                                 track->GetUserInformation() ) );
 
     if ( ! trackInfo )

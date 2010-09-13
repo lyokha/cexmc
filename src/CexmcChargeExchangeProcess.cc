@@ -17,6 +17,7 @@
  */
 
 #include <G4ParticleChange.hh>
+#include <G4HadronicInteraction.hh>
 #include <G4Track.hh>
 #include <G4Step.hh>
 #include <G4Element.hh>
@@ -30,8 +31,8 @@
 
 CexmcChargeExchangeProcess::CexmcChargeExchangeProcess(
                                                     const G4String &  name ) :
-    G4HadronicProcess( name ), productionModel( NULL ), theTotalResult( NULL ),
-    isInitialized( false )
+    G4HadronicProcess( name ), productionModel( NULL ), interaction( NULL ),
+    theTotalResult( NULL ), isInitialized( false )
 {
     theTotalResult = new G4ParticleChange();
 }
@@ -44,10 +45,16 @@ CexmcChargeExchangeProcess::~CexmcChargeExchangeProcess()
 
 
 void  CexmcChargeExchangeProcess::RegisterProductionModel(
-                                    G4HadronicInteraction *  productionModel_ )
+                                    CexmcProductionModel *  productionModel_ )
 {
-    productionModel = dynamic_cast< CexmcProductionModel *>( productionModel_ );
-    G4HadronicProcess::RegisterMe( productionModel_ );
+    productionModel = productionModel_;
+
+    interaction = dynamic_cast< G4HadronicInteraction * >( productionModel );
+
+    if ( ! interaction )
+        throw CexmcException( CexmcWeirdException );
+
+    G4HadronicProcess::RegisterMe( interaction );
 }
 
 
@@ -137,24 +144,23 @@ G4VParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
         isInitialized = true;
     }
 
-    G4HadProjectile          projectile( track );
-    G4HadronicInteraction *  theInteraction(
-                dynamic_cast< G4HadronicInteraction * >( productionModel ) );
-    if ( ! theInteraction )
-        throw CexmcException( CexmcWeirdException );
-
-    G4HadFinalState *        result( theInteraction->ApplyYourself(
-                                               projectile, targetNucleus ) );
-
+    G4HadProjectile    projectile( track );
+    G4HadFinalState *  result( interaction->ApplyYourself( projectile,
+                                                           targetNucleus ) );
     FillTotalResult( result, track );
 
     if ( theTotalResult->GetTrackStatus() != fStopAndKill )
     {
-        CexmcIncidentParticleTrackInfo *  trackInfo(
-                    dynamic_cast< CexmcIncidentParticleTrackInfo * >(
+        CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
                                                 track.GetUserInformation() ) );
-        if ( trackInfo )
-            trackInfo->SetNeedsTrackLengthResampling();
+
+        if ( trackInfo &&
+             trackInfo->GetTypeInfo() == CexmcIncidentParticleTrackType )
+        {
+            CexmcIncidentParticleTrackInfo *  theTrackInfo(
+                static_cast< CexmcIncidentParticleTrackInfo * >( trackInfo ) );
+            theTrackInfo->SetNeedsTrackLengthResampling();
+        }
     }
 
     return theTotalResult;

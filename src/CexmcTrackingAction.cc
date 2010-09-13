@@ -59,8 +59,7 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
 
         if ( track->GetParentID() == 0 )
         {
-            if ( track->GetDefinition()->GetPDGEncoding() ==
-                 incidentParticle->GetPDGEncoding() )
+            if ( *track->GetDefinition() == *incidentParticle )
             {
                 trackInfo = new CexmcIncidentParticleTrackInfo(
                                                 CexmcIncidentParticleTrack );
@@ -85,15 +84,13 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
                                                         productionModelType ) );
             do
             {
-                if ( track->GetDefinition()->GetPDGEncoding() ==
-                     outputParticle->GetPDGEncoding() )
+                if ( *track->GetDefinition() == *outputParticle )
                 {
                     outputParticleTrackId = track->GetTrackID();
                     trackInfo = new CexmcTrackInfo( CexmcOutputParticleTrack );
                     break;
                 }
-                if ( track->GetDefinition()->GetPDGEncoding() ==
-                     nucleusOutputParticle->GetPDGEncoding() )
+                if ( *track->GetDefinition() == *nucleusOutputParticle )
                 {
                     trackInfo = new CexmcTrackInfo( CexmcNucleusParticleTrack );
                     break;
@@ -108,8 +105,7 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
             break;
         }
 
-        if ( track->GetDefinition()->GetPDGEncoding() ==
-             incidentParticle->GetPDGEncoding() )
+        if ( *track->GetDefinition() == *incidentParticle )
         {
             if ( physicsManager->
                  OnlyIncidentParticleCanTriggerStudiedProcess() )

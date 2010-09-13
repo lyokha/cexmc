@@ -33,6 +33,9 @@ class  CexmcTrackInfo : public G4VUserTrackInformation
         void  Print( void ) const;
 
     public:
+        virtual G4int   GetTypeInfo( void ) const;
+
+    public:
         CexmcTrackType  GetTrackType( void ) const;
 
         void            SetTrackType( CexmcTrackType  value );

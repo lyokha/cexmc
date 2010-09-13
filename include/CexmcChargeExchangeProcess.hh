@@ -27,6 +27,7 @@ class  G4VParticleChange;
 class  G4Track;
 class  G4Step;
 class  G4Material;
+class  G4HadronicInteraction;
 class  CexmcProductionModel;
 
 
@@ -43,7 +44,7 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
                                            const G4Step &  step );
 
     public:
-        void  RegisterProductionModel( G4HadronicInteraction *  model );
+        void  RegisterProductionModel( CexmcProductionModel *  model );
 
     public:
         CexmcProductionModel *  GetProductionModel( void );
@@ -55,7 +56,9 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
                                const G4Track &  track );
 
     private:
-        CexmcProductionModel *  productionModel;
+        CexmcProductionModel *   productionModel;
+
+        G4HadronicInteraction *  interaction;
 
     private:
         G4ParticleChange *      theTotalResult;

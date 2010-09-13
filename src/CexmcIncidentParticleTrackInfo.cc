@@ -27,3 +27,9 @@ CexmcIncidentParticleTrackInfo::CexmcIncidentParticleTrackInfo(
 {
 }
 
+
+G4int  CexmcIncidentParticleTrackInfo::GetTypeInfo( void ) const
+{
+    return CexmcIncidentParticleTrackType;
+}
+

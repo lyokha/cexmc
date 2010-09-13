@@ -68,18 +68,21 @@ G4double  CexmcStudiedProcess< Particle >::
     if ( ! physicsManager->IsStudiedProcessAllowed() )
         return CexmcDblMax;
 
-    CexmcIncidentParticleTrackInfo *  trackInfo(
-                    dynamic_cast< CexmcIncidentParticleTrackInfo * >(
+    CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
                                                 track.GetUserInformation() ) );
 
-    if ( ! trackInfo )
+    if ( ! trackInfo ||
+         trackInfo->GetTypeInfo() != CexmcIncidentParticleTrackType )
         return CexmcDblMax;
 
-    if ( ! trackInfo->IsStudiedProcessActivated() )
+    CexmcIncidentParticleTrackInfo *  theTrackInfo(
+                static_cast< CexmcIncidentParticleTrackInfo * >( trackInfo ) );
+
+    if ( ! theTrackInfo->IsStudiedProcessActivated() )
         return CexmcDblMax;
 
-    return trackInfo->GetFinalTrackLengthInTarget() -
-            trackInfo->GetCurrentTrackLengthInTarget();
+    return theTrackInfo->GetFinalTrackLengthInTarget() -
+            theTrackInfo->GetCurrentTrackLengthInTarget();
 }
 
 
@@ -101,8 +104,7 @@ template  < typename  Particle >
 G4bool  CexmcStudiedProcess< Particle >::IsApplicable(
                                         const G4ParticleDefinition &  particle )
 {
-    return particle.GetPDGEncoding() ==
-            Particle::Definition()->GetPDGEncoding();
+    return particle == *Particle::Definition();
 }
 
 

@@ -29,6 +29,9 @@ class  CexmcIncidentParticleTrackInfo : public CexmcTrackInfo
                                                             CexmcInsipidTrack );
 
     public:
+        G4int     GetTypeInfo( void ) const;
+
+    public:
         G4double  GetCurrentTrackLengthInTarget( void ) const;
 
         void      AddTrackLengthInTarget( G4double  value );

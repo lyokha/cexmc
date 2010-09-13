@@ -38,12 +38,16 @@ CexmcSteppingAction::CexmcSteppingAction(
 
 void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
 {
-    G4Track *                         track( step->GetTrack() );
-    CexmcIncidentParticleTrackInfo *  trackInfo(
-                    dynamic_cast< CexmcIncidentParticleTrackInfo * >(
+    G4Track *         track( step->GetTrack() );
+    CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
                                                 track->GetUserInformation() ) );
-    if ( ! trackInfo )
+
+    if ( ! trackInfo ||
+         trackInfo->GetTypeInfo() != CexmcIncidentParticleTrackType )
         return;
+
+    CexmcIncidentParticleTrackInfo *  theTrackInfo(
+                static_cast< CexmcIncidentParticleTrackInfo * >( trackInfo ) );
 
     G4StepPoint *         postStepPoint( step->GetPostStepPoint() );
     G4StepStatus          stepStatus( postStepPoint->GetStepStatus() );
@@ -52,19 +56,19 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
 
     if ( volume && volume->GetName() == "Target" )
     {
-        if ( ! trackInfo->IsStudiedProcessActivated() )
+        if ( ! theTrackInfo->IsStudiedProcessActivated() )
         {
             physicsManager->ResampleTrackLengthInTarget( track, postStepPoint );
-            trackInfo->ActivateStudiedProcess();
+            theTrackInfo->ActivateStudiedProcess();
         }
 
         if ( stepStatus != fGeomBoundary )
         {
-            if ( trackInfo->NeedsTrackLengthResampling() )
+            if ( theTrackInfo->NeedsTrackLengthResampling() )
                 physicsManager->ResampleTrackLengthInTarget(
                                                         track, postStepPoint );
             else
-                trackInfo->AddTrackLengthInTarget( step->GetStepLength() );
+                theTrackInfo->AddTrackLengthInTarget( step->GetStepLength() );
         }
     }
 
@@ -75,7 +79,7 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
     if ( volume && volume->GetName() == "Target" )
     {
         if ( stepStatus == fGeomBoundary )
-            trackInfo->ActivateStudiedProcess( false );
+            theTrackInfo->ActivateStudiedProcess( false );
     }
 }
 

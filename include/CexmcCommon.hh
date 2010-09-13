@@ -20,9 +20,9 @@
 #define CEXMC_COMMON_HH
 
 #include <vector>
+#include <limits>
 #include <G4String.hh>
 #include <G4Types.hh>
-#include <templates.hh>
 
 #define CEXMC_LINE_START  "--- Cexmc ---  "
 
@@ -31,7 +31,7 @@ typedef std::vector< G4double >  CexmcEnergyDepositCrystalRowCollection;
 typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
                                  CexmcEnergyDepositCalorimeterCollection;
 
-const G4double  CexmcDblMax( DBL_MAX );
+const G4double  CexmcDblMax( std::numeric_limits< double >::max() );
 
 const G4String  CexmcStudiedProcessFirstName( "studiedPhysics_" );
 const G4String  CexmcStudiedProcessLastName( "studiedChargeExchange" );
@@ -86,6 +86,13 @@ enum  CexmcTrackType
     CexmcOutputParticleTrack,
     CexmcNucleusParticleTrack,
     CexmcOutputParticleDecayProductTrack
+};
+
+
+enum  CexmcTrackTypeInfo
+{
+    CexmcBasicTrackType,
+    CexmcIncidentParticleTrackType
 };
 
 
