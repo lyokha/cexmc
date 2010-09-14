@@ -20,7 +20,6 @@
 #define CEXMC_PHYSICS_LIST_HH
 
 #include <Randomize.hh>
-#include <G4VModularPhysicsList.hh>
 #include <G4Track.hh>
 #include <G4StepPoint.hh>
 #include <G4VPhysicalVolume.hh>
@@ -35,8 +34,7 @@
 #include "CexmcCommon.hh"
 
 
-template  < typename  BasePhysics, typename  Particle,
-            template  < typename, typename > class  StudiedPhysics,
+template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
             typename  ProductionModel >
 class  CexmcPhysicsList : public BasePhysics, public CexmcPhysicsManager
 {
@@ -44,107 +42,57 @@ class  CexmcPhysicsList : public BasePhysics, public CexmcPhysicsManager
         CexmcPhysicsList();
 
     public:
-        const G4ParticleDefinition *  GetIncidentParticleType( void ) const;
+        CexmcProductionModel *  GetProductionModel( void );
 
-        CexmcProductionModel *        GetProductionModel( void );
+        G4bool                  IsStudiedProcessAllowed( void ) const;
 
-        G4bool                        IsStudiedProcessAllowed( void ) const;
-
-        void                          ResampleTrackLengthInTarget(
+        void                    ResampleTrackLengthInTarget(
                                             const G4Track *  track,
                                             const G4StepPoint *  stepPoint );
 
     private:
-        CexmcProductionModel *  productionModel;
+        StudiedPhysics< ProductionModel > *  studiedPhysics;
 
-        G4bool                  proposedMaxILInitialized;
+        G4bool                               proposedMaxILInitialized;
 
-        G4double                proposedMaxIL;
+        G4double                             proposedMaxIL;
 };
 
 
-template  < typename  BasePhysics, typename  Particle,
-            template  < typename, typename > class  StudiedPhysics,
+template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
             typename  ProductionModel >
-CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics, ProductionModel >::
+CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
                 CexmcPhysicsList() :
-    productionModel( NULL ), proposedMaxILInitialized( false ),
+    studiedPhysics( NULL ), proposedMaxILInitialized( false ),
     proposedMaxIL( CexmcDblMax )
 {
-    this->RegisterPhysics( new StudiedPhysics< Particle, ProductionModel >(
-                                                                    this ) );
+    studiedPhysics = new StudiedPhysics< ProductionModel >( this );
+    this->RegisterPhysics( studiedPhysics );
 }
 
 
-template  < typename  BasePhysics, typename  Particle,
-            template  < typename, typename > class  StudiedPhysics,
+template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
             typename  ProductionModel >
-inline const G4ParticleDefinition *
-    CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics, ProductionModel >::
-                GetIncidentParticleType( void ) const
-{
-    return Particle::Definition();
-}
-
-
-template  < typename  BasePhysics, typename  Particle,
-            template  < typename, typename > class  StudiedPhysics,
-            typename  ProductionModel >
-CexmcProductionModel *  CexmcPhysicsList< BasePhysics, Particle,
-                                           StudiedPhysics, ProductionModel >::
+CexmcProductionModel *
+            CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
                 GetProductionModel( void )
 {
-    if ( productionModel )
-        return productionModel;
-
-    G4ParticleDefinition *  particle( Particle::Definition() );
-    G4ProcessManager *      processManager( particle->GetProcessManager() );
-    G4ProcessVector *       processVector( processManager->GetProcessList() );
-    G4int                   processVectorSize(
-                                    processManager->GetProcessListLength() );
-
-    for ( int  i( 0 ); i < processVectorSize; ++i )
-    {
-        if ( ( *processVector )[ i ]->GetProcessName() ==
-                                                CexmcStudiedProcessFullName )
-        {
-            G4WrapperProcess *  studiedProcess(
-                                    static_cast< G4WrapperProcess * >(
-                                                    ( *processVector )[ i ] ) );
-            if ( ! studiedProcess )
-                break;
-
-            G4VProcess *  process( const_cast< G4VProcess * >(
-                                    studiedProcess->GetRegisteredProcess() ) );
-            if ( process )
-                productionModel =
-                        static_cast< typename StudiedPhysics< Particle,
-                            ProductionModel >::ProcessType * >( process )->
-                                                        GetProductionModel();
-            break;
-        }
-    }
-
-    return productionModel;
+    return studiedPhysics->GetProductionModel();
 }
 
 
-template  < typename  BasePhysics, typename  Particle,
-            template  < typename, typename > class  StudiedPhysics,
+template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
             typename  ProductionModel >
-G4bool  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
-                        ProductionModel >::
+G4bool  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
                 IsStudiedProcessAllowed( void ) const
 {
     return numberOfTriggeredStudiedInteractions == 0;
 }
 
 
-template  < typename  BasePhysics, typename  Particle,
-            template  < typename, typename > class  StudiedPhysics,
+template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
             typename  ProductionModel >
-void  CexmcPhysicsList< BasePhysics, Particle, StudiedPhysics,
-                        ProductionModel >::
+void  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
                 ResampleTrackLengthInTarget( const G4Track *  track,
                                              const G4StepPoint *  stepPoint )
 {

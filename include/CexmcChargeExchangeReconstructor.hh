@@ -24,12 +24,14 @@
 
 class  CexmcChargeExchangeReconstructorMessenger;
 class  CexmcEnergyDepositStore;
+class  CexmcProductionModel;
 
 
 class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 {
     public:
-        CexmcChargeExchangeReconstructor();
+        explicit CexmcChargeExchangeReconstructor(
+                                const CexmcProductionModel *  productionModel );
 
         ~CexmcChargeExchangeReconstructor();
 

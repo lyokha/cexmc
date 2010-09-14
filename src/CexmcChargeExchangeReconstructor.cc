@@ -21,14 +21,14 @@
 #include "CexmcChargeExchangeReconstructor.hh"
 #include "CexmcChargeExchangeReconstructorMessenger.hh"
 #include "CexmcEnergyDepositStore.hh"
-#include "CexmcBasicPhysicsSettings.hh"
-#include "CexmcRunManager.hh"
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcParticleGun.hh"
+#include "CexmcProductionModel.hh"
 #include "CexmcCommon.hh"
 
 
-CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor() :
+CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor(
+                            const CexmcProductionModel *  productionModel ) :
     outputParticleMass( 0 ),  nucleusOutputParticleMass( 0 ),
     useTableMass( false ), useMassCut( false ), massCutOPCenter( 0 ),
     massCutNOPCenter( 0 ), massCutOPWidth( 0 ), massCutNOPWidth( 0 ),
@@ -38,23 +38,17 @@ CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor() :
     absorbedEnergyCutEllipseAngle( 0 ), hasMassCutTriggered( false ),
     hasAbsorbedEnergyCutTriggered( false ), messenger( NULL )
 {
-    CexmcRunManager *         runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-    CexmcProductionModelType  productionModelType(
-                                        runManager->GetProductionModelType() );
+    if ( ! productionModel )
+        throw CexmcException( CexmcWeirdException );
 
     productionModelData.incidentParticle =
-            CexmcChargeExchangePMFactory::GetIncidentParticle(
-                                                        productionModelType );
+                                    productionModel->GetIncidentParticle();
     productionModelData.nucleusParticle =
-            CexmcChargeExchangePMFactory::GetNucleusParticle(
-                                                        productionModelType );
+                                    productionModel->GetNucleusParticle();
     productionModelData.outputParticle =
-            CexmcChargeExchangePMFactory::GetOutputParticle(
-                                                        productionModelType );
+                                    productionModel->GetOutputParticle();
     productionModelData.nucleusOutputParticle =
-            CexmcChargeExchangePMFactory::GetNucleusOutputParticle(
-                                                        productionModelType );
+                                    productionModel->GetNucleusOutputParticle();
 
     messenger = new CexmcChargeExchangeReconstructorMessenger( this );
 }

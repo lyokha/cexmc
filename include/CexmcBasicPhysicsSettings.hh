@@ -30,6 +30,7 @@
 #include <G4PionMinus.hh>
 #include "CexmcProductionModelFactory.hh"
 #include "CexmcStudiedPhysicsChargeExchange.hh"
+#include "CexmcChargeExchangeProductionModel.hh"
 
 
 #ifdef CEXMC_USE_QGSP_BIC_EMY
@@ -37,11 +38,12 @@ typedef QGSP_BIC_EMY                  CexmcBasePhysics;
 #else
 typedef QGSP_BERT                     CexmcBasePhysics;
 #endif
-typedef G4PionMinus                   CexmcStudiedPhysicsStarterParticle;
+
 typedef CexmcProductionModelFactory< CexmcBasePhysics,
-                                     CexmcStudiedPhysicsStarterParticle,
-                                     CexmcStudiedPhysicsChargeExchange >
+                                     CexmcStudiedPhysicsChargeExchange,
+                                     CexmcChargeExchangeProductionModel >
                                       CexmcChargeExchangePMFactory;
+
 typedef CexmcChargeExchangePMFactory  CexmcPMFactoryInstance;
 
 

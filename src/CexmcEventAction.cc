@@ -68,7 +68,8 @@ CexmcEventAction::CexmcEventAction( CexmcPhysicsManager *  physicsManager,
                                                     CexmcEDDigitizerName ) );
     digiManager->AddNewModule( new CexmcTrackPointsDigitizer(
                                                     CexmcTPDigitizerName ) );
-    reconstructor = new CexmcChargeExchangeReconstructor;
+    reconstructor = new CexmcChargeExchangeReconstructor(
+                                        physicsManager->GetProductionModel() );
     messenger = new CexmcEventActionMessenger( this );
 }
 

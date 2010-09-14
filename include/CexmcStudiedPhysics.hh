@@ -22,11 +22,13 @@
 #include <G4VPhysicsConstructor.hh>
 #include <G4ProcessManager.hh>
 #include <G4HadronicProcess.hh>
+#include <G4ParticleDefinition.hh>
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
+#include "CexmcProductionModel.hh"
 
 
-template  < typename  Particle, typename  Process >
+template  < typename  Process >
 class  CexmcStudiedPhysics : public G4VPhysicsConstructor
 {
     public:
@@ -38,45 +40,51 @@ class  CexmcStudiedPhysics : public G4VPhysicsConstructor
         virtual ~CexmcStudiedPhysics();
 
     public:
-        void  ConstructParticle( void );
+        void                    ConstructParticle( void );
 
-        void  ConstructProcess( void );
+        void                    ConstructProcess( void );
+
+    public:
+        CexmcProductionModel *  GetProductionModel( void );
 
     protected:
         virtual void  ApplyInteractionModel( G4HadronicProcess *  process );
 
     protected:
-        CexmcPhysicsManager *  physicsManager;
+        CexmcPhysicsManager *   physicsManager;
+
+        CexmcProductionModel *  productionModel;
 
     private:
-        G4bool                 wasActivated;
+        G4bool                  wasActivated;
 };
 
 
-template  < typename  Particle, typename  Process >
-CexmcStudiedPhysics< Particle, Process >::CexmcStudiedPhysics(
+template  < typename  Process >
+CexmcStudiedPhysics< Process >::CexmcStudiedPhysics(
                                     CexmcPhysicsManager *  physicsManager ) :
     G4VPhysicsConstructor( "studiedPhysics" ), physicsManager( physicsManager ),
-    wasActivated( false )
+    productionModel( NULL ), wasActivated( false )
 {
 }
 
 
-template  < typename  Particle, typename  Process >
-CexmcStudiedPhysics< Particle, Process >::~CexmcStudiedPhysics()
+template  < typename  Process >
+CexmcStudiedPhysics< Process >::~CexmcStudiedPhysics()
 {
 }
 
 
-template  < typename  Particle, typename  Process >
-void  CexmcStudiedPhysics< Particle, Process >::ConstructParticle( void )
+template  < typename  Process >
+void  CexmcStudiedPhysics< Process >::ConstructParticle( void )
 {
-    Particle::Definition();
+    if ( productionModel )
+        productionModel->GetIncidentParticle();
 }
 
 
-template  < typename  Particle, typename  Process >
-void  CexmcStudiedPhysics< Particle, Process >::ConstructProcess( void )
+template  <typename  Process >
+void  CexmcStudiedPhysics< Process >::ConstructProcess( void )
 {
     if ( wasActivated )
         return;
@@ -85,30 +93,37 @@ void  CexmcStudiedPhysics< Particle, Process >::ConstructProcess( void )
 
     Process *  process( new Process );
 
-    CexmcStudiedProcess< Particle > *  studiedProcess(
-                        new CexmcStudiedProcess< Particle >(
+    CexmcStudiedProcess *  studiedProcess( new CexmcStudiedProcess(
                                 physicsManager, process->GetProcessType() ) );
 
     ApplyInteractionModel( process );
 
     studiedProcess->RegisterProcess( process );
 
-    theParticleIterator->reset();
-    while ( ( *theParticleIterator )() )
-    {
-        G4ParticleDefinition *  particle( theParticleIterator->value() );
-        if ( ! studiedProcess->IsApplicable( *particle ) )
-            continue;
+    G4ParticleDefinition *  particle( NULL );
 
+    if ( productionModel )
+        particle = productionModel->GetIncidentParticle();
+
+    if ( particle )
+    {
         G4ProcessManager *  processManager( particle->GetProcessManager() );
         processManager->AddDiscreteProcess( studiedProcess );
     }
 }
 
 
-template  < typename  Particle, typename  Process >
-void  CexmcStudiedPhysics< Particle, Process >::
-                                ApplyInteractionModel( G4HadronicProcess * )
+template  < typename  Process >
+CexmcProductionModel *  CexmcStudiedPhysics< Process >::GetProductionModel(
+                                                                        void )
+{
+    return productionModel;
+}
+
+
+template  < typename  Process >
+void  CexmcStudiedPhysics< Process >::ApplyInteractionModel(
+                                                        G4HadronicProcess * )
 {
 }
 

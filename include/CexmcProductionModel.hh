@@ -22,6 +22,7 @@
 #include <vector>
 #include <G4Types.hh>
 #include <G4ios.hh>
+#include <G4ParticleDefinition.hh>
 #include "CexmcAngularRange.hh"
 #include "CexmcProductionModelData.hh"
 #ifdef CEXMC_USE_ROOT
@@ -67,6 +68,15 @@ class  CexmcProductionModel
 
         void    SetTriggeredAngularRanges( G4double  opCosThetaSCM );
 
+    public:
+        G4ParticleDefinition *  GetIncidentParticle( void ) const;
+
+        G4ParticleDefinition *  GetNucleusParticle( void ) const;
+
+        G4ParticleDefinition *  GetOutputParticle( void ) const;
+
+        G4ParticleDefinition *  GetNucleusOutputParticle( void ) const;
+
     protected:
         virtual void  FermiMotionStatusChangeHook( void );
 
@@ -80,6 +90,15 @@ class  CexmcProductionModel
         CexmcAngularRangeList     triggeredAngularRanges;
 
         CexmcProductionModelData  productionModelData;
+
+    protected:
+        G4ParticleDefinition *    incidentParticle;
+
+        G4ParticleDefinition *    nucleusParticle;
+
+        G4ParticleDefinition *    outputParticle;
+
+        G4ParticleDefinition *    nucleusOutputParticle;
 
     private:
         CexmcProductionModelMessenger *  messenger;
@@ -242,6 +261,34 @@ inline const CexmcProductionModelData &
 inline G4bool  CexmcProductionModel::IsFermiMotionOn( void ) const
 {
     return fermiMotionIsOn;
+}
+
+
+inline  G4ParticleDefinition *  CexmcProductionModel::GetIncidentParticle(
+                                                                    void ) const
+{
+    return incidentParticle;
+}
+
+
+inline  G4ParticleDefinition *  CexmcProductionModel::GetNucleusParticle( void )
+                                                                        const
+{
+    return nucleusParticle;
+}
+
+
+inline  G4ParticleDefinition *  CexmcProductionModel::GetOutputParticle( void )
+                                                                        const
+{
+    return outputParticle;
+}
+
+
+inline  G4ParticleDefinition *  CexmcProductionModel::GetNucleusOutputParticle(
+                                                                    void ) const
+{
+    return nucleusOutputParticle;
 }
 
 

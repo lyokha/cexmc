@@ -17,6 +17,7 @@
  */
 
 #include <G4ParticleChange.hh>
+#include <G4ParticleDefinition.hh>
 #include <G4HadronicInteraction.hh>
 #include <G4Track.hh>
 #include <G4Step.hh>
@@ -164,5 +165,21 @@ G4VParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
     }
 
     return theTotalResult;
+}
+
+
+G4bool  CexmcChargeExchangeProcess::IsApplicable(
+                                        const G4ParticleDefinition &  particle )
+{
+    if ( ! productionModel )
+        return false;
+
+    G4ParticleDefinition *  incidentParticle(
+                                    productionModel->GetIncidentParticle() );
+
+    if ( ! incidentParticle )
+        return false;
+
+    return particle == *incidentParticle;
 }
 

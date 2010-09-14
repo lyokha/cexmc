@@ -44,26 +44,8 @@ class  CexmcChargeExchangeProductionModel : public G4HadronicInteraction,
         G4HadFinalState *  ApplyYourself( const G4HadProjectile &  projectile,
                                           G4Nucleus &  targetNucleus );
 
-    public:
-        static G4ParticleDefinition *  GetIncidentParticle( void );
-
-        static G4ParticleDefinition *  GetNucleusParticle( void );
-
-        static G4ParticleDefinition *  GetOutputParticle( void );
-
-        static G4ParticleDefinition *  GetNucleusOutputParticle( void );
-
     private:
         CexmcPhaseSpaceGenerator *  phaseSpaceGenerator;
-
-    private:
-        G4ParticleDefinition *      thePiMinus;
-
-        G4ParticleDefinition *      theProton;
-
-        G4ParticleDefinition *      theNeutron;
-
-        G4ParticleDefinition *      theOutputParticle;
 };
 
 
@@ -71,10 +53,13 @@ template  < typename  OutputParticle >
 CexmcChargeExchangeProductionModel< OutputParticle >::
                                         CexmcChargeExchangeProductionModel() :
     G4HadronicInteraction( "Studied Charge Exchange" ),
-    phaseSpaceGenerator( NULL ), thePiMinus( G4PionMinus::Definition() ),
-    theProton( G4Proton::Definition() ), theNeutron( G4Neutron::Definition() ),
-    theOutputParticle( OutputParticle::Definition() )
+    phaseSpaceGenerator( NULL )
 {
+    incidentParticle = G4PionMinus::Definition();
+    nucleusParticle = G4Proton::Definition();
+    outputParticle = OutputParticle::Definition();
+    nucleusOutputParticle = G4Neutron::Definition();
+
     CexmcPhaseSpaceInVector   inVec;
 
     inVec.push_back( &productionModelData.incidentParticleSCM );
@@ -84,10 +69,10 @@ CexmcChargeExchangeProductionModel< OutputParticle >::
 
     outVec.push_back( CexmcPhaseSpaceOutVectorElement(
                             &productionModelData.outputParticleSCM,
-                            theOutputParticle->GetPDGMass() ) );
+                            outputParticle->GetPDGMass() ) );
     outVec.push_back( CexmcPhaseSpaceOutVectorElement(
                             &productionModelData.nucleusOutputParticleSCM,
-                            theNeutron->GetPDGMass() ) );
+                            nucleusOutputParticle->GetPDGMass() ) );
 
 #ifdef CEXMC_USE_GENBOD
     phaseSpaceGenerator = new CexmcGenbod;
@@ -112,13 +97,10 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
                             ApplyYourself( const G4HadProjectile &  projectile,
                                            G4Nucleus &  targetNucleus )
 {
-    if ( projectile.GetDefinition() != thePiMinus )
-        throw CexmcException( CexmcWeirdException );
-
     theParticleChange.Clear();
 
     G4double           kinEnergy( projectile.GetKineticEnergy() );
-    G4double           protonMass( theProton->GetPDGMass() );
+    G4double           protonMass( nucleusParticle->GetPDGMass() );
     G4HadProjectile &  theProjectile( const_cast< G4HadProjectile & >(
                                                                 projectile ) );
     const G4LorentzRotation &  projToLab(
@@ -189,54 +171,20 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     theParticleChange.SetEnergyChange( 0.0 );
 
     G4DynamicParticle *  secOutParticle( new G4DynamicParticle(
-                theOutputParticle, productionModelData.outputParticleLAB ) );
+                            outputParticle,
+                            productionModelData.outputParticleLAB ) );
     theParticleChange.AddSecondary( secOutParticle );
     G4DynamicParticle *  secNeutron( new G4DynamicParticle(
-                theNeutron, productionModelData.nucleusOutputParticleLAB ) );
+                            nucleusOutputParticle,
+                            productionModelData.nucleusOutputParticleLAB ) );
     theParticleChange.AddSecondary( secNeutron );
 
-    productionModelData.incidentParticle = thePiMinus;
-    productionModelData.nucleusParticle = theProton;
-    productionModelData.outputParticle = theOutputParticle;
-    productionModelData.nucleusOutputParticle = theNeutron;
+    productionModelData.incidentParticle = incidentParticle;
+    productionModelData.nucleusParticle = nucleusParticle;
+    productionModelData.outputParticle = outputParticle;
+    productionModelData.nucleusOutputParticle = nucleusOutputParticle;
 
     return &theParticleChange;
-}
-
-
-template  < typename  OutputParticle >
-inline G4ParticleDefinition *
-    CexmcChargeExchangeProductionModel< OutputParticle >::
-                                        GetIncidentParticle( void )
-{
-    return G4PionMinus::Definition();
-}
-
-
-template  < typename  OutputParticle >
-inline G4ParticleDefinition *
-    CexmcChargeExchangeProductionModel< OutputParticle >::
-                                        GetNucleusParticle( void )
-{
-    return G4Proton::Definition();
-}
-
-
-template  < typename  OutputParticle >
-inline G4ParticleDefinition *
-    CexmcChargeExchangeProductionModel< OutputParticle >::
-                                        GetOutputParticle( void )
-{
-    return OutputParticle::Definition();
-}
-
-
-template  < typename  OutputParticle >
-inline G4ParticleDefinition *
-    CexmcChargeExchangeProductionModel< OutputParticle >::
-                                        GetNucleusOutputParticle( void )
-{
-    return G4Neutron::Definition();
 }
 
 

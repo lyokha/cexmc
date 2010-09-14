@@ -35,9 +35,6 @@ class  CexmcPhysicsManager
         virtual ~CexmcPhysicsManager();
 
     public:
-        virtual const G4ParticleDefinition *
-                                    GetIncidentParticleType( void ) const = 0;
-
         virtual CexmcProductionModel *  GetProductionModel( void ) = 0;
 
         virtual G4double                GetProposedMaxIL( G4double  dimension );

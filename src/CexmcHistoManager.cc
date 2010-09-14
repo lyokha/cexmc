@@ -42,7 +42,7 @@
 #include <G4Tubs.hh>
 #include "CexmcHistoManager.hh"
 #include "CexmcHistoManagerMessenger.hh"
-#include "CexmcBasicPhysicsSettings.hh"
+#include "CexmcProductionModel.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcRunManager.hh"
 #include "CexmcException.hh"
@@ -256,17 +256,18 @@ void  CexmcHistoManager::Initialize( void )
     if ( isInitialized )
         return;
 
-    CexmcRunManager *         runManager( static_cast< CexmcRunManager * >(
+    CexmcRunManager *       runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
-    CexmcProductionModelType  productionModelType(
-                                        runManager->GetProductionModelType() );
-    G4ParticleDefinition *    outputParticle(
-                                CexmcPMFactoryInstance::
-                                    GetOutputParticle( productionModelType ) );
-    G4ParticleDefinition *    nucleusOutputParticle(
-                                CexmcPMFactoryInstance::
-                                    GetNucleusOutputParticle(
-                                                        productionModelType ) );
+    CexmcProductionModel *  productionModel( runManager->GetPhysicsManager()->
+                                                        GetProductionModel() );
+
+    if ( ! productionModel )
+        throw CexmcException ( CexmcWeirdException );
+
+    G4ParticleDefinition *  outputParticle(
+                                productionModel->GetOutputParticle() );
+    G4ParticleDefinition *  nucleusOutputParticle(
+                                productionModel->GetNucleusOutputParticle() );
 
     if ( ! outputParticle || ! nucleusOutputParticle )
         throw CexmcException ( CexmcWeirdException );

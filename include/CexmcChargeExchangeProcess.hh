@@ -24,6 +24,7 @@
 #include "CexmcCommon.hh"
 
 class  G4VParticleChange;
+class  G4ParticleDefinition;
 class  G4Track;
 class  G4Step;
 class  G4Material;
@@ -42,6 +43,8 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
     public:
         G4VParticleChange *  PostStepDoIt( const G4Track &  track,
                                            const G4Step &  step );
+
+        G4bool  IsApplicable( const G4ParticleDefinition &  particle );
 
     public:
         void  RegisterProductionModel( CexmcProductionModel *  model );

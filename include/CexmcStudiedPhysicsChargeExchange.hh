@@ -19,14 +19,13 @@
 #ifndef CEXMC_STUDIED_PHYSICS_CHARGE_EXCHANGE_HH
 #define CEXMC_STUDIED_PHYSICS_CHARGE_EXCHANGE_HH
 
-#include <G4UElasticCrossSection.hh>
 #include "CexmcStudiedPhysics.hh"
 #include "CexmcChargeExchangeProcess.hh"
 
 
-template  < typename  Particle, typename ProductionModel >
+template  < typename  ProductionModel >
 class  CexmcStudiedPhysicsChargeExchange :
-            public CexmcStudiedPhysics< Particle, CexmcChargeExchangeProcess >
+                        public CexmcStudiedPhysics< CexmcChargeExchangeProcess >
 {
     public:
         explicit CexmcStudiedPhysicsChargeExchange(
@@ -38,36 +37,33 @@ class  CexmcStudiedPhysicsChargeExchange :
         void  ApplyInteractionModel( G4HadronicProcess *  process );
 
     private:
-        G4int              verbose;
-
-        ProductionModel *  productionModel;
+        G4int  verbose;
 };
 
 
-template  < typename  Particle, typename  ProductionModel >
-CexmcStudiedPhysicsChargeExchange< Particle, ProductionModel >::
+template  < typename  ProductionModel >
+CexmcStudiedPhysicsChargeExchange< ProductionModel >::
             CexmcStudiedPhysicsChargeExchange(
                     CexmcPhysicsManager *  physicsManager, G4int  verbose ) :
-    CexmcStudiedPhysics< Particle, CexmcChargeExchangeProcess >(
-                                                        physicsManager ),
-    verbose( verbose ), productionModel( NULL )
+    CexmcStudiedPhysics< CexmcChargeExchangeProcess >( physicsManager ),
+    verbose( verbose )
 {
     if ( verbose > 1 )
         G4cout << "### StudiedPhysics: Charge Exchange" << G4endl;
 }
 
 
-template  < typename  Particle, typename  ProductionModel >
-CexmcStudiedPhysicsChargeExchange< Particle, ProductionModel >::
-                                ~CexmcStudiedPhysicsChargeExchange()
+template  < typename  ProductionModel >
+CexmcStudiedPhysicsChargeExchange< ProductionModel >::
+                                            ~CexmcStudiedPhysicsChargeExchange()
 {
     delete productionModel;
 }
 
 
-template  < typename  Particle, typename  ProductionModel >
-void  CexmcStudiedPhysicsChargeExchange< Particle, ProductionModel >::
-                    ApplyInteractionModel( G4HadronicProcess *  process )
+template  < typename  ProductionModel >
+void  CexmcStudiedPhysicsChargeExchange< ProductionModel >::
+                        ApplyInteractionModel( G4HadronicProcess *  process )
 {
     productionModel = new ProductionModel;
     CexmcChargeExchangeProcess *  chargeExchangeProcess(

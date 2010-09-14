@@ -41,9 +41,16 @@ class  CexmcTrackingAction : public G4UserTrackingAction
         void  SetupIncidentParticleTrackInfo( const G4Track *  track );
 
     private:
-        CexmcPhysicsManager *  physicsManager;
+        CexmcPhysicsManager *   physicsManager;
 
-        G4int                  outputParticleTrackId;
+        G4int                   outputParticleTrackId;
+
+    private:
+        G4ParticleDefinition *  incidentParticle;
+
+        G4ParticleDefinition *  outputParticle;
+
+        G4ParticleDefinition *  nucleusOutputParticle;
 };
 
 

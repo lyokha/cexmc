@@ -22,17 +22,29 @@
 #include "CexmcTrackingAction.hh"
 #include "CexmcTrackInfo.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
+#include "CexmcProductionModel.hh"
 #include "CexmcPhysicsManager.hh"
-#include "CexmcRunManager.hh"
-#include "CexmcBasicPhysicsSettings.hh"
+#include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 
 CexmcTrackingAction::CexmcTrackingAction(
                                     CexmcPhysicsManager *  physicsManager ) :
     physicsManager( physicsManager ),
-    outputParticleTrackId( CexmcInvalidTrackId )
+    outputParticleTrackId( CexmcInvalidTrackId ), incidentParticle( NULL ),
+    outputParticle( NULL ), nucleusOutputParticle( NULL )
 {
+    CexmcProductionModel *  productionModel(
+                                    physicsManager->GetProductionModel() );
+    if ( ! productionModel )
+        throw CexmcException( CexmcWeirdException );
+
+    incidentParticle = productionModel->GetIncidentParticle();
+    outputParticle = productionModel->GetOutputParticle();
+    nucleusOutputParticle = productionModel->GetNucleusOutputParticle();
+
+    if ( ! incidentParticle || ! outputParticle || ! nucleusOutputParticle )
+        throw CexmcException( CexmcWeirdException );
 }
 
 
@@ -48,15 +60,6 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
 
     do
     {
-        CexmcRunManager *         runManager(
-                                    static_cast< CexmcRunManager * >(
-                                        G4RunManager::GetRunManager() ) );
-        CexmcProductionModelType  productionModelType(
-                                    runManager->GetProductionModelType() );
-        G4ParticleDefinition *    incidentParticle(
-                        CexmcPMFactoryInstance::GetIncidentParticle(
-                                                    productionModelType ) );
-
         if ( track->GetParentID() == 0 )
         {
             if ( *track->GetDefinition() == *incidentParticle )
@@ -76,12 +79,6 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
         if ( track->GetCreatorProcess()->GetProcessName() ==
              CexmcStudiedProcessFullName )
         {
-            G4ParticleDefinition *    outputParticle(
-                        CexmcPMFactoryInstance::GetOutputParticle(
-                                                        productionModelType ) );
-            G4ParticleDefinition *    nucleusOutputParticle(
-                        CexmcPMFactoryInstance::GetNucleusOutputParticle(
-                                                        productionModelType ) );
             do
             {
                 if ( *track->GetDefinition() == *outputParticle )
