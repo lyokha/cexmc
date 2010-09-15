@@ -45,6 +45,8 @@ class  CexmcChargeExchangeProductionModel : public G4HadronicInteraction,
                                           G4Nucleus &  targetNucleus );
 
     private:
+        G4double                    nucleusParticleMass;
+
         CexmcPhaseSpaceGenerator *  phaseSpaceGenerator;
 };
 
@@ -53,12 +55,19 @@ template  < typename  OutputParticle >
 CexmcChargeExchangeProductionModel< OutputParticle >::
                                         CexmcChargeExchangeProductionModel() :
     G4HadronicInteraction( "Studied Charge Exchange" ),
-    phaseSpaceGenerator( NULL )
+    nucleusParticleMass( 0 ), phaseSpaceGenerator( NULL )
 {
     incidentParticle = G4PionMinus::Definition();
     nucleusParticle = G4Proton::Definition();
     outputParticle = OutputParticle::Definition();
     nucleusOutputParticle = G4Neutron::Definition();
+
+    nucleusParticleMass =  nucleusParticle->GetPDGMass();
+
+    productionModelData.incidentParticle = incidentParticle;
+    productionModelData.nucleusParticle = nucleusParticle;
+    productionModelData.outputParticle = outputParticle;
+    productionModelData.nucleusOutputParticle = nucleusOutputParticle;
 
     CexmcPhaseSpaceInVector   inVec;
 
@@ -100,18 +109,17 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     theParticleChange.Clear();
 
     G4double           kinEnergy( projectile.GetKineticEnergy() );
-    G4double           protonMass( nucleusParticle->GetPDGMass() );
     G4HadProjectile &  theProjectile( const_cast< G4HadProjectile & >(
                                                                 projectile ) );
     const G4LorentzRotation &  projToLab(
                                     const_cast< const G4LorentzRotation & >(
                                             theProjectile.GetTrafoToLab() ) );
-    productionModelData.incidentParticleLAB = theProjectile.Get4Momentum();
+    productionModelData.incidentParticleLAB = projectile.Get4Momentum();
     productionModelData.incidentParticleLAB.transform( projToLab );
     productionModelData.nucleusParticleLAB.setPx( 0 );
     productionModelData.nucleusParticleLAB.setPy( 0 );
     productionModelData.nucleusParticleLAB.setPz( 0 );
-    productionModelData.nucleusParticleLAB.setE( protonMass );
+    productionModelData.nucleusParticleLAB.setE( nucleusParticleMass );
 
     if ( fermiMotionIsOn )
     {
@@ -119,7 +127,7 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
                                         targetNucleus.GetFermiMomentum() );
         G4double       targetNucleusEnergy(
                             std::sqrt( targetNucleusMomentum.mag2() +
-                                                protonMass * protonMass ) );
+                                nucleusParticleMass * nucleusParticleMass ) );
         productionModelData.nucleusParticleLAB = G4LorentzVector(
                                 targetNucleusMomentum, targetNucleusEnergy );
     }
@@ -179,10 +187,10 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
                             productionModelData.nucleusOutputParticleLAB ) );
     theParticleChange.AddSecondary( secNeutron );
 
-    productionModelData.incidentParticle = incidentParticle;
-    productionModelData.nucleusParticle = nucleusParticle;
-    productionModelData.outputParticle = outputParticle;
-    productionModelData.nucleusOutputParticle = nucleusOutputParticle;
+    /* projectile->GetDefinition() shall always be identical to incidentParticle
+     * as far as CexmcChargeExchangeProcess::IsApplicable() will check that only
+     * incidentParticle is allowed. Here is mostly unnecessary extra check */
+    productionModelData.incidentParticle = projectile.GetDefinition();
 
     return &theParticleChange;
 }
