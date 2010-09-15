@@ -1,9 +1,9 @@
 /*
  * =============================================================================
  *
- *       Filename:  CexmcChargeExchangeProcess.hh
+ *       Filename:  CexmcHadronicProcess.hh
  *
- *    Description:  charge exchange process
+ *    Description:  hadronic process with production model
  *
  *        Version:  1.0
  *        Created:  31.10.2009 23:44:11
@@ -16,8 +16,8 @@
  * =============================================================================
  */
 
-#ifndef CEXMC_CHARGE_EXCHANGE_PROCESS_HH
-#define CEXMC_CHARGE_EXCHANGE_PROCESS_HH
+#ifndef CEXMC_HADRONIC_PROCESS_HH
+#define CEXMC_HADRONIC_PROCESS_HH
 
 #include <G4HadronicProcess.hh>
 #include <G4Nucleus.hh>
@@ -32,13 +32,13 @@ class  G4HadronicInteraction;
 class  CexmcProductionModel;
 
 
-class  CexmcChargeExchangeProcess : public G4HadronicProcess
+class  CexmcHadronicProcess : public G4HadronicProcess
 {
     public:
-        explicit CexmcChargeExchangeProcess(
+        explicit CexmcHadronicProcess(
                         const G4String &  name = CexmcStudiedProcessLastName );
 
-        ~CexmcChargeExchangeProcess();
+        ~CexmcHadronicProcess();
 
     public:
         G4VParticleChange *  PostStepDoIt( const G4Track &  track,
@@ -48,9 +48,6 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
 
     public:
         void  RegisterProductionModel( CexmcProductionModel *  model );
-
-    public:
-        CexmcProductionModel *  GetProductionModel( void );
 
     private:
         void  CalculateTargetNucleus( const G4Material *  material );
@@ -70,13 +67,6 @@ class  CexmcChargeExchangeProcess : public G4HadronicProcess
 
         G4bool                  isInitialized;
 };
-
-
-inline CexmcProductionModel *
-                        CexmcChargeExchangeProcess::GetProductionModel( void )
-{
-    return productionModel;
-}
 
 
 #endif

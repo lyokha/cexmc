@@ -29,7 +29,7 @@
 #endif
 #include <G4PionMinus.hh>
 #include "CexmcProductionModelFactory.hh"
-#include "CexmcStudiedPhysicsChargeExchange.hh"
+#include "CexmcHadronicPhysics.hh"
 #include "CexmcChargeExchangeProductionModel.hh"
 
 
@@ -40,7 +40,7 @@ typedef QGSP_BERT                     CexmcBasePhysics;
 #endif
 
 typedef CexmcProductionModelFactory< CexmcBasePhysics,
-                                     CexmcStudiedPhysicsChargeExchange,
+                                     CexmcHadronicPhysics,
                                      CexmcChargeExchangeProductionModel >
                                       CexmcChargeExchangePMFactory;
 

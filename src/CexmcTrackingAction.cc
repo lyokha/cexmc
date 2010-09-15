@@ -95,6 +95,7 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
             } while ( false );
             break;
         }
+
         if ( track->GetParentID() == outputParticleTrackId )
         {
             trackInfo = new CexmcTrackInfo(

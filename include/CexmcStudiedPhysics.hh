@@ -3,7 +3,7 @@
  *
  *       Filename:  CexmcStudiedPhysics.hh
  *
- *    Description:  the studied physics in the target
+ *    Description:  studied physics in the target
  *
  *        Version:  1.0
  *        Created:  18.10.2009 16:10:52
@@ -21,11 +21,12 @@
 
 #include <G4VPhysicsConstructor.hh>
 #include <G4ProcessManager.hh>
-#include <G4HadronicProcess.hh>
 #include <G4ParticleDefinition.hh>
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
+
+class  G4VProcess;
 
 
 template  < typename  Process >
@@ -48,7 +49,7 @@ class  CexmcStudiedPhysics : public G4VPhysicsConstructor
         CexmcProductionModel *  GetProductionModel( void );
 
     protected:
-        virtual void  ApplyInteractionModel( G4HadronicProcess *  process );
+        virtual void  ApplyInteractionModel( G4VProcess *  process );
 
     protected:
         CexmcPhysicsManager *   physicsManager;
@@ -122,8 +123,7 @@ CexmcProductionModel *  CexmcStudiedPhysics< Process >::GetProductionModel(
 
 
 template  < typename  Process >
-void  CexmcStudiedPhysics< Process >::ApplyInteractionModel(
-                                                        G4HadronicProcess * )
+void  CexmcStudiedPhysics< Process >::ApplyInteractionModel( G4VProcess * )
 {
 }
 

@@ -3,7 +3,7 @@
  *
  *       Filename:  CexmcProductionModelMessenger.cc
  *
- *    Description:  switch charge exchange production model aspects
+ *    Description:  set various production model aspects
  *
  *        Version:  1.0
  *        Created:  03.11.2009 16:01:24

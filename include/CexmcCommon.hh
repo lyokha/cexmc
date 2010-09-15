@@ -33,8 +33,8 @@ typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
 
 const G4double  CexmcDblMax( std::numeric_limits< double >::max() );
 
-const G4String  CexmcStudiedProcessFirstName( "studiedPhysics_" );
-const G4String  CexmcStudiedProcessLastName( "studiedChargeExchange" );
+const G4String  CexmcStudiedProcessFirstName( "studiedProcess_" );
+const G4String  CexmcStudiedProcessLastName( "impl" );
 const G4String  CexmcStudiedProcessFullName( CexmcStudiedProcessFirstName +
                                              CexmcStudiedProcessLastName );
 const G4String  CexmcEDDigitizerName( "EDDig" );

@@ -1,9 +1,9 @@
 /*
  * ============================================================================
  *
- *       Filename:  CexmcChargeExchangeProcess.cc
+ *       Filename:  CexmcHadronicProcess.cc
  *
- *    Description:  charge exchange process
+ *    Description:  hadronic process with production model
  *
  *        Version:  1.0
  *        Created:  31.10.2009 23:54:38
@@ -24,14 +24,13 @@
 #include <G4Element.hh>
 #include <G4StableIsotopes.hh>
 #include <G4TrackStatus.hh>
-#include "CexmcChargeExchangeProcess.hh"
+#include "CexmcHadronicProcess.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcException.hh"
 
 
-CexmcChargeExchangeProcess::CexmcChargeExchangeProcess(
-                                                    const G4String &  name ) :
+CexmcHadronicProcess::CexmcHadronicProcess( const G4String &  name ) :
     G4HadronicProcess( name ), productionModel( NULL ), interaction( NULL ),
     theTotalResult( NULL ), isInitialized( false )
 {
@@ -39,13 +38,13 @@ CexmcChargeExchangeProcess::CexmcChargeExchangeProcess(
 }
 
 
-CexmcChargeExchangeProcess::~CexmcChargeExchangeProcess()
+CexmcHadronicProcess::~CexmcHadronicProcess()
 {
     delete theTotalResult;
 }
 
 
-void  CexmcChargeExchangeProcess::RegisterProductionModel(
+void  CexmcHadronicProcess::RegisterProductionModel(
                                     CexmcProductionModel *  productionModel_ )
 {
     productionModel = productionModel_;
@@ -59,7 +58,7 @@ void  CexmcChargeExchangeProcess::RegisterProductionModel(
 }
 
 
-void  CexmcChargeExchangeProcess::CalculateTargetNucleus(
+void  CexmcHadronicProcess::CalculateTargetNucleus(
                                                 const G4Material *  material )
 {
     G4int  numberOfElements( material->GetNumberOfElements() );
@@ -82,8 +81,8 @@ void  CexmcChargeExchangeProcess::CalculateTargetNucleus(
 }
 
 
-void  CexmcChargeExchangeProcess::FillTotalResult(
-                    G4HadFinalState *  hadFinalState, const G4Track &  track )
+void  CexmcHadronicProcess::FillTotalResult( G4HadFinalState *  hadFinalState,
+                                             const G4Track &  track )
 {
     G4int  numberOfSecondaries( hadFinalState->GetNumberOfSecondaries() );
 
@@ -119,8 +118,8 @@ void  CexmcChargeExchangeProcess::FillTotalResult(
 }
 
 
-G4VParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
-                                const G4Track &  track, const G4Step & )
+G4VParticleChange *  CexmcHadronicProcess::PostStepDoIt( const G4Track &  track,
+                                                         const G4Step & )
 {
     G4TrackStatus  trackStatus( track.GetTrackStatus() );
 
@@ -168,7 +167,7 @@ G4VParticleChange *  CexmcChargeExchangeProcess::PostStepDoIt(
 }
 
 
-G4bool  CexmcChargeExchangeProcess::IsApplicable(
+G4bool  CexmcHadronicProcess::IsApplicable(
                                         const G4ParticleDefinition &  particle )
 {
     if ( ! productionModel )

@@ -188,7 +188,7 @@ G4HadFinalState *  CexmcChargeExchangeProductionModel< OutputParticle >::
     theParticleChange.AddSecondary( secNeutron );
 
     /* projectile->GetDefinition() shall always be identical to incidentParticle
-     * as far as CexmcChargeExchangeProcess::IsApplicable() will check that only
+     * as far as CexmcHadronicProcess::IsApplicable() will check that only
      * incidentParticle is allowed. Here is mostly unnecessary extra check */
     productionModelData.incidentParticle = projectile.GetDefinition();
 
