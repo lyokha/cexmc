@@ -34,9 +34,12 @@ typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
 const G4double  CexmcDblMax( std::numeric_limits< double >::max() );
 
 const G4String  CexmcStudiedProcessFirstName( "studiedProcess_" );
-const G4String  CexmcStudiedProcessLastName( "impl" );
+const G4String  CexmcStudiedProcessLastName( "Cexmc" );
 const G4String  CexmcStudiedProcessFullName( CexmcStudiedProcessFirstName +
                                              CexmcStudiedProcessLastName );
+const G4String  CexmcChargeExchangeProductionModelName( "ChargeExchange" );
+const G4String  CexmcChargeExchangeInteractionName( "Cexmc" +
+                                    CexmcChargeExchangeProductionModelName );
 const G4String  CexmcEDDigitizerName( "EDDig" );
 const G4String  CexmcTPDigitizerName( "TPDig" );
 const G4String  CexmcCalorimeterRegionName( "Calorimeter" );

@@ -139,7 +139,7 @@ void  CexmcRunManager::ReadPreinitProjectData( void )
     std::ifstream    runDataFile( ( projectsDir + "/" + rProject + ".rdb" ).
                                   c_str() );
     if ( ! runDataFile )
-        throw CexmcException( CexmcReadProjectIncompleteException );
+        throw CexmcException( CexmcReadProjectIncomplete );
 
     {
         boost::archive::binary_iarchive  archive( runDataFile );
@@ -157,7 +157,7 @@ void  CexmcRunManager::ReadPreinitProjectData( void )
                    fileExtension + " " + projectsDir + "/" + projectId +
                    fileExtension );
     if ( ProjectIsSaved() && system( cmd ) != 0 )
-        throw CexmcException( CexmcReadProjectIncompleteException );
+        throw CexmcException( CexmcReadProjectIncomplete );
 
     if ( zipGdmlFile )
     {
@@ -500,14 +500,14 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
     std::ifstream   eventsDataFile(
                         ( projectsDir + "/" + rProject + ".edb" ).c_str() );
     if ( ! eventsDataFile )
-        throw CexmcException( CexmcReadProjectIncompleteException );
+        throw CexmcException( CexmcReadProjectIncomplete );
 
     boost::archive::binary_iarchive  evArchive( eventsDataFile );
 
     std::ifstream   eventsFastDataFile(
                         ( projectsDir + "/" + rProject + ".fdb" ).c_str() );
     if ( ! eventsFastDataFile )
-        throw CexmcException( CexmcReadProjectIncompleteException );
+        throw CexmcException( CexmcReadProjectIncomplete );
 
     boost::archive::binary_iarchive  evFastArchive( eventsFastDataFile );
 
@@ -1107,7 +1107,7 @@ void  CexmcRunManager::ReadAndPrintEventsData( void ) const
     std::ifstream   eventsDataFile(
                         ( projectsDir + "/" + rProject + ".edb" ).c_str() );
     if ( ! eventsDataFile )
-        throw CexmcException( CexmcReadProjectIncompleteException );
+        throw CexmcException( CexmcReadProjectIncomplete );
 
     boost::archive::binary_iarchive  evArchive( eventsDataFile );
 

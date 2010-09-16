@@ -40,7 +40,7 @@ void  CexmcCalorimeterGeometry::GetGeometryData( G4int &  nCrystalsInColumn,
 
     G4LogicalVolume *             lVolume( lvs->GetVolume( "vCalorimeter" ) );
     if ( ! lVolume )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompatibleGeometry );
 
     G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
     if ( pVolume && pVolume->IsReplicated() )
@@ -51,7 +51,7 @@ void  CexmcCalorimeterGeometry::GetGeometryData( G4int &  nCrystalsInColumn,
 
     lVolume = lvs->GetVolume( "vCrystalRow" );
     if ( ! lVolume )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompatibleGeometry );
 
     pVolume = lVolume->GetDaughter( 0 );
     if ( pVolume && pVolume->IsReplicated() )
@@ -62,7 +62,7 @@ void  CexmcCalorimeterGeometry::GetGeometryData( G4int &  nCrystalsInColumn,
 
     lVolume = lvs->GetVolume( "vCrystal" );
     if ( ! lVolume )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompatibleGeometry );
 
     G4Box *  crystalBox( static_cast< G4Box * >( lVolume->GetSolid() ) );
     crystalWidth = crystalBox->GetXHalfLength() * 2;
@@ -108,7 +108,7 @@ void  CexmcCalorimeterGeometry::GetCalorimeterLeftTransform(
     G4VPhysicalVolume *            pVolume( pvs->GetVolume(
                                                         "CalorimeterLeft" ) );
     if ( ! pVolume )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompatibleGeometry );
 
     transform.SetNetTranslation( pVolume->GetTranslation() );
     G4RotationMatrix *  rm( pVolume->GetRotation() );
@@ -126,7 +126,7 @@ void  CexmcCalorimeterGeometry::GetCalorimeterRightTransform(
     G4VPhysicalVolume *            pVolume( pvs->GetVolume(
                                                         "CalorimeterRight" ) );
     if ( ! pVolume )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompatibleGeometry );
 
     transform.SetNetTranslation( pVolume->GetTranslation() );
     G4RotationMatrix *  rm( pVolume->GetRotation() );

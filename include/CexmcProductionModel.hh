@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <G4Types.hh>
+#include <G4String.hh>
 #include <G4ios.hh>
 #include <G4ParticleDefinition.hh>
 #include "CexmcAngularRange.hh"
@@ -38,7 +39,8 @@ class  CexmcProductionModelMessenger;
 class  CexmcProductionModel
 {
     public:
-        explicit CexmcProductionModel( G4bool  fermiMotionIsOn = true );
+        explicit CexmcProductionModel( const G4String &  name = "unspecified",
+                                       G4bool  fermiMotionIsOn = false );
 
         virtual ~CexmcProductionModel();
 
@@ -78,9 +80,11 @@ class  CexmcProductionModel
         G4ParticleDefinition *  GetNucleusOutputParticle( void ) const;
 
     protected:
-        virtual void  FermiMotionStatusChangeHook( void );
+        virtual void            FermiMotionStatusChangeHook( void );
 
     protected:
+        G4String                  name;
+
         G4bool                    fermiMotionIsOn;
 
         CexmcAngularRangeList     angularRanges;
@@ -227,10 +231,9 @@ inline void  CexmcProductionModel::SetProductionModelData(
 
 inline void  CexmcProductionModel::PrintInitialData( void ) const
 {
-    const char *  fermiMotionMsg(
-                                "Fermi Motion in the target is not applied." );
+    const char *  fermiMotionMsg( "Fermi motion in the target is off" );
     if ( fermiMotionIsOn )
-        fermiMotionMsg = "Fermi Motion in the target is applied.";
+        fermiMotionMsg = "Fermi motion in the target is on";
 
     G4cout << CEXMC_LINE_START << fermiMotionMsg << G4endl;
     G4cout << CEXMC_LINE_START << "Angular ranges:" << angularRanges;

@@ -52,7 +52,7 @@ void  CexmcHadronicProcess::RegisterProductionModel(
     interaction = dynamic_cast< G4HadronicInteraction * >( productionModel );
 
     if ( ! interaction )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompatibleProductionModel );
 
     G4HadronicProcess::RegisterMe( interaction );
 }

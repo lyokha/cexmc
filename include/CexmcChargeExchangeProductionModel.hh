@@ -54,7 +54,8 @@ class  CexmcChargeExchangeProductionModel : public G4HadronicInteraction,
 template  < typename  OutputParticle >
 CexmcChargeExchangeProductionModel< OutputParticle >::
                                         CexmcChargeExchangeProductionModel() :
-    G4HadronicInteraction( "Studied Charge Exchange" ),
+    G4HadronicInteraction( CexmcChargeExchangeInteractionName ),
+    CexmcProductionModel( CexmcChargeExchangeProductionModelName ),
     nucleusParticleMass( 0 ), phaseSpaceGenerator( NULL )
 {
     incidentParticle = G4PionMinus::Definition();

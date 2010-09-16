@@ -44,7 +44,7 @@ CexmcTrackingAction::CexmcTrackingAction(
     nucleusOutputParticle = productionModel->GetNucleusOutputParticle();
 
     if ( ! incidentParticle || ! outputParticle || ! nucleusOutputParticle )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompleteProductionModel );
 }
 
 

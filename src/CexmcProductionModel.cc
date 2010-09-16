@@ -20,11 +20,15 @@
 #include "CexmcProductionModelMessenger.hh"
 
 
-CexmcProductionModel::CexmcProductionModel( G4bool  fermiMotionIsOn ) :
-    fermiMotionIsOn( fermiMotionIsOn ), incidentParticle( NULL ),
+CexmcProductionModel::CexmcProductionModel( const G4String &  name,
+                                            G4bool  fermiMotionIsOn ) :
+    name( name ), fermiMotionIsOn( fermiMotionIsOn ), incidentParticle( NULL ),
     nucleusParticle( NULL ), outputParticle( NULL ),
     nucleusOutputParticle( NULL ), messenger( NULL )
 {
+    G4cout << CEXMC_LINE_START << "Production model '" << name <<
+              "' instantiated" << G4endl;
+
     angularRanges.push_back( CexmcAngularRange( 1.0, -1.0, 0 ) );
     messenger = new CexmcProductionModelMessenger( this );
 }

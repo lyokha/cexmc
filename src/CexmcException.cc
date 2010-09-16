@@ -48,7 +48,7 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcFileCompressException :
         return CEXMC_LINE_START "File compress exception. "
                "Check if the file exists and output directory is writable.";
-    case CexmcReadProjectIncompleteException :
+    case CexmcReadProjectIncomplete :
         return CEXMC_LINE_START "Read project is incomplete. "
                "Check if the read project has complete set of data files.";
     case CexmcProjectExists :
@@ -87,6 +87,15 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcPoorEventData :
         return CEXMC_LINE_START "Cannot create rich event data from poor "
                 "original data. Set less value of event data verbose level.";
+    case CexmcIncompatibleGeometry :
+        return CEXMC_LINE_START "Incompatible geometry definition. "
+                "Check your geometry data.";
+    case CexmcIncompleteProductionModel :
+        return CEXMC_LINE_START "Production model provided is incomplete. "
+                "Check that your production model defines all particles.";
+    case CexmcIncompatibleProductionModel :
+        return CEXMC_LINE_START "Production model provided is incompatible "
+                "with physical process that tries to bind it.";
 #ifdef CEXMC_USE_CUSTOM_FILTER
     case CexmcCFBadSource :
         return CEXMC_LINE_START "Custom filter source file does not exist or "

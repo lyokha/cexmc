@@ -32,7 +32,7 @@ void  CexmcTargetGeometry::GetTargetTransform( G4AffineTransform &  transform )
     G4VPhysicalVolume *            pVolume( pvs->GetVolume(
                                                         "TargetInnerCover" ) );
     if ( ! pVolume )
-        throw CexmcException( CexmcWeirdException );
+        throw CexmcException( CexmcIncompatibleGeometry );
 
     transform.SetNetTranslation( pVolume->GetTranslation() );
     G4RotationMatrix *  rm( pVolume->GetRotation() );

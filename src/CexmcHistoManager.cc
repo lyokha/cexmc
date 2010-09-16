@@ -258,7 +258,12 @@ void  CexmcHistoManager::Initialize( void )
 
     CexmcRunManager *       runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
-    CexmcProductionModel *  productionModel( runManager->GetPhysicsManager()->
+    CexmcPhysicsManager *   physicsManager( runManager->GetPhysicsManager() );
+
+    if ( ! physicsManager )
+        throw CexmcException ( CexmcWeirdException );
+
+    CexmcProductionModel *  productionModel( physicsManager->
                                                         GetProductionModel() );
 
     if ( ! productionModel )
@@ -270,7 +275,7 @@ void  CexmcHistoManager::Initialize( void )
                                 productionModel->GetNucleusOutputParticle() );
 
     if ( ! outputParticle || ! nucleusOutputParticle )
-        throw CexmcException ( CexmcWeirdException );
+        throw CexmcException ( CexmcIncompleteProductionModel );
 
     opName = outputParticle->GetParticleName();
     nopName = nucleusOutputParticle->GetParticleName();

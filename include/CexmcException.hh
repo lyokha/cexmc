@@ -30,7 +30,7 @@ enum  CexmcExceptionType
     CexmcCmdLineParseException,
     CexmcPreinitException,
     CexmcFileCompressException,
-    CexmcReadProjectIncompleteException,
+    CexmcReadProjectIncomplete,
     CexmcProjectExists,
     CexmcCmdIsNotAllowed,
     CexmcBadAngularRange,
@@ -41,6 +41,9 @@ enum  CexmcExceptionType
     CexmcCalorimeterRegionNotInitialized,
     CexmcKinematicsException,
     CexmcPoorEventData,
+    CexmcIncompatibleGeometry,
+    CexmcIncompleteProductionModel,
+    CexmcIncompatibleProductionModel,
 #ifdef CEXMC_USE_CUSTOM_FILTER
     CexmcCFBadSource,
     CexmcCFParseError,
