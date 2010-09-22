@@ -45,7 +45,7 @@ class  CexmcPhysicsManager
                                     const G4StepPoint *  stepPoint = NULL ) = 0;
 
     public:
-        G4bool  OnlyIncidentParticleCanTriggerStudiedProcess( void ) const;
+        G4bool  OnlyBeamParticleCanTriggerStudiedProcess( void ) const;
 
         void    IncrementNumberOfTriggeredStudiedInteractions( void );
 
@@ -55,14 +55,14 @@ class  CexmcPhysicsManager
         G4int   numberOfTriggeredStudiedInteractions;
 
     private:
-        G4bool  onlyIncidentParticleCanTriggerStudiedProcess;
+        G4bool  onlyBeamParticleCanTriggerStudiedProcess;
 };
 
 
-inline G4bool  CexmcPhysicsManager::
-                    OnlyIncidentParticleCanTriggerStudiedProcess( void ) const
+inline G4bool  CexmcPhysicsManager::OnlyBeamParticleCanTriggerStudiedProcess(
+                                                                    void ) const
 {
-    return onlyIncidentParticleCanTriggerStudiedProcess;
+    return onlyBeamParticleCanTriggerStudiedProcess;
 }
 
 

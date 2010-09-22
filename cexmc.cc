@@ -23,6 +23,7 @@
 #include <boost/variant/get.hpp>
 #endif
 #include <G4UImanager.hh>
+#include <G4String.hh>
 #ifdef G4UI_USE
 #include <G4UIsession.hh>
 #include <G4UIterminal.hh>
@@ -52,6 +53,12 @@
 #include "CexmcException.hh"
 #include "CexmcBasicPhysicsSettings.hh"
 #include "CexmcCommon.hh"
+
+
+namespace
+{
+    const G4String  CexmcVisManagerVerboseLevel( "errors" );
+}
 
 
 struct  CexmcCmdLineData
@@ -367,7 +374,7 @@ int  main( int  argc, char **  argv )
 #ifdef G4VIS_USE
         if ( cmdLineData.isInteractive )
         {
-            visManager = new G4VisExecutive;
+            visManager = new G4VisExecutive( CexmcVisManagerVerboseLevel );
             visManager->Initialize();
         }
 #endif

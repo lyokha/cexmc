@@ -25,6 +25,7 @@
 class  CexmcChargeExchangeReconstructorMessenger;
 class  CexmcEnergyDepositStore;
 class  CexmcProductionModel;
+class  CexmcParticleGun;
 
 
 class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
@@ -70,6 +71,8 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
         void      SetAbsorbedEnergyCutCRWidth( G4double  value );
 
         void      SetAbsorbedEnergyCutEllipseAngle( G4double  value );
+
+        void      SetupBeamParticle( void );
 
         G4bool    IsTableMassUsed( void ) const;
 
@@ -144,6 +147,10 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
         G4bool    hasAbsorbedEnergyCutTriggered;
 
     private:
+        G4bool                                       beamParticleIsInitialized;
+
+        CexmcParticleGun *                           particleGun;
+
         CexmcChargeExchangeReconstructorMessenger *  messenger;
 };
 

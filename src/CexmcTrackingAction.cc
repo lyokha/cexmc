@@ -65,13 +65,13 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
             if ( *track->GetDefinition() == *incidentParticle )
             {
                 trackInfo = new CexmcIncidentParticleTrackInfo(
-                                                CexmcIncidentParticleTrack );
+                                                    CexmcBeamParticleTrack );
                 theTrack->SetUserInformation( trackInfo );
                 SetupIncidentParticleTrackInfo( track );
             }
             else
             {
-                trackInfo = new CexmcTrackInfo( CexmcIncidentParticleTrack );
+                trackInfo = new CexmcTrackInfo( CexmcBeamParticleTrack );
             }
             break;
         }
@@ -105,8 +105,7 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
 
         if ( *track->GetDefinition() == *incidentParticle )
         {
-            if ( physicsManager->
-                 OnlyIncidentParticleCanTriggerStudiedProcess() )
+            if ( physicsManager->OnlyBeamParticleCanTriggerStudiedProcess() )
                 break;
             trackInfo = new CexmcIncidentParticleTrackInfo( CexmcInsipidTrack );
             theTrack->SetUserInformation( trackInfo );

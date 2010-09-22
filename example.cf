@@ -17,7 +17,7 @@
 # II. TPT examples. Can be safely used only for rich event data sets
 
 # TPT: make diagonal cut in monitor counter
-delete tpt if ip_mon_posl[1] < ip_mon_posl[2]
+delete tpt if bp_mon_posl[1] < bp_mon_posl[2]
 
 # TPT: make target radius smaller
 delete tpt if Sqrt(Sqr(op_tgt_posl[1]) + Sqr(op_tgt_posl[2]) + \

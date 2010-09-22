@@ -37,18 +37,18 @@ namespace
     const std::string  CexmcCFVarCrED( "crED" );
     const std::string  CexmcCFVarClEDCol( "clEDcol" );
     const std::string  CexmcCFVarCrEDCol( "crEDcol" );
-    const std::string  CexmcCFVarIpMonPosL( "ip_mon_posl" );
-    const std::string  CexmcCFVarIpMonPosW( "ip_mon_posw" );
-    const std::string  CexmcCFVarIpMonDirL( "ip_mon_dirl" );
-    const std::string  CexmcCFVarIpMonDirW( "ip_mon_dirw" );
-    const std::string  CexmcCFVarIpMonMom( "ip_mon_mom" );
-    const std::string  CexmcCFVarIpMonTid( "ip_mon_tid" );
-    const std::string  CexmcCFVarIpTgtPosL( "ip_tgt_posl" );
-    const std::string  CexmcCFVarIpTgtPosW( "ip_tgt_posw" );
-    const std::string  CexmcCFVarIpTgtDirL( "ip_tgt_dirl" );
-    const std::string  CexmcCFVarIpTgtDirW( "ip_tgt_dirw" );
-    const std::string  CexmcCFVarIpTgtMom( "ip_tgt_mom" );
-    const std::string  CexmcCFVarIpTgtTid( "ip_tgt_tid" );
+    const std::string  CexmcCFVarBpMonPosL( "bp_mon_posl" );
+    const std::string  CexmcCFVarBpMonPosW( "bp_mon_posw" );
+    const std::string  CexmcCFVarBpMonDirL( "bp_mon_dirl" );
+    const std::string  CexmcCFVarBpMonDirW( "bp_mon_dirw" );
+    const std::string  CexmcCFVarBpMonMom( "bp_mon_mom" );
+    const std::string  CexmcCFVarBpMonTid( "bp_mon_tid" );
+    const std::string  CexmcCFVarBpTgtPosL( "bp_tgt_posl" );
+    const std::string  CexmcCFVarBpTgtPosW( "bp_tgt_posw" );
+    const std::string  CexmcCFVarBpTgtDirL( "bp_tgt_dirl" );
+    const std::string  CexmcCFVarBpTgtDirW( "bp_tgt_dirw" );
+    const std::string  CexmcCFVarBpTgtMom( "bp_tgt_mom" );
+    const std::string  CexmcCFVarBpTgtTid( "bp_tgt_tid" );
     const std::string  CexmcCFVarOpTgtPosL( "op_tgt_posl" );
     const std::string  CexmcCFVarOpTgtPosW( "op_tgt_posw" );
     const std::string  CexmcCFVarOpTgtDirL( "op_tgt_dirl" );
@@ -407,81 +407,76 @@ void  CexmcASTEval::BindAddresses( CexmcAST::Subtree &  ast )
                                 &evSObject->calorimeterEDRightCollection ) );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpMonPosL )
+                if ( var->name == CexmcCFVarBpMonPosL )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->monitorTP.positionLocal,
-                            var->index1 );
+                            evSObject->monitorTP.positionLocal, var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpMonPosW )
+                if ( var->name == CexmcCFVarBpMonPosW )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->monitorTP.positionWorld,
-                            var->index1 );
+                            evSObject->monitorTP.positionWorld, var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpMonDirL )
+                if ( var->name == CexmcCFVarBpMonDirL )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->monitorTP.directionLocal,
-                            var->index1 );
+                            evSObject->monitorTP.directionLocal, var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpMonDirW )
+                if ( var->name == CexmcCFVarBpMonDirW )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->monitorTP.directionWorld,
-                            var->index1 );
+                            evSObject->monitorTP.directionWorld, var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpMonMom )
+                if ( var->name == CexmcCFVarBpMonMom )
                 {
                     var->addr = &evSObject->monitorTP.momentumAmp;
                     break;
                 }
-                if ( var->name == CexmcCFVarIpMonTid )
+                if ( var->name == CexmcCFVarBpMonTid )
                 {
                     var->addr = &evSObject->monitorTP.trackId;
                     break;
                 }
-                if ( var->name == CexmcCFVarIpTgtPosL )
+                if ( var->name == CexmcCFVarBpTgtPosL )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->targetTPIncidentParticle.positionLocal,
+                            evSObject->targetTPBeamParticle.positionLocal,
                             var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpTgtPosW )
+                if ( var->name == CexmcCFVarBpTgtPosW )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->targetTPIncidentParticle.positionWorld,
+                            evSObject->targetTPBeamParticle.positionWorld,
                             var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpTgtDirL )
+                if ( var->name == CexmcCFVarBpTgtDirL )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->targetTPIncidentParticle.directionLocal,
+                            evSObject->targetTPBeamParticle.directionLocal,
                             var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpTgtDirW )
+                if ( var->name == CexmcCFVarBpTgtDirW )
                 {
                     var->addr = GetThreeVectorElementAddrByIndex(
-                            evSObject->targetTPIncidentParticle.directionWorld,
+                            evSObject->targetTPBeamParticle.directionWorld,
                             var->index1 );
                     break;
                 }
-                if ( var->name == CexmcCFVarIpTgtMom )
+                if ( var->name == CexmcCFVarBpTgtMom )
                 {
-                    var->addr =
-                            &evSObject->targetTPIncidentParticle.momentumAmp;
+                    var->addr = &evSObject->targetTPBeamParticle.momentumAmp;
                     break;
                 }
-                if ( var->name == CexmcCFVarIpTgtTid )
+                if ( var->name == CexmcCFVarBpTgtTid )
                 {
-                    var->addr = &evSObject->targetTPIncidentParticle.trackId;
+                    var->addr = &evSObject->targetTPBeamParticle.trackId;
                     break;
                 }
                 if ( var->name == CexmcCFVarOpTgtPosL )

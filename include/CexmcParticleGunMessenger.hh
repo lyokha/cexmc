@@ -3,7 +3,7 @@
  *
  *       Filename:  CexmcParticleGunMessenger.hh
  *
- *    Description:  original position and momentum of the incident particle
+ *    Description:  original position and momentum of the incident beam particle
  *
  *        Version:  1.0
  *        Created:  15.12.2009 13:54:20

@@ -47,6 +47,8 @@ class  CexmcEventAction : public G4UserEventAction
         void      EndOfEventAction( const G4Event *  event );
 
     public:
+        void      BeamParticleChangeHook( void );
+
         void      SetVerboseOnCexmcLevel( G4int  verbose_ );
 
         void      SetVerboseDrawLevel( G4int  verboseDraw_ );

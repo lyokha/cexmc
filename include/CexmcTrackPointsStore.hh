@@ -26,7 +26,7 @@
 struct  CexmcTrackPointsStore
 {
     CexmcTrackPointsStore( const  CexmcTrackPointInfo &  monitorTP,
-    const  CexmcTrackPointInfo &  targetTPIncidentParticle,
+    const  CexmcTrackPointInfo &  targetTPBeamParticle,
     const  CexmcTrackPointInfo &  targetTPOutputParticle,
     const  CexmcTrackPointInfo &  targetTPNucleusParticle,
     const  CexmcTrackPointInfo &  targetTPOutputParticleDecayProductParticle1,
@@ -35,8 +35,7 @@ struct  CexmcTrackPointsStore
     const  CexmcTrackPointInfo &  vetoCounterTPRight,
     const  CexmcTrackPointInfo &  calorimeterTPLeft,
     const  CexmcTrackPointInfo &  calorimeterTPRight ) :
-        monitorTP( monitorTP ),
-        targetTPIncidentParticle( targetTPIncidentParticle ),
+        monitorTP( monitorTP ), targetTPBeamParticle( targetTPBeamParticle ),
         targetTPOutputParticle( targetTPOutputParticle ),
         targetTPNucleusParticle( targetTPNucleusParticle ),
         targetTPOutputParticleDecayProductParticle1 (
@@ -55,7 +54,7 @@ struct  CexmcTrackPointsStore
 
     const CexmcTrackPointInfo &  monitorTP;
     
-    const CexmcTrackPointInfo &  targetTPIncidentParticle;
+    const CexmcTrackPointInfo &  targetTPBeamParticle;
     
     const CexmcTrackPointInfo &  targetTPOutputParticle;
     

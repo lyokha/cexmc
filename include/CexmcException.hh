@@ -44,6 +44,7 @@ enum  CexmcExceptionType
     CexmcIncompatibleGeometry,
     CexmcIncompleteProductionModel,
     CexmcIncompatibleProductionModel,
+    CexmcBeamAndIncidentParticlesMismatch,
 #ifdef CEXMC_USE_CUSTOM_FILTER
     CexmcCFBadSource,
     CexmcCFParseError,

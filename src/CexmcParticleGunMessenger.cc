@@ -3,7 +3,7 @@
  *
  *       Filename:  CexmcParticleGunMessenger.cc
  *
- *    Description:  original position and momentum of the incident particle
+ *    Description:  original position and momentum of the incident beam particle
  *
  *        Version:  1.0
  *        Created:  15.12.2009 14:02:01
@@ -23,6 +23,7 @@
 #include <G4ParticleDefinition.hh>
 #include <G4ParticleTable.hh>
 #include "CexmcParticleGun.hh"
+#include "CexmcRunManager.hh"
 #include "CexmcParticleGunMessenger.hh"
 #include "CexmcException.hh"
 #include "CexmcMessenger.hh"
@@ -35,9 +36,9 @@ CexmcParticleGunMessenger::CexmcParticleGunMessenger(
 {
     setParticle = new G4UIcmdWithAString(
         ( CexmcMessenger::gunDirName + "particle" ).c_str(), this );
-    setParticle->SetGuidance( "Incident particle" );
+    setParticle->SetGuidance( "Incident beam particle" );
     setParticle->SetDefaultValue( "pi-" );
-    setParticle->SetParameterName( "IncidentParticle", false );
+    setParticle->SetParameterName( "BeamParticle", false );
     setParticle->SetCandidates( "pi-" );
     setParticle->AvailableForStates( G4State_PreInit, G4State_Idle );
 
@@ -63,7 +64,7 @@ CexmcParticleGunMessenger::CexmcParticleGunMessenger(
 
     setOrigMomentumAmp = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::gunDirName + "momentumAmp" ).c_str(), this );
-    setOrigMomentumAmp->SetGuidance( "Original momentum value" );
+    setOrigMomentumAmp->SetGuidance( "Original momentum of the beam" );
     setOrigMomentumAmp->SetParameterName( "MomentumAmp", false );
     setOrigMomentumAmp->SetRange( "MomentumAmp > 0" );
     setOrigMomentumAmp->SetDefaultUnit( "MeV" );
@@ -94,7 +95,11 @@ void CexmcParticleGunMessenger::SetNewValue( G4UIcommand *  cmd,
             if ( ! particleDefinition )
                 throw CexmcException( CexmcWeirdException );
 
-            particleGun->SetIncidentParticle( particleDefinition );
+            particleGun->SetBeamParticle( particleDefinition );
+
+            CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+            runManager->BeamParticleChangeHook();
             break;
         }
         if ( cmd == setOrigPosition )

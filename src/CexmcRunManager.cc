@@ -112,6 +112,19 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
 }
 
 
+void  CexmcRunManager::BeamParticleChangeHook( void )
+{
+    const CexmcEventAction *  eventAction(
+                static_cast< const CexmcEventAction * >( userEventAction ) );
+    if ( ! eventAction )
+        throw CexmcException( CexmcWeirdException );
+
+    CexmcEventAction *        theEventAction( const_cast< CexmcEventAction * >(
+                                                                eventAction ) );
+    theEventAction->BeamParticleChangeHook();
+}
+
+
 CexmcRunManager::~CexmcRunManager()
 {
     if ( ProjectIsRead() && zipGdmlFile )
@@ -211,7 +224,7 @@ void  CexmcRunManager::ReadProject( void )
                                 thePrimaryGeneratorAction->GetParticleGun() );
     G4ParticleDefinition *  particleDefinition(
                     G4ParticleTable::GetParticleTable()->FindParticle(
-                                                sObject.incidentParticle ) );
+                                                    sObject.beamParticle ) );
     if ( ! particleDefinition )
         throw CexmcException( CexmcWeirdException );
 
@@ -664,8 +677,8 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         }
 
         CexmcTrackPointInfo  monitorTPInfo( evSObject.monitorTP );
-        CexmcTrackPointInfo  targetTPIncidentParticleInfo(
-                                        evSObject.targetTPIncidentParticle );
+        CexmcTrackPointInfo  targetTPBeamParticleInfo(
+                                        evSObject.targetTPBeamParticle );
         CexmcTrackPointInfo  targetTPOutputParticleInfo(
                                         evSObject.targetTPOutputParticle );
         CexmcTrackPointInfo  targetTPNucleusParticleInfo(
@@ -686,10 +699,10 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         if ( monitorTPInfo.IsValid() )
             monitorTP->GetMap()->operator[]( monitorTPInfo.trackId ) =
                                                 &monitorTPInfo;
-        if ( targetTPIncidentParticleInfo.IsValid() )
+        if ( targetTPBeamParticleInfo.IsValid() )
             targetTP->GetMap()->operator[](
-                    targetTPIncidentParticleInfo.trackId ) =
-                                                &targetTPIncidentParticleInfo;
+                    targetTPBeamParticleInfo.trackId ) =
+                                                &targetTPBeamParticleInfo;
         if ( targetTPOutputParticleInfo.IsValid() )
             targetTP->GetMap()->operator[](
                     targetTPOutputParticleInfo.trackId ) =
@@ -974,22 +987,22 @@ void  CexmcRunManager::PrintReadRunData( void ) const
               sObject.numberOfEventsProcessed << " / " <<
               sObject.numberOfEventsProcessedEffective << " / " <<
               sObject.numberOfEventsToBeProcessed << G4endl;
-    G4cout << "  -- Incident particle: " << sObject.incidentParticle << G4endl;
-    G4cout << "              position: " <<
+    G4cout << "  -- Incident beam particle: " << sObject.beamParticle << G4endl;
+    G4cout << "                   position: " <<
               G4BestUnit( sObject.beamPos, "Length" ) << G4endl;
-    G4cout << "             direction: " << G4ThreeVector( sObject.beamDir ) <<
-              G4endl;
-    G4cout << "              momentum: " <<
+    G4cout << "                  direction: " <<
+              G4ThreeVector( sObject.beamDir ) << G4endl;
+    G4cout << "                   momentum: " <<
               G4BestUnit( sObject.beamMomentumAmp, "Energy" ) << G4endl;
-    G4cout << "         momentum fwhm: " << sObject.beamFwhmMomentumAmp <<
+    G4cout << "              momentum fwhm: " << sObject.beamFwhmMomentumAmp <<
               G4endl;
-    G4cout << "          pos fwhm (x): " <<
+    G4cout << "               pos fwhm (x): " <<
               G4BestUnit( sObject.beamFwhmPosX, "Length" ) << G4endl;
-    G4cout << "          pos fwhm (y): " <<
+    G4cout << "               pos fwhm (y): " <<
               G4BestUnit( sObject.beamFwhmPosY, "Length" ) << G4endl;
-    G4cout << "          dir fwhm (x): " << sObject.beamFwhmDirX / deg <<
+    G4cout << "               dir fwhm (x): " << sObject.beamFwhmDirX / deg <<
               " deg" << G4endl;
-    G4cout << "          dir fwhm (y): " << sObject.beamFwhmDirY / deg <<
+    G4cout << "               dir fwhm (y): " << sObject.beamFwhmDirY / deg <<
               " deg" << G4endl;
     G4cout << "  -- Monitor ED threshold: " <<
               G4BestUnit( sObject.monitorEDThreshold, "Energy" ) << G4endl;
@@ -1125,8 +1138,8 @@ void  CexmcRunManager::ReadAndPrintEventsData( void ) const
             evSObject.calorimeterEDRightCollection );
 
         CexmcTrackPointsStore    tpStore( evSObject.monitorTP,
-            evSObject.targetTPIncidentParticle,
-            evSObject.targetTPOutputParticle, evSObject.targetTPNucleusParticle,
+            evSObject.targetTPBeamParticle, evSObject.targetTPOutputParticle,
+            evSObject.targetTPNucleusParticle,
             evSObject.targetTPOutputParticleDecayProductParticle1,
             evSObject.targetTPOutputParticleDecayProductParticle2,
             evSObject.vetoCounterTPLeft, evSObject.vetoCounterTPRight,

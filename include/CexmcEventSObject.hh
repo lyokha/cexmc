@@ -51,7 +51,7 @@ class  CexmcEventSObject
                 const CexmcEnergyDepositCalorimeterCollection &
                                                 calorimeterEDRightCollection,
                 const CexmcTrackPointInfo &  monitorTP,
-                const CexmcTrackPointInfo &  targetTPIncidentParticle,
+                const CexmcTrackPointInfo &  targetTPBeamParticle,
                 const CexmcTrackPointInfo &  targetTPOutputParticle,
                 const CexmcTrackPointInfo &  targetTPNucleusParticle,
                 const CexmcTrackPointInfo &
@@ -89,7 +89,7 @@ class  CexmcEventSObject
 
         CexmcSimpleTrackPointInfoStore           monitorTP;
 
-        CexmcSimpleTrackPointInfoStore           targetTPIncidentParticle;
+        CexmcSimpleTrackPointInfoStore           targetTPBeamParticle;
 
         CexmcSimpleTrackPointInfoStore           targetTPOutputParticle;
 
@@ -128,7 +128,7 @@ void  CexmcEventSObject::serialize( Archive &  archive,
     archive & calorimeterEDLeftCollection;
     archive & calorimeterEDRightCollection;
     archive & monitorTP;
-    archive & targetTPIncidentParticle;
+    archive & targetTPBeamParticle;
     archive & targetTPOutputParticle;
     archive & targetTPNucleusParticle;
     archive & targetTPOutputParticleDecayProductParticle1;

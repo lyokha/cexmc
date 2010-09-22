@@ -24,6 +24,7 @@
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcParticleGun.hh"
 #include "CexmcProductionModel.hh"
+#include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 
@@ -36,13 +37,25 @@ CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor(
     absorbedEnergyCutCLCenter( 0 ), absorbedEnergyCutCRCenter( 0 ),
     absorbedEnergyCutCLWidth( 0 ), absorbedEnergyCutCRWidth( 0 ),
     absorbedEnergyCutEllipseAngle( 0 ), hasMassCutTriggered( false ),
-    hasAbsorbedEnergyCutTriggered( false ), messenger( NULL )
+    hasAbsorbedEnergyCutTriggered( false ), beamParticleIsInitialized( false ),
+    particleGun( NULL ), messenger( NULL )
 {
     if ( ! productionModel )
         throw CexmcException( CexmcWeirdException );
 
     productionModelData.incidentParticle =
                                     productionModel->GetIncidentParticle();
+
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    const CexmcPrimaryGeneratorAction *  primaryGeneratorAction(
+                        static_cast< const CexmcPrimaryGeneratorAction * >(
+                                runManager->GetUserPrimaryGeneratorAction() ) );
+    CexmcPrimaryGeneratorAction *  thePrimaryGeneratorAction(
+                        const_cast< CexmcPrimaryGeneratorAction * >(
+                                primaryGeneratorAction ) );
+    particleGun = thePrimaryGeneratorAction->GetParticleGun();
+
     productionModelData.nucleusParticle =
                                     productionModel->GetNucleusParticle();
     productionModelData.outputParticle =
@@ -60,9 +73,28 @@ CexmcChargeExchangeReconstructor::~CexmcChargeExchangeReconstructor()
 }
 
 
+void  CexmcChargeExchangeReconstructor::SetupBeamParticle( void )
+{
+    if ( *productionModelData.incidentParticle !=
+                                        *particleGun->GetParticleDefinition() )
+        throw CexmcException( CexmcBeamAndIncidentParticlesMismatch );
+
+    beamParticleIsInitialized = true;
+}
+
+
 void  CexmcChargeExchangeReconstructor::Reconstruct(
                                     const CexmcEnergyDepositStore *  edStore )
 {
+    if ( ! beamParticleIsInitialized )
+    {
+        if ( *productionModelData.incidentParticle !=
+                                        *particleGun->GetParticleDefinition() )
+            throw CexmcException( CexmcBeamAndIncidentParticlesMismatch );
+
+        beamParticleIsInitialized = true;
+    }
+
     ReconstructEntryPoints( edStore );
     if ( hasBasicTrigger )
         ReconstructTargetPoint();
@@ -101,17 +133,6 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
                                     opMomentum.mag2() + opMass * opMass ) );
     productionModelData.outputParticleLAB = G4LorentzVector( opMomentum,
                                                              opEnergy );
-
-    CexmcRunManager *              runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-    const CexmcPrimaryGeneratorAction *  primaryGeneratorAction(
-                        static_cast< const CexmcPrimaryGeneratorAction * >(
-                                runManager->GetUserPrimaryGeneratorAction() ) );
-    CexmcPrimaryGeneratorAction *  thePrimaryGeneratorAction(
-                        const_cast< CexmcPrimaryGeneratorAction * >(
-                                primaryGeneratorAction ) );
-    CexmcParticleGun *  particleGun(
-                                thePrimaryGeneratorAction->GetParticleGun() );
 
     G4ThreeVector  incidentParticleMomentum( particleGun->GetOrigDirection() );
     G4double       incidentParticleMomentumAmp(

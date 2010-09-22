@@ -38,8 +38,8 @@ class  CexmcHistoManagerMessenger;
 
 enum  CexmcHistoType
 {
-    CexmcMomentumIP_TPT_Histo,
-    CexmcMomentumIP_RT_Histo,
+    CexmcMomentumBP_TPT_Histo,
+    CexmcMomentumBP_RT_Histo,
     CexmcTPInMonitor_TPT_Histo,
     CexmcTPInTarget_TPT_Histo,
     CexmcTPInTarget_RT_Histo,

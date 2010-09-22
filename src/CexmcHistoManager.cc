@@ -307,10 +307,10 @@ void  CexmcHistoManager::Initialize( void )
     nBinsX = Int_t( ( nBinsMaxX - nBinsMinX ) /
                     CexmcHistoBeamMomentumResolution );
     axes.push_back( CexmcHistoAxisData( nBinsX, nBinsMinX, nBinsMaxX ) );
-    AddHisto( CexmcHistoData( CexmcMomentumIP_TPT_Histo, Cexmc_TH1F, false,
-          false, CexmcTPT, "momip", "Beam momentum at monitor", axes ) );
-    AddHisto( CexmcHistoData( CexmcMomentumIP_RT_Histo, Cexmc_TH1F, false,
-          false, CexmcRT, "momip", "Beam momentum at monitor", axes ) );
+    AddHisto( CexmcHistoData( CexmcMomentumBP_TPT_Histo, Cexmc_TH1F, false,
+          false, CexmcTPT, "mombp", "Beam momentum at the monitor", axes ) );
+    AddHisto( CexmcHistoData( CexmcMomentumBP_RT_Histo, Cexmc_TH1F, false,
+          false, CexmcRT, "mombp", "Beam momentum at the monitor", axes ) );
 
     G4Box *   box( static_cast< G4Box * >( lVolume->GetSolid() ) );
     G4double  width( box->GetXHalfLength() * 2 );

@@ -20,7 +20,7 @@
 
 CexmcPhysicsManager::CexmcPhysicsManager() :
     numberOfTriggeredStudiedInteractions( 0 ),
-    onlyIncidentParticleCanTriggerStudiedProcess( false )
+    onlyBeamParticleCanTriggerStudiedProcess( false )
 {
 }
 

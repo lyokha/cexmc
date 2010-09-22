@@ -85,7 +85,7 @@ enum  CexmcEventCountPolicy
 enum  CexmcTrackType
 {
     CexmcInsipidTrack,
-    CexmcIncidentParticleTrack,
+    CexmcBeamParticleTrack,
     CexmcOutputParticleTrack,
     CexmcNucleusParticleTrack,
     CexmcOutputParticleDecayProductTrack

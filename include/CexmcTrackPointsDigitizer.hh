@@ -36,7 +36,7 @@ class  CexmcTrackPointsDigitizer : public G4VDigitizerModule
     public:
         const CexmcTrackPointInfo &  GetMonitorTP( void ) const;
 
-        const CexmcTrackPointInfo &  GetTargetTPIncidentParticle( void ) const;
+        const CexmcTrackPointInfo &  GetTargetTPBeamParticle( void ) const;
 
         const CexmcTrackPointInfo &  GetTargetTPOutputParticle( void ) const;
 
@@ -63,7 +63,7 @@ class  CexmcTrackPointsDigitizer : public G4VDigitizerModule
     private:
         CexmcTrackPointInfo  monitorTP;
 
-        CexmcTrackPointInfo  targetTPIncidentParticle;
+        CexmcTrackPointInfo  targetTPBeamParticle;
 
         CexmcTrackPointInfo  targetTPOutputParticle;
 
@@ -100,9 +100,9 @@ inline const CexmcTrackPointInfo &
 
 
 inline const CexmcTrackPointInfo &
-            CexmcTrackPointsDigitizer::GetTargetTPIncidentParticle( void ) const
+            CexmcTrackPointsDigitizer::GetTargetTPBeamParticle( void ) const
 {
-    return targetTPIncidentParticle;
+    return targetTPBeamParticle;
 }
 
 

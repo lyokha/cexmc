@@ -96,6 +96,11 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcIncompatibleProductionModel :
         return CEXMC_LINE_START "Production model provided is incompatible "
                 "with physical process that tries to bind it.";
+    case CexmcBeamAndIncidentParticlesMismatch :
+        return CEXMC_LINE_START "Beam and incident particles mismatch. "
+                "Instantiated reconstructor will not give reliable results in "
+                "this case. Make sure that beam particle and incident particle "
+                "of provided production model are same.";
 #ifdef CEXMC_USE_CUSTOM_FILTER
     case CexmcCFBadSource :
         return CEXMC_LINE_START "Custom filter source file does not exist or "

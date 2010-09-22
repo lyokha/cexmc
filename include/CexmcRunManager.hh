@@ -108,6 +108,8 @@ class  CexmcRunManager : public G4RunManager
 
         CexmcEventDataVerboseLevel  GetEventDataVerboseLevel( void ) const;
 
+        void                      BeamParticleChangeHook( void );
+
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
                            G4int  nSelect );

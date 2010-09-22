@@ -39,7 +39,7 @@ CexmcTrackPointsDigitizer::CexmcTrackPointsDigitizer( const G4String &  name ) :
 void  CexmcTrackPointsDigitizer::InitializeData( void )
 {
     monitorTP.trackId = CexmcInvalidTrackId;
-    targetTPIncidentParticle.trackId = CexmcInvalidTrackId;
+    targetTPBeamParticle.trackId = CexmcInvalidTrackId;
     targetTPOutputParticle.trackId = CexmcInvalidTrackId;
     targetTPNucleusParticle.trackId = CexmcInvalidTrackId;
     targetTPOutputParticleDecayProductParticle[ 0 ].trackId =
@@ -88,9 +88,9 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
         {
             do
             {
-                if ( k->second->trackType == CexmcIncidentParticleTrack )
+                if ( k->second->trackType == CexmcBeamParticleTrack )
                 {
-                    targetTPIncidentParticle = *k->second;
+                    targetTPBeamParticle = *k->second;
                     break;
                 }
                 if ( k->second->trackType == CexmcOutputParticleTrack )

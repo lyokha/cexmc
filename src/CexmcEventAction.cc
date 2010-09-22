@@ -81,6 +81,12 @@ CexmcEventAction::~CexmcEventAction()
 }
 
 
+void  CexmcEventAction::BeamParticleChangeHook( void )
+{
+    reconstructor->SetupBeamParticle();
+}
+
+
 void  CexmcEventAction::BeginOfEventAction( const G4Event * )
 {
     G4RunManager *         runManager( G4RunManager::GetRunManager() );
@@ -135,8 +141,8 @@ CexmcTrackPointsStore *  CexmcEventAction::MakeTrackPointsStore(
     const CexmcTrackPointInfo &
                 monitorTP( digitizer->GetMonitorTP() );
     const CexmcTrackPointInfo &
-                targetTPIncidentParticle(
-                    digitizer->GetTargetTPIncidentParticle() );
+                targetTPBeamParticle(
+                    digitizer->GetTargetTPBeamParticle() );
     const CexmcTrackPointInfo &
                 targetTPOutputParticle(
                     digitizer->GetTargetTPOutputParticle() );
@@ -165,7 +171,7 @@ CexmcTrackPointsStore *  CexmcEventAction::MakeTrackPointsStore(
                     digitizer->GetCalorimeterTPRight() );
 
     /* ATTENTION: return object in heap - must be freed by caller! */
-    return new CexmcTrackPointsStore( monitorTP, targetTPIncidentParticle,
+    return new CexmcTrackPointsStore( monitorTP, targetTPBeamParticle,
                   targetTPOutputParticle, targetTPNucleusParticle,
                   targetTPOutputParticleDecayProductParticle1,
                   targetTPOutputParticleDecayProductParticle2,
@@ -201,8 +207,7 @@ void  CexmcEventAction::PrintTrackPoints(
 
     G4cout << " --- Track Points" << G4endl;
     G4cout << "       monitor : " << tpStore->monitorTP << G4endl;
-    G4cout << "        target : " << tpStore->targetTPIncidentParticle <<
-                                                                        G4endl;
+    G4cout << "        target : " << tpStore->targetTPBeamParticle << G4endl;
     G4cout << "               : " << tpStore->targetTPOutputParticle << G4endl;
     G4cout << "               : " << tpStore->targetTPNucleusParticle << G4endl;
     G4cout << "               : " <<
@@ -307,7 +312,7 @@ void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
 
     if ( tpStore->monitorTP.IsValid() )
     {
-        histoManager->Add( CexmcMomentumIP_TPT_Histo, 0,
+        histoManager->Add( CexmcMomentumBP_TPT_Histo, 0,
                            tpStore->monitorTP.momentumAmp );
         histoManager->Add( CexmcTPInMonitor_TPT_Histo, 0,
                            tpStore->monitorTP.positionLocal.x(),
@@ -417,7 +422,7 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
 
     if ( tpStore->monitorTP.IsValid() )
     {
-        histoManager->Add( CexmcMomentumIP_RT_Histo, 0,
+        histoManager->Add( CexmcMomentumBP_RT_Histo, 0,
                            tpStore->monitorTP.momentumAmp );
     }
 
@@ -581,9 +586,9 @@ void  CexmcEventAction::DrawTrackPoints(
         visManager->Draw( circle );
     }
 
-    if ( tpStore->targetTPIncidentParticle.IsValid() )
+    if ( tpStore->targetTPBeamParticle.IsValid() )
     {
-        circle.SetPosition( tpStore->targetTPIncidentParticle.positionWorld );
+        circle.SetPosition( tpStore->targetTPBeamParticle.positionWorld );
         visManager->Draw( circle );
     }
 
@@ -721,7 +726,7 @@ void  CexmcEventAction::SaveEvent( const G4Event *  event,
             edStore->calorimeterEDLeft, edStore->calorimeterEDRight,
             edStore->calorimeterEDLeftCollection,
             edStore->calorimeterEDRightCollection,
-            tpStore->monitorTP, tpStore->targetTPIncidentParticle,
+            tpStore->monitorTP, tpStore->targetTPBeamParticle,
             tpStore->targetTPOutputParticle, tpStore->targetTPNucleusParticle,
             tpStore->targetTPOutputParticleDecayProductParticle1,
             tpStore->targetTPOutputParticleDecayProductParticle2,

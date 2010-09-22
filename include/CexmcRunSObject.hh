@@ -50,7 +50,7 @@ class  CexmcRunSObject
                          G4bool  fermiMotionIsOn,
                          const std::vector< G4double > &  calorimeterRegCuts,
                          CexmcEventCountPolicy  eventCountPolicy,
-                         const std::string &  incidentParticle,
+                         const std::string &  beamParticle,
                          const CexmcSimpleThreeVectorStore &  beamPos,
                          const CexmcSimpleThreeVectorStore &  beamDir,
                          G4double  beamMomentumAmp, G4double  beamFwhmPosX,
@@ -120,7 +120,7 @@ class  CexmcRunSObject
 
         CexmcEventCountPolicy        eventCountPolicy;
 
-        std::string                  incidentParticle;
+        std::string                  beamParticle;
 
         CexmcSimpleThreeVectorStore  beamPos;
 
@@ -241,7 +241,7 @@ void  CexmcRunSObject::serialize( Archive &  archive,
     archive & fermiMotionIsOn;
     archive & calorimeterRegCuts;
     archive & eventCountPolicy;
-    archive & incidentParticle;
+    archive & beamParticle;
     archive & beamPos;
     archive & beamDir;
     archive & beamMomentumAmp;

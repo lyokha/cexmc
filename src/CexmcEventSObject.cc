@@ -34,7 +34,7 @@ CexmcEventSObject::CexmcEventSObject( G4int  eventId,
         const CexmcEnergyDepositCalorimeterCollection &
                                                 calorimeterEDRightCollection,
         const CexmcTrackPointInfo &  monitorTP,
-        const CexmcTrackPointInfo &  targetTPIncidentParticle,
+        const CexmcTrackPointInfo &  targetTPBeamParticle,
         const CexmcTrackPointInfo &  targetTPOutputParticle,
         const CexmcTrackPointInfo &  targetTPNucleusParticle,
         const CexmcTrackPointInfo &
@@ -54,8 +54,7 @@ CexmcEventSObject::CexmcEventSObject( G4int  eventId,
     calorimeterEDRight( calorimeterEDRight ),
     calorimeterEDLeftCollection( calorimeterEDLeftCollection ),
     calorimeterEDRightCollection( calorimeterEDRightCollection ),
-    monitorTP( monitorTP ),
-    targetTPIncidentParticle( targetTPIncidentParticle ),
+    monitorTP( monitorTP ), targetTPBeamParticle( targetTPBeamParticle ),
     targetTPOutputParticle( targetTPOutputParticle ),
     targetTPNucleusParticle( targetTPNucleusParticle ),
     targetTPOutputParticleDecayProductParticle1(

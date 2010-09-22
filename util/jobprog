@@ -6,7 +6,8 @@ CEXMC_PREFIX=cexmc_
 qstat -u $USER
 
 jobids=`qstat -u $USER | sed '1,2d' | grep $CEXMC_PREFIX | awk '{print $1}'`
-jobbasenames=`qstat -u $USER -r | grep 'Full jobname' | grep $CEXMC_PREFIX | awk '{print $3}'`
+jobbasenames=`qstat -u $USER -r | grep 'Full jobname' | grep $CEXMC_PREFIX | \
+              awk '{print $3}'`
 jobnames=""
 
 i=1
@@ -21,11 +22,17 @@ for job in $jobnames ; do
     msgperc="N/A"
     fdbsize="N/A"
     edbsize="N/A"
+    countPolicy=""
     ordered=""
     current=""
     if [ -e "$job" ] ; then
-        ordered=`head -120 "$job" | awk '/^\/run\/beamOn/ {print $2}'`
-        current=`tail -120 "$job" | grep ^Event | tail -1 | awk '{print $2}'`
+        countPolicy=`head -120 "$job" | \
+                     awk '/^\/cexmc\/run\/eventCountPolicy/ {print $2}'`
+        if [[ -z "$countPolicy" || x"$countPolicy" == x"all" ]] ; then
+            ordered=`head -120 "$job" | awk '/^\/run\/beamOn/ {print $2}'`
+            current=`tail -120 "$job" | grep ^Event | tail -1 | \
+                     awk '{print $2}'`
+        fi
     fi
     if [ -z "$current" ] ; then
         current=0

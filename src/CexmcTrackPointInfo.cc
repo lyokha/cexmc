@@ -30,8 +30,8 @@ std::ostream &  operator<<( std::ostream &  out,
 
     switch ( trackPointInfo.trackType )
     {
-    case CexmcIncidentParticleTrack :
-        trackTypeInfo = "ip";
+    case CexmcBeamParticleTrack :
+        trackTypeInfo = "bp";
         break;
     case CexmcOutputParticleTrack :
         trackTypeInfo = "op";
