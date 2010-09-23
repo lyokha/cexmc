@@ -28,7 +28,7 @@ for job in $jobnames ; do
     if [ -e "$job" ] ; then
         countPolicy=`head -120 "$job" | \
                      awk '/^\/cexmc\/run\/eventCountPolicy/ {print $2}'`
-        if [[ -z "$countPolicy" || x"$countPolicy" == x"all" ]] ; then
+        if [[ -z "$countPolicy" || "$countPolicy" = "all" ]] ; then
             ordered=`head -120 "$job" | awk '/^\/run\/beamOn/ {print $2}'`
             current=`tail -120 "$job" | grep ^Event | tail -1 | \
                      awk '{print $2}'`
