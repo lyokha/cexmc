@@ -50,6 +50,8 @@ class  CexmcTrackPoints : public G4VPrimitiveScorer
         void   clear( void );
 
     protected:
+        G4int   GetTrackId( G4Step *  step );
+
         G4int   GetIndex( G4Step *  step );
 
         G4bool  ProcessHits( G4Step *  step, G4TouchableHistory *  tHistory );

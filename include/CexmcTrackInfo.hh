@@ -26,8 +26,8 @@
 class  CexmcTrackInfo : public G4VUserTrackInformation
 {
     public:
-        explicit CexmcTrackInfo( CexmcTrackType  trackType =
-                                                     CexmcInsipidTrack );
+        explicit CexmcTrackInfo( CexmcTrackType  trackType = CexmcInsipidTrack,
+                                 G4int copyNumber = 0 );
 
     public:
         void  Print( void ) const;
@@ -40,8 +40,12 @@ class  CexmcTrackInfo : public G4VUserTrackInformation
 
         void            SetTrackType( CexmcTrackType  value );
 
+        G4int           GetCopyNumber( void ) const;
+
     private:
         CexmcTrackType  trackType;
+
+        G4int           copyNumber;
 };
 
 
@@ -54,6 +58,12 @@ inline CexmcTrackType  CexmcTrackInfo::GetTrackType( void ) const
 inline void  CexmcTrackInfo::SetTrackType( CexmcTrackType  value )
 {
     trackType = value;
+}
+
+
+inline G4int  CexmcTrackInfo::GetCopyNumber( void ) const
+{
+    return copyNumber;
 }
 
 

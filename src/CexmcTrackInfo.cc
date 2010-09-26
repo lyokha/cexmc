@@ -19,8 +19,8 @@
 #include "CexmcTrackInfo.hh"
 
 
-CexmcTrackInfo::CexmcTrackInfo( CexmcTrackType  trackType ) :
-    trackType( trackType )
+CexmcTrackInfo::CexmcTrackInfo( CexmcTrackType  trackType, G4int  copyNumber ) :
+    trackType( trackType ), copyNumber( copyNumber )
 {
 }
 

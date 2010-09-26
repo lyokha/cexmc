@@ -31,7 +31,8 @@
 CexmcTrackingAction::CexmcTrackingAction(
                                     CexmcPhysicsManager *  physicsManager ) :
     physicsManager( physicsManager ),
-    outputParticleTrackId( CexmcInvalidTrackId ), incidentParticle( NULL ),
+    outputParticleTrackId( CexmcInvalidTrackId ),
+    outputParticleDecayProductCopyNumber( 0 ), incidentParticle( NULL ),
     outputParticle( NULL ), nucleusOutputParticle( NULL )
 {
     CexmcProductionModel *  productionModel(
@@ -99,7 +100,8 @@ void  CexmcTrackingAction::PreUserTrackingAction( const G4Track *  track )
         if ( track->GetParentID() == outputParticleTrackId )
         {
             trackInfo = new CexmcTrackInfo(
-                                        CexmcOutputParticleDecayProductTrack );
+                                    CexmcOutputParticleDecayProductTrack,
+                                    outputParticleDecayProductCopyNumber++ );
             break;
         }
 

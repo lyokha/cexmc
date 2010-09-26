@@ -94,7 +94,7 @@ void  CexmcEventAction::BeginOfEventAction( const G4Event * )
             ( static_cast< CexmcTrackingAction * >(
                         const_cast< G4UserTrackingAction * >(
                                     runManager->GetUserTrackingAction() ) ) );
-    trackingAction->ResetOutputParticleTrackId();
+    trackingAction->BeginOfEventAction();
 
     physicsManager->ResetNumberOfTriggeredStudiedInteractions();
 }

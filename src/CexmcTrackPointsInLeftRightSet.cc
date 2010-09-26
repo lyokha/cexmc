@@ -36,7 +36,7 @@ CexmcTrackPointsInLeftRightSet::CexmcTrackPointsInLeftRightSet(
 
 G4int  CexmcTrackPointsInLeftRightSet::GetIndex( G4Step *  step )
 {
-    G4int          ret( step->GetTrack()->GetTrackID() );
+    G4int          ret( GetTrackId( step ) );
     G4StepPoint *  preStep( step->GetPreStepPoint() );
     G4String       volumeName( preStep->GetPhysicalVolume()->GetName() );
 

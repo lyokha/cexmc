@@ -22,6 +22,7 @@
 #ifdef CEXMC_USE_CUSTOM_FILTER
 #include <boost/variant/get.hpp>
 #endif
+#include <G4Version.hh>
 #include <G4UImanager.hh>
 #include <G4String.hh>
 #ifdef G4UI_USE
@@ -374,7 +375,11 @@ int  main( int  argc, char **  argv )
 #ifdef G4VIS_USE
         if ( cmdLineData.isInteractive )
         {
+#if G4VERSION_NUMBER < 940
+            visManager = new G4VisExecutive;
+#else
             visManager = new G4VisExecutive( CexmcVisManagerVerboseLevel );
+#endif
             visManager->Initialize();
         }
 #endif

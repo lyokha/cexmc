@@ -37,9 +37,25 @@ CexmcTrackPoints::~CexmcTrackPoints()
 }
 
 
+G4int  CexmcTrackPoints::GetTrackId( G4Step *  step )
+{
+    /* NB: trackInfo for these tracks shall always exist as far as
+     * track points filter decline tracks without it */
+    CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
+                                    step->GetTrack()->GetUserInformation() ) );
+
+    G4int  ret( trackInfo->GetTrackType() );
+
+    if ( ret == CexmcOutputParticleDecayProductTrack )
+        ret += trackInfo->GetCopyNumber();
+
+    return ret;
+}
+
+
 G4int  CexmcTrackPoints::GetIndex( G4Step *  step )
 {
-    return step->GetTrack()->GetTrackID();
+    return GetTrackId( step );
 }
 
 
@@ -63,8 +79,7 @@ G4bool  CexmcTrackPoints::ProcessHits( G4Step *  step, G4TouchableHistory * )
 
     CexmcTrackInfo *  trackInfo( static_cast< CexmcTrackInfo * >(
                                                 track->GetUserInformation() ) );
-    if ( trackInfo )
-        trackType = trackInfo->GetTrackType();
+    trackType = trackInfo->GetTrackType();
 
     CexmcTrackPointInfo  trackPointInfo( transform.TransformPoint( position ),
                                          position,

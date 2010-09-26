@@ -35,15 +35,21 @@ class  CexmcTrackingAction : public G4UserTrackingAction
     public:
         void  PreUserTrackingAction( const G4Track *  track );
 
-        void  ResetOutputParticleTrackId( void );
+        void  BeginOfEventAction( void );
 
     private:
+        void  ResetOutputParticleTrackId( void );
+
+        void  ResetOutputParticleDecayProductCopyNumber( void );
+
         void  SetupIncidentParticleTrackInfo( const G4Track *  track );
 
     private:
         CexmcPhysicsManager *   physicsManager;
 
         G4int                   outputParticleTrackId;
+
+        G4int                   outputParticleDecayProductCopyNumber;
 
     private:
         G4ParticleDefinition *  incidentParticle;
@@ -57,6 +63,20 @@ class  CexmcTrackingAction : public G4UserTrackingAction
 inline void  CexmcTrackingAction::ResetOutputParticleTrackId( void )
 {
     outputParticleTrackId = CexmcInvalidTrackId;
+}
+
+
+inline void  CexmcTrackingAction::ResetOutputParticleDecayProductCopyNumber(
+                                                                        void )
+{
+    outputParticleDecayProductCopyNumber = 0;
+}
+
+
+inline void  CexmcTrackingAction::BeginOfEventAction( void )
+{
+    ResetOutputParticleTrackId();
+    ResetOutputParticleDecayProductCopyNumber();
 }
 
 

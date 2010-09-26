@@ -37,7 +37,7 @@ CexmcTrackPointsInCalorimeter::CexmcTrackPointsInCalorimeter(
 
 G4int  CexmcTrackPointsInCalorimeter::GetIndex( G4Step *  step )
 {
-    G4int                        ret( step->GetTrack()->GetTrackID() );
+    G4int                        ret( GetTrackId( step ) );
     G4StepPoint *                preStep( step->GetPreStepPoint() );
     const G4VTouchable *         touchable( preStep->GetTouchable() );
     const G4NavigationHistory *  navHistory( touchable->GetHistory() );
