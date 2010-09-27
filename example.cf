@@ -30,7 +30,7 @@ delete tpt if Sqrt(Sqr(op_tgt_posl[1]) + Sqr(op_tgt_posl[2]) + \
 #delete tpt if op_cosTh_SCM < 0
 
 # TPT: delete all events with id less than 500
-#delete tpt if event > 500
+#delete tpt if event < 500
 
 # TPT: delete all events when monitor was not triggered
 #delete tpt if ! mon
