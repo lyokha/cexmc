@@ -107,6 +107,12 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                 if ( k->second->trackType ==
                                         CexmcOutputParticleDecayProductTrack )
                 {
+                    /* NB: if there are more than 2 output particle's decay
+                     * products then the chosen particles may differ from those
+                     * which entered calorimeters; however this is not a
+                     * critical issue as far as information about decay products
+                     * is not necessary in reconstruction and only used in some
+                     * histograming */
                     G4int  index(
                             targetTPOutputParticleDecayProductParticle[ 0 ].
                                                           trackId > 0 ? 1 : 0 );
