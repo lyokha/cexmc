@@ -25,18 +25,34 @@
 class  G4AffineTransform;
 
 
+struct  CexmcCalorimeterGeometryData
+{
+    CexmcCalorimeterGeometryData() :
+        nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ), crystalWidth( 0 ),
+        crystalHeight( 0 ), crystalLength( 0 )
+    {}
+
+    G4int     nCrystalsInColumn;
+
+    G4int     nCrystalsInRow;
+
+    G4double  crystalWidth;
+
+    G4double  crystalHeight;
+
+    G4double  crystalLength;
+};
+
+
 class  CexmcCalorimeterGeometry
 {
     public:
-        static void  GetGeometryData( G4int &  nCrystalsInColumn,
-                                      G4int &  nCrystalsInRow,
-                                      G4double &  crystalWidth,
-                                      G4double &  crystalHeight,
-                                      G4double &  crystalLength );
+        static void  GetGeometryData( CexmcCalorimeterGeometryData &  calGeom );
 
-        static void  ConvertToCrystalGeometry( const G4ThreeVector &  src,
-                                               G4int &  row, G4int & column,
-                                               G4ThreeVector &  dst );
+        static void  ConvertToCrystalGeometry(
+                                const CexmcCalorimeterGeometryData &  calGeom,
+                                const G4ThreeVector &  src, G4int &  row,
+                                G4int & column, G4ThreeVector &  dst );
 
         static void  GetCalorimeterLeftTransform(
                                             G4AffineTransform &  transform );

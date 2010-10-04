@@ -505,6 +505,11 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
     CexmcProductionModel *  productionModel(
                                         physicsManager->GetProductionModel() );
+    if ( ! productionModel )
+        throw CexmcException( CexmcWeirdException );
+
+    CexmcCalorimeterGeometryData  calGeom;
+    CexmcCalorimeterGeometry::GetGeometryData( calGeom );
 
     CexmcEventSObject      evSObject;
     CexmcEventFastSObject  evFastSObject;
@@ -731,7 +736,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         if ( calorimeterTPLeftInfo.IsValid() )
         {
             pos = calorimeterTPLeftInfo.positionLocal;
-            CexmcCalorimeterGeometry::ConvertToCrystalGeometry(
+            CexmcCalorimeterGeometry::ConvertToCrystalGeometry( calGeom,
                     calorimeterTPLeftInfo.positionLocal, row, column, pos );
             calorimeterTPLeftInfo.positionLocal = pos;
             calorimeterTP->GetMap()->operator[](
@@ -744,7 +749,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         if ( calorimeterTPRightInfo.IsValid() )
         {
             pos = calorimeterTPRightInfo.positionLocal;
-            CexmcCalorimeterGeometry::ConvertToCrystalGeometry(
+            CexmcCalorimeterGeometry::ConvertToCrystalGeometry( calGeom,
                     calorimeterTPRightInfo.positionLocal, row, column, pos );
             calorimeterTPRightInfo.positionLocal = pos;
             calorimeterTP->GetMap()->operator[](

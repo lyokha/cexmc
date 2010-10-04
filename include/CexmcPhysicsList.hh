@@ -31,6 +31,7 @@
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
+#include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
 
@@ -119,8 +120,10 @@ void  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
         G4double  targetRadius( CexmcDblMax );
         G4Tubs *  targetTube( dynamic_cast< G4Tubs * >( targetSolid ) );
 
-        if ( targetTube )
-            targetRadius = targetTube->GetOuterRadius();
+        if ( ! targetTube )
+            throw CexmcException( CexmcIncompatibleGeometry );
+
+        targetRadius = targetTube->GetOuterRadius();
 
         proposedMaxIL = GetProposedMaxIL( targetRadius * 2 );
         proposedMaxILInitialized = true;

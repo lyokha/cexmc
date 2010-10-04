@@ -26,11 +26,8 @@
 #include "CexmcException.hh"
 
 
-void  CexmcCalorimeterGeometry::GetGeometryData( G4int &  nCrystalsInColumn,
-                                                 G4int &  nCrystalsInRow,
-                                                 G4double &  crystalWidth,
-                                                 G4double &  crystalHeight,
-                                                 G4double &  crystalLength )
+void  CexmcCalorimeterGeometry::GetGeometryData(
+                                    CexmcCalorimeterGeometryData &  calGeom )
 {
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
     EAxis                         axis;
@@ -45,8 +42,8 @@ void  CexmcCalorimeterGeometry::GetGeometryData( G4int &  nCrystalsInColumn,
     G4VPhysicalVolume *  pVolume( lVolume->GetDaughter( 0 ) );
     if ( pVolume && pVolume->IsReplicated() )
     {
-        pVolume->GetReplicationData( axis, nCrystalsInColumn, width, offset,
-                                     consuming );
+        pVolume->GetReplicationData( axis, calGeom.nCrystalsInColumn, width,
+                                     offset, consuming );
     }
 
     lVolume = lvs->GetVolume( "vCrystalRow" );
@@ -56,33 +53,33 @@ void  CexmcCalorimeterGeometry::GetGeometryData( G4int &  nCrystalsInColumn,
     pVolume = lVolume->GetDaughter( 0 );
     if ( pVolume && pVolume->IsReplicated() )
     {
-        pVolume->GetReplicationData( axis, nCrystalsInRow, width, offset,
-                                     consuming );
+        pVolume->GetReplicationData( axis, calGeom.nCrystalsInRow, width,
+                                     offset, consuming );
     }
 
     lVolume = lvs->GetVolume( "vCrystal" );
     if ( ! lVolume )
         throw CexmcException( CexmcIncompatibleGeometry );
 
-    G4Box *  crystalBox( static_cast< G4Box * >( lVolume->GetSolid() ) );
-    crystalWidth = crystalBox->GetXHalfLength() * 2;
-    crystalHeight = crystalBox->GetYHalfLength() * 2;
-    crystalLength = crystalBox->GetZHalfLength() * 2;
+    G4Box *  crystalBox( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );
+    if ( ! crystalBox )
+        throw CexmcException( CexmcIncompatibleGeometry );
+
+    calGeom.crystalWidth = crystalBox->GetXHalfLength() * 2;
+    calGeom.crystalHeight = crystalBox->GetYHalfLength() * 2;
+    calGeom.crystalLength = crystalBox->GetZHalfLength() * 2;
 }
 
 
 void  CexmcCalorimeterGeometry::ConvertToCrystalGeometry(
+                const CexmcCalorimeterGeometryData &  calGeom,
                 const G4ThreeVector &  src, G4int &  row, G4int &  column,
                 G4ThreeVector &  dst )
 {
-    G4int     nCrystalsInColumn;
-    G4int     nCrystalsInRow;
-    G4double  crystalWidth;
-    G4double  crystalHeight;
-    G4double  crystalLength;
-
-    GetGeometryData( nCrystalsInColumn, nCrystalsInRow, crystalWidth,
-                     crystalHeight, crystalLength );
+    G4int     nCrystalsInColumn( calGeom.nCrystalsInColumn );
+    G4int     nCrystalsInRow( calGeom.nCrystalsInRow );
+    G4double  crystalWidth( calGeom.crystalWidth );
+    G4double  crystalHeight( calGeom.crystalHeight );
 
     row = G4int( ( src.y() + crystalHeight * nCrystalsInColumn / 2 ) /
                  crystalHeight );

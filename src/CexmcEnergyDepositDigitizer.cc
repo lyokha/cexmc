@@ -52,12 +52,11 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     nCrystalsInRow( 1 ), applyFiniteCrystalResolution( false ),
     messenger( NULL )
 {
-    G4double  crystalWidth;
-    G4double  crystalHeight;
-    G4double  crystalLength;
+    CexmcCalorimeterGeometryData  calorimeterGeometry;
 
-    CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
-                nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );
+    CexmcCalorimeterGeometry::GetGeometryData( calorimeterGeometry );
+    nCrystalsInColumn = calorimeterGeometry.nCrystalsInColumn;
+    nCrystalsInRow = calorimeterGeometry.nCrystalsInRow;
 
     if ( nCrystalsInColumn > 0 )
     {

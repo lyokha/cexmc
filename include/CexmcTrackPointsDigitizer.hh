@@ -21,6 +21,7 @@
 
 #include <G4VDigitizerModule.hh>
 #include "CexmcTrackPointInfo.hh"
+#include "CexmcCalorimeterGeometry.hh"
 
 class  G4String;
 
@@ -82,13 +83,7 @@ class  CexmcTrackPointsDigitizer : public G4VDigitizerModule
         G4bool               hasTriggered;
 
     private:
-        G4int                nCrystalsInColumn;
-
-        G4int                nCrystalsInRow;
-
-        G4double             crystalWidth;
-
-        G4double             crystalHeight;
+        CexmcCalorimeterGeometryData  calorimeterGeometry;
 };
 
 

@@ -21,6 +21,7 @@
 
 #include <G4ThreeVector.hh>
 #include <G4AffineTransform.hh>
+#include "CexmcCalorimeterGeometry.hh"
 #include "CexmcCommon.hh"
 
 class  CexmcReconstructorMessenger;
@@ -114,59 +115,50 @@ class  CexmcReconstructor
         CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
                                                     epDepthDefinitionAlgorithm;
 
-        CexmcCrystalSelectionAlgorithm                 csAlgorithm;
+        CexmcCrystalSelectionAlgorithm  csAlgorithm;
 
-        G4bool                                         useInnerRefCrystal;
+        G4bool                          useInnerRefCrystal;
 
-        G4double                                       epDepth;
+        G4double                        epDepth;
 
     protected:
-        G4ThreeVector  calorimeterEPLeftPosition;
+        G4ThreeVector                   calorimeterEPLeftPosition;
 
-        G4ThreeVector  calorimeterEPRightPosition;
+        G4ThreeVector                   calorimeterEPRightPosition;
 
-        G4ThreeVector  calorimeterEPLeftDirection;
+        G4ThreeVector                   calorimeterEPLeftDirection;
 
-        G4ThreeVector  calorimeterEPRightDirection;
+        G4ThreeVector                   calorimeterEPRightDirection;
 
-        G4ThreeVector  targetEPPosition;
+        G4ThreeVector                   targetEPPosition;
 
-        G4ThreeVector  targetEPDirection;
+        G4ThreeVector                   targetEPDirection;
 
-        G4ThreeVector  calorimeterEPLeftWorldPosition;
+        G4ThreeVector                   calorimeterEPLeftWorldPosition;
 
-        G4ThreeVector  calorimeterEPRightWorldPosition;
+        G4ThreeVector                   calorimeterEPRightWorldPosition;
 
-        G4ThreeVector  calorimeterEPLeftWorldDirection;
+        G4ThreeVector                   calorimeterEPLeftWorldDirection;
 
-        G4ThreeVector  calorimeterEPRightWorldDirection;
+        G4ThreeVector                   calorimeterEPRightWorldDirection;
 
-        G4ThreeVector  targetEPWorldPosition;
+        G4ThreeVector                   targetEPWorldPosition;
 
-        G4ThreeVector  targetEPWorldDirection;
+        G4ThreeVector                   targetEPWorldDirection;
 
-        G4double       theAngle;
-
-    private:
-        G4int          nCrystalsInColumn;
-
-        G4int          nCrystalsInRow;
-
-        G4double       crystalWidth;
-
-        G4double       crystalHeight;
-
-        G4double       crystalLength;
+        G4double                        theAngle;
 
     private:
-        G4AffineTransform  calorimeterLeftTransform;
+        CexmcCalorimeterGeometryData    calorimeterGeometry;
+
+        G4AffineTransform               calorimeterLeftTransform;
         
-        G4AffineTransform  calorimeterRightTransform;
+        G4AffineTransform               calorimeterRightTransform;
 
-        G4AffineTransform  targetTransform;
+        G4AffineTransform               targetTransform;
 
     private:
-        CexmcReconstructorMessenger *  messenger;
+        CexmcReconstructorMessenger *   messenger;
 };
 
 

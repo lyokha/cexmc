@@ -27,12 +27,9 @@
 
 
 CexmcTrackPointsDigitizer::CexmcTrackPointsDigitizer( const G4String &  name ) :
-    G4VDigitizerModule( name ), hasTriggered( false ), nCrystalsInColumn( 1 ),
-    nCrystalsInRow( 1 ), crystalWidth( 0 ), crystalHeight( 0 )
+    G4VDigitizerModule( name ), hasTriggered( false )
 {
-    G4double  crystalLength;
-    CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
-                nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );
+    CexmcCalorimeterGeometry::GetGeometryData( calorimeterGeometry );
 }
 
 
@@ -57,6 +54,11 @@ void  CexmcTrackPointsDigitizer::InitializeData( void )
 void  CexmcTrackPointsDigitizer::Digitize( void )
 {
     InitializeData();
+
+    G4int     nCrystalsInColumn( calorimeterGeometry.nCrystalsInColumn );
+    G4int     nCrystalsInRow( calorimeterGeometry.nCrystalsInRow );
+    G4double  crystalWidth( calorimeterGeometry.crystalWidth );
+    G4double  crystalHeight( calorimeterGeometry.crystalHeight );
 
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
     G4int            hcId( digiManager->GetHitsCollectionID(

@@ -312,7 +312,11 @@ void  CexmcHistoManager::Initialize( void )
     AddHisto( CexmcHistoData( CexmcMomentumBP_RT_Histo, Cexmc_TH1F, false,
           false, CexmcRT, "mombp", "Beam momentum at the monitor", axes ) );
 
-    G4Box *   box( static_cast< G4Box * >( lVolume->GetSolid() ) );
+    G4Box *   box( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );
+
+    if ( ! box )
+        throw CexmcException ( CexmcIncompatibleGeometry );
+
     G4double  width( box->GetXHalfLength() * 2 );
     G4double  height( box->GetYHalfLength() * 2 );
     G4double  halfWidth( width / 2 + CexmcHistoTPSafetyArea );
@@ -327,7 +331,11 @@ void  CexmcHistoManager::Initialize( void )
         false, CexmcTPT, "tpmon", "Track points (mon)", axes ) );
 
     lVolume = lvs->GetVolume( "vTarget" );
-    G4Tubs *  tube( static_cast< G4Tubs * >( lVolume->GetSolid() ) );
+    G4Tubs *  tube( dynamic_cast< G4Tubs * >( lVolume->GetSolid() ) );
+
+    if ( ! tube )
+        throw CexmcException ( CexmcIncompatibleGeometry );
+
     G4double  radius( tube->GetOuterRadius() );
     height = tube->GetZHalfLength() * 2;
     halfWidth = radius + CexmcHistoTPSafetyArea;
@@ -458,7 +466,11 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
     const G4LogicalVolume *       lVolume( lvs->GetVolume( "vCalorimeter" ) );
 
-    G4Box *   box( static_cast< G4Box * >( lVolume->GetSolid() ) );
+    G4Box *   box( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );
+
+    if ( ! box )
+        throw CexmcException ( CexmcIncompatibleGeometry );
+
     G4double  width( box->GetXHalfLength() * 2 );
     G4double  height( box->GetYHalfLength() * 2 );
     G4double  halfWidth( width / 2 + CexmcHistoTPSafetyArea );
@@ -597,7 +609,11 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
         "Real - reconstructed open angle between the gammas", axes ), aRange );
 
     lVolume = lvs->GetVolume( "vTarget" );
-    G4Tubs *  tube( static_cast< G4Tubs * >( lVolume->GetSolid() ) );
+    G4Tubs *  tube( dynamic_cast< G4Tubs * >( lVolume->GetSolid() ) );
+
+    if ( ! tube )
+        throw CexmcException ( CexmcIncompatibleGeometry );
+
     G4double  radius( tube->GetOuterRadius() );
     height = tube->GetZHalfLength() * 2;
     halfWidth = radius + CexmcHistoTPSafetyArea;

@@ -28,11 +28,9 @@ CexmcReconstructor::CexmcReconstructor() :
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
     epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain ),
     csAlgorithm( CexmcSelectAllCrystals ), useInnerRefCrystal( false ),
-    epDepth( 0 ), theAngle( 0 ), nCrystalsInColumn( 1 ), nCrystalsInRow( 1 ),
-    crystalWidth( 0 ), crystalHeight( 0 ), crystalLength( 0 ), messenger( NULL )
+    epDepth( 0 ), theAngle( 0 ), messenger( NULL )
 {
-    CexmcCalorimeterGeometry::GetGeometryData( nCrystalsInColumn,
-                nCrystalsInRow, crystalWidth, crystalHeight, crystalLength );
+    CexmcCalorimeterGeometry::GetGeometryData( calorimeterGeometry );
 
     CexmcCalorimeterGeometry::GetCalorimeterLeftTransform(
                                                     calorimeterLeftTransform );
@@ -50,8 +48,7 @@ CexmcReconstructor::~CexmcReconstructor()
 }
 
 
-void  CexmcReconstructor::Reconstruct(
-                                    const CexmcEnergyDepositStore * edStore )
+void  CexmcReconstructor::Reconstruct( const CexmcEnergyDepositStore * edStore )
 {
     ReconstructEntryPoints( edStore );
     if ( hasBasicTrigger )
@@ -70,6 +67,12 @@ G4bool  CexmcReconstructor::HasFullTrigger( void ) const
 void  CexmcReconstructor::ReconstructEntryPoints(
                                     const CexmcEnergyDepositStore * edStore )
 {
+    G4int     nCrystalsInColumn( calorimeterGeometry.nCrystalsInColumn );
+    G4int     nCrystalsInRow( calorimeterGeometry.nCrystalsInRow );
+    G4double  crystalWidth( calorimeterGeometry.crystalWidth );
+    G4double  crystalHeight( calorimeterGeometry.crystalHeight );
+    G4double  crystalLength( calorimeterGeometry.crystalLength );
+
     calorimeterEPLeftPosition.setX( 0 );
     calorimeterEPLeftPosition.setY( 0 );
     calorimeterEPLeftPosition.setZ( -crystalLength / 2 + epDepth );
