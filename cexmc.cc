@@ -347,7 +347,8 @@ int  main( int  argc, char **  argv )
 
         runManager->SetUserInitialization( physicsList );
 
-        CexmcSetup *   setup( new CexmcSetup( runManager->GetGdmlFileName() ) );
+        CexmcSetup *   setup( new CexmcSetup( runManager->GetGdmlFileName(),
+                                    runManager->ShouldGdmlFileBeValidated() ) );
 
         runManager->SetUserInitialization( setup );
 

@@ -55,6 +55,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  SetGdmlFileName( const G4String &  gdmlFileName_ );
 
+        void  SetGdmlFileValidation( G4bool  on = true );
+
         void  SetGuiMacroName( const G4String &  guiMacroName_ );
 
 #ifdef CEXMC_USE_CUSTOM_FILTER
@@ -89,6 +91,8 @@ class  CexmcRunManager : public G4RunManager
         CexmcProductionModelType  GetProductionModelType( void ) const;
 
         G4String                  GetGdmlFileName( void ) const;
+
+        G4bool                    ShouldGdmlFileBeValidated( void ) const;
 
         G4String                  GetGuiMacroName( void ) const;
 
@@ -133,6 +137,8 @@ class  CexmcRunManager : public G4RunManager
         CexmcProductionModelType    productionModelType;
 
         G4String                    gdmlFileName;
+
+        G4bool                      shouldGdmlFileBeValidated;
 
         G4bool                      zipGdmlFile;
 
@@ -208,6 +214,12 @@ inline void  CexmcRunManager::SetGdmlFileName( const G4String &  gdmlFileName_ )
 }
 
 
+inline void  CexmcRunManager::SetGdmlFileValidation( G4bool  on )
+{
+    shouldGdmlFileBeValidated = on;
+}
+
+
 inline void  CexmcRunManager::SetGuiMacroName( const G4String &  guiMacroName_ )
 {
     guiMacroName = guiMacroName_;
@@ -250,6 +262,12 @@ inline CexmcProductionModelType
 inline G4String  CexmcRunManager::GetGdmlFileName( void ) const
 {
     return gdmlFileName;
+}
+
+
+inline G4bool  CexmcRunManager::ShouldGdmlFileBeValidated( void ) const
+{
+    return shouldGdmlFileBeValidated;
 }
 
 

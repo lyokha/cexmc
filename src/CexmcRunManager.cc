@@ -76,14 +76,13 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
                                   G4bool  overrideExistingProject ) :
     basePhysicsUsed( CexmcPMFactoryInstance::GetBasePhysics() ),
     productionModelType( CexmcUnknownProductionModel ),
-    gdmlFileName( "default.gdml" ), zipGdmlFile( false ), projectsDir( "." ),
-    projectId( projectId ), rProject( rProject ), guiMacroName( "" ),
-    cfFileName( "" ),
+    gdmlFileName( "default.gdml" ), shouldGdmlFileBeValidated( true ),
+    zipGdmlFile( false ), projectsDir( "." ), projectId( projectId ),
+    rProject( rProject ), guiMacroName( "" ), cfFileName( "" ),
 #ifdef CEXMC_USE_CUSTOM_FILTER
     customFilter( NULL ),
 #endif
-    eventCountPolicy( CexmcCountAllEvents ),
-    areLiveHistogramsEnabled( false ),
+    eventCountPolicy( CexmcCountAllEvents ), areLiveHistogramsEnabled( false ),
     skipInteractionsWithoutEDTonWrite( true ),
     evDataVerboseLevel( CexmcWriteEventDataOnEveryEDT ),
     rEvDataVerboseLevel( CexmcWriteNoEventData ), numberOfEventsProcessed( 0 ),

@@ -55,7 +55,9 @@ class  CexmcRunManagerMessenger : public G4UImessenger
 
         G4UIcmdWithAnInteger *  seekTo;
 
-        G4UIcmdWithABool *      skipInteractionsWithoutEDT;   
+        G4UIcmdWithABool *      skipInteractionsWithoutEDT;
+
+        G4UIcmdWithABool *      validateGdmlFile;
 };
 
 

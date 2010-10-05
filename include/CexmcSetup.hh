@@ -27,7 +27,8 @@ class  G4GDMLParser;
 class  CexmcSetup : public G4VUserDetectorConstruction
 {
     public:
-        explicit CexmcSetup( const G4String &  gdmlFile = "default.gdml" );
+        explicit CexmcSetup( const G4String &  gdmlFile = "default.gdml",
+                             G4bool  validateGDMLFile = true );
 
         G4VPhysicalVolume *  Construct( void );
 
@@ -38,6 +39,8 @@ class  CexmcSetup : public G4VUserDetectorConstruction
         G4VPhysicalVolume *  world;
 
         G4String             gdmlFile;
+
+        G4bool               validateGDMLFile;
 
     private:
         bool                 calorimeterRegionInitialized;

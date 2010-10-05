@@ -29,7 +29,7 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     runManager( runManager ), setProductionModel( NULL ), setGdmlFile( NULL ),
     setGuiMacro( NULL ), setEventCountPolicy( NULL ),
     setEventDataVerboseLevel( NULL ),replayEvents( NULL ), seekTo( NULL ),
-    skipInteractionsWithoutEDT( NULL )
+    skipInteractionsWithoutEDT( NULL ), validateGdmlFile( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -110,6 +110,14 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     skipInteractionsWithoutEDT->SetDefaultValue( true );
     skipInteractionsWithoutEDT->AvailableForStates( G4State_PreInit,
                                                     G4State_Idle );
+
+    validateGdmlFile = new G4UIcmdWithABool(
+        ( CexmcMessenger::geometryDirName + "validateGdmlFile" ).c_str(),
+        this );
+    validateGdmlFile->SetGuidance( "If GDML file will be validated or not" );
+    validateGdmlFile->SetParameterName( "ValidateGdmlFile", true );
+    validateGdmlFile->SetDefaultValue( true );
+    validateGdmlFile->AvailableForStates( G4State_PreInit );
 }
 
 
@@ -123,6 +131,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
     delete replayEvents;
     delete seekTo;
     delete skipInteractionsWithoutEDT;
+    delete validateGdmlFile;
 }
 
 
@@ -219,6 +228,12 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
         if ( cmd == skipInteractionsWithoutEDT )
         {
             runManager->SkipInteractionsWithoutEDTonWrite(
+                                G4UIcmdWithABool::GetNewBoolValue( value ) );
+            break;
+        }
+        if ( cmd == validateGdmlFile )
+        {
+            runManager->SetGdmlFileValidation(
                                 G4UIcmdWithABool::GetNewBoolValue( value ) );
             break;
         }

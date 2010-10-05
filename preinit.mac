@@ -2,4 +2,6 @@
 # do not set gun parameters or anything else.
 
 /cexmc/geometry/gdmlFile lht.gdml
+/cexmc/geometry/validateGdmlFile
+
 /cexmc/physics/productionModel eta

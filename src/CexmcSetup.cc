@@ -39,8 +39,9 @@
 
 
 
-CexmcSetup::CexmcSetup( const G4String &  gdmlFile ) :
-    world( 0 ), gdmlFile( gdmlFile ), calorimeterRegionInitialized( false )
+CexmcSetup::CexmcSetup( const G4String &  gdmlFile, G4bool  validateGDMLFile ) :
+    world( 0 ), gdmlFile( gdmlFile ), validateGDMLFile( validateGDMLFile ),
+    calorimeterRegionInitialized( false )
 {
 }
 
@@ -52,7 +53,7 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
 
     G4GDMLParser gdmlParser;
 
-    gdmlParser.Read( gdmlFile );
+    gdmlParser.Read( gdmlFile, validateGDMLFile );
     world = gdmlParser.GetWorldVolume();
 
     SetupSensitiveVolumes( gdmlParser );
