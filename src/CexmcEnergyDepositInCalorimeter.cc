@@ -77,8 +77,8 @@ void  CexmcEnergyDepositInCalorimeter::PrintAll( void )
                             ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) |
                               ( ( 1 << ( copyDepth1BitsOffset - 1 ) ) - 1 ) ) );
         const G4String  detectorSide( isRightDetector ? "right" : "left" );
-        G4cout << "       " << detectorSide << " detector, row " << copyDepth1 <<
-                ", column " << copyDepth0 << G4endl;
+        G4cout << "       " << detectorSide << " detector, row " <<
+                copyDepth1 << ", column " << copyDepth0 << G4endl;
         G4cout << "         , energy deposit " <<
                 G4BestUnit( *( itr->second ), "Energy" ) << G4endl;
     }

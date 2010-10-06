@@ -58,6 +58,7 @@
 #include "CexmcTrackPointInfo.hh"
 #include "CexmcEventInfo.hh"
 #include "CexmcBasicPhysicsSettings.hh"
+#include "CexmcSensitiveDetectorsAttributes.hh"
 
 #ifdef CEXMC_USE_CUSTOM_FILTER
 #include "CexmcCustomFilterEval.hh"
@@ -536,39 +537,46 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
 
-    G4int  hcId( digiManager->GetHitsCollectionID( CexmcMonitorDetectorName +
-                                                "/" + CexmcEDDetectorName ) );
+    G4int  hcId( digiManager->GetHitsCollectionID(
+                        CexmcDetectorRoleName[ CexmcMonitorDetectorRole ] +
+                        "/" + CexmcDetectorTypeName[ CexmcEDDetector ] ) );
     CexmcEnergyDepositCollection *  monitorED(
                                             new CexmcEnergyDepositCollection );
     hcOfThisEvent->AddHitsCollection( hcId, monitorED );
-    hcId = digiManager->GetHitsCollectionID( CexmcVetoCounterDetectorName +
-                                             "/" + CexmcEDDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                        CexmcDetectorRoleName[ CexmcVetoCounterDetectorRole ] +
+                        "/" + CexmcDetectorTypeName[ CexmcEDDetector ] );
     CexmcEnergyDepositCollection *  vetoCounterED(
                                             new CexmcEnergyDepositCollection );
     hcOfThisEvent->AddHitsCollection( hcId, vetoCounterED );
-    hcId = digiManager->GetHitsCollectionID( CexmcCalorimeterDetectorName +
-                                             "/" + CexmcEDDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                        CexmcDetectorRoleName[ CexmcCalorimeterDetectorRole ] +
+                        "/" + CexmcDetectorTypeName[ CexmcEDDetector ] );
     CexmcEnergyDepositCollection *  calorimeterED(
                                             new CexmcEnergyDepositCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterED );
-    hcId = digiManager->GetHitsCollectionID( CexmcMonitorDetectorName +
-                                             "/" + CexmcTPDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                        CexmcDetectorRoleName[ CexmcMonitorDetectorRole ] +
+                        "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
     CexmcTrackPointsCollection *  monitorTP( new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, monitorTP );
-    hcId = digiManager->GetHitsCollectionID( CexmcTargetDetectorName +
-                                             "/" + CexmcTPDetectorName );
-    CexmcTrackPointsCollection *  targetTP( new CexmcTrackPointsCollection );
-    hcOfThisEvent->AddHitsCollection( hcId, targetTP );
-    hcId = digiManager->GetHitsCollectionID( CexmcVetoCounterDetectorName +
-                                             "/" + CexmcTPDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                        CexmcDetectorRoleName[ CexmcVetoCounterDetectorRole ] +
+                        "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
     CexmcTrackPointsCollection *  vetoCounterTP(
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, vetoCounterTP );
-    hcId = digiManager->GetHitsCollectionID( CexmcCalorimeterDetectorName +
-                                             "/" + CexmcTPDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                        CexmcDetectorRoleName[ CexmcCalorimeterDetectorRole ] +
+                        "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
     CexmcTrackPointsCollection *  calorimeterTP(
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterTP );
+    hcId = digiManager->GetHitsCollectionID(
+                        CexmcDetectorRoleName[ CexmcTargetDetectorRole ] +
+                        "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
+    CexmcTrackPointsCollection *  targetTP( new CexmcTrackPointsCollection );
+    hcOfThisEvent->AddHitsCollection( hcId, targetTP );
 
 #ifdef CEXMC_USE_CUSTOM_FILTER
     if ( customFilter )

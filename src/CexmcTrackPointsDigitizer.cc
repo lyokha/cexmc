@@ -23,6 +23,7 @@
 #include "CexmcTrackPointsInLeftRightSet.hh"
 #include "CexmcTrackPointsInCalorimeter.hh"
 #include "CexmcCalorimeterGeometry.hh"
+#include "CexmcSensitiveDetectorsAttributes.hh"
 #include "CexmcCommon.hh"
 
 
@@ -62,7 +63,8 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
 
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
     G4int    hcId( digiManager->GetHitsCollectionID(
-                    CexmcMonitorDetectorName + "/" + CexmcTPDetectorName ) );
+                    CexmcDetectorRoleName[ CexmcMonitorDetectorRole ] +
+                    "/" + CexmcDetectorTypeName[ CexmcTPDetector ] ) );
     const CexmcTrackPointsCollection *
              hitsCollection( static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) ) );
@@ -78,8 +80,9 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
         }
     }
 
-    hcId = digiManager->GetHitsCollectionID( CexmcTargetDetectorName +
-                                             "/" + CexmcTPDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                    CexmcDetectorRoleName[ CexmcTargetDetectorRole ] +
+                    "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
     hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
 
@@ -127,8 +130,9 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
         }
     }
 
-    hcId = digiManager->GetHitsCollectionID( CexmcVetoCounterDetectorName +
-                                             "/" + CexmcTPDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                    CexmcDetectorRoleName[ CexmcVetoCounterDetectorRole ] +
+                    "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
     hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
 
@@ -158,8 +162,9 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
         }
     }
 
-    hcId = digiManager->GetHitsCollectionID( CexmcCalorimeterDetectorName +
-                                             "/" + CexmcTPDetectorName );
+    hcId = digiManager->GetHitsCollectionID(
+                    CexmcDetectorRoleName[ CexmcCalorimeterDetectorRole ] +
+                    "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
     hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
 

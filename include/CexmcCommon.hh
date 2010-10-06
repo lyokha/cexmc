@@ -41,15 +41,8 @@ const G4String  CexmcChargeExchangeProductionModelName( "ChargeExchange" );
 const G4String  CexmcChargeExchangeInteractionName( "Cexmc" +
                                     CexmcChargeExchangeProductionModelName );
 
-const G4String  CexmcMonitorDetectorName( "Monitor" );
-const G4String  CexmcVetoCounterDetectorName( "VetoCounter" );
-const G4String  CexmcCalorimeterDetectorName( "Calorimeter" );
-const G4String  CexmcTargetDetectorName( "Target" );
-const G4String  CexmcEDDetectorName( "ED" );
-const G4String  CexmcTPDetectorName( "TP" );
 const G4String  CexmcEDDigitizerName( "EDDig" );
 const G4String  CexmcTPDigitizerName( "TPDig" );
-const G4String  CexmcCalorimeterRegionName( "Calorimeter" );
 
 const G4double  CexmcFwhmToStddev( 0.42466 );
 const G4double  CexmcInvalidCosTheta( 2.0 );
@@ -110,16 +103,6 @@ enum  CexmcSide
 {
     CexmcLeft,
     CexmcRight
-};
-
-
-enum CexmcDetectorRole
-{
-    CexmcMonitorDetectorRole,
-    CexmcVetoCounterDetectorRole,
-    CexmcCalorimeterDetectorRole,
-    CexmcTargetDetectorRole,
-    CexmcNumberOfDetectorRoles
 };
 
 

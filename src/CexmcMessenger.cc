@@ -18,12 +18,12 @@
 
 #include <G4UIdirectory.hh>
 #include "CexmcMessenger.hh"
-#include "CexmcCommon.hh"
+#include "CexmcSensitiveDetectorsAttributes.hh"
 
 
 namespace
 {
-    const G4String  ed( CexmcEDDetectorName + "/" );
+    const G4String  ed( CexmcDetectorTypeName[ CexmcEDDetector ] + "/" );
 }
 
 
@@ -43,17 +43,17 @@ G4String  CexmcMessenger::eventDirName( CexmcMessenger::mainDirName +
 G4String  CexmcMessenger::runDirName( CexmcMessenger::mainDirName +
                                            "run/" );
 G4String  CexmcMessenger::monitorDirName( CexmcMessenger::detectorDirName +
-                                           "Monitor/" );
+               CexmcDetectorRoleName[ CexmcMonitorDetectorRole ] + "/" );
 G4String  CexmcMessenger::targetDirName( CexmcMessenger::detectorDirName +
-                                           "Target/" );
+               CexmcDetectorRoleName[ CexmcTargetDetectorRole ] + "/" );
 G4String  CexmcMessenger::vetoCounterDirName( CexmcMessenger::detectorDirName +
-                                           "VetoCounter/" );
+               CexmcDetectorRoleName[ CexmcVetoCounterDetectorRole ] + "/" );
 G4String  CexmcMessenger::vetoCounterLeftDirName(
                             CexmcMessenger::vetoCounterDirName + "left/" );
 G4String  CexmcMessenger::vetoCounterRightDirName(
                             CexmcMessenger::vetoCounterDirName + "right/" );
 G4String  CexmcMessenger::calorimeterDirName( CexmcMessenger::detectorDirName +
-                                           "Calorimeter/" );
+               CexmcDetectorRoleName[ CexmcCalorimeterDetectorRole ] + "/" );
 G4String  CexmcMessenger::calorimeterLeftDirName(
                             CexmcMessenger::calorimeterDirName + "left/" );
 G4String  CexmcMessenger::calorimeterRightDirName(
