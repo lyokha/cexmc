@@ -16,6 +16,7 @@
  * =============================================================================
  */
 
+#include <string.h>
 #include <G4GDMLParser.hh>
 #include <G4MultiFunctionalDetector.hh>
 #include <G4VPrimitiveScorer.hh>
@@ -38,7 +39,6 @@
 #include "CexmcCommon.hh"
 
 
-
 CexmcSetup::CexmcSetup( const G4String &  gdmlFile, G4bool  validateGDMLFile ) :
     world( 0 ), gdmlFile( gdmlFile ), validateGDMLFile( validateGDMLFile ),
     calorimeterRegionInitialized( false )
@@ -56,88 +56,105 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
     gdmlParser.Read( gdmlFile, validateGDMLFile );
     world = gdmlParser.GetWorldVolume();
 
-    SetupSensitiveVolumes( gdmlParser );
+    SetupSpecialVolumes( gdmlParser );
 
     return world;
 }
 
 
-void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
+void CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
 {
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
+    G4MultiFunctionalDetector *   detector[ CexmcNumberOfDetectorRoles ];
+    memset( detector, 0, sizeof( detector ) );
 
     for( std::vector< G4LogicalVolume * >::const_iterator
                         lvIter( lvs->begin() ); lvIter != lvs->end(); ++lvIter )
     {
-        G4MultiFunctionalDetector *  detector( NULL );
-        G4String                     detectorName( G4String( ( *lvIter )->
-                                                             GetName() ) );
-        G4GDMLAuxListType            auxInfo(
-                        gdmlParser.GetVolumeAuxiliaryInformation( *lvIter ) );
-        std::vector< G4GDMLAuxPairType >::const_iterator
-                                     pair( auxInfo.begin() );
+        G4GDMLAuxListType  auxInfo( gdmlParser.GetVolumeAuxiliaryInformation(
+                                                                    *lvIter ) );
+        std::vector< G4GDMLAuxPairType >::const_iterator  pair(
+                                                            auxInfo.begin() );
 
         for( pair = auxInfo.begin(); pair != auxInfo.end(); ++pair )
         {
             G4VPrimitiveScorer *  scorer( NULL );
+            G4String              detectorName( "uninitialized" );
+            CexmcDetectorRole     curDetectorRole( CexmcMonitorDetectorRole );
             do
             {
                 if ( pair->type == "EnergyDepositDetector" )
                 {
-                    G4cout << CEXMC_LINE_START "Energy Deposit Scorer for "
-                               "detector '" << detectorName << "'" << G4endl;
                     do
                     {
                         if ( pair->value < 0.5 )
                         {
+                            curDetectorRole = CexmcMonitorDetectorRole;
+                            detectorName = CexmcMonitorDetectorName;
                             scorer = new CexmcSimpleEnergyDeposit(
-                                                            "Monitor/ED" );
+                                                        CexmcEDDetectorName );
                             break;
                         }
                         if ( pair->value < 1.5 )
                         {
+                            curDetectorRole = CexmcVetoCounterDetectorRole;
+                            detectorName = CexmcVetoCounterDetectorName;
                             scorer = new CexmcEnergyDepositInLeftRightSet(
-                                                            "VetoCounter/ED" );
+                                                        CexmcEDDetectorName );
                             break;
                         }
                         if ( pair->value < 2.5 )
                         {
+                            curDetectorRole = CexmcCalorimeterDetectorRole;
+                            detectorName = CexmcCalorimeterDetectorName;
                             scorer = new CexmcEnergyDepositInCalorimeter(
-                                                            "Calorimeter/ED" );
+                                                        CexmcEDDetectorName );
                             break;
                         }
                     } while ( false );
+                    G4cout << CEXMC_LINE_START "Energy Deposit Scorer for "
+                               "detector '" << detectorName << "'" << G4endl;
                     break;
                 }
                 if ( pair->type == "TrackPointsDetector" )
                 {
-                    G4cout << CEXMC_LINE_START "Track Points Scorer for "
-                               "detector '" << detectorName << "'" << G4endl;
                     do
                     {
                         if ( pair->value < 0.5 )
                         {
-                            scorer = new CexmcTrackPoints( "Target/TP" );
+                            curDetectorRole = CexmcMonitorDetectorRole;
+                            detectorName = CexmcMonitorDetectorName;
+                            scorer = new CexmcTrackPoints(
+                                                        CexmcTPDetectorName );
                             break;
                         }
                         if ( pair->value < 1.5 )
                         {
-                            scorer = new CexmcTrackPoints( "Monitor/TP" );
+                            curDetectorRole = CexmcVetoCounterDetectorRole;
+                            detectorName = CexmcVetoCounterDetectorName;
+                            scorer = new CexmcTrackPointsInLeftRightSet(
+                                                        CexmcTPDetectorName );
                             break;
                         }
                         if ( pair->value < 2.5 )
                         {
-                            scorer = new CexmcTrackPointsInLeftRightSet(
-                                                         "VetoCounter/TP" );
+                            curDetectorRole = CexmcCalorimeterDetectorRole;
+                            detectorName = CexmcCalorimeterDetectorName;
+                            scorer = new CexmcTrackPointsInCalorimeter(
+                                                        CexmcTPDetectorName );
                             break;
                         }
                         if ( pair->value < 3.5 )
                         {
-                            scorer = new CexmcTrackPointsInCalorimeter(
-                                                         "Calorimeter/TP" );
+                            curDetectorRole = CexmcTargetDetectorRole;
+                            detectorName = CexmcTargetDetectorName;
+                            scorer = new CexmcTrackPoints(
+                                                        CexmcTPDetectorName );
                             break;
                         }
                     } while ( false );
+                    G4cout << CEXMC_LINE_START "Track Points Scorer for "
+                               "detector '" << detectorName << "'" << G4endl;
                     if ( scorer )
                     {
                         CexmcTrackPointsFilter *  filter(
@@ -148,8 +165,6 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
                 }
                 if ( pair->type == "SensitiveRegion" )
                 {
-                    G4cout << CEXMC_LINE_START "Sensitive Region for "
-                               "detector '" << detectorName << "'" << G4endl;
                     do
                     {
                         if ( pair->value < 0.5 )
@@ -181,6 +196,9 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
                             break;
                         }
                     } while ( false );
+                    G4String  volumeName( G4String( ( *lvIter )->GetName() ) );
+                    G4cout << CEXMC_LINE_START "Sensitive Region for logical "
+                               "volume '" << volumeName << "'" << G4endl;
                     break;
                 }
             }
@@ -188,17 +206,27 @@ void CexmcSetup::SetupSensitiveVolumes( G4GDMLParser &  gdmlParser )
 
             if ( scorer )
             {
-                if ( ! detector )
-                    detector = new G4MultiFunctionalDetector( detectorName );
-                detector->RegisterPrimitive( scorer );
+                /* curDetectorRole must be intact when scorer is not NULL */
+                if ( ! detector[ curDetectorRole ] )
+                {
+                    detector[ curDetectorRole ] =
+                                new G4MultiFunctionalDetector( detectorName );
+                }
+                detector[ curDetectorRole ]->RegisterPrimitive( scorer );
+                /* NB: logical volumes in GDML file may not have multiple
+                 * detector roles: for example vMonitor may have only one role
+                 * MonitorRole. This restriction arises from that fact that a
+                 * logical volume may contain only one sensitive detector. */
+                ( *lvIter )->SetSensitiveDetector(
+                                                detector[ curDetectorRole ] );
             }
         }
+    }
 
-        if ( detector )
-        {
-            G4SDManager::GetSDMpointer()->AddNewDetector( detector );
-            ( *lvIter )->SetSensitiveDetector( detector );
-        }
+    for ( G4int  i( 0 ); i < CexmcNumberOfDetectorRoles; ++i )
+    {
+        if ( detector[ i ] )
+            G4SDManager::GetSDMpointer()->AddNewDetector( detector[ i ] );
     }
 
     if ( ! calorimeterRegionInitialized )

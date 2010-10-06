@@ -33,7 +33,7 @@ class  CexmcSetup : public G4VUserDetectorConstruction
         G4VPhysicalVolume *  Construct( void );
 
     private:
-        void  SetupSensitiveVolumes( G4GDMLParser &  gdmlParser );
+        void                 SetupSpecialVolumes( G4GDMLParser &  gdmlParser );
 
     private:
         G4VPhysicalVolume *  world;
@@ -43,7 +43,7 @@ class  CexmcSetup : public G4VUserDetectorConstruction
         G4bool               validateGDMLFile;
 
     private:
-        bool                 calorimeterRegionInitialized;
+        G4bool               calorimeterRegionInitialized;
 };
 
 

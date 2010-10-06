@@ -536,29 +536,36 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
 
-    G4int  hcId( digiManager->GetHitsCollectionID( "vMonitor/Monitor/ED" ) );
+    G4int  hcId( digiManager->GetHitsCollectionID( CexmcMonitorDetectorName +
+                                                "/" + CexmcEDDetectorName ) );
     CexmcEnergyDepositCollection *  monitorED(
                                             new CexmcEnergyDepositCollection );
     hcOfThisEvent->AddHitsCollection( hcId, monitorED );
-    hcId = digiManager->GetHitsCollectionID( "vVetoCounter/VetoCounter/ED" );
+    hcId = digiManager->GetHitsCollectionID( CexmcVetoCounterDetectorName +
+                                             "/" + CexmcEDDetectorName );
     CexmcEnergyDepositCollection *  vetoCounterED(
                                             new CexmcEnergyDepositCollection );
     hcOfThisEvent->AddHitsCollection( hcId, vetoCounterED );
-    hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/ED" );
+    hcId = digiManager->GetHitsCollectionID( CexmcCalorimeterDetectorName +
+                                             "/" + CexmcEDDetectorName );
     CexmcEnergyDepositCollection *  calorimeterED(
                                             new CexmcEnergyDepositCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterED );
-    hcId = digiManager->GetHitsCollectionID( "vMonitor/Monitor/TP" );
+    hcId = digiManager->GetHitsCollectionID( CexmcMonitorDetectorName +
+                                             "/" + CexmcTPDetectorName );
     CexmcTrackPointsCollection *  monitorTP( new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, monitorTP );
-    hcId = digiManager->GetHitsCollectionID( "vTarget/Target/TP" );
+    hcId = digiManager->GetHitsCollectionID( CexmcTargetDetectorName +
+                                             "/" + CexmcTPDetectorName );
     CexmcTrackPointsCollection *  targetTP( new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, targetTP );
-    hcId = digiManager->GetHitsCollectionID( "vVetoCounter/VetoCounter/TP" );
+    hcId = digiManager->GetHitsCollectionID( CexmcVetoCounterDetectorName +
+                                             "/" + CexmcTPDetectorName );
     CexmcTrackPointsCollection *  vetoCounterTP(
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, vetoCounterTP );
-    hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/TP" );
+    hcId = digiManager->GetHitsCollectionID( CexmcCalorimeterDetectorName +
+                                             "/" + CexmcTPDetectorName );
     CexmcTrackPointsCollection *  calorimeterTP(
                                             new CexmcTrackPointsCollection );
     hcOfThisEvent->AddHitsCollection( hcId, calorimeterTP );
@@ -826,7 +833,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
 void  CexmcRunManager::SaveCurrentTPTEvent(
                                 const CexmcEventFastSObject &  evFastSObject,
                                 const CexmcAngularRangeList &  angularRanges,
-                                bool  writeToDatabase )
+                                G4bool  writeToDatabase )
 {
     CexmcRun *  run( static_cast< const CexmcRun * >( currentRun ) );
 

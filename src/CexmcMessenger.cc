@@ -16,13 +16,14 @@
  * ============================================================================
  */
 
-#include "CexmcMessenger.hh"
 #include <G4UIdirectory.hh>
+#include "CexmcMessenger.hh"
+#include "CexmcCommon.hh"
 
 
 namespace
 {
-    const char *  ed( "ED/" );
+    const G4String  ed( CexmcEDDetectorName + "/" );
 }
 
 

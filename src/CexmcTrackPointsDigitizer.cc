@@ -61,8 +61,8 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
     G4double  crystalHeight( calorimeterGeometry.crystalHeight );
 
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
-    G4int            hcId( digiManager->GetHitsCollectionID(
-                                                    "vMonitor/Monitor/TP" ) );
+    G4int    hcId( digiManager->GetHitsCollectionID(
+                    CexmcMonitorDetectorName + "/" + CexmcTPDetectorName ) );
     const CexmcTrackPointsCollection *
              hitsCollection( static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) ) );
@@ -78,7 +78,8 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
         }
     }
 
-    hcId = digiManager->GetHitsCollectionID( "vTarget/Target/TP" );
+    hcId = digiManager->GetHitsCollectionID( CexmcTargetDetectorName +
+                                             "/" + CexmcTPDetectorName );
     hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
 
@@ -126,7 +127,8 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
         }
     }
 
-    hcId = digiManager->GetHitsCollectionID( "vVetoCounter/VetoCounter/TP" );
+    hcId = digiManager->GetHitsCollectionID( CexmcVetoCounterDetectorName +
+                                             "/" + CexmcTPDetectorName );
     hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
 
@@ -156,7 +158,8 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
         }
     }
 
-    hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/TP" );
+    hcId = digiManager->GetHitsCollectionID( CexmcCalorimeterDetectorName +
+                                             "/" + CexmcTPDetectorName );
     hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
 

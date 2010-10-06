@@ -19,14 +19,14 @@
         <constant name="NCrystalsHor" value="6"/>
         <constant name="NCrystalsVert" value="4"/>
 
-        <!-- sensitive detector types -->
-        <constant name="MonitorED" value="0"/>
-        <constant name="VetoCounterED" value="1"/>
-        <constant name="CalorimeterED" value="2"/>
-        <constant name="TargetTP" value="0"/>
-        <constant name="MonitorTP" value="1"/>
-        <constant name="VetoCounterTP" value="2"/>
-        <constant name="CalorimeterTP" value="3"/>
+        <!-- sensitive detector roles; -->
+        <!-- a single logical volume may have only one detector role, -->
+        <!-- for example vMonitor may not have MonitorRole and TargetRole -->
+        <!-- simultaneously -->
+        <constant name="MonitorRole" value="0"/>
+        <constant name="VetoCounterRole" value="1"/>
+        <constant name="CalorimeterRole" value="2"/>
+        <constant name="TargetRole" value="3"/>
 
         <!-- region types -->
         <constant name="CalorimeterRegion" value="0"/>
@@ -371,8 +371,8 @@
         <volume name="vMonitor">
             <materialref ref="Scintillator"/>
             <solidref ref="sMonitor"/>
-            <auxiliary auxtype="EnergyDepositDetector" auxvalue="MonitorED"/>
-            <auxiliary auxtype="TrackPointsDetector" auxvalue="MonitorTP"/>
+            <auxiliary auxtype="EnergyDepositDetector" auxvalue="MonitorRole"/>
+            <auxiliary auxtype="TrackPointsDetector" auxvalue="MonitorRole"/>
         </volume>
         <volume name="vMonitorBack">
             <materialref ref="Scintillator"/>
@@ -381,7 +381,7 @@
         <volume name="vTarget">
             <materialref ref="G4_lH2"/>
             <solidref ref="sTarget"/>
-            <auxiliary auxtype="TrackPointsDetector" auxvalue="TargetTP"/>
+            <auxiliary auxtype="TrackPointsDetector" auxvalue="TargetRole"/>
         </volume>
         <volume name="vTargetInnerCover">
             <materialref ref="G4_Al"/>
@@ -419,8 +419,9 @@
             <materialref ref="CsI_Crystal"/>
             <solidref ref="sCrystal"/>
             <auxiliary auxtype="EnergyDepositDetector"
-                       auxvalue="CalorimeterED"/>
-            <auxiliary auxtype="TrackPointsDetector" auxvalue="CalorimeterTP"/>
+                       auxvalue="CalorimeterRole"/>
+            <auxiliary auxtype="TrackPointsDetector"
+                       auxvalue="CalorimeterRole"/>
         </volume>
         <volume name="vCrystalRow">
             <materialref ref="G4_AIR"/>
@@ -451,8 +452,9 @@
             <materialref ref="Scintillator"/>
             <solidref ref="sVetoCounter"/>
             <auxiliary auxtype="EnergyDepositDetector"
-                       auxvalue="VetoCounterED"/>
-            <auxiliary auxtype="TrackPointsDetector" auxvalue="VetoCounterTP"/>
+                       auxvalue="VetoCounterRole"/>
+            <auxiliary auxtype="TrackPointsDetector"
+                       auxvalue="VetoCounterRole"/>
         </volume>
         <volume name="vOuterFerrumRing">
             <materialref ref="G4_Fe"/>

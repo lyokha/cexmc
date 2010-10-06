@@ -132,8 +132,8 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
     InitializeData();
 
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
-    G4int            hcId( digiManager->GetHitsCollectionID(
-                                                    "vMonitor/Monitor/ED" ) );
+    G4int    hcId( digiManager->GetHitsCollectionID(
+                    CexmcMonitorDetectorName + "/" + CexmcEDDetectorName ) );
     const CexmcEnergyDepositCollection *
              hitsCollection( static_cast< const CexmcEnergyDepositCollection* >(
                                     digiManager->GetHitsCollection( hcId ) ) );
@@ -145,7 +145,8 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
             monitorED = *( *hitsCollection )[ 0 ];
     }
 
-    hcId = digiManager->GetHitsCollectionID( "vVetoCounter/VetoCounter/ED" );
+    hcId = digiManager->GetHitsCollectionID( CexmcVetoCounterDetectorName +
+                                             "/" + CexmcEDDetectorName );
     hitsCollection = static_cast< const CexmcEnergyDepositCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
     if ( hitsCollection )
@@ -181,7 +182,8 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
     CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
                                             G4RunManager::GetRunManager() ) );
 
-    hcId = digiManager->GetHitsCollectionID( "vCrystal/Calorimeter/ED" );
+    hcId = digiManager->GetHitsCollectionID( CexmcCalorimeterDetectorName +
+                                             "/" + CexmcEDDetectorName );
     hitsCollection = static_cast< const CexmcEnergyDepositCollection* >(
                                     digiManager->GetHitsCollection( hcId ) );
     if ( hitsCollection )

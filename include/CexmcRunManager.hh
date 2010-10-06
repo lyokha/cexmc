@@ -126,7 +126,7 @@ class  CexmcRunManager : public G4RunManager
 
         void  SaveCurrentTPTEvent( const CexmcEventFastSObject &  evFastSObject,
                                    const CexmcAngularRangeList &  angularRanges,
-                                   bool  writeToDatabase );
+                                   G4bool  writeToDatabase );
 
     private:
         void  ReadPreinitProjectData( void );
