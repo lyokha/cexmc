@@ -21,7 +21,7 @@
 
 #include <G4ThreeVector.hh>
 #include <G4AffineTransform.hh>
-#include "CexmcCalorimeterGeometry.hh"
+#include "CexmcSetup.hh"
 #include "CexmcCommon.hh"
 
 class  CexmcReconstructorMessenger;
@@ -94,20 +94,20 @@ class  CexmcReconstructor
         G4double               GetTheAngle( void ) const;
 
     public:
-        G4bool          HasBasicTrigger( void ) const;
+        G4bool                 HasBasicTrigger( void ) const;
 
-        virtual G4bool  HasFullTrigger( void ) const;
+        virtual G4bool         HasFullTrigger( void ) const;
 
     protected:
-        void  ReconstructEntryPoints(
+        void                   ReconstructEntryPoints(
                                     const CexmcEnergyDepositStore *  edStore );
 
-        void  ReconstructTargetPoint( void );
+        void                   ReconstructTargetPoint( void );
 
-        void  ReconstructAngle( void );
+        void                   ReconstructAngle( void );
 
     protected:
-        G4bool  hasBasicTrigger;
+        G4bool                               hasBasicTrigger;
 
     protected:
         CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
@@ -115,50 +115,50 @@ class  CexmcReconstructor
         CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
                                                     epDepthDefinitionAlgorithm;
 
-        CexmcCrystalSelectionAlgorithm  csAlgorithm;
+        CexmcCrystalSelectionAlgorithm       csAlgorithm;
 
-        G4bool                          useInnerRefCrystal;
+        G4bool                               useInnerRefCrystal;
 
-        G4double                        epDepth;
+        G4double                             epDepth;
 
     protected:
-        G4ThreeVector                   calorimeterEPLeftPosition;
+        G4ThreeVector                        calorimeterEPLeftPosition;
 
-        G4ThreeVector                   calorimeterEPRightPosition;
+        G4ThreeVector                        calorimeterEPRightPosition;
 
-        G4ThreeVector                   calorimeterEPLeftDirection;
+        G4ThreeVector                        calorimeterEPLeftDirection;
 
-        G4ThreeVector                   calorimeterEPRightDirection;
+        G4ThreeVector                        calorimeterEPRightDirection;
 
-        G4ThreeVector                   targetEPPosition;
+        G4ThreeVector                        targetEPPosition;
 
-        G4ThreeVector                   targetEPDirection;
+        G4ThreeVector                        targetEPDirection;
 
-        G4ThreeVector                   calorimeterEPLeftWorldPosition;
+        G4ThreeVector                        calorimeterEPLeftWorldPosition;
 
-        G4ThreeVector                   calorimeterEPRightWorldPosition;
+        G4ThreeVector                        calorimeterEPRightWorldPosition;
 
-        G4ThreeVector                   calorimeterEPLeftWorldDirection;
+        G4ThreeVector                        calorimeterEPLeftWorldDirection;
 
-        G4ThreeVector                   calorimeterEPRightWorldDirection;
+        G4ThreeVector                        calorimeterEPRightWorldDirection;
 
-        G4ThreeVector                   targetEPWorldPosition;
+        G4ThreeVector                        targetEPWorldPosition;
 
-        G4ThreeVector                   targetEPWorldDirection;
+        G4ThreeVector                        targetEPWorldDirection;
 
-        G4double                        theAngle;
+        G4double                             theAngle;
 
     private:
-        CexmcCalorimeterGeometryData    calorimeterGeometry;
+        CexmcSetup::CalorimeterGeometryData  calorimeterGeometry;
 
-        G4AffineTransform               calorimeterLeftTransform;
+        G4AffineTransform                    calorimeterLeftTransform;
         
-        G4AffineTransform               calorimeterRightTransform;
+        G4AffineTransform                    calorimeterRightTransform;
 
-        G4AffineTransform               targetTransform;
+        G4AffineTransform                    targetTransform;
 
     private:
-        CexmcReconstructorMessenger *   messenger;
+        CexmcReconstructorMessenger *        messenger;
 };
 
 

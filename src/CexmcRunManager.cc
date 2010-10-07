@@ -52,7 +52,7 @@
 #include "CexmcParticleGun.hh"
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcTrackPointsStore.hh"
-#include "CexmcCalorimeterGeometry.hh"
+#include "CexmcSetup.hh"
 #include "CexmcEventSObject.hh"
 #include "CexmcEventFastSObject.hh"
 #include "CexmcTrackPointInfo.hh"
@@ -508,8 +508,9 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
     if ( ! productionModel )
         throw CexmcException( CexmcWeirdException );
 
-    CexmcCalorimeterGeometryData  calGeom;
-    CexmcCalorimeterGeometry::GetGeometryData( calGeom );
+    CexmcSetup *  setup( static_cast< CexmcSetup * >( userDetector ) );
+    if ( ! setup )
+        throw CexmcException( CexmcWeirdException );
 
     CexmcEventSObject      evSObject;
     CexmcEventFastSObject  evFastSObject;
@@ -750,7 +751,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         if ( calorimeterTPLeftInfo.IsValid() )
         {
             pos = calorimeterTPLeftInfo.positionLocal;
-            CexmcCalorimeterGeometry::ConvertToCrystalGeometry( calGeom,
+            setup->ConvertToCrystalGeometry(
                     calorimeterTPLeftInfo.positionLocal, row, column, pos );
             calorimeterTPLeftInfo.positionLocal = pos;
             calorimeterTP->GetMap()->operator[](
@@ -763,7 +764,7 @@ void  CexmcRunManager::DoReadEventLoop( G4int  nEvent )
         if ( calorimeterTPRightInfo.IsValid() )
         {
             pos = calorimeterTPRightInfo.positionLocal;
-            CexmcCalorimeterGeometry::ConvertToCrystalGeometry( calGeom,
+            setup->ConvertToCrystalGeometry(
                     calorimeterTPRightInfo.positionLocal, row, column, pos );
             calorimeterTPRightInfo.positionLocal = pos;
             calorimeterTP->GetMap()->operator[](

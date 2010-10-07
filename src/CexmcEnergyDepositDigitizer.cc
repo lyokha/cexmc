@@ -26,7 +26,7 @@
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
-#include "CexmcCalorimeterGeometry.hh"
+#include "CexmcSetup.hh"
 #include "CexmcSensitiveDetectorsAttributes.hh"
 #include "CexmcCommon.hh"
 
@@ -53,9 +53,12 @@ CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
     nCrystalsInRow( 1 ), applyFiniteCrystalResolution( false ),
     messenger( NULL )
 {
-    CexmcCalorimeterGeometryData  calorimeterGeometry;
+    G4RunManager *      runManager( G4RunManager::GetRunManager() );
+    const CexmcSetup *  setup( static_cast< const CexmcSetup * >(
+                                runManager->GetUserDetectorConstruction() ) );
+    const CexmcSetup::CalorimeterGeometryData &  calorimeterGeometry(
+                                            setup->GetCalorimeterGeometry() );
 
-    CexmcCalorimeterGeometry::GetGeometryData( calorimeterGeometry );
     nCrystalsInColumn = calorimeterGeometry.nCrystalsInColumn;
     nCrystalsInRow = calorimeterGeometry.nCrystalsInRow;
 

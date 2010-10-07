@@ -31,6 +31,9 @@
         <!-- region types -->
         <constant name="CalorimeterRegion" value="0"/>
 
+        <!-- special volumes -->
+        <constant name="CalorimeterVolume" value="0"/>
+
 
         <!-- these values are supposed to be changed -->
         <constant name="MonitorPosZ" value="-34.0"/>
@@ -446,6 +449,7 @@
                     <offset value="0" unit="cm"/>
                 </replicate_along_axis>
             </replicavol>
+            <auxiliary auxtype="SpecialVolume" auxvalue="CalorimeterVolume"/>
             <auxiliary auxtype="SensitiveRegion" auxvalue="CalorimeterRegion"/>
         </volume>
         <volume name="vVetoCounter">

@@ -17,12 +17,12 @@
  */
 
 #include <G4DigiManager.hh>
+#include <G4RunManager.hh>
 #include <G4String.hh>
 #include "CexmcTrackPointsDigitizer.hh"
 #include "CexmcTrackPoints.hh"
 #include "CexmcTrackPointsInLeftRightSet.hh"
 #include "CexmcTrackPointsInCalorimeter.hh"
-#include "CexmcCalorimeterGeometry.hh"
 #include "CexmcSensitiveDetectorsAttributes.hh"
 #include "CexmcCommon.hh"
 
@@ -30,7 +30,10 @@
 CexmcTrackPointsDigitizer::CexmcTrackPointsDigitizer( const G4String &  name ) :
     G4VDigitizerModule( name ), hasTriggered( false )
 {
-    CexmcCalorimeterGeometry::GetGeometryData( calorimeterGeometry );
+    G4RunManager *      runManager( G4RunManager::GetRunManager() );
+    const CexmcSetup *  setup( static_cast< const CexmcSetup * >(
+                                runManager->GetUserDetectorConstruction() ) );
+    calorimeterGeometry = setup->GetCalorimeterGeometry();
 }
 
 

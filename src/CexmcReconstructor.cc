@@ -19,8 +19,7 @@
 #include "CexmcReconstructor.hh"
 #include "CexmcReconstructorMessenger.hh"
 #include "CexmcEnergyDepositStore.hh"
-#include "CexmcCalorimeterGeometry.hh"
-#include "CexmcTargetGeometry.hh"
+#include "CexmcRunManager.hh"
 
 
 CexmcReconstructor::CexmcReconstructor() :
@@ -30,13 +29,13 @@ CexmcReconstructor::CexmcReconstructor() :
     csAlgorithm( CexmcSelectAllCrystals ), useInnerRefCrystal( false ),
     epDepth( 0 ), theAngle( 0 ), messenger( NULL )
 {
-    CexmcCalorimeterGeometry::GetGeometryData( calorimeterGeometry );
-
-    CexmcCalorimeterGeometry::GetCalorimeterLeftTransform(
-                                                    calorimeterLeftTransform );
-    CexmcCalorimeterGeometry::GetCalorimeterRightTransform(
-                                                    calorimeterRightTransform );
-    CexmcTargetGeometry::GetTargetTransform( targetTransform );
+    G4RunManager *      runManager( G4RunManager::GetRunManager() );
+    const CexmcSetup *  setup( static_cast< const CexmcSetup * >(
+                                runManager->GetUserDetectorConstruction() ) );
+    calorimeterGeometry = setup->GetCalorimeterGeometry();
+    targetTransform = setup->GetTargetTransform();
+    calorimeterLeftTransform = setup->GetCalorimeterLeftTransform();
+    calorimeterRightTransform = setup->GetCalorimeterRightTransform();
 
     messenger = new CexmcReconstructorMessenger( this );
 }
