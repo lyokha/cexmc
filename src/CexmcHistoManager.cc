@@ -37,7 +37,6 @@
 #include "CexmcHistoWidget.hh"
 #endif
 #include <G4LogicalVolume.hh>
-#include <G4LogicalVolumeStore.hh>
 #include <G4Box.hh>
 #include <G4Tubs.hh>
 #include "CexmcHistoManager.hh"
@@ -45,6 +44,7 @@
 #include "CexmcProductionModel.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcRunManager.hh"
+#include "CexmcSetup.hh"
 #include "CexmcException.hh"
 
 extern TDirectory *  gDirectory;
@@ -299,8 +299,15 @@ void  CexmcHistoManager::Initialize( void )
         outFile = new TFile( resultsFile, "recreate" );
     }
 
-    const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
-    const G4LogicalVolume *       lVolume( lvs->GetVolume( "vMonitor" ) );
+    const CexmcSetup *  setup( static_cast< const CexmcSetup * >(
+                                runManager->GetUserDetectorConstruction() ) );
+    if ( ! setup )
+        throw CexmcException ( CexmcWeirdException );
+
+    const G4LogicalVolume *  lVolume( setup->GetVolume( CexmcSetup::Monitor ) );
+
+    if ( ! lVolume )
+        throw CexmcException ( CexmcIncompatibleGeometry );
 
     nBinsMinX = CexmcHistoBeamMomentumMin;
     nBinsMaxX = CexmcHistoBeamMomentumMax;
@@ -330,7 +337,7 @@ void  CexmcHistoManager::Initialize( void )
     AddHisto( CexmcHistoData( CexmcTPInMonitor_TPT_Histo, Cexmc_TH2F, false,
         false, CexmcTPT, "tpmon", "Track points (mon)", axes ) );
 
-    lVolume = lvs->GetVolume( "vTarget" );
+    lVolume = setup->GetVolume( CexmcSetup::Target );
     G4Tubs *  tube( dynamic_cast< G4Tubs * >( lVolume->GetSolid() ) );
 
     if ( ! tube )
@@ -463,8 +470,14 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
     AddHisto( CexmcHistoData( CexmcRecMassNOP_ARReal_RT_Histo, Cexmc_TH1F, true,
         false, CexmcRT, "recmassnop", title, axes ), aRange );
 
-    const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
-    const G4LogicalVolume *       lVolume( lvs->GetVolume( "vCalorimeter" ) );
+    G4RunManager *      runManager( G4RunManager::GetRunManager() );
+    const CexmcSetup *  setup( static_cast< const CexmcSetup * >(
+                                runManager->GetUserDetectorConstruction() ) );
+    if ( ! setup )
+        throw CexmcException ( CexmcWeirdException );
+
+    const G4LogicalVolume *  lVolume( setup->GetVolume(
+                                                    CexmcSetup::Calorimeter ) );
 
     G4Box *   box( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );
 
@@ -608,7 +621,7 @@ void  CexmcHistoManager::AddARHistos( const CexmcAngularRange &  aRange )
         Cexmc_TH1F, true, false, CexmcRT, "diffoa",
         "Real - reconstructed open angle between the gammas", axes ), aRange );
 
-    lVolume = lvs->GetVolume( "vTarget" );
+    lVolume = setup->GetVolume( CexmcSetup::Target );
     G4Tubs *  tube( dynamic_cast< G4Tubs * >( lVolume->GetSolid() ) );
 
     if ( ! tube )

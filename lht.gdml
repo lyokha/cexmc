@@ -32,7 +32,10 @@
         <constant name="CalorimeterRegion" value="0"/>
 
         <!-- special volumes -->
-        <constant name="CalorimeterVolume" value="0"/>
+        <constant name="MonitorVolume" value="0"/>
+        <constant name="VetoCounterVolume" value="1"/>
+        <constant name="CalorimeterVolume" value="2"/>
+        <constant name="TargetVolume" value="3"/>
 
 
         <!-- these values are supposed to be changed -->
@@ -374,6 +377,7 @@
         <volume name="vMonitor">
             <materialref ref="Scintillator"/>
             <solidref ref="sMonitor"/>
+            <auxiliary auxtype="SpecialVolume" auxvalue="MonitorVolume"/>
             <auxiliary auxtype="EnergyDepositDetector" auxvalue="MonitorRole"/>
             <auxiliary auxtype="TrackPointsDetector" auxvalue="MonitorRole"/>
         </volume>
@@ -384,6 +388,7 @@
         <volume name="vTarget">
             <materialref ref="G4_lH2"/>
             <solidref ref="sTarget"/>
+            <auxiliary auxtype="SpecialVolume" auxvalue="TargetVolume"/>
             <auxiliary auxtype="TrackPointsDetector" auxvalue="TargetRole"/>
         </volume>
         <volume name="vTargetInnerCover">
@@ -455,6 +460,7 @@
         <volume name="vVetoCounter">
             <materialref ref="Scintillator"/>
             <solidref ref="sVetoCounter"/>
+            <auxiliary auxtype="SpecialVolume" auxvalue="VetoCounterVolume"/>
             <auxiliary auxtype="EnergyDepositDetector"
                        auxvalue="VetoCounterRole"/>
             <auxiliary auxtype="TrackPointsDetector"

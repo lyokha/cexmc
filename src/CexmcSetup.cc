@@ -44,7 +44,8 @@
 CexmcSetup::CexmcSetup( const G4String &  gdmlFile, G4bool  validateGDMLFile ) :
     world( 0 ), gdmlFile( gdmlFile ), validateGDMLFile( validateGDMLFile ),
     calorimeterRegionInitialized( false ),
-    calorimeterGeometryDataInitialized( false )
+    calorimeterGeometryDataInitialized( false ), monitorVolume( NULL ),
+    vetoCounterVolume( NULL ), calorimeterVolume( NULL ), targetVolume( NULL )
 {
 }
 
@@ -203,12 +204,25 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                 }
                 if ( pair->type == "SpecialVolume" )
                 {
+                    G4String  volumeName( G4String( ( *lvIter )->GetName() ) );
                     do
                     {
                         if ( pair->value < 0.5 )
                         {
-                            G4String  volumeName( G4String(
-                                                    ( *lvIter )->GetName() ) );
+                            monitorVolume = *lvIter;
+                            G4cout << CEXMC_LINE_START "Monitor volume '" <<
+                                        volumeName << "' registered" << G4endl;
+                            break;
+                        }
+                        if ( pair->value < 1.5 )
+                        {
+                            vetoCounterVolume = *lvIter;
+                            G4cout << CEXMC_LINE_START "VetoCounter volume '" <<
+                                        volumeName << "' registered" << G4endl;
+                            break;
+                        }
+                        if ( pair->value < 2.5 )
+                        {
                             if ( calorimeterGeometryDataInitialized )
                             {
                                 G4cout << CEXMC_LINE_START "WARNING: Another "
@@ -218,12 +232,23 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                             }
                             else
                             {
+                                calorimeterVolume = *lvIter;
                                 ReadCalorimeterGeometryData( *lvIter );
+                                G4cout << CEXMC_LINE_START "Calorimeter volume "
+                                        "'" << volumeName << "' registered" <<
+                                        G4endl;
                                 G4cout << CEXMC_LINE_START "Calorimeter "
                                         "geometry was read from volume '" <<
                                         volumeName << "'" << G4endl;
                                 calorimeterGeometryDataInitialized = true;
                             }
+                            break;
+                        }
+                        if ( pair->value < 3.5 )
+                        {
+                            targetVolume = *lvIter;
+                            G4cout << CEXMC_LINE_START "Target volume '" <<
+                                        volumeName << "' registered" << G4endl;
                             break;
                         }
                     } while ( false );
@@ -242,9 +267,9 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                 }
                 detector[ curDetectorRole ]->RegisterPrimitive( scorer );
                 /* NB: logical volumes in GDML file may not have multiple
-                 * detector roles: for example vMonitor may have only one role
-                 * MonitorRole. This restriction arises from that fact that a
-                 * logical volume may contain only one sensitive detector. */
+                 * detector roles: for example volume Monitor may have only one
+                 * role MonitorRole. This restriction arises from that fact that
+                 * a logical volume may contain only one sensitive detector. */
                 ( *lvIter )->SetSensitiveDetector(
                                                 detector[ curDetectorRole ] );
             }

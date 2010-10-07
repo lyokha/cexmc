@@ -32,6 +32,14 @@ class  G4VPhysicalVolume;
 class  CexmcSetup : public G4VUserDetectorConstruction
 {
     public:
+        enum  SpecialVolumeType
+        {
+            Monitor,
+            VetoCounter,
+            Calorimeter,
+            Target
+        };
+
         struct  CalorimeterGeometryData
         {
             CalorimeterGeometryData() :
@@ -68,6 +76,8 @@ class  CexmcSetup : public G4VUserDetectorConstruction
 
         const CalorimeterGeometryData &  GetCalorimeterGeometry( void ) const;
 
+        const G4LogicalVolume *  GetVolume( SpecialVolumeType  volume ) const;
+
     private:
         void   SetupSpecialVolumes( G4GDMLParser &  gdmlParser );
 
@@ -88,6 +98,14 @@ class  CexmcSetup : public G4VUserDetectorConstruction
         G4bool                   calorimeterRegionInitialized;
 
         G4bool                   calorimeterGeometryDataInitialized;
+
+        G4LogicalVolume *        monitorVolume;
+
+        G4LogicalVolume *        vetoCounterVolume;
+
+        G4LogicalVolume *        calorimeterVolume;
+
+        G4LogicalVolume *        targetVolume;
 
         G4AffineTransform        targetTransform;
 
@@ -123,6 +141,27 @@ inline const CexmcSetup::CalorimeterGeometryData &
                                 CexmcSetup::GetCalorimeterGeometry( void ) const
 {
     return calorimeterGeometry;
+}
+
+
+inline const G4LogicalVolume *  CexmcSetup::GetVolume(
+                                            SpecialVolumeType  volume ) const
+{
+    switch ( volume )
+    {
+    case Monitor :
+        return monitorVolume;
+    case VetoCounter :
+        return vetoCounterVolume;
+    case Calorimeter :
+        return calorimeterVolume;
+    case Target :
+        return targetVolume;
+    default :
+        break;
+    }
+
+    return NULL;
 }
 
 
