@@ -23,6 +23,7 @@
 #include <G4SDManager.hh>
 #include <G4LogicalVolume.hh>
 #include <G4VPhysicalVolume.hh>
+#include <G4Box.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4Region.hh>
 #include <G4RegionStore.hh>
@@ -353,6 +354,9 @@ void  CexmcSetup::ReadCalorimeterGeometryData(
 
     lVolume = pVolume->GetLogicalVolume();
 
+    /* this is not necessarily a crystal itself as far as crystals can be
+     * wrapped in paper and other materials, but this is what reconstructor and
+     * digitizers really need */
     G4Box *  crystalBox( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );
 
     if ( ! crystalBox )
