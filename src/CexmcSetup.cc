@@ -78,6 +78,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
     for( std::vector< G4LogicalVolume * >::const_iterator
                         lvIter( lvs->begin() ); lvIter != lvs->end(); ++lvIter )
     {
+        G4String           volumeName( G4String( ( *lvIter )->GetName() ) );
         G4GDMLAuxListType  auxInfo( gdmlParser.GetVolumeAuxiliaryInformation(
                                                                     *lvIter ) );
         std::vector< G4GDMLAuxPairType >::const_iterator  pair(
@@ -117,8 +118,9 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                         }
                     } while ( false );
                     detectorName = CexmcDetectorRoleName[ curDetectorRole ];
-                    G4cout << CEXMC_LINE_START "Energy Deposit Scorer for "
-                               "detector '" << detectorName << "'" << G4endl;
+                    G4cout << CEXMC_LINE_START "ED Scorer of detector role '" <<
+                               detectorName << "' in volume '" << volumeName <<
+                               "'" << G4endl;
                     break;
                 }
                 if ( pair->type == "TrackPointsDetector" )
@@ -155,8 +157,9 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                         }
                     } while ( false );
                     detectorName = CexmcDetectorRoleName[ curDetectorRole ];
-                    G4cout << CEXMC_LINE_START "Track Points Scorer for "
-                               "detector '" << detectorName << "'" << G4endl;
+                    G4cout << CEXMC_LINE_START "TP Scorer of detector role '" <<
+                               detectorName << "' in volume '" << volumeName <<
+                               "'" << G4endl;
                     if ( scorer )
                     {
                         CexmcTrackPointsFilter *  filter(
@@ -198,61 +201,43 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                             break;
                         }
                     } while ( false );
-                    G4String  volumeName( G4String( ( *lvIter )->GetName() ) );
                     G4cout << CEXMC_LINE_START "Sensitive Region for logical "
-                               "volume '" << volumeName << "'" << G4endl;
+                               "volume '" << volumeName << "' registered" <<
+                               G4endl;
                     break;
                 }
                 if ( pair->type == "SpecialVolume" )
                 {
-                    G4String  volumeName( G4String( ( *lvIter )->GetName() ) );
                     do
                     {
                         if ( pair->value < 0.5 )
                         {
                             monitorVolume = *lvIter;
-                            G4cout << CEXMC_LINE_START "Monitor volume '" <<
-                                        volumeName << "' registered" << G4endl;
+                            G4cout << CEXMC_LINE_START "Monitor volume '";
                             break;
                         }
                         if ( pair->value < 1.5 )
                         {
                             vetoCounterVolume = *lvIter;
-                            G4cout << CEXMC_LINE_START "VetoCounter volume '" <<
-                                        volumeName << "' registered" << G4endl;
+                            G4cout << CEXMC_LINE_START "VetoCounter volume '";
                             break;
                         }
                         if ( pair->value < 2.5 )
                         {
-                            if ( calorimeterGeometryDataInitialized )
-                            {
-                                G4cout << CEXMC_LINE_START "WARNING: Another "
-                                        "source of calorimeter geometry volume "
-                                        "'" << volumeName << "' ignored" <<
-                                        G4endl;
-                            }
-                            else
-                            {
-                                calorimeterVolume = *lvIter;
-                                ReadCalorimeterGeometryData( *lvIter );
-                                G4cout << CEXMC_LINE_START "Calorimeter volume "
-                                        "'" << volumeName << "' registered" <<
-                                        G4endl;
-                                G4cout << CEXMC_LINE_START "Calorimeter "
-                                        "geometry was read from volume '" <<
-                                        volumeName << "'" << G4endl;
-                                calorimeterGeometryDataInitialized = true;
-                            }
+                            calorimeterVolume = *lvIter;
+                            G4cout << CEXMC_LINE_START "Calorimeter volume '";
+                            ReadCalorimeterGeometryData( *lvIter );
+                            calorimeterGeometryDataInitialized = true;
                             break;
                         }
                         if ( pair->value < 3.5 )
                         {
                             targetVolume = *lvIter;
-                            G4cout << CEXMC_LINE_START "Target volume '" <<
-                                        volumeName << "' registered" << G4endl;
+                            G4cout << CEXMC_LINE_START "Target volume '";
                             break;
                         }
                     } while ( false );
+                    G4cout << volumeName << "' registered" << G4endl;
                     break;
                 }
             }
@@ -279,6 +264,9 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
 
     if ( ! calorimeterRegionInitialized )
         throw CexmcException( CexmcCalorimeterRegionNotInitialized );
+
+    if ( ! calorimeterGeometryDataInitialized )
+        throw CexmcException( CexmcCalorimeterGeometryDataNotInitialized );
 
     for ( G4int  i( 0 ); i < CexmcNumberOfDetectorRoles; ++i )
     {
@@ -354,7 +342,7 @@ void  CexmcSetup::ReadCalorimeterGeometryData(
 
     lVolume = pVolume->GetLogicalVolume();
 
-    /* this is not necessarily a crystal itself as far as crystals can be
+    /* NB: this is not necessarily a crystal itself as far as crystals can be
      * wrapped in paper and other materials, but this is what reconstructor and
      * digitizers really need */
     G4Box *  crystalBox( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );

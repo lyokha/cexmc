@@ -81,6 +81,9 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcCalorimeterRegionNotInitialized :
         return CEXMC_LINE_START "Calorimeter sensitive region was not "
                 "initialized. Check gdml source file.";
+    case CexmcCalorimeterGeometryDataNotInitialized :
+        return CEXMC_LINE_START "Calorimeter geometry data was not "
+                "initialized. Check gdml source file.";
     case CexmcKinematicsException :
         return CEXMC_LINE_START "Kinematics exception. "
                 "Check your production model.";

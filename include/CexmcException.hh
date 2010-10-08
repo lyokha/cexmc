@@ -39,6 +39,7 @@ enum  CexmcExceptionType
     CexmcBadOCVetoAlgorithm,
     CexmcBadOCVetoFraction,
     CexmcCalorimeterRegionNotInitialized,
+    CexmcCalorimeterGeometryDataNotInitialized,
     CexmcKinematicsException,
     CexmcPoorEventData,
     CexmcIncompatibleGeometry,

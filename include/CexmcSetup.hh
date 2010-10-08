@@ -23,6 +23,7 @@
 #include <G4AffineTransform.hh>
 #include <G4ThreeVector.hh>
 #include <G4RotationMatrix.hh>
+#include <G4String.hh>
 
 class  G4GDMLParser;
 class  G4LogicalVolume;
