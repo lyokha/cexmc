@@ -23,16 +23,22 @@
 #include <G4NavigationHistory.hh>
 #include <G4AffineTransform.hh>
 #include <G4UnitsTable.hh>
+#include <G4RunManager.hh>
 #include "CexmcSteppingAction.hh"
 #include "CexmcPhysicsManager.hh"
+#include "CexmcSetup.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
 #include "CexmcCommon.hh"
 
 
 CexmcSteppingAction::CexmcSteppingAction(
                                     CexmcPhysicsManager *  physicsManager ) :
-    physicsManager( physicsManager )
+    physicsManager( physicsManager ), targetVolume( NULL )
 {
+    G4RunManager *      runManager( G4RunManager::GetRunManager() );
+    const CexmcSetup *  setup( static_cast< const CexmcSetup * >(
+                                runManager->GetUserDetectorConstruction() ) );
+    targetVolume = setup->GetVolume( CexmcSetup::Target );
 }
 
 
@@ -54,7 +60,7 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
     const G4VTouchable *  touchable( postStepPoint->GetTouchable() );
     G4VPhysicalVolume *   volume( touchable->GetVolume() );
 
-    if ( volume && volume->GetName() == "Target" )
+    if ( volume && volume->GetLogicalVolume() == targetVolume )
     {
         if ( ! theTrackInfo->IsStudiedProcessActivated() )
         {
@@ -76,7 +82,7 @@ void  CexmcSteppingAction::UserSteppingAction( const G4Step *  step )
     touchable = preStepPoint->GetTouchable();
     volume = touchable->GetVolume();
 
-    if ( volume && volume->GetName() == "Target" )
+    if ( volume && volume->GetLogicalVolume() == targetVolume )
     {
         if ( stepStatus == fGeomBoundary )
             theTrackInfo->ActivateStudiedProcess( false );

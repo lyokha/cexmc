@@ -20,27 +20,29 @@
 #include <G4Step.hh>
 #include <G4StepPoint.hh>
 #include <G4VTouchable.hh>
+#include <G4VPhysicalVolume.hh>
 #include <G4UnitsTable.hh>
 #include "CexmcEnergyDepositInLeftRightSet.hh"
+#include "CexmcSetup.hh"
 
 
 G4int  CexmcEnergyDepositInLeftRightSet::leftRightBitsOffset( 16 );
 
 
 CexmcEnergyDepositInLeftRightSet::CexmcEnergyDepositInLeftRightSet(
-                            const G4String &  name ) :
-    CexmcSimpleEnergyDeposit( name )
+                        const G4String &  name, const CexmcSetup *  setup ) :
+    CexmcSimpleEnergyDeposit( name ), setup( setup )
 {
 }
 
 
 G4int  CexmcEnergyDepositInLeftRightSet::GetIndex( G4Step *  step )
 {
-    G4int          ret( 0 );
-    G4StepPoint *  preStep( step->GetPreStepPoint() );
-    G4String       volumeName( preStep->GetPhysicalVolume()->GetName() );
+    G4int                ret( 0 );
+    G4StepPoint *        preStep( step->GetPreStepPoint() );
+    G4VPhysicalVolume *  pVolume( preStep->GetPhysicalVolume() );
 
-    if ( volumeName.contains( "Right" ) )
+    if ( setup->IsRightDetector( pVolume ) )
         ret |= 1 << leftRightBitsOffset;
 
     return ret;

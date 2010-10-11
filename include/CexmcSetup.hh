@@ -72,22 +72,28 @@ class  CexmcSetup : public G4VUserDetectorConstruction
 
         const G4AffineTransform &  GetCalorimeterRightTransform( void ) const;
 
-        void   ConvertToCrystalGeometry( const G4ThreeVector &  src,
+        void    ConvertToCrystalGeometry( const G4ThreeVector &  src,
                     G4int &  row, G4int &  column, G4ThreeVector &  dst ) const;
 
         const CalorimeterGeometryData &  GetCalorimeterGeometry( void ) const;
 
         const G4LogicalVolume *  GetVolume( SpecialVolumeType  volume ) const;
 
+        G4bool  IsRightDetector( const G4VPhysicalVolume *  pVolume ) const;
+
+        G4bool  IsRightCalorimeter( const G4VPhysicalVolume *  pVolume ) const;
+
     private:
-        void   SetupSpecialVolumes( G4GDMLParser &  gdmlParser );
+        void    SetupSpecialVolumes( G4GDMLParser &  gdmlParser );
 
-        void   ReadTransforms( const G4GDMLParser & gdmlParser );
+        void    ReadTransforms( const G4GDMLParser & gdmlParser );
 
-        void   ReadCalorimeterGeometryData( const G4LogicalVolume * lVolume );
+        void    ReadCalorimeterGeometryData( const G4LogicalVolume * lVolume );
 
-        void   RotateMatrix( const G4ThreeVector &  pos,
-                             G4RotationMatrix &  rm );
+        void    RotateMatrix( const G4ThreeVector &  pos,
+                              G4RotationMatrix &  rm );
+
+        void    ReadRightDetectors( void );
 
     private:
         G4VPhysicalVolume *      world;
@@ -107,6 +113,10 @@ class  CexmcSetup : public G4VUserDetectorConstruction
         G4LogicalVolume *        calorimeterVolume;
 
         G4LogicalVolume *        targetVolume;
+
+        G4VPhysicalVolume *      rightVetoCounter;
+
+        G4VPhysicalVolume *      rightCalorimeter;
 
         G4AffineTransform        targetTransform;
 
@@ -163,6 +173,26 @@ inline const G4LogicalVolume *  CexmcSetup::GetVolume(
     }
 
     return NULL;
+}
+
+
+inline G4bool  CexmcSetup::IsRightDetector(
+                                    const G4VPhysicalVolume *  pVolume ) const
+{
+    if ( pVolume == rightVetoCounter || pVolume == rightCalorimeter )
+        return true;
+
+    return false;
+}
+
+
+inline G4bool  CexmcSetup::IsRightCalorimeter(
+                                    const G4VPhysicalVolume *  pVolume ) const
+{
+    if ( pVolume == rightCalorimeter )
+        return true;
+
+    return false;
 }
 
 

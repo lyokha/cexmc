@@ -23,17 +23,23 @@
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcCommon.hh"
 
+class  CexmcSetup;
+
 
 class  CexmcEnergyDepositInLeftRightSet : public CexmcSimpleEnergyDeposit
 {
     public:
-        explicit CexmcEnergyDepositInLeftRightSet( const G4String &  name );
+        CexmcEnergyDepositInLeftRightSet( const G4String &  name,
+                                          const CexmcSetup *  setup );
 
     public:
         void  PrintAll( void );
 
     protected:
         G4int  GetIndex( G4Step *  step );
+
+    protected:
+        const CexmcSetup *  setup;
 
     public:
         static CexmcSide  GetSide( G4int  index );

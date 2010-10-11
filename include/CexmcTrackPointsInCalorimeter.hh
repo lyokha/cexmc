@@ -21,11 +21,14 @@
 
 #include "CexmcTrackPointsInLeftRightSet.hh"
 
+class  CexmcSetup;
+
 
 class  CexmcTrackPointsInCalorimeter : public CexmcTrackPointsInLeftRightSet
 {
     public:
-        explicit CexmcTrackPointsInCalorimeter( const G4String &  name );
+        CexmcTrackPointsInCalorimeter( const G4String &  name,
+                                       const CexmcSetup *  setup );
 
     public:
         void  PrintAll( void );

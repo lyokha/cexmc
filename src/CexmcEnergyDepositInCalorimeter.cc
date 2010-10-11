@@ -19,17 +19,19 @@
 #include <G4Step.hh>
 #include <G4StepPoint.hh>
 #include <G4VTouchable.hh>
+#include <G4VPhysicalVolume.hh>
 #include <G4NavigationHistory.hh>
 #include <G4UnitsTable.hh>
 #include "CexmcEnergyDepositInCalorimeter.hh"
+#include "CexmcSetup.hh"
 
 
 G4int  CexmcEnergyDepositInCalorimeter::copyDepth1BitsOffset( 8 );
 
 
 CexmcEnergyDepositInCalorimeter::CexmcEnergyDepositInCalorimeter(
-                            const G4String &  name ) :
-    CexmcEnergyDepositInLeftRightSet( name )
+                        const G4String &  name, const CexmcSetup *  setup ) :
+    CexmcEnergyDepositInLeftRightSet( name, setup )
 {
 }
 
@@ -41,9 +43,10 @@ G4int  CexmcEnergyDepositInCalorimeter::GetIndex( G4Step *  step )
     const G4VTouchable *         touchable( preStep->GetTouchable() );
     const G4NavigationHistory *  navHistory( touchable->GetHistory() );
     G4int                        navDepth( navHistory->GetDepth() );
-    G4String                     volumeName( navHistory->GetVolume(
-                                                    navDepth - 2 )->GetName() );
-    if ( volumeName.contains( "Right" ) )
+    G4VPhysicalVolume *          pVolume( navHistory->GetVolume(
+                                                        navDepth - 2 ) );
+
+    if ( setup->IsRightCalorimeter( pVolume ) )
         ret |= 1 << leftRightBitsOffset;
 
     ret |= touchable->GetReplicaNumber( 0 );

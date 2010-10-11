@@ -23,17 +23,23 @@
 #include "CexmcTrackPoints.hh"
 #include "CexmcCommon.hh"
 
+class  CexmcSetup;
+
 
 class  CexmcTrackPointsInLeftRightSet : public CexmcTrackPoints
 {
     public:
-        explicit CexmcTrackPointsInLeftRightSet( const G4String &  name );
+        CexmcTrackPointsInLeftRightSet( const G4String &  name,
+                                        const CexmcSetup *  setup );
 
     public:
         void  PrintAll( void );
 
     protected:
         G4int  GetIndex( G4Step *  step );
+
+    protected:
+        const CexmcSetup *  setup;
 
     public:
         static CexmcSide  GetSide( G4int  index );

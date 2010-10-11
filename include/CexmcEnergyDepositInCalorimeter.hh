@@ -21,11 +21,14 @@
 
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 
+class  CexmcSetup;
+
 
 class  CexmcEnergyDepositInCalorimeter : public CexmcEnergyDepositInLeftRightSet
 {
     public:
-        explicit CexmcEnergyDepositInCalorimeter( const G4String &  name );
+        CexmcEnergyDepositInCalorimeter( const G4String &  name,
+                                         const CexmcSetup *  setup );
 
     public:
         void  PrintAll( void );

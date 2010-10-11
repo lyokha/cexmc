@@ -23,6 +23,7 @@
 #include <G4SDManager.hh>
 #include <G4LogicalVolume.hh>
 #include <G4VPhysicalVolume.hh>
+#include <G4PhysicalVolumeStore.hh>
 #include <G4Box.hh>
 #include <G4LogicalVolumeStore.hh>
 #include <G4Region.hh>
@@ -46,7 +47,8 @@ CexmcSetup::CexmcSetup( const G4String &  gdmlFile, G4bool  validateGDMLFile ) :
     world( 0 ), gdmlFile( gdmlFile ), validateGDMLFile( validateGDMLFile ),
     calorimeterRegionInitialized( false ),
     calorimeterGeometryDataInitialized( false ), monitorVolume( NULL ),
-    vetoCounterVolume( NULL ), calorimeterVolume( NULL ), targetVolume( NULL )
+    vetoCounterVolume( NULL ), calorimeterVolume( NULL ), targetVolume( NULL ),
+    rightVetoCounter( NULL ), rightCalorimeter( NULL )
 {
 }
 
@@ -64,6 +66,8 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
     SetupSpecialVolumes( gdmlParser );
 
     ReadTransforms( gdmlParser );
+
+    ReadRightDetectors();
 
     return world;
 }
@@ -106,14 +110,16 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                         {
                             curDetectorRole = CexmcVetoCounterDetectorRole;
                             scorer = new CexmcEnergyDepositInLeftRightSet(
-                                    CexmcDetectorTypeName[ CexmcEDDetector ] );
+                                    CexmcDetectorTypeName[ CexmcEDDetector ],
+                                    this );
                             break;
                         }
                         if ( pair->value < 2.5 )
                         {
                             curDetectorRole = CexmcCalorimeterDetectorRole;
                             scorer = new CexmcEnergyDepositInCalorimeter(
-                                    CexmcDetectorTypeName[ CexmcEDDetector ] );
+                                    CexmcDetectorTypeName[ CexmcEDDetector ],
+                                    this );
                             break;
                         }
                     } while ( false );
@@ -138,14 +144,16 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                         {
                             curDetectorRole = CexmcVetoCounterDetectorRole;
                             scorer = new CexmcTrackPointsInLeftRightSet(
-                                    CexmcDetectorTypeName[ CexmcTPDetector ] );
+                                    CexmcDetectorTypeName[ CexmcTPDetector ],
+                                    this );
                             break;
                         }
                         if ( pair->value < 2.5 )
                         {
                             curDetectorRole = CexmcCalorimeterDetectorRole;
                             scorer = new CexmcTrackPointsInCalorimeter(
-                                    CexmcDetectorTypeName[ CexmcTPDetector ] );
+                                    CexmcDetectorTypeName[ CexmcTPDetector ],
+                                    this );
                             break;
                         }
                         if ( pair->value < 3.5 )
@@ -385,5 +393,31 @@ void  CexmcSetup::RotateMatrix( const G4ThreeVector &  rot,
     rm.rotateX( rot.x() );
     rm.rotateY( rot.y() );
     rm.rotateZ( rot.z() );
+}
+
+
+void  CexmcSetup::ReadRightDetectors( void )
+{
+    G4PhysicalVolumeStore *  pvs( G4PhysicalVolumeStore::GetInstance() );
+
+    for ( std::vector< G4VPhysicalVolume * >::const_iterator  k( pvs->begin() );
+                                                        k != pvs->end(); ++k )
+    {
+        do
+        {
+            if ( ( *k )->GetLogicalVolume() == vetoCounterVolume )
+            {
+                if ( ( *k )->GetName().contains( "Right" ) )
+                    rightVetoCounter = *k;
+                break;
+            }
+            if ( ( *k )->GetLogicalVolume() == calorimeterVolume )
+            {
+                if ( ( *k )->GetName().contains( "Right" ) )
+                    rightCalorimeter = *k;
+                break;
+            }
+        } while ( false );
+    }
 }
 

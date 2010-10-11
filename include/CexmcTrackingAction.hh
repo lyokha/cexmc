@@ -22,8 +22,9 @@
 #include <G4UserTrackingAction.hh>
 #include "CexmcCommon.hh"
 
-class  G4ParticleDefinition;
 class  G4Track;
+class  G4LogicalVolume;
+class  G4ParticleDefinition;
 class  CexmcPhysicsManager;
 
 
@@ -45,18 +46,20 @@ class  CexmcTrackingAction : public G4UserTrackingAction
         void  SetupIncidentParticleTrackInfo( const G4Track *  track );
 
     private:
-        CexmcPhysicsManager *   physicsManager;
+        CexmcPhysicsManager *    physicsManager;
 
-        G4int                   outputParticleTrackId;
+        const G4LogicalVolume *  targetVolume;
 
-        G4int                   outputParticleDecayProductCopyNumber;
+        G4int                    outputParticleTrackId;
+
+        G4int                    outputParticleDecayProductCopyNumber;
 
     private:
-        G4ParticleDefinition *  incidentParticle;
+        G4ParticleDefinition *   incidentParticle;
 
-        G4ParticleDefinition *  outputParticle;
+        G4ParticleDefinition *   outputParticle;
 
-        G4ParticleDefinition *  nucleusOutputParticle;
+        G4ParticleDefinition *   nucleusOutputParticle;
 };
 
 

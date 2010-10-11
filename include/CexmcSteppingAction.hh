@@ -22,6 +22,7 @@
 #include <G4UserSteppingAction.hh>
 
 class  G4Step;
+class  G4LogicalVolume;
 class  CexmcPhysicsManager;
 
 
@@ -34,7 +35,9 @@ class  CexmcSteppingAction : public G4UserSteppingAction
         void  UserSteppingAction( const G4Step *  step );
 
     private:
-        CexmcPhysicsManager *  physicsManager;
+        CexmcPhysicsManager *    physicsManager;
+
+        const G4LogicalVolume *  targetVolume;
 };
 
 
