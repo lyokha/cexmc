@@ -24,6 +24,7 @@
 #include <G4ThreeVector.hh>
 #include <G4RotationMatrix.hh>
 #include <G4String.hh>
+#include "CexmcSensitiveDetectorsAttributes.hh"
 
 class  G4GDMLParser;
 class  G4LogicalVolume;
@@ -94,6 +95,10 @@ class  CexmcSetup : public G4VUserDetectorConstruction
                               G4RotationMatrix &  rm );
 
         void    ReadRightDetectors( void );
+
+    private:
+        static void  AssertAndAsignDetectorRole(
+                CexmcDetectorRole &  detectorRole, CexmcDetectorRole  value );
 
     private:
         G4VPhysicalVolume *      world;

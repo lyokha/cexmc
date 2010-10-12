@@ -40,7 +40,6 @@
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
 #include "CexmcException.hh"
-#include "CexmcSensitiveDetectorsAttributes.hh"
 
 
 CexmcSetup::CexmcSetup( const G4String &  gdmlFile, G4bool  validateGDMLFile ) :
@@ -87,12 +86,12 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                                                                     *lvIter ) );
         std::vector< G4GDMLAuxPairType >::const_iterator  pair(
                                                             auxInfo.begin() );
+        CexmcDetectorRole  curDetectorRole( CexmcNumberOfDetectorRoles );
 
         for( pair = auxInfo.begin(); pair != auxInfo.end(); ++pair )
         {
             G4VPrimitiveScorer *  scorer( NULL );
             G4String              detectorName( "uninitialized" );
-            CexmcDetectorRole     curDetectorRole( CexmcMonitorDetectorRole );
             do
             {
                 if ( pair->type == "EnergyDepositDetector" )
@@ -101,14 +100,16 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                     {
                         if ( pair->value < 0.5 )
                         {
-                            curDetectorRole = CexmcMonitorDetectorRole;
+                            AssertAndAsignDetectorRole( curDetectorRole,
+                                                CexmcMonitorDetectorRole );
                             scorer = new CexmcSimpleEnergyDeposit(
                                     CexmcDetectorTypeName[ CexmcEDDetector ] );
                             break;
                         }
                         if ( pair->value < 1.5 )
                         {
-                            curDetectorRole = CexmcVetoCounterDetectorRole;
+                            AssertAndAsignDetectorRole( curDetectorRole,
+                                                CexmcVetoCounterDetectorRole );
                             scorer = new CexmcEnergyDepositInLeftRightSet(
                                     CexmcDetectorTypeName[ CexmcEDDetector ],
                                     this );
@@ -116,7 +117,8 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                         }
                         if ( pair->value < 2.5 )
                         {
-                            curDetectorRole = CexmcCalorimeterDetectorRole;
+                            AssertAndAsignDetectorRole( curDetectorRole,
+                                                CexmcCalorimeterDetectorRole );
                             scorer = new CexmcEnergyDepositInCalorimeter(
                                     CexmcDetectorTypeName[ CexmcEDDetector ],
                                     this );
@@ -135,14 +137,16 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                     {
                         if ( pair->value < 0.5 )
                         {
-                            curDetectorRole = CexmcMonitorDetectorRole;
+                            AssertAndAsignDetectorRole( curDetectorRole,
+                                                CexmcMonitorDetectorRole );
                             scorer = new CexmcTrackPoints(
                                     CexmcDetectorTypeName[ CexmcTPDetector ] );
                             break;
                         }
                         if ( pair->value < 1.5 )
                         {
-                            curDetectorRole = CexmcVetoCounterDetectorRole;
+                            AssertAndAsignDetectorRole( curDetectorRole,
+                                                CexmcVetoCounterDetectorRole );
                             scorer = new CexmcTrackPointsInLeftRightSet(
                                     CexmcDetectorTypeName[ CexmcTPDetector ],
                                     this );
@@ -150,7 +154,8 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                         }
                         if ( pair->value < 2.5 )
                         {
-                            curDetectorRole = CexmcCalorimeterDetectorRole;
+                            AssertAndAsignDetectorRole( curDetectorRole,
+                                                CexmcCalorimeterDetectorRole );
                             scorer = new CexmcTrackPointsInCalorimeter(
                                     CexmcDetectorTypeName[ CexmcTPDetector ],
                                     this );
@@ -158,7 +163,8 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                         }
                         if ( pair->value < 3.5 )
                         {
-                            curDetectorRole = CexmcTargetDetectorRole;
+                            AssertAndAsignDetectorRole( curDetectorRole,
+                                                CexmcTargetDetectorRole );
                             scorer = new CexmcTrackPoints(
                                     CexmcDetectorTypeName[ CexmcTPDetector ] );
                             break;
@@ -419,5 +425,15 @@ void  CexmcSetup::ReadRightDetectors( void )
             }
         } while ( false );
     }
+}
+
+
+void  CexmcSetup::AssertAndAsignDetectorRole( CexmcDetectorRole &  detectorRole,
+                                              CexmcDetectorRole  value )
+{
+    if ( detectorRole != CexmcNumberOfDetectorRoles && detectorRole != value )
+        throw CexmcException( CexmcMultipleDetectorRoles );
+
+    detectorRole = value;
 }
 

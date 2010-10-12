@@ -84,6 +84,9 @@ const char *  CexmcException::what( void ) const throw()
     case CexmcCalorimeterGeometryDataNotInitialized :
         return CEXMC_LINE_START "Calorimeter geometry data was not "
                 "initialized. Check gdml source file.";
+    case CexmcMultipleDetectorRoles :
+        return CEXMC_LINE_START "Multiple detector roles for one logical "
+                "volume. Check gdml source file.";
     case CexmcKinematicsException :
         return CEXMC_LINE_START "Kinematics exception. "
                 "Check your production model.";
