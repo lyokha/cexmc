@@ -393,15 +393,6 @@ void  CexmcSetup::ConvertToCrystalGeometry( const G4ThreeVector &  src,
 }
 
 
-void  CexmcSetup::RotateMatrix( const G4ThreeVector &  rot,
-                                G4RotationMatrix &  rm )
-{
-    rm.rotateX( rot.x() );
-    rm.rotateY( rot.y() );
-    rm.rotateZ( rot.z() );
-}
-
-
 void  CexmcSetup::ReadRightDetectors( void )
 {
     G4PhysicalVolumeStore *  pvs( G4PhysicalVolumeStore::GetInstance() );
@@ -409,6 +400,14 @@ void  CexmcSetup::ReadRightDetectors( void )
     for ( std::vector< G4VPhysicalVolume * >::const_iterator  k( pvs->begin() );
                                                         k != pvs->end(); ++k )
     {
+        /* FIXME: it would be more reasonable to find detectors from volumes
+         * tagged with 'EnergyDepositDetector' or 'TrackPointsDetector', and not
+         * from volumes tagged with 'SpecialVolume' as it is done here. However
+         * in case of calorimeters the role of detectors are played by crystal
+         * volumes, not the calorimeters themselves, but only calorimeters can
+         * hold information about their left or right positions! Thus, following
+         * considerations of convenience, right detectors for all detector roles
+         * are chosen from volumes tagged with 'SpecialVolume' */
         do
         {
             if ( ( *k )->GetLogicalVolume() == vetoCounterVolume )
@@ -435,5 +434,14 @@ void  CexmcSetup::AssertAndAsignDetectorRole( CexmcDetectorRole &  detectorRole,
         throw CexmcException( CexmcMultipleDetectorRoles );
 
     detectorRole = value;
+}
+
+
+void  CexmcSetup::RotateMatrix( const G4ThreeVector &  rot,
+                                G4RotationMatrix &  rm )
+{
+    rm.rotateX( rot.x() );
+    rm.rotateY( rot.y() );
+    rm.rotateZ( rot.z() );
 }
 

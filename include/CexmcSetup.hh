@@ -91,14 +91,14 @@ class  CexmcSetup : public G4VUserDetectorConstruction
 
         void    ReadCalorimeterGeometryData( const G4LogicalVolume * lVolume );
 
-        void    RotateMatrix( const G4ThreeVector &  pos,
-                              G4RotationMatrix &  rm );
-
         void    ReadRightDetectors( void );
 
     private:
         static void  AssertAndAsignDetectorRole(
                 CexmcDetectorRole &  detectorRole, CexmcDetectorRole  value );
+
+        static void  RotateMatrix( const G4ThreeVector &  pos,
+                                   G4RotationMatrix &  rm );
 
     private:
         G4VPhysicalVolume *      world;
