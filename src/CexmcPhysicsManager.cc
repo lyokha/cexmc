@@ -17,21 +17,20 @@
  */
 
 #include "CexmcPhysicsManager.hh"
+#include "CexmcPhysicsManagerMessenger.hh"
+#include "CexmcCommon.hh"
 
-CexmcPhysicsManager::CexmcPhysicsManager() :
+CexmcPhysicsManager::CexmcPhysicsManager() : basicMaxIL( CexmcDblMax ),
+    maxILCorrection( 0 ), proposedMaxIL( CexmcDblMax ),
     numberOfTriggeredStudiedInteractions( 0 ),
-    onlyBeamParticleCanTriggerStudiedProcess( false )
+    onlyBeamParticleCanTriggerStudiedProcess( false ), messenger( NULL )
 {
+    messenger = new CexmcPhysicsManagerMessenger( this );
 }
 
 
 CexmcPhysicsManager::~CexmcPhysicsManager()
 {
-}
-
-
-G4double  CexmcPhysicsManager::GetProposedMaxIL( G4double  dimension )
-{
-    return dimension;
+    delete messenger;
 }
 

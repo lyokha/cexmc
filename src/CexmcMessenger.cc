@@ -134,42 +134,44 @@ CexmcMessenger::CexmcMessenger() : mainDir( NULL ), geometryDir( NULL ),
     vetoCounterDir->SetGuidance( "Various settings for the veto counters." );
     vetoCounterLeftDir = new G4UIdirectory( vetoCounterLeftDirName );
     vetoCounterLeftDir->SetGuidance(
-                            "Various settings for the left veto counter." );
+            "\n    Various settings for the left veto counter." );
     vetoCounterRightDir = new G4UIdirectory( vetoCounterRightDirName );
     vetoCounterRightDir->SetGuidance(
-                            "Various settings for the right veto counter." );
+            "\n    Various settings for the right veto counter." );
     calorimeterDir = new G4UIdirectory( calorimeterDirName );
     calorimeterDir->SetGuidance( "Various settings for the calorimeters." );
     calorimeterLeftDir = new G4UIdirectory( calorimeterLeftDirName );
     calorimeterLeftDir->SetGuidance(
-                            "Various settings for the left calorimeter." );
+            "\n    Various settings for the left calorimeter." );
     calorimeterRightDir = new G4UIdirectory( calorimeterRightDirName );
     calorimeterRightDir->SetGuidance(
-                            "Various settings for the right calorimeter." );
+            "\n    Various settings for the right calorimeter." );
     monitorEDDir = new G4UIdirectory( monitorEDDirName );
     monitorEDDir->SetGuidance(
-            "Energy deposit settings in the monitor (thresholds etc.)" );
+            "\n    Energy deposit settings in the monitor (thresholds etc.)" );
     vetoCounterEDDir = new G4UIdirectory( vetoCounterEDDirName );
     vetoCounterEDDir->SetGuidance(
-            "Energy deposit settings in both veto counters (thresholds etc.)" );
+            "\n    Energy deposit settings in both veto counters "
+            "(thresholds etc.)" );
     vetoCounterLeftEDDir = new G4UIdirectory( vetoCounterLeftEDDirName );
     vetoCounterLeftEDDir->SetGuidance(
-            "Energy deposit settings in the left veto counter "
+            "\n    Energy deposit settings in the left veto counter "
             "(thresholds etc.)" );
     vetoCounterRightEDDir = new G4UIdirectory( vetoCounterRightEDDirName );
     vetoCounterRightEDDir->SetGuidance(
-            "Energy deposit settings in the right veto counter "
+            "\n    Energy deposit settings in the right veto counter "
             "(thresholds etc.)" );
     calorimeterEDDir = new G4UIdirectory( calorimeterEDDirName );
     calorimeterEDDir->SetGuidance(
-            "Energy deposit settings in both calorimeters (thresholds etc.)" );
+            "\n    Energy deposit settings in both calorimeters "
+            "(thresholds etc.)" );
     calorimeterLeftEDDir = new G4UIdirectory( calorimeterLeftEDDirName );
     calorimeterLeftEDDir->SetGuidance(
-            "Energy deposit settings in the left calorimeter "
+            "\n    Energy deposit settings in the left calorimeter "
             "(thresholds etc.)" );
     calorimeterRightEDDir = new G4UIdirectory( calorimeterRightEDDirName );
     calorimeterRightEDDir->SetGuidance(
-            "Energy deposit settings in the right calorimeter "
+            "\n    Energy deposit settings in the right calorimeter "
             "(thresholds etc.)" );
     reconstructorDir = new G4UIdirectory( reconstructorDirName );
     reconstructorDir->SetGuidance( "Reconstructor settings" );

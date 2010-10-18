@@ -21,6 +21,7 @@
 
 #include <G4ParticleGun.hh>
 #include <G4ThreeVector.hh>
+#include "CexmcPhysicsManager.hh"
 #include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 
@@ -30,7 +31,8 @@ class  CexmcParticleGunMessenger;
 class  CexmcParticleGun : public G4ParticleGun
 {
     public:
-        explicit CexmcParticleGun( G4int  nmbOfParticles );
+        explicit CexmcParticleGun( CexmcPhysicsManager *  physicsManager,
+                                   G4int  nmbOfParticles = 1 );
 
         ~CexmcParticleGun();
 
@@ -57,11 +59,13 @@ class  CexmcParticleGun : public G4ParticleGun
                                G4bool  fromMessenger = true );
 
     private:
-        G4ThreeVector  origPos;
+        CexmcPhysicsManager *        physicsManager;
 
-        G4ThreeVector  origDir;
+        G4ThreeVector                origPos;
 
-        G4double       origMomentumAmp;
+        G4ThreeVector                origDir;
+
+        G4double                     origMomentumAmp;
 
     private:
         CexmcParticleGunMessenger *  messenger;
@@ -121,6 +125,8 @@ inline void  CexmcParticleGun::SetOrigDirection(
     }
 
     origDir = direction;
+
+    physicsManager->SetMaxIL( direction );
 }
 
 

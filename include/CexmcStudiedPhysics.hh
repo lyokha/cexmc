@@ -33,9 +33,6 @@ template  < typename  Process >
 class  CexmcStudiedPhysics : public G4VPhysicsConstructor
 {
     public:
-        typedef Process  ProcessType;
-
-    public:
         explicit CexmcStudiedPhysics( CexmcPhysicsManager *  physicsManager );
 
         virtual ~CexmcStudiedPhysics();

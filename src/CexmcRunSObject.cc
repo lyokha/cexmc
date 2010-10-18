@@ -66,7 +66,8 @@ CexmcRunSObject::CexmcRunSObject(
         G4int  numberOfEventsToBeProcessed, const std::string &  rProject,
         G4bool  interactionsWithoutEDTWereSkipped,
         const std::string &  cfFileName,
-        CexmcEventDataVerboseLevel  evDataVerboseLevel ) :
+        CexmcEventDataVerboseLevel  evDataVerboseLevel,
+        G4double  proposedMaxIL ) :
     basePhysicsUsed( basePhysicsUsed ),
     productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
     etaDecayTable( etaDecayTable ), angularRanges( angularRanges ),
@@ -110,7 +111,8 @@ CexmcRunSObject::CexmcRunSObject(
     numberOfEventsToBeProcessed( numberOfEventsToBeProcessed ),
     rProject( rProject ),
     interactionsWithoutEDTWereSkipped( interactionsWithoutEDTWereSkipped ),
-    cfFileName( cfFileName ), evDataVerboseLevel( evDataVerboseLevel )
+    cfFileName( cfFileName ), evDataVerboseLevel( evDataVerboseLevel ),
+    proposedMaxIL( proposedMaxIL ), actualVersion( CEXMC_RUN_SOBJECT_VERSION )
 {
 }
 

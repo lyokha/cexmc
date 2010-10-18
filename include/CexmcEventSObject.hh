@@ -25,8 +25,6 @@
 #include "CexmcSimpleProductionModelDataStore.hh"
 #include "CexmcCommon.hh"
 
-#define CEXMC_EVENT_SOBJECT_VERSION 1
-
 class  CexmcTrackPointInfo;
 class  CexmcProductionModelData;
 
@@ -114,12 +112,10 @@ class  CexmcEventSObject
 
 
 template  < typename  Archive >
-void  CexmcEventSObject::serialize( Archive &  archive,
-                                    const unsigned int  version )
+void  CexmcEventSObject::serialize( Archive &  archive, const unsigned int )
 {
     archive & eventId;
-    if ( version > 0 )
-        archive & edDigitizerMonitorHasTriggered;
+    archive & edDigitizerMonitorHasTriggered;
     archive & monitorED;
     archive & vetoCounterEDLeft;
     archive & vetoCounterEDRight;
@@ -139,9 +135,6 @@ void  CexmcEventSObject::serialize( Archive &  archive,
     archive & calorimeterTPRight;
     archive & productionModelData;
 }
-
-
-BOOST_CLASS_VERSION( CexmcEventSObject, CEXMC_EVENT_SOBJECT_VERSION )
 
 
 #endif

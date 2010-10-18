@@ -24,13 +24,15 @@
 
 class  G4Event;
 class  CexmcParticleGun;
+class  CexmcPhysicsManager;
 class  CexmcPrimaryGeneratorActionMessenger;
 
 
 class  CexmcPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
     public:
-        CexmcPrimaryGeneratorAction();
+        explicit CexmcPrimaryGeneratorAction(
+                                        CexmcPhysicsManager *  physicsManager );
 
         ~CexmcPrimaryGeneratorAction();
 

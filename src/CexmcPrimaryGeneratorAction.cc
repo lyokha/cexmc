@@ -26,11 +26,12 @@
 #include "CexmcCommon.hh"
 
 
-CexmcPrimaryGeneratorAction::CexmcPrimaryGeneratorAction() :
+CexmcPrimaryGeneratorAction::CexmcPrimaryGeneratorAction(
+                                    CexmcPhysicsManager *  physicsManager ) :
     particleGun( NULL ), fwhmPosX( 0 ), fwhmPosY( 0 ), fwhmDirX( 0 ),
     fwhmDirY( 0 ), messenger( NULL )
 {
-    particleGun = new CexmcParticleGun( 1 );
+    particleGun = new CexmcParticleGun( physicsManager );
     messenger = new CexmcPrimaryGeneratorActionMessenger( this );
 }
 

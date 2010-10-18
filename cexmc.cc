@@ -342,8 +342,18 @@ int  main( int  argc, char **  argv )
         if ( productionModelType == CexmcUnknownProductionModel )
             throw CexmcException( CexmcPreinitException );
 
-        G4VUserPhysicsList *  physicsList( CexmcChargeExchangePMFactory::
+        G4VUserPhysicsList *    physicsList( CexmcChargeExchangePMFactory::
                                                 Create( productionModelType ) );
+        CexmcPhysicsManager *   physicsManager(
+                        dynamic_cast< CexmcPhysicsManager * >( physicsList ) );
+        CexmcProductionModel *  productionModel(
+                                        physicsManager->GetProductionModel() );
+
+        if ( ! productionModel )
+            throw CexmcException( CexmcWeirdException );
+
+        G4cout << CEXMC_LINE_START << "Production model '" <<
+                productionModel->GetName() << "' instantiated" << G4endl;
 
         runManager->SetUserInitialization( physicsList );
 
@@ -354,12 +364,10 @@ int  main( int  argc, char **  argv )
 
         runManager->Initialize();
 
-        runManager->SetUserAction( new CexmcPrimaryGeneratorAction );
-
-        CexmcPhysicsManager *  physicsManager(
-                        dynamic_cast< CexmcPhysicsManager * >( physicsList ) );
-
         runManager->SetPhysicsManager( physicsManager );
+
+        runManager->SetUserAction( new CexmcPrimaryGeneratorAction(
+                                                            physicsManager ) );
 
         runManager->SetUserAction( new CexmcEventAction( physicsManager ) );
 
@@ -394,12 +402,6 @@ int  main( int  argc, char **  argv )
         if ( cmdLineData.initMacro != "" )
             uiManager->ApplyCommand( "/control/execute " +
                                      cmdLineData.initMacro );
-
-        CexmcProductionModel *  productionModel(
-                                        physicsManager->GetProductionModel() );
-
-        if ( ! productionModel )
-            throw CexmcException( CexmcWeirdException );
 
         if ( cmdLineData.isInteractive )
         {

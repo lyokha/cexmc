@@ -157,6 +157,8 @@ class  CexmcReconstructor
 
         G4AffineTransform                    targetTransform;
 
+        G4bool                               targetEPInitialized;
+
     private:
         CexmcReconstructorMessenger *        messenger;
 };

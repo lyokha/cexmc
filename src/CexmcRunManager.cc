@@ -299,6 +299,8 @@ void  CexmcRunManager::ReadProject( void )
     reconstructor->SetAbsorbedEnergyCutCRWidth( sObject.aeCutCRWidth );
     reconstructor->SetAbsorbedEnergyCutEllipseAngle( sObject.aeCutAngle );
 
+    physicsManager->SetProposedMaxIL( sObject.proposedMaxIL );
+
     rEvDataVerboseLevel = sObject.evDataVerboseLevel;
     evDataVerboseLevel = rEvDataVerboseLevel;
 }
@@ -421,7 +423,7 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
         numberOfEventsProcessed, numberOfEventsProcessedEffective,
         numberOfEventToBeProcessed, rProject, skipInteractionsWithoutEDTonWrite,
-        cfFileName, evDataVerboseLevel );
+        cfFileName, evDataVerboseLevel, physicsManager->GetProposedMaxIL() );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -963,6 +965,8 @@ void  CexmcRunManager::PrintReadRunData( void ) const
 
     G4cout << CEXMC_LINE_START << "Run data read from project '" << rProject <<
               "'" << G4endl;
+    G4cout << "               (archive class version " <<
+              sObject.actualVersion << ")" << G4endl;
     if ( ! sObject.rProject.empty() )
     {
         G4cout << "  -- Based on project '" << sObject.rProject << "'" <<
@@ -1001,6 +1005,8 @@ void  CexmcRunManager::PrintReadRunData( void ) const
               G4BestUnit( sObject.calorimeterRegCuts[ 1 ], "Length" ) << ", " <<
               G4BestUnit( sObject.calorimeterRegCuts[ 2 ], "Length" ) << ", " <<
               G4BestUnit( sObject.calorimeterRegCuts[ 3 ], "Length" ) << G4endl;
+    G4cout << "  -- Proposed max interaction length in the target: " << 
+              G4BestUnit( sObject.proposedMaxIL, "Length" ) << G4endl;
     G4cout << "  -- Event count policy (0 - all, 1 - interaction, 2 - trigger)"
               ": " << sObject.eventCountPolicy << G4endl;
     G4cout << "  -- Number of events (processed / effective / ordered): " <<

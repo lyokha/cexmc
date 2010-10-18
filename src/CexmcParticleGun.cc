@@ -20,9 +20,11 @@
 #include "CexmcParticleGunMessenger.hh"
 
 
-CexmcParticleGun::CexmcParticleGun( G4int  nmbOfParticles ) :
-    G4ParticleGun( nmbOfParticles ), origPos( 0, 0, 0 ), origDir( 0, 0, 0 ),
-    origMomentumAmp( 0 ), messenger( NULL )
+CexmcParticleGun::CexmcParticleGun( CexmcPhysicsManager *  physicsManager,
+                                    G4int  nmbOfParticles ) :
+    G4ParticleGun( nmbOfParticles ), physicsManager( physicsManager ),
+    origPos( 0, 0, 0 ), origDir( 0, 0, 0 ), origMomentumAmp( 0 ),
+    messenger( NULL )
 {
     messenger = new CexmcParticleGunMessenger( this );
 }

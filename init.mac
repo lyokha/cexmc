@@ -55,6 +55,7 @@
 /cexmc/gun/fwhmDirY 1.35 deg
 /cexmc/gun/fwhmMomentumAmp 0.015
 
+/cexmc/physics/setMaxILCorrection 0
 /cexmc/physics/applyFermiMotionInTarget false
 #/cexmc/physics/setAngularRange 0.1 -0.1 2
 #/cexmc/physics/addAngularRange 1.0 0.0 10

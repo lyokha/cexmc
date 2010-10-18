@@ -3,7 +3,7 @@
  *
  *       Filename:  CexmcProductionModel.hh
  *
- *    Description:  interface for production model
+ *    Description:  interface to production model
  *
  *        Version:  1.0
  *        Created:  03.11.2009 16:50:53
@@ -19,7 +19,6 @@
 #ifndef CEXMC_PRODUCTION_MODEL_HH
 #define CEXMC_PRODUCTION_MODEL_HH
 
-#include <vector>
 #include <G4Types.hh>
 #include <G4String.hh>
 #include <G4ios.hh>
@@ -69,6 +68,8 @@ class  CexmcProductionModel
         G4bool  IsFermiMotionOn( void ) const;
 
         void    SetTriggeredAngularRanges( G4double  opCosThetaSCM );
+
+        const G4String &  GetName( void ) const;
 
     public:
         G4ParticleDefinition *  GetIncidentParticle( void ) const;
@@ -126,48 +127,6 @@ inline void  CexmcProductionModel::ApplyFermiMotion( G4bool  on,
 }
 
 
-inline void  CexmcProductionModel::SetAngularRange( G4double  top,
-                                        G4double  bottom, G4int  nmbOfDivs )
-{
-    if ( top <= bottom || top > 1.0 || top < -1.0 ||
-         bottom > 1.0 || bottom < -1.0 || nmbOfDivs < 1 )
-        return;
-
-    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                           G4RunManager::GetRunManager() ) );
-    if ( runManager->ProjectIsRead() )
-    {
-        G4bool                 isGoodCandidate( false );
-        CexmcAngularRangeList  normalizedARanges;
-        GetNormalizedAngularRange( angularRangesRef, normalizedARanges );
-        for ( CexmcAngularRangeList::iterator  k( normalizedARanges.begin() );
-                                            k != normalizedARanges.end(); ++k )
-        {
-            if ( top <= k->top && bottom >= k->bottom )
-            {
-                isGoodCandidate = true;
-                break;
-            }
-        }
-        if ( ! isGoodCandidate )
-            throw CexmcException( CexmcBadAngularRange );
-    }
-
-    angularRanges.clear();
-    G4double  curBottom( top );
-    for ( int  i( 0 ); i < nmbOfDivs; ++i )
-    {
-        G4double  binWidth( ( top - bottom ) / nmbOfDivs );
-        G4double  curTop( curBottom );
-        curBottom -=  binWidth;
-        angularRanges.push_back( CexmcAngularRange( curTop, curBottom, i ) );
-    }
-#ifdef CEXMC_USE_ROOT
-    CexmcHistoManager::Instance()->SetupARHistos( angularRanges );
-#endif
-}
-
-
 inline void  CexmcProductionModel::SetAngularRanges(
                                 const CexmcAngularRangeList &  angularRanges_ )
 {
@@ -176,49 +135,6 @@ inline void  CexmcProductionModel::SetAngularRanges(
 #ifdef CEXMC_USE_ROOT
     CexmcHistoManager::Instance()->SetupARHistos( angularRanges );
 #endif
-}
-
-
-inline void  CexmcProductionModel::AddAngularRange( G4double  top,
-                                        G4double  bottom, G4int  nmbOfDivs )
-{
-    if ( top <= bottom || top > 1.0 || top < -1.0 ||
-         bottom > 1.0 || bottom < -1.0 || nmbOfDivs < 1 )
-        return;
-
-    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                           G4RunManager::GetRunManager() ) );
-    if ( runManager->ProjectIsRead() )
-    {
-        G4bool                 isGoodCandidate( false );
-        CexmcAngularRangeList  normalizedARanges;
-        GetNormalizedAngularRange( angularRangesRef, normalizedARanges );
-        for ( CexmcAngularRangeList::iterator  k( normalizedARanges.begin() );
-                                            k != normalizedARanges.end(); ++k )
-        {
-            if ( top <= k->top && bottom >= k->bottom )
-            {
-                isGoodCandidate = true;
-                break;
-            }
-        }
-        if ( ! isGoodCandidate )
-            throw CexmcException( CexmcBadAngularRange );
-    }
-
-    G4int  curIndex( angularRanges.size() );
-    G4double  curBottom( top );
-    for ( int  i( 0 ); i < nmbOfDivs; ++i )
-    {
-        G4double  binWidth( ( top - bottom ) / nmbOfDivs );
-        G4double  curTop( curBottom );
-        curBottom -= binWidth;
-        CexmcAngularRange  aRange( curTop, curBottom, curIndex + i );
-        angularRanges.push_back( aRange );
-#ifdef CEXMC_USE_ROOT
-        CexmcHistoManager::Instance()->AddARHistos( aRange );
-#endif
-    }
 }
 
 
@@ -264,6 +180,12 @@ inline const CexmcProductionModelData &
 inline G4bool  CexmcProductionModel::IsFermiMotionOn( void ) const
 {
     return fermiMotionIsOn;
+}
+
+
+inline const G4String &  CexmcProductionModel::GetName( void ) const
+{
+    return name;
 }
 
 

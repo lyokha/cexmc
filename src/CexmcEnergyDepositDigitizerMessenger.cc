@@ -176,8 +176,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     applyFiniteCrystalResolution = new G4UIcmdWithABool(
             ( CexmcMessenger::detectorDirName +
               "applyFiniteCrystalResolution" ).c_str(), this );
-    applyFiniteCrystalResolution->SetGuidance( "\n    Specify if finite "
-            "energy resolution of the crystals\n    will be accounted" );
+    applyFiniteCrystalResolution->SetGuidance( "\n     Specify if finite "
+            "energy resolution of the crystals\n     will be accounted" );
     applyFiniteCrystalResolution->SetParameterName(
                                         "ApplyFiniteCrystalResolution", false );
     applyFiniteCrystalResolution->SetDefaultValue( false );
@@ -187,8 +187,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     addCrystalResolutionRange = new G4UIcmdWith3Vector(
             ( CexmcMessenger::detectorDirName +
               "addCrystalResolutionRange" ).c_str(), this );
-    addCrystalResolutionRange->SetGuidance( "\n    Add new energy range "
-            "(in GeV!) with fwhm percentage\n    value of crystal resolution "
+    addCrystalResolutionRange->SetGuidance( "\n     Add new energy range "
+            "(in GeV!) with fwhm percentage\n     value of crystal resolution "
             "in this range" );
     addCrystalResolutionRange->SetParameterName(
             "CrystalResolutionRangeBottom", "CrystalResolutionRangeTop",
@@ -202,8 +202,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     clearCrystalResolutionData = new G4UIcmdWithoutParameter(
             ( CexmcMessenger::detectorDirName +
               "clearCrystalResolutionData" ).c_str(), this );
-    clearCrystalResolutionData->SetGuidance( "\n    Clear all crystal "
-              "resolution ranges.\n    Can be used to redefine crystal "
+    clearCrystalResolutionData->SetGuidance( "\n     Clear all crystal "
+              "resolution ranges.\n     Can be used to redefine crystal "
               "resolution data" );
     clearCrystalResolutionData->AvailableForStates( G4State_PreInit,
                                                     G4State_Idle );

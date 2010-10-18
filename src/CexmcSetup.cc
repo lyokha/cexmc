@@ -39,6 +39,7 @@
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
+#include "CexmcPhysicsManager.hh"
 #include "CexmcException.hh"
 
 
@@ -67,6 +68,17 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
     ReadTransforms( gdmlParser );
 
     ReadRightDetectors();
+
+    const CexmcPhysicsManager *  physicsManager(
+            dynamic_cast< const CexmcPhysicsManager * >(
+                G4RunManager::GetRunManager()->GetUserPhysicsList() ) );
+
+    if ( ! physicsManager )
+        throw CexmcException( CexmcWeirdException );
+
+    CexmcPhysicsManager *        thePhysicsManager(
+            const_cast< CexmcPhysicsManager * >( physicsManager ) );
+    thePhysicsManager->SetupConstructionHook( this );
 
     return world;
 }

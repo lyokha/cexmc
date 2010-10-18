@@ -31,7 +31,7 @@
 #include "CexmcCommon.hh"
 
 
-#define CEXMC_RUN_SOBJECT_VERSION 2
+#define CEXMC_RUN_SOBJECT_VERSION 3
 
 
 class  CexmcRunSObject
@@ -97,7 +97,8 @@ class  CexmcRunSObject
                          const std::string &  rProject,
                          G4bool  interactionsWithoutEDTWereSkipped,
                          const std::string &  cfFileName,
-                         CexmcEventDataVerboseLevel  evDataVerboseLevel );
+                         CexmcEventDataVerboseLevel  evDataVerboseLevel,
+                         G4double  proposedMaxIL );
 
     private:
         template  < typename  Archive >
@@ -226,6 +227,11 @@ class  CexmcRunSObject
         std::string                  cfFileName;
 
         CexmcEventDataVerboseLevel   evDataVerboseLevel;
+
+        G4double                     proposedMaxIL;
+
+    private:
+        unsigned int                 actualVersion;
 };
 
 
@@ -233,6 +239,8 @@ template  < typename  Archive >
 void  CexmcRunSObject::serialize( Archive &  archive,
                                   const unsigned int  version )
 {
+    actualVersion = version;
+
     archive & basePhysicsUsed;
     archive & productionModelType;
     archive & gdmlFileName;
@@ -298,6 +306,8 @@ void  CexmcRunSObject::serialize( Archive &  archive,
         archive & cfFileName;
         archive & evDataVerboseLevel;
     }
+    if ( version > 2 )
+        archive & proposedMaxIL;
 }
 
 

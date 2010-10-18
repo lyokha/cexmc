@@ -22,15 +22,14 @@
 #include <Randomize.hh>
 #include <G4Track.hh>
 #include <G4StepPoint.hh>
-#include <G4VPhysicalVolume.hh>
-#include <G4Tubs.hh>
+#include <G4ThreeVector.hh>
 #include <G4AffineTransform.hh>
-#include <G4NavigationHistory.hh>
 #include "CexmcStudiedPhysics.hh"
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcIncidentParticleTrackInfo.hh"
+#include "CexmcSetup.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
@@ -45,27 +44,29 @@ class  CexmcPhysicsList : public BasePhysics, public CexmcPhysicsManager
     public:
         CexmcProductionModel *  GetProductionModel( void );
 
-        G4bool                  IsStudiedProcessAllowed( void ) const;
+        G4bool  IsStudiedProcessAllowed( void ) const;
 
-        void                    ResampleTrackLengthInTarget(
-                                            const G4Track *  track,
-                                            const G4StepPoint *  stepPoint );
+        void    ResampleTrackLengthInTarget( const G4Track *  track,
+                                             const G4StepPoint *  stepPoint );
+
+        void    SetupConstructionHook( const CexmcSetup *  setup );
+
+    protected:
+        void  CalculateBasicMaxIL( const G4ThreeVector &  direction );
 
     private:
         StudiedPhysics< ProductionModel > *  studiedPhysics;
 
-        G4bool                               proposedMaxILInitialized;
+        G4VSolid *                           targetSolid;
 
-        G4double                             proposedMaxIL;
+        G4AffineTransform                    targetTransform;
 };
 
 
 template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
             typename  ProductionModel >
 CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
-                CexmcPhysicsList() :
-    studiedPhysics( NULL ), proposedMaxILInitialized( false ),
-    proposedMaxIL( CexmcDblMax )
+                CexmcPhysicsList() : studiedPhysics( NULL ), targetSolid( NULL )
 {
     studiedPhysics = new StudiedPhysics< ProductionModel >( this );
     this->RegisterPhysics( studiedPhysics );
@@ -97,8 +98,11 @@ void  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
                 ResampleTrackLengthInTarget( const G4Track *  track,
                                              const G4StepPoint *  stepPoint )
 {
-    /* all callers must ensure that track info object is of type
-     * CexmcIncidentParticleTrackInfo*, so we can use static_cast<> here */
+    /* BEWARE: all callers must ensure that:
+     * 1) track (or stepPoint if not NULL) is inside target volume:
+     *    in this case we can use already calculated targetTransform
+     * 2) track info object is of type CexmcIncidentParticleTrackInfo*:
+     *    in this case we can use static_cast<> for trackInfo */
     CexmcIncidentParticleTrackInfo *  trackInfo(
                 static_cast< CexmcIncidentParticleTrackInfo * >(
                                                 track->GetUserInformation() ) );
@@ -106,46 +110,20 @@ void  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
     if ( ! trackInfo )
         return;
 
-    G4VPhysicalVolume *  volume( NULL );
-
-    if ( stepPoint )
-        volume = stepPoint->GetTouchable()->GetVolume();
-    else
-        volume = track->GetVolume();
-
-    G4VSolid *  targetSolid( volume->GetLogicalVolume()->GetSolid() );
-
-    if ( ! proposedMaxILInitialized )
-    {
-        G4double  targetRadius( CexmcDblMax );
-        G4Tubs *  targetTube( dynamic_cast< G4Tubs * >( targetSolid ) );
-
-        if ( ! targetTube )
-            throw CexmcException( CexmcIncompatibleGeometry );
-
-        targetRadius = targetTube->GetOuterRadius();
-
-        proposedMaxIL = GetProposedMaxIL( targetRadius * 2 );
-        proposedMaxILInitialized = true;
-    }
-
     G4ThreeVector  position;
     G4ThreeVector  direction;
 
     if ( stepPoint )
     {
-        const G4AffineTransform &  transform( stepPoint->GetTouchable()->
-                                              GetHistory()->GetTopTransform() );
-        position = transform.TransformPoint( stepPoint->GetPosition() );
-        direction = transform.TransformPoint(
-                                        stepPoint->GetMomentumDirection() );
+        position = targetTransform.TransformPoint( stepPoint->GetPosition() );
+        direction = targetTransform.TransformAxis(
+                                            stepPoint->GetMomentumDirection() );
     }
     else
     {
-        const G4AffineTransform &  transform( track->GetTouchable()->
-                                              GetHistory()->GetTopTransform() );
-        position = transform.TransformPoint( track->GetPosition() );
-        direction = transform.TransformPoint( track->GetMomentumDirection() );
+        position = targetTransform.TransformPoint( track->GetPosition() );
+        direction = targetTransform.TransformAxis(
+                                            track->GetMomentumDirection() );
     }
 
     G4double  distanceInTarget( targetSolid->DistanceToOut( position,
@@ -154,6 +132,28 @@ void  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
     trackInfo->SetFinalTrackLengthInTarget( G4UniformRand() *
                                 std::max( distanceInTarget, proposedMaxIL ) );
     trackInfo->SetNeedsTrackLengthResampling( false );
+}
+
+
+template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
+            typename  ProductionModel >
+void  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
+                CalculateBasicMaxIL( const G4ThreeVector &  direction )
+{
+    /* basicMaxIL is double distance from the point (0, 0, 0) to the edge of the
+     * target solid along the specified direction */
+    basicMaxIL = targetSolid->DistanceToOut( G4ThreeVector(),
+                            targetTransform.TransformAxis( direction ) ) * 2;
+}
+
+
+template  < typename  BasePhysics, template  < typename > class  StudiedPhysics,
+            typename  ProductionModel >
+void  CexmcPhysicsList< BasePhysics, StudiedPhysics, ProductionModel >::
+                SetupConstructionHook( const CexmcSetup *  setup )
+{
+    targetSolid = setup->GetVolume( CexmcSetup::Target )->GetSolid();
+    targetTransform = setup->GetTargetTransform().Inverse();
 }
 
 

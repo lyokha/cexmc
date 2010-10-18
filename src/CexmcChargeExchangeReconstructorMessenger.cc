@@ -67,7 +67,7 @@ CexmcChargeExchangeReconstructorMessenger::
         ( CexmcMessenger::reconstructorDirName + "mCutNOPCenter" ).c_str(),
         this );
     mCutNOPCenter->SetGuidance( "Center of the ellipse in nucleus output "
-                                "particle mass coordinate" );
+                                "particle mass\n    coordinate" );
     mCutNOPCenter->SetParameterName( "MCutNOPCenter", false );
     mCutNOPCenter->SetDefaultValue( reconstructor->GetProductionModelData().
                                     nucleusOutputParticle->GetPDGMass() );
@@ -91,7 +91,7 @@ CexmcChargeExchangeReconstructorMessenger::
         ( CexmcMessenger::reconstructorDirName + "mCutNOPWidth" ).c_str(),
         this );
     mCutNOPWidth->SetGuidance( "Width of the ellipse in nucleus output "
-                               "particle mass coordinate" );
+                               "particle mass\n     coordinate" );
     mCutNOPWidth->SetParameterName( "MCutNOPWidth", false );
     mCutNOPWidth->SetDefaultValue( reconstructor->GetProductionModelData().
                                    nucleusOutputParticle->GetPDGMass() * 0.1 );
@@ -112,8 +112,8 @@ CexmcChargeExchangeReconstructorMessenger::
     useAbsorbedEnergyCut = new G4UIcmdWithABool(
         ( CexmcMessenger::reconstructorDirName + "useAbsorbedEnergyCut" ).
             c_str(), this );
-    useAbsorbedEnergyCut->SetGuidance( "\n    Use elliptical cut for absorbed "
-                                       "energies in calorimeters" );
+    useAbsorbedEnergyCut->SetGuidance( "Use elliptical cut for absorbed "
+                                       "energies in\n     calorimeters" );
     useAbsorbedEnergyCut->SetParameterName( "UseAbsorbedEnergyCut", false );
     useAbsorbedEnergyCut->SetDefaultValue( false );
     useAbsorbedEnergyCut->AvailableForStates( G4State_PreInit, G4State_Idle );
@@ -121,8 +121,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCLCenter = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCLCenter" ).c_str(),
         this );
-    aeCutCLCenter->SetGuidance( "Center of the ellipse in left calorimeter "
-                                "absorbed energy coordinate" );
+    aeCutCLCenter->SetGuidance( "Center of the ellipse in left calorimeter"
+                                "\n     absorbed energy coordinate" );
     aeCutCLCenter->SetParameterName( "AECutCLCenter", false );
     aeCutCLCenter->SetDefaultValue( 0 );
     aeCutCLCenter->SetDefaultUnit( "MeV" );
@@ -132,8 +132,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCRCenter = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCRCenter" ).c_str(),
         this );
-    aeCutCRCenter->SetGuidance( "Center of the ellipse in right calorimeter "
-                                "absorbed energy coordinate" );
+    aeCutCRCenter->SetGuidance( "Center of the ellipse in right calorimeter"
+                                "\n     absorbed energy coordinate" );
     aeCutCRCenter->SetParameterName( "AECutCRCenter", false );
     aeCutCRCenter->SetDefaultValue( 0 );
     aeCutCRCenter->SetDefaultUnit( "MeV" );
@@ -143,8 +143,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCLWidth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCLWidth" ).c_str(),
         this );
-    aeCutCLWidth->SetGuidance( "Width of the ellipse in left calorimeter "
-                               "absorbed energy coordinate" );
+    aeCutCLWidth->SetGuidance( "Width of the ellipse in left calorimeter"
+                               "\n     absorbed energy coordinate" );
     aeCutCLWidth->SetParameterName( "AECutCLWidth", false );
     aeCutCLWidth->SetDefaultValue( 0 );
     aeCutCLWidth->SetDefaultUnit( "MeV" );
@@ -154,8 +154,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCRWidth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCRWidth" ).c_str(),
         this );
-    aeCutCRWidth->SetGuidance( "Width of the ellipse in right calorimeter "
-                               "absorbed energy coordinate" );
+    aeCutCRWidth->SetGuidance( "Width of the ellipse in right calorimeter"
+                               "\n     absorbed energy coordinate" );
     aeCutCRWidth->SetParameterName( "AECutCRWidth", false );
     aeCutCRWidth->SetDefaultValue( 0 );
     aeCutCRWidth->SetDefaultUnit( "MeV" );

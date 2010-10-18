@@ -27,7 +27,7 @@ CexmcReconstructor::CexmcReconstructor() :
     epDefinitionAlgorithm( CexmcEntryPointBySqrtEDWeights ),
     epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain ),
     csAlgorithm( CexmcSelectAllCrystals ), useInnerRefCrystal( false ),
-    epDepth( 0 ), theAngle( 0 ), messenger( NULL )
+    epDepth( 0 ), theAngle( 0 ), targetEPInitialized( false ), messenger( NULL )
 {
     G4RunManager *      runManager( G4RunManager::GetRunManager() );
     const CexmcSetup *  setup( static_cast< const CexmcSetup * >(
@@ -343,16 +343,20 @@ void  CexmcReconstructor::ReconstructEntryPoints(
 
 void  CexmcReconstructor::ReconstructTargetPoint( void )
 {
-    targetEPWorldPosition = targetTransform.TransformPoint(
+    if ( ! targetEPInitialized )
+    {
+        targetEPWorldPosition = targetTransform.TransformPoint(
                                                     G4ThreeVector( 0, 0, 0 ) );
-    targetEPWorldDirection.setX( 0 );
-    targetEPWorldDirection.setY( 0 );
-    targetEPWorldDirection.setZ( 0 );
+        targetEPWorldDirection.setX( 0 );
+        targetEPWorldDirection.setY( 0 );
+        targetEPWorldDirection.setZ( 1 );
 
-    targetEPPosition = targetTransform.Inverse().TransformPoint(
+        targetEPPosition = targetTransform.Inverse().TransformPoint(
                                                     targetEPWorldPosition );
-    targetEPDirection = targetTransform.Inverse().TransformAxis(
+        targetEPDirection = targetTransform.Inverse().TransformAxis(
                                                     targetEPWorldDirection );
+        targetEPInitialized = true;
+    }
 
     hasBasicTrigger = true;
 }

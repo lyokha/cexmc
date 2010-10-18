@@ -23,8 +23,8 @@
 #include <G4ParticleDefinition.hh>
 #include <G4ParticleTable.hh>
 #include "CexmcParticleGun.hh"
-#include "CexmcRunManager.hh"
 #include "CexmcParticleGunMessenger.hh"
+#include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 #include "CexmcMessenger.hh"
 

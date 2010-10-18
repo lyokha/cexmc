@@ -53,9 +53,9 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     setEventCountPolicy = new G4UIcmdWithAString(
         ( CexmcMessenger::runDirName + "eventCountPolicy" ).c_str(), this );
     setEventCountPolicy->SetGuidance( "How number of events is interpreted.\n"
-            "  all - all events are accounted,\n"
-            "  interaction - events with studied interaction triggered,\n"
-            "  trigger - only events with trigger" );
+            "    all - all events are accounted,\n"
+            "    interaction - events with studied interaction triggered,\n"
+            "    trigger - only events with trigger" );
     setEventCountPolicy->SetParameterName( "EventCountPolicy", false );
     setEventCountPolicy->SetDefaultValue( "all" );
     setEventCountPolicy->SetCandidates( "all interaction trigger" );
@@ -65,9 +65,9 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
         ( CexmcMessenger::runDirName + "eventDataVerboseLevel" ).c_str(),
         this );
     setEventDataVerboseLevel->SetGuidance( "When events will be saved.\n"
-            "  nosave - never,\n"
-            "  trigger - when energy deposit triggered (EDT),\n"
-            "  interaction - when studied interaction triggered (TPT)" );
+            "    nosave - never,\n"
+            "    trigger - when energy deposit triggered (EDT),\n"
+            "    interaction - when studied interaction triggered (TPT)" );
     setEventDataVerboseLevel->SetParameterName( "EventDataVerboseLevel",
                                                 false );
     setEventDataVerboseLevel->SetDefaultValue( "trigger" );
@@ -78,9 +78,9 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     replayEvents = new G4UIcmdWithAnInteger(
         ( CexmcMessenger::runDirName + "replay" ).c_str(), this );
     replayEvents->SetGuidance( "Replay specified number of events "
-           "\n  (available only if a project is read)."
-           "\n  If number of events is 0 (or not specified) then all"
-           "\n  run will be replayed" );
+           "\n    (available only if a project is read)."
+           "\n    If number of events is 0 (or not specified) then all"
+           "\n    run will be replayed" );
     replayEvents->SetParameterName( "ReplayEvents", true );
     replayEvents->SetDefaultValue( 0 );
     replayEvents->SetRange( "ReplayEvents >= 0" );
@@ -89,10 +89,10 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
     seekTo = new G4UIcmdWithAnInteger(
         ( CexmcMessenger::runDirName + "seekto" ).c_str(), this );
     seekTo->SetGuidance( "Seek to specified event id "
-           "(available only if a project is read).\n"
-           "  'seekto 0' brings to the start of run, 'seekto 4' - to the first"
-           "\n  recorded event with interaction after fourth recorded event "
-           "\n  with trigger" );
+           "(available only if a project is read)."
+           "\n    'seekto 0' brings to the start of run, 'seekto 4' - to the"
+           "\n    first recorded event with interaction after fourth recorded"
+           "\n    event with trigger" );
     seekTo->SetParameterName( "SeekTo", false );
     seekTo->SetDefaultValue( 0 );
     seekTo->SetRange( "SeekTo >= 0" );
@@ -102,9 +102,9 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
         ( CexmcMessenger::runDirName + "skipInteractionsWithoutEDT" ).c_str(),
         this );
     skipInteractionsWithoutEDT->SetGuidance( "Do not write interactions into "
-        ".fdb file if event was not\ntriggered (effective only when a project "
-        "is read and then\nwritten to another project and only if event data "
-        "verbose\nlevel is 'trigger')" );
+        ".fdb file\n    if event was not triggered (effective only when a "
+        "project is read and then\n    written to another project and only if "
+        "event data verbose level is\n    'trigger')" );
     skipInteractionsWithoutEDT->SetParameterName( "skipInteractionsWithoutEDT",
                                                   true );
     skipInteractionsWithoutEDT->SetDefaultValue( true );
