@@ -28,7 +28,6 @@
 #ifdef CEXMC_USE_ROOT
 #include "CexmcHistoManager.hh"
 #endif
-#include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
@@ -83,6 +82,13 @@ class  CexmcProductionModel
     protected:
         virtual void            FermiMotionStatusChangeHook( void );
 
+    private:
+        G4bool  IsValidCandidateForAngularRange( G4double  top,
+                             G4double  bottom, G4int  nmbOfDivs = 1 ) const;
+
+        G4bool  IsGoodCandidateForAngularRange( G4double  top,
+                                                G4double  bottom ) const;
+
     protected:
         G4String                  name;
 
@@ -114,12 +120,7 @@ inline void  CexmcProductionModel::ApplyFermiMotion( G4bool  on,
                                                      G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     fermiMotionIsOn = on;
 
@@ -214,6 +215,14 @@ inline  G4ParticleDefinition *  CexmcProductionModel::GetNucleusOutputParticle(
                                                                     void ) const
 {
     return nucleusOutputParticle;
+}
+
+
+inline G4bool  CexmcProductionModel::IsValidCandidateForAngularRange(
+                    G4double  top, G4double  bottom, G4int  nmbOfDivs ) const
+{
+    return top > bottom && top <= 1.0 && top > -1.0 && bottom < 1.0 &&
+           bottom >= -1.0 && nmbOfDivs >= 1;
 }
 
 

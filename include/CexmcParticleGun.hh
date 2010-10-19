@@ -22,7 +22,6 @@
 #include <G4ParticleGun.hh>
 #include <G4ThreeVector.hh>
 #include "CexmcPhysicsManager.hh"
-#include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 
 class  CexmcParticleGunMessenger;
@@ -102,12 +101,7 @@ inline void  CexmcParticleGun::SetOrigPosition(
                     const G4ThreeVector &  position, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     origPos = position;
 }
@@ -117,12 +111,7 @@ inline void  CexmcParticleGun::SetOrigDirection(
                     const G4ThreeVector &  direction, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     origDir = direction;
 
@@ -134,12 +123,7 @@ inline void  CexmcParticleGun::SetOrigMomentumAmp( G4double  momentumAmp,
                                                    G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     origMomentumAmp = momentumAmp;
 }
@@ -149,12 +133,7 @@ inline void  CexmcParticleGun::SetBeamParticle(
             G4ParticleDefinition *  particleDefinition, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     SetParticleDefinition( particleDefinition );
 }

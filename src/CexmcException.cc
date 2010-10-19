@@ -17,6 +17,7 @@
  */
 
 #include "CexmcException.hh"
+#include "CexmcRunManager.hh"
 #include "CexmcCommon.hh"
 
 
@@ -107,6 +108,9 @@ const char *  CexmcException::what( void ) const throw()
                 "Instantiated reconstructor will not give reliable results in "
                 "this case. Make sure that beam particle and incident particle "
                 "of provided production model are same.";
+    case CexmcInvalidAngularRange :
+        return CEXMC_LINE_START "An angular range is not valid. "
+                "Check specified angular ranges.";
 #ifdef CEXMC_USE_CUSTOM_FILTER
     case CexmcCFBadSource :
         return CEXMC_LINE_START "Custom filter source file does not exist or "
@@ -144,5 +148,15 @@ const char *  CexmcException::what( void ) const throw()
     default :
         return CEXMC_LINE_START "Unknown exception.";
     }
+}
+
+
+void  ThrowExceptionIfProjectIsRead( CexmcExceptionType  type,
+                                     G4bool  extraCond )
+{
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+    if ( runManager->ProjectIsRead() && extraCond )
+        throw CexmcException( type );
 }
 

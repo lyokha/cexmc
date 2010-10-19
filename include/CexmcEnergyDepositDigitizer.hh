@@ -23,7 +23,6 @@
 #include <G4VDigitizerModule.hh>
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcSimpleRangeWithValue.hh"
-#include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
@@ -312,16 +311,10 @@ inline void  CexmcEnergyDepositDigitizer::SetMonitorThreshold(
                                       G4double  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() && value < monitorEDThresholdRef )
-            throw CexmcException( CexmcBadThreshold );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadThreshold,
+                                       value < monitorEDThresholdRef );
     else
-    {
         monitorEDThresholdRef = value;
-    }
 
     monitorEDThreshold = value;
 }
@@ -331,17 +324,10 @@ inline void  CexmcEnergyDepositDigitizer::SetVetoCounterLeftThreshold(
                                       G4double  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() &&
-             value > vetoCounterEDLeftThresholdRef )
-            throw CexmcException( CexmcBadThreshold );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadThreshold,
+                                       value > vetoCounterEDLeftThresholdRef );
     else
-    {
         vetoCounterEDLeftThresholdRef = value;
-    }
 
     vetoCounterEDLeftThreshold = value;
 }
@@ -351,17 +337,10 @@ inline void  CexmcEnergyDepositDigitizer::SetVetoCounterRightThreshold(
                                       G4double  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() &&
-             value > vetoCounterEDRightThresholdRef )
-            throw CexmcException( CexmcBadThreshold );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadThreshold,
+                                       value > vetoCounterEDRightThresholdRef );
     else
-    {
         vetoCounterEDRightThresholdRef = value;
-    }
 
     vetoCounterEDRightThreshold = value;
 }
@@ -370,6 +349,10 @@ inline void  CexmcEnergyDepositDigitizer::SetVetoCounterRightThreshold(
 inline void  CexmcEnergyDepositDigitizer::SetVetoCountersThreshold(
                                                             G4double  value )
 {
+    ThrowExceptionIfProjectIsRead( CexmcBadThreshold,
+                                   value > vetoCounterEDLeftThresholdRef ||
+                                   value > vetoCounterEDRightThresholdRef );
+
     vetoCounterEDLeftThreshold = value;
     vetoCounterEDRightThreshold = value;
 }
@@ -379,17 +362,10 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimeterLeftThreshold(
                                       G4double  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() &&
-             value < calorimeterEDLeftThresholdRef )
-            throw CexmcException( CexmcBadThreshold );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadThreshold,
+                                       value < calorimeterEDLeftThresholdRef );
     else
-    {
         calorimeterEDLeftThresholdRef = value;
-    }
 
     calorimeterEDLeftThreshold = value;
 }
@@ -399,17 +375,10 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimeterRightThreshold(
                                       G4double  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() &&
-             value < calorimeterEDRightThresholdRef )
-            throw CexmcException( CexmcBadThreshold );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadThreshold,
+                                       value < calorimeterEDRightThresholdRef );
     else
-    {
         calorimeterEDRightThresholdRef = value;
-    }
 
     calorimeterEDRightThreshold = value;
 }
@@ -418,6 +387,10 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimeterRightThreshold(
 inline void  CexmcEnergyDepositDigitizer::SetCalorimetersThreshold(
                                                             G4double  value )
 {
+    ThrowExceptionIfProjectIsRead( CexmcBadThreshold,
+                                   value < calorimeterEDLeftThresholdRef ||
+                                   value < calorimeterEDRightThresholdRef );
+
     calorimeterEDLeftThreshold = value;
     calorimeterEDRightThreshold = value;
 }
@@ -427,19 +400,12 @@ inline void  CexmcEnergyDepositDigitizer::SetCalorimeterTriggerAlgorithm(
                 CexmcCalorimeterTriggerAlgorithm  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() &&
-             ! ( calorimeterTriggerAlgorithmRef ==
-                                     CexmcAllCrystalsMakeEDTriggerThreshold ||
-               value == calorimeterTriggerAlgorithmRef ) )
-            throw CexmcException( CexmcBadCalorimeterTriggerAlgorithm );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadCalorimeterTriggerAlgorithm,
+            ! ( calorimeterTriggerAlgorithmRef ==
+                                       CexmcAllCrystalsMakeEDTriggerThreshold ||
+                value == calorimeterTriggerAlgorithmRef ) );
     else
-    {
         calorimeterTriggerAlgorithmRef = value;
-    }
 
     calorimeterTriggerAlgorithm = value;
 }
@@ -449,18 +415,11 @@ inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoAlgorithm(
                 CexmcOuterCrystalsVetoAlgorithm  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() &&
-             ! ( outerCrystalsVetoAlgorithmRef == CexmcNoOuterCrystalsVeto ||
-                 value == outerCrystalsVetoAlgorithmRef ) )
-            throw CexmcException( CexmcBadOCVetoAlgorithm );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadOCVetoAlgorithm,
+            ! ( outerCrystalsVetoAlgorithmRef == CexmcNoOuterCrystalsVeto ||
+                value == outerCrystalsVetoAlgorithmRef ) );
     else
-    {
         outerCrystalsVetoAlgorithmRef = value;
-    }
 
     outerCrystalsVetoAlgorithm = value;
 }
@@ -470,17 +429,10 @@ inline void  CexmcEnergyDepositDigitizer::SetOuterCrystalsVetoFraction(
                                       G4double  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() &&
-             value > outerCrystalsVetoFractionRef )
-            throw CexmcException( CexmcBadOCVetoFraction );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcBadOCVetoFraction,
+                                       value > outerCrystalsVetoFractionRef );
     else
-    {
         outerCrystalsVetoFractionRef = value;
-    }
 
     outerCrystalsVetoFraction = value;
 }
@@ -490,12 +442,7 @@ inline void  CexmcEnergyDepositDigitizer::ApplyFiniteCrystalResolution(
                                       G4bool  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     applyFiniteCrystalResolution = value;
 }
@@ -506,12 +453,7 @@ inline void  CexmcEnergyDepositDigitizer::AddCrystalResolutionRange(
                                       G4double  value, G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     /* range boundaries are given in GeV */
     crystalResolutionData.push_back( CexmcEnergyRangeWithDoubleValue(
@@ -523,12 +465,7 @@ inline void  CexmcEnergyDepositDigitizer::ClearCrystalResolutionData(
                                                 G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     crystalResolutionData.clear();
 }

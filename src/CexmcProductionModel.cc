@@ -16,6 +16,7 @@
  * ============================================================================
  */
 
+#include "CexmcRunManager.hh"
 #include "CexmcProductionModel.hh"
 #include "CexmcProductionModelMessenger.hh"
 
@@ -40,29 +41,11 @@ CexmcProductionModel::~CexmcProductionModel()
 void  CexmcProductionModel::SetAngularRange( G4double  top, G4double  bottom,
                                              G4int  nmbOfDivs )
 {
-    if ( top <= bottom || top > 1.0 || top < -1.0 ||
-         bottom > 1.0 || bottom < -1.0 || nmbOfDivs < 1 )
-        return;
+    if ( ! IsValidCandidateForAngularRange( top, bottom, nmbOfDivs ) )
+        throw CexmcException( CexmcInvalidAngularRange );
 
-    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                           G4RunManager::GetRunManager() ) );
-    if ( runManager->ProjectIsRead() )
-    {
-        G4bool                 isGoodCandidate( false );
-        CexmcAngularRangeList  normalizedARanges;
-        GetNormalizedAngularRange( angularRangesRef, normalizedARanges );
-        for ( CexmcAngularRangeList::iterator  k( normalizedARanges.begin() );
-                                            k != normalizedARanges.end(); ++k )
-        {
-            if ( top <= k->top && bottom >= k->bottom )
-            {
-                isGoodCandidate = true;
-                break;
-            }
-        }
-        if ( ! isGoodCandidate )
-            throw CexmcException( CexmcBadAngularRange );
-    }
+    if ( ! IsGoodCandidateForAngularRange( top, bottom ) )
+        throw CexmcException( CexmcBadAngularRange );
 
     angularRanges.clear();
     G4double  curBottom( top );
@@ -82,29 +65,11 @@ void  CexmcProductionModel::SetAngularRange( G4double  top, G4double  bottom,
 void  CexmcProductionModel::AddAngularRange( G4double  top, G4double  bottom,
                                              G4int  nmbOfDivs )
 {
-    if ( top <= bottom || top > 1.0 || top < -1.0 ||
-         bottom > 1.0 || bottom < -1.0 || nmbOfDivs < 1 )
-        return;
+    if ( ! IsValidCandidateForAngularRange( top, bottom, nmbOfDivs ) )
+        throw CexmcException( CexmcInvalidAngularRange );
 
-    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                           G4RunManager::GetRunManager() ) );
-    if ( runManager->ProjectIsRead() )
-    {
-        G4bool                 isGoodCandidate( false );
-        CexmcAngularRangeList  normalizedARanges;
-        GetNormalizedAngularRange( angularRangesRef, normalizedARanges );
-        for ( CexmcAngularRangeList::iterator  k( normalizedARanges.begin() );
-                                            k != normalizedARanges.end(); ++k )
-        {
-            if ( top <= k->top && bottom >= k->bottom )
-            {
-                isGoodCandidate = true;
-                break;
-            }
-        }
-        if ( ! isGoodCandidate )
-            throw CexmcException( CexmcBadAngularRange );
-    }
+    if ( ! IsGoodCandidateForAngularRange( top, bottom ) )
+        throw CexmcException( CexmcBadAngularRange );
 
     G4int  curIndex( angularRanges.size() );
     G4double  curBottom( top );
@@ -138,5 +103,28 @@ void  CexmcProductionModel::SetTriggeredAngularRanges( G4double  opCosThetaSCM )
 
 void  CexmcProductionModel::FermiMotionStatusChangeHook( void )
 {
+}
+
+
+G4bool  CexmcProductionModel::IsGoodCandidateForAngularRange( G4double  top,
+                                                      G4double  bottom ) const
+{
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                           G4RunManager::GetRunManager() ) );
+
+    if ( ! runManager->ProjectIsRead() )
+        return true;
+
+    CexmcAngularRangeList  normalizedARanges;
+    GetNormalizedAngularRange( angularRangesRef, normalizedARanges );
+
+    for ( CexmcAngularRangeList::iterator  k( normalizedARanges.begin() );
+                                            k != normalizedARanges.end(); ++k )
+    {
+        if ( top <= k->top && bottom >= k->bottom )
+            return true;
+    }
+
+    return false;
 }
 

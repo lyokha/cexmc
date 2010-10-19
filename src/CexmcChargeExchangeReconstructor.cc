@@ -24,6 +24,7 @@
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcParticleGun.hh"
 #include "CexmcProductionModel.hh"
+#include "CexmcRunManager.hh"
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
 

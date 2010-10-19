@@ -20,6 +20,7 @@
 #define CEXMC_EXCEPTION_HH
 
 #include <stdexcept>
+#include <G4Types.hh>
 
 
 enum  CexmcExceptionType
@@ -47,6 +48,7 @@ enum  CexmcExceptionType
     CexmcIncompleteProductionModel,
     CexmcIncompatibleProductionModel,
     CexmcBeamAndIncidentParticlesMismatch,
+    CexmcInvalidAngularRange,
 #ifdef CEXMC_USE_CUSTOM_FILTER
     CexmcCFBadSource,
     CexmcCFParseError,
@@ -75,6 +77,10 @@ class  CexmcException : public std::exception
     private:
         CexmcExceptionType  type;
 };
+
+
+void  ThrowExceptionIfProjectIsRead( CexmcExceptionType  type,
+                                     G4bool  extraCond = true );
 
 
 #endif

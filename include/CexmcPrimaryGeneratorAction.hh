@@ -20,7 +20,7 @@
 #define CEXMC_PRIMARY_GENERATOR_ACTION_HH
 
 #include <G4VUserPrimaryGeneratorAction.hh>
-#include "CexmcRunManager.hh"
+#include "CexmcException.hh"
 
 class  G4Event;
 class  CexmcParticleGun;
@@ -86,12 +86,7 @@ inline void  CexmcPrimaryGeneratorAction::SetFwhmPosX( G4double  value,
                                                        G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     fwhmPosX = value;
 }
@@ -101,12 +96,7 @@ inline void  CexmcPrimaryGeneratorAction::SetFwhmPosY( G4double  value,
                                                        G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     fwhmPosY = value;
 }
@@ -116,12 +106,7 @@ inline void  CexmcPrimaryGeneratorAction::SetFwhmDirX( G4double  value,
                                                        G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     fwhmDirX = value;
 }
@@ -131,12 +116,7 @@ inline void  CexmcPrimaryGeneratorAction::SetFwhmDirY( G4double  value,
                                                        G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     fwhmDirY = value;
 }
@@ -146,12 +126,7 @@ inline void  CexmcPrimaryGeneratorAction::SetFwhmMomentumAmp( G4double  value,
                                                         G4bool  fromMessenger )
 {
     if ( fromMessenger )
-    {
-        CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-        if ( runManager->ProjectIsRead() )
-            throw CexmcException( CexmcCmdIsNotAllowed );
-    }
+        ThrowExceptionIfProjectIsRead( CexmcCmdIsNotAllowed );
 
     fwhmMomentumAmp = value;
 }
