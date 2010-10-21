@@ -34,7 +34,7 @@ ifeq ($(CEXMC_USE_GENBOD),yes)
   endif
 endif
 
-ifdef BOOST_INCLUDE_PATH
+ifdef BOOST_LIBRARY_PATH
   EXTRALIBS += -L$(BOOST_LIBRARY_PATH)
 endif
 EXTRALIBS += -lboost_serialization
