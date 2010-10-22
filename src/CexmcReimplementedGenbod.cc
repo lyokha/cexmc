@@ -18,7 +18,6 @@
  */
 
 #include <cmath>
-#include <stdlib.h>
 #include <Randomize.hh>
 #include <G4PhysicalConstants.hh>
 #include "CexmcReimplementedGenbod.hh"

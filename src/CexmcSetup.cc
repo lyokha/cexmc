@@ -16,7 +16,6 @@
  * =============================================================================
  */
 
-#include <string.h>
 #include <G4GDMLParser.hh>
 #include <G4MultiFunctionalDetector.hh>
 #include <G4VPrimitiveScorer.hh>
@@ -86,9 +85,9 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
 
 void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
 {
+    G4MultiFunctionalDetector *   detector[ CexmcNumberOfDetectorRoles ] =
+                                                                    { NULL };
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
-    G4MultiFunctionalDetector *   detector[ CexmcNumberOfDetectorRoles ];
-    memset( detector, 0, sizeof( detector ) );
 
     for( std::vector< G4LogicalVolume * >::const_iterator
                         lvIter( lvs->begin() ); lvIter != lvs->end(); ++lvIter )
