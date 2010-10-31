@@ -83,7 +83,8 @@ namespace  CexmcCustomFilter
 
         /* propagate left binary operators with LR associativity (i.e. all in
          * our grammar) deep into the AST until any operator with different
-         * associativity or unary operator or a function occured */
+         * associativity (which includes operators in parentheses that have
+         * priority 0) or unary operator or a function occured */
         while ( true )
         {
             Subtree * candidate = boost::get< Subtree >(
@@ -124,6 +125,22 @@ namespace  CexmcCustomFilter
         Subtree &  ast( boost::get< Subtree >( self ) );
         ast.children.push_back( child );
         ast.type = value;
+    }
+
+
+    void  Compiler::operator()( Node &  self, Node &  primary ) const
+    {
+        self = primary;
+
+        Subtree *  ast( boost::get< Subtree >( &self ) );
+
+        if ( ! ast )
+            return;
+
+        Operator *  op( boost::get< Operator >( &ast->type ) );
+
+        if ( op )
+            op->priority = 0;
     }
 
 

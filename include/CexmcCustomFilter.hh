@@ -88,6 +88,8 @@ namespace  CexmcCustomFilter
 
         void  operator()( Node &  self, Node &  child, Operator  value ) const;
 
+        void  operator()( Node &  self, Node &  primary ) const;
+
         void  operator()( Node &  self, Node &  child, std::string &  value )
                                                                         const;
 
@@ -167,8 +169,9 @@ namespace  CexmcCustomFilter
 
         identifier %= lexeme[ alpha >> *( alnum | lit( '_' ) ) ];
 
-        primary_expr %= function1 | lit( '(' ) >> expression >> lit( ')' ) |
-                        leaf_operand;
+        primary_expr = function1[ _val = _1 ] |
+                lit( '(' ) >> expression[ op( _val, _1 ) ] >> lit( ')' ) |
+                leaf_operand[ _val = _1 ];
 
         leaf_operand %= constant | variable;
 
