@@ -82,9 +82,9 @@ namespace  CexmcCustomFilter
         Subtree *  astDeepestRight( astRight );
 
         /* propagate left binary operators with LR associativity (i.e. all in
-         * our grammar) deep into the AST until any operator with different
-         * associativity (which includes operators in parentheses that have
-         * priority 0) or unary operator or a function occured */
+         * our grammar) deep into the AST until any operator with a different
+         * priority (which includes operators in parentheses that have priority
+         * 0) or a unary operator or a function occured */
         while ( true )
         {
             Subtree * candidate = boost::get< Subtree >(
