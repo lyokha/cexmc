@@ -2,6 +2,8 @@ name := cexmc
 G4TARGET := $(name)
 G4EXLIB := true
 
+CPPFLAGS += -DCEXMC_PROG_NAME=\"$(name)\"
+
 # if CEXMC_USE_GENBOD is 'yes' then original FORTRAN routine GENBOD() will be
 # used as phase space generator
 CEXMC_USE_GENBOD := no

@@ -84,7 +84,13 @@ struct  CexmcCmdLineData
 
 void  printUsage( void )
 {
-    G4cout << "Usage: cexmc [-i] "
+#ifdef CEXMC_PROG_NAME
+    const char *  progName( CEXMC_PROG_NAME );
+#else
+    const char *  progName( "cexmc" );
+#endif
+
+    G4cout << "Usage: " << progName << " [-i] "
 #ifdef G4UI_USE_QT
                            "[-g] "
 #endif
@@ -95,7 +101,7 @@ void  printUsage( void )
                            "[-f filter_script] "
 #endif
                            "[-o list]]" << G4endl;
-    G4cout << "or     cexmc [--help | -h]" << G4endl;
+    G4cout << "or     " << progName << " [--help | -h]" << G4endl;
     G4cout << "           -i - run in interactive mode" << G4endl;
 #ifdef G4UI_USE_QT
     G4cout << "           -g - start graphical interface (Qt), implies "
