@@ -41,9 +41,7 @@
 #include <G4VisExecutive.hh>
 #endif
 #include "CexmcRunManager.hh"
-#ifdef CEXMC_USE_ROOT
 #include "CexmcHistoManager.hh"
-#endif
 #include "CexmcSetup.hh"
 #include "CexmcPhysicsList.hh"
 #include "CexmcPhysicsManager.hh"

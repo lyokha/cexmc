@@ -34,10 +34,8 @@
 #include "CexmcEventFastSObject.hh"
 #include "CexmcTrackingAction.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
-#ifdef CEXMC_USE_ROOT
-#include "CexmcHistoManager.hh"
-#endif
 #include "CexmcRunManager.hh"
+#include "CexmcHistoManager.hh"
 #include "CexmcRun.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
