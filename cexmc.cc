@@ -425,9 +425,7 @@ int  main( int  argc, char **  argv )
                                      cmdLineData.initMacro );
 
         if ( cmdLineData.isInteractive )
-        {
             productionModel->PrintInitialData();
-        }
 
 #ifdef G4UI_USE
         if ( cmdLineData.isInteractive )
@@ -460,9 +458,7 @@ int  main( int  argc, char **  argv )
 
 #ifdef CEXMC_USE_PERSISTENCY
         if ( runManager->ProjectIsSaved() )
-        {
             runManager->SaveProject();
-        }
 #endif
     }
     catch ( CexmcException &  e )

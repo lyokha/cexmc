@@ -924,20 +924,14 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 
 #ifdef CEXMC_USE_ROOT
         if ( edDigitizerHasTriggered )
-        {
             FillEDTHistos( edStore, triggeredAngularRanges );
-        }
 
         if ( tpDigitizerHasTriggered )
-        {
             FillTPTHistos( tpStore, pmData, triggeredAngularRanges );
-        }
 
         if ( reconstructorHasBasicTrigger )
-        {
             FillRTHistos( reconstructorHasFullTrigger, edStore, tpStore,
                           pmData, triggeredAngularRanges );
-        }
 #endif
 
         G4Event *  theEvent( const_cast< G4Event * >( event ) );
