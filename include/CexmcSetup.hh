@@ -87,7 +87,7 @@ class  CexmcSetup : public G4VUserDetectorConstruction
     private:
         void    SetupSpecialVolumes( G4GDMLParser &  gdmlParser );
 
-        void    ReadTransforms( const G4GDMLParser & gdmlParser );
+        void    ReadTransforms( G4GDMLParser & gdmlParser );
 
         void    ReadCalorimeterGeometryData( const G4LogicalVolume * lVolume );
 

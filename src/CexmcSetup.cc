@@ -301,7 +301,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
 }
 
 
-void  CexmcSetup::ReadTransforms( const G4GDMLParser &  gdmlParser )
+void  CexmcSetup::ReadTransforms( G4GDMLParser &  gdmlParser )
 {
     G4ThreeVector     position( gdmlParser.GetPosition( "TargetPos" ) );
     G4ThreeVector     rotation( gdmlParser.GetRotation( "TargetRot" ) );
