@@ -109,7 +109,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                 {
                     do
                     {
-                        if ( pair->value < 0.5 )
+                        if ( pair->value == "MonitorRole" )
                         {
                             AssertAndAsignDetectorRole( curDetectorRole,
                                                 CexmcMonitorDetectorRole );
@@ -117,7 +117,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                                     CexmcDetectorTypeName[ CexmcEDDetector ] );
                             break;
                         }
-                        if ( pair->value < 1.5 )
+                        if ( pair->value == "VetoCounterRole" )
                         {
                             AssertAndAsignDetectorRole( curDetectorRole,
                                                 CexmcVetoCounterDetectorRole );
@@ -126,7 +126,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                                     this );
                             break;
                         }
-                        if ( pair->value < 2.5 )
+                        if ( pair->value == "CalorimeterRole" )
                         {
                             AssertAndAsignDetectorRole( curDetectorRole,
                                                 CexmcCalorimeterDetectorRole );
@@ -146,7 +146,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                 {
                     do
                     {
-                        if ( pair->value < 0.5 )
+                        if ( pair->value == "MonitorRole" )
                         {
                             AssertAndAsignDetectorRole( curDetectorRole,
                                                 CexmcMonitorDetectorRole );
@@ -154,7 +154,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                                     CexmcDetectorTypeName[ CexmcTPDetector ] );
                             break;
                         }
-                        if ( pair->value < 1.5 )
+                        if ( pair->value == "VetoCounterRole"  )
                         {
                             AssertAndAsignDetectorRole( curDetectorRole,
                                                 CexmcVetoCounterDetectorRole );
@@ -163,7 +163,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                                     this );
                             break;
                         }
-                        if ( pair->value < 2.5 )
+                        if ( pair->value == "CalorimeterRole" )
                         {
                             AssertAndAsignDetectorRole( curDetectorRole,
                                                 CexmcCalorimeterDetectorRole );
@@ -172,7 +172,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                                     this );
                             break;
                         }
-                        if ( pair->value < 3.5 )
+                        if ( pair->value == "TargetRole" )
                         {
                             AssertAndAsignDetectorRole( curDetectorRole,
                                                 CexmcTargetDetectorRole );
@@ -197,7 +197,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                 {
                     do
                     {
-                        if ( pair->value < 0.5 )
+                        if ( pair->value == "CalorimeterRegion" )
                         {
                             G4Region *  region( NULL );
                             if ( calorimeterRegionInitialized )
@@ -235,19 +235,19 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                 {
                     do
                     {
-                        if ( pair->value < 0.5 )
+                        if ( pair->value == "Monitor" )
                         {
                             monitorVolume = *lvIter;
                             G4cout << CEXMC_LINE_START "Monitor volume '";
                             break;
                         }
-                        if ( pair->value < 1.5 )
+                        if ( pair->value == "VetoCounter" )
                         {
                             vetoCounterVolume = *lvIter;
                             G4cout << CEXMC_LINE_START "VetoCounter volume '";
                             break;
                         }
-                        if ( pair->value < 2.5 )
+                        if ( pair->value == "Calorimeter" )
                         {
                             calorimeterVolume = *lvIter;
                             G4cout << CEXMC_LINE_START "Calorimeter volume '";
@@ -255,7 +255,7 @@ void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
                             calorimeterGeometryDataInitialized = true;
                             break;
                         }
-                        if ( pair->value < 3.5 )
+                        if ( pair->value == "Target" )
                         {
                             targetVolume = *lvIter;
                             G4cout << CEXMC_LINE_START "Target volume '";

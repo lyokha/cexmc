@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- also schema located at "/usr/local/share/GDML_3_0_0/schema/gdml.xsd -->
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:gdml="http://cern.ch/2001/Schemas/GDML"
     xsi:noNamespaceSchemaLocation=
@@ -18,24 +17,6 @@
 
         <constant name="NCrystalsHor" value="6"/>
         <constant name="NCrystalsVert" value="4"/>
-
-        <!-- sensitive detector roles; -->
-        <!-- a single logical volume may have only one detector role, -->
-        <!-- for example vMonitor may not have MonitorRole and TargetRole -->
-        <!-- simultaneously -->
-        <constant name="MonitorRole" value="0"/>
-        <constant name="VetoCounterRole" value="1"/>
-        <constant name="CalorimeterRole" value="2"/>
-        <constant name="TargetRole" value="3"/>
-
-        <!-- region types -->
-        <constant name="CalorimeterRegion" value="0"/>
-
-        <!-- special volumes -->
-        <constant name="MonitorVolume" value="0"/>
-        <constant name="VetoCounterVolume" value="1"/>
-        <constant name="CalorimeterVolume" value="2"/>
-        <constant name="TargetVolume" value="3"/>
 
 
         <!-- these values are supposed to be changed -->
@@ -377,7 +358,7 @@
         <volume name="vMonitor">
             <materialref ref="Scintillator"/>
             <solidref ref="sMonitor"/>
-            <auxiliary auxtype="SpecialVolume" auxvalue="MonitorVolume"/>
+            <auxiliary auxtype="SpecialVolume" auxvalue="Monitor"/>
             <auxiliary auxtype="EnergyDepositDetector" auxvalue="MonitorRole"/>
             <auxiliary auxtype="TrackPointsDetector" auxvalue="MonitorRole"/>
         </volume>
@@ -388,7 +369,7 @@
         <volume name="vTarget">
             <materialref ref="G4_lH2"/>
             <solidref ref="sTarget"/>
-            <auxiliary auxtype="SpecialVolume" auxvalue="TargetVolume"/>
+            <auxiliary auxtype="SpecialVolume" auxvalue="Target"/>
             <auxiliary auxtype="TrackPointsDetector" auxvalue="TargetRole"/>
         </volume>
         <volume name="vTargetInnerCover">
@@ -454,13 +435,13 @@
                     <offset value="0" unit="cm"/>
                 </replicate_along_axis>
             </replicavol>
-            <auxiliary auxtype="SpecialVolume" auxvalue="CalorimeterVolume"/>
+            <auxiliary auxtype="SpecialVolume" auxvalue="Calorimeter"/>
             <auxiliary auxtype="SensitiveRegion" auxvalue="CalorimeterRegion"/>
         </volume>
         <volume name="vVetoCounter">
             <materialref ref="Scintillator"/>
             <solidref ref="sVetoCounter"/>
-            <auxiliary auxtype="SpecialVolume" auxvalue="VetoCounterVolume"/>
+            <auxiliary auxtype="SpecialVolume" auxvalue="VetoCounter"/>
             <auxiliary auxtype="EnergyDepositDetector"
                        auxvalue="VetoCounterRole"/>
             <auxiliary auxtype="TrackPointsDetector"
