@@ -403,11 +403,7 @@ int  main( int  argc, char **  argv )
 #ifdef G4VIS_USE
         if ( cmdLineData.isInteractive )
         {
-#if G4VERSION_NUMBER < 940
-            visManager = new G4VisExecutive;
-#else
             visManager = new G4VisExecutive( CexmcVisManagerVerboseLevel );
-#endif
             visManager->Initialize();
         }
 #endif
@@ -433,7 +429,8 @@ int  main( int  argc, char **  argv )
             if ( cmdLineData.startQtSession )
             {
 #ifdef G4UI_USE_QT
-                session = new G4UIQt( argc, argv );
+                /* no need to pass all command line options to QApplication */
+                session = new G4UIQt( 1, argv );
                 const G4String &  guiMacroName( runManager->GetGuiMacroName() );
                 if ( guiMacroName != "" )
                     uiManager->ApplyCommand( "/control/execute " +

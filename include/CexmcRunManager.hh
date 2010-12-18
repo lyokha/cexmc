@@ -89,6 +89,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  EnableLiveHistograms( G4bool  on = true );
 
+        void  SetupConstructionHook( void );
+
     public:
         CexmcPhysicsManager *     GetPhysicsManager( void );
 

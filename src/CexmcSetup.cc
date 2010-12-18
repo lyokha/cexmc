@@ -28,7 +28,6 @@
 #include <G4Region.hh>
 #include <G4RegionStore.hh>
 #include <G4ProductionCuts.hh>
-#include <G4RunManager.hh>
 #include <G4VUserPhysicsList.hh>
 #include "CexmcSetup.hh"
 #include "CexmcTrackPoints.hh"
@@ -38,6 +37,7 @@
 #include "CexmcSimpleEnergyDeposit.hh"
 #include "CexmcEnergyDepositInLeftRightSet.hh"
 #include "CexmcEnergyDepositInCalorimeter.hh"
+#include "CexmcRunManager.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcException.hh"
 
@@ -68,9 +68,14 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
 
     ReadRightDetectors();
 
+    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
+                                            G4RunManager::GetRunManager() ) );
+
+    runManager->SetupConstructionHook();
+
     const CexmcPhysicsManager *  physicsManager(
             dynamic_cast< const CexmcPhysicsManager * >(
-                G4RunManager::GetRunManager()->GetUserPhysicsList() ) );
+                                        runManager->GetUserPhysicsList() ) );
 
     if ( ! physicsManager )
         throw CexmcException( CexmcWeirdException );
@@ -83,7 +88,7 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
 }
 
 
-void  CexmcSetup::SetupSpecialVolumes( G4GDMLParser &  gdmlParser )
+void  CexmcSetup::SetupSpecialVolumes( const G4GDMLParser &  gdmlParser )
 {
     G4MultiFunctionalDetector *   detector[ CexmcNumberOfDetectorRoles ] =
                                                                     { NULL };

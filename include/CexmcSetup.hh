@@ -85,7 +85,7 @@ class  CexmcSetup : public G4VUserDetectorConstruction
         G4bool  IsRightCalorimeter( const G4VPhysicalVolume *  pVolume ) const;
 
     private:
-        void    SetupSpecialVolumes( G4GDMLParser &  gdmlParser );
+        void    SetupSpecialVolumes( const G4GDMLParser &  gdmlParser );
 
         void    ReadTransforms( const G4GDMLParser & gdmlParser );
 

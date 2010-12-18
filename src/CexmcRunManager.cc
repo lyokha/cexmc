@@ -440,20 +440,6 @@ void  CexmcRunManager::SaveProject( void )
         boost::archive::binary_oarchive  archive( runDataFile );
         archive << sObjectToWrite;
     }
-
-    /* save gdml file */
-    G4String            cmd( G4String( "cp " ) + gdmlFileName + " " +
-                             projectsDir + "/" + projectId +
-                             gdmlFileExtension );
-    CexmcExceptionType  exceptionType( CexmcSystemException );
-    if ( zipGdmlFile )
-    {
-        cmd = G4String( "bzip2 -c " ) + gdmlFileName + " > " + projectsDir +
-                                        "/" + projectId + gdmlbz2FileExtension;
-        exceptionType = CexmcFileCompressException;
-    }
-    if ( system( cmd ) != 0 )
-        throw CexmcException( exceptionType );
 }
 
 #endif
@@ -1272,4 +1258,24 @@ void  CexmcRunManager::SetCustomFilter( const G4String &  cfFileName_ )
 #endif
 
 #endif
+
+
+void  CexmcRunManager::SetupConstructionHook( void )
+{
+#ifdef CEXMC_USE_PERSISTENCY
+    /* save gdml file */
+    G4String            cmd( G4String( "cp " ) + gdmlFileName + " " +
+                             projectsDir + "/" + projectId +
+                             gdmlFileExtension );
+    CexmcExceptionType  exceptionType( CexmcSystemException );
+    if ( zipGdmlFile )
+    {
+        cmd = G4String( "bzip2 -c " ) + gdmlFileName + " > " + projectsDir +
+                                        "/" + projectId + gdmlbz2FileExtension;
+        exceptionType = CexmcFileCompressException;
+    }
+    if ( system( cmd ) != 0 )
+        throw CexmcException( exceptionType );
+#endif
+}
 
