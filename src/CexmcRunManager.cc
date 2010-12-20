@@ -131,20 +131,9 @@ void  CexmcRunManager::BeamParticleChangeHook( void )
 
 CexmcRunManager::~CexmcRunManager()
 {
-#ifdef CEXMC_USE_PERSISTENCY
-    if ( ProjectIsRead() && zipGdmlFile )
-    {
-        G4String  cmd( G4String( "bzip2 " ) + projectsDir + "/" + rProject +
-                       gdmlFileExtension );
-        if ( system( cmd ) != 0 )
-            G4cerr << "Failed to zip geometry data" << G4endl;
-    }
-
 #ifdef CEXMC_USE_CUSTOM_FILTER
     delete customFilter;
 #endif
-#endif
-
     delete messenger;
 }
 
@@ -157,8 +146,8 @@ void  CexmcRunManager::ReadPreinitProjectData( void )
         return;
 
     /* read run data */
-    std::ifstream    runDataFile( ( projectsDir + "/" + rProject + ".rdb" ).
-                                  c_str() );
+    std::ifstream  runDataFile( ( projectsDir + "/" + rProject + ".rdb" ).
+                                c_str() );
     if ( ! runDataFile )
         throw CexmcException( CexmcReadProjectIncomplete );
 
@@ -172,13 +161,16 @@ void  CexmcRunManager::ReadPreinitProjectData( void )
     productionModelType = sObject.productionModelType;
 
     /* read gdml file */
-    G4String  fileExtension( zipGdmlFile ? gdmlbz2FileExtension :
-                                           gdmlFileExtension );
-    G4String  cmd( G4String( "cp " ) + projectsDir + "/" + rProject +
-                   fileExtension + " " + projectsDir + "/" + projectId +
-                   fileExtension );
-    if ( ProjectIsSaved() && system( cmd ) != 0 )
-        throw CexmcException( CexmcReadProjectIncomplete );
+    G4String       cmd;
+    if ( ProjectIsSaved() )
+    {
+        G4String  fileExtension( zipGdmlFile ? gdmlbz2FileExtension :
+                                               gdmlFileExtension );
+        cmd = G4String( "cp " ) + projectsDir + "/" + rProject + fileExtension +
+                            " " + projectsDir + "/" + projectId + fileExtension;
+        if ( system( cmd ) != 0 )
+            throw CexmcException( CexmcReadProjectIncomplete );
+    }
 
     if ( zipGdmlFile )
     {
@@ -1264,17 +1256,33 @@ void  CexmcRunManager::SetupConstructionHook( void )
 {
 #ifdef CEXMC_USE_PERSISTENCY
     /* save gdml file */
-    G4String            cmd( G4String( "cp " ) + gdmlFileName + " " +
-                             projectsDir + "/" + projectId +
-                             gdmlFileExtension );
+    G4String            cmd( "" );
     CexmcExceptionType  exceptionType( CexmcSystemException );
+
     if ( zipGdmlFile )
     {
-        cmd = G4String( "bzip2 -c " ) + gdmlFileName + " > " + projectsDir +
-                                        "/" + projectId + gdmlbz2FileExtension;
+        if ( ProjectIsRead() )
+        {
+            cmd = G4String( "bzip2 " ) + projectsDir + "/" + rProject +
+                                                            gdmlFileExtension;
+        }
+        else
+        {
+            if ( ProjectIsSaved() )
+                cmd = G4String( "bzip2 -c " ) + gdmlFileName + " > " +
+                        projectsDir + "/" + projectId + gdmlbz2FileExtension;
+        }
         exceptionType = CexmcFileCompressException;
     }
-    if ( system( cmd ) != 0 )
+    else
+    {
+        if ( ! ProjectIsRead() && ProjectIsSaved() )
+            cmd = G4String( "cp " ) + gdmlFileName + " " + projectsDir + "/" +
+                                                projectId + gdmlFileExtension;
+        /* else already saved in ReadPreinitProjectData() */
+    }
+
+    if ( ! cmd.empty() && system( cmd ) != 0 )
         throw CexmcException( exceptionType );
 #endif
 }
