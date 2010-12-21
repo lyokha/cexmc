@@ -116,19 +116,6 @@ CexmcRunManager::CexmcRunManager( const G4String &  projectId,
 }
 
 
-void  CexmcRunManager::BeamParticleChangeHook( void )
-{
-    const CexmcEventAction *  eventAction(
-                static_cast< const CexmcEventAction * >( userEventAction ) );
-    if ( ! eventAction )
-        throw CexmcException( CexmcWeirdException );
-
-    CexmcEventAction *        theEventAction( const_cast< CexmcEventAction * >(
-                                                                eventAction ) );
-    theEventAction->BeamParticleChangeHook();
-}
-
-
 CexmcRunManager::~CexmcRunManager()
 {
 #ifdef CEXMC_USE_CUSTOM_FILTER
@@ -1137,6 +1124,9 @@ void  CexmcRunManager::PrintReadRunData( void ) const
 
 void  CexmcRunManager::ReadAndPrintEventsData( void ) const
 {
+    if ( ! ProjectIsRead() )
+        return;
+
     CexmcEventSObject  evSObject;
 
     /* read events data */
@@ -1182,6 +1172,9 @@ void  CexmcRunManager::ReadAndPrintEventsData( void ) const
 void  CexmcRunManager::PrintReadData(
                             const CexmcOutputDataTypeSet &  outputData ) const
 {
+    if ( ! ProjectIsRead() )
+        return;
+
     G4bool  addSpace( false );
 
     CexmcOutputDataTypeSet::const_iterator  found(
@@ -1191,7 +1184,15 @@ void  CexmcRunManager::PrintReadData(
         G4String  cmd( G4String( "cat " ) + projectsDir + "/" + rProject +
                        gdmlFileExtension );
         if ( system( cmd ) != 0 )
-            G4cerr << "Failed to cat geometry data" << G4endl;
+            throw CexmcException( CexmcReadProjectIncomplete );
+
+        if ( zipGdmlFile )
+        {
+            cmd = G4String( "bzip2 " ) + projectsDir + "/" + rProject +
+                                                            gdmlFileExtension;
+            if ( system( cmd ) != 0 )
+                throw CexmcException( CexmcFileCompressException );
+        }
 
         addSpace = true;
     }
@@ -1250,6 +1251,19 @@ void  CexmcRunManager::SetCustomFilter( const G4String &  cfFileName_ )
 #endif
 
 #endif
+
+
+void  CexmcRunManager::BeamParticleChangeHook( void )
+{
+    const CexmcEventAction *  eventAction(
+                static_cast< const CexmcEventAction * >( userEventAction ) );
+    if ( ! eventAction )
+        throw CexmcException( CexmcWeirdException );
+
+    CexmcEventAction *        theEventAction( const_cast< CexmcEventAction * >(
+                                                                eventAction ) );
+    theEventAction->BeamParticleChangeHook();
+}
 
 
 void  CexmcRunManager::SetupConstructionHook( void )

@@ -89,6 +89,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  EnableLiveHistograms( G4bool  on = true );
 
+        void  BeamParticleChangeHook( void );
+
         void  SetupConstructionHook( void );
 
     public:
@@ -119,8 +121,6 @@ class  CexmcRunManager : public G4RunManager
         G4bool                    AreLiveHistogramsEnabled( void ) const;
 
         CexmcEventDataVerboseLevel  GetEventDataVerboseLevel( void ) const;
-
-        void                      BeamParticleChangeHook( void );
 
     protected:
         void  DoEventLoop( G4int  nEvent, const char *  macroFile,
