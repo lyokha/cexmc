@@ -45,8 +45,8 @@ CexmcPhysicsManagerMessenger::~CexmcPhysicsManagerMessenger()
 }
 
 
-void CexmcPhysicsManagerMessenger::SetNewValue( G4UIcommand *  cmd,
-                                                G4String  value )
+void  CexmcPhysicsManagerMessenger::SetNewValue( G4UIcommand *  cmd,
+                                                 G4String  value )
 {
     do
     {

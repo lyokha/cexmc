@@ -39,4 +39,4 @@ print JOBFILE "PATH=" . $ENV{ 'PATH' } . "\n";
 print JOBFILE "LD_LIBRARY_PATH=" . $ENV{ 'LD_LIBRARY_PATH' } . "\n";
 print JOBFILE "cexmc -p$opt_p -m$opt_m $OverrideOpt -w$ARGV[ 0 ]\n";
 
-close (JOBFILE) or die $!;
+close ( JOBFILE ) or die $!;

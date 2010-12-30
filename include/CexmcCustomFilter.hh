@@ -72,9 +72,9 @@ namespace  CexmcCustomFilter
 
     struct  Compiler
     {
-        template < typename  A, typename  B = boost::fusion::unused_type,
-                   typename  C = boost::fusion::unused_type,
-                   typename  D = boost::fusion::unused_type >
+        template  < typename  A, typename  B = boost::fusion::unused_type,
+                    typename  C = boost::fusion::unused_type,
+                    typename  D = boost::fusion::unused_type >
         struct  result { typedef void  type; };
 
         void  operator()( ParseResult &  parseResult, Action  value ) const;

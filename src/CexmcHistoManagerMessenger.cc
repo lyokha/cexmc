@@ -66,8 +66,8 @@ CexmcHistoManagerMessenger::~CexmcHistoManagerMessenger()
 }
 
 
-void CexmcHistoManagerMessenger::SetNewValue(
-                                        G4UIcommand *  cmd, G4String  value )
+void  CexmcHistoManagerMessenger::SetNewValue( G4UIcommand *  cmd,
+                                               G4String  value )
 {
     CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
 

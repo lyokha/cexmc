@@ -82,8 +82,8 @@ CexmcParticleGunMessenger::~CexmcParticleGunMessenger()
 }
 
 
-void CexmcParticleGunMessenger::SetNewValue( G4UIcommand *  cmd,
-                                             G4String  value )
+void  CexmcParticleGunMessenger::SetNewValue( G4UIcommand *  cmd,
+                                              G4String  value )
 {
     do
     {

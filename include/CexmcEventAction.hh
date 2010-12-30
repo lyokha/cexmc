@@ -70,7 +70,7 @@ class  CexmcEventAction : public G4UserEventAction
                 const CexmcProductionModelData &  pmData,
                 const CexmcAngularRangeList &  triggeredAngularRanges ) const;
 
-        void  FillRTHistos( G4bool reconstructorHasFullTrigger,
+        void  FillRTHistos( G4bool  reconstructorHasFullTrigger,
                 const CexmcEnergyDepositStore *  edStore,
                 const CexmcTrackPointsStore *  tpStore,
                 const CexmcProductionModelData &  pmData,

@@ -128,7 +128,7 @@ void  printUsage( void )
 }
 
 
-G4bool  parseArgs( int  argc, char ** argv, CexmcCmdLineData &  cmdLineData )
+G4bool  parseArgs( int  argc, char **  argv, CexmcCmdLineData &  cmdLineData )
 {
     if ( argc < 2 )
         return false;

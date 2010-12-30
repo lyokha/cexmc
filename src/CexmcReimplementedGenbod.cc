@@ -84,7 +84,7 @@ G4double  CexmcReimplementedGenbod::Generate( void )
     G4double  wt( maxWeight );
     G4double  pd[ maxParticles ];
 
-    for ( int i( 0 ); i < nmbOfOutputParticles - 1; ++i )
+    for ( int  i( 0 ); i < nmbOfOutputParticles - 1; ++i )
     {
         pd[ i ] = PDK( invMas[ i + 1 ], invMas[ i ],
                        outVec[ i + 1 ].mass / GeV );

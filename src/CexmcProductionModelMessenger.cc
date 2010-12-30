@@ -77,8 +77,8 @@ CexmcProductionModelMessenger::~CexmcProductionModelMessenger()
 }
 
 
-void CexmcProductionModelMessenger::SetNewValue( G4UIcommand *  cmd,
-                                                 G4String  value )
+void  CexmcProductionModelMessenger::SetNewValue( G4UIcommand *  cmd,
+                                                  G4String  value )
 {
     do
     {

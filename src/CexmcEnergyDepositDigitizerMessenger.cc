@@ -277,7 +277,7 @@ void  CexmcEnergyDepositDigitizerMessenger::SetNewValue( G4UIcommand *  cmd,
         }
         if ( cmd == setCalorimeterTriggerAlgorithm )
         {
-            CexmcCalorimeterTriggerAlgorithm calorimeterTriggerAlgorithm(
+            CexmcCalorimeterTriggerAlgorithm  calorimeterTriggerAlgorithm(
                                     CexmcAllCrystalsMakeEDTriggerThreshold );
             do
             {
@@ -294,7 +294,7 @@ void  CexmcEnergyDepositDigitizerMessenger::SetNewValue( G4UIcommand *  cmd,
         }
         if ( cmd == setOuterCrystalsVetoAlgorithm )
         {
-            CexmcOuterCrystalsVetoAlgorithm outerCrystalsVetoAlgorithm(
+            CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm(
                                                     CexmcNoOuterCrystalsVeto );
             do
             {

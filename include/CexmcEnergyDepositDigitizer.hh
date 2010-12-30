@@ -100,10 +100,10 @@ class  CexmcEnergyDepositDigitizer : public G4VDigitizerModule
                                     G4bool  fromMessenger = true );
 
         void      SetOuterCrystalsVetoFraction( G4double  value,
-                                                G4bool fromMessenger = true );
+                                                G4bool  fromMessenger = true );
 
         void      ApplyFiniteCrystalResolution( G4bool  value,
-                                                G4bool fromMessenger = true );
+                                                G4bool  fromMessenger = true );
 
         void      AddCrystalResolutionRange( G4double  bottom, G4double  top,
                                              G4double  value,

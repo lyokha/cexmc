@@ -87,7 +87,7 @@ namespace  CexmcCustomFilter
          * 0) or a unary operator or a function occured */
         while ( true )
         {
-            Subtree * candidate = boost::get< Subtree >(
+            Subtree *   candidate = boost::get< Subtree >(
                                             &astDeepestRight->children[ 0 ] );
             if ( ! candidate )
                 break;

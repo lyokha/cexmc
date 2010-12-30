@@ -142,18 +142,18 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
                             epDefinitionAlgorithm( CexmcEntryPointInTheCenter );
             do
             {
-                if ( value  == "simple" )
+                if ( value == "simple" )
                 {
                     epDefinitionAlgorithm =
                             CexmcEntryPointInTheCenterOfCrystalWithMaxED;
                     break;
                 }
-                if ( value  == "linear" )
+                if ( value == "linear" )
                 {
                     epDefinitionAlgorithm = CexmcEntryPointByLinearEDWeights;
                     break;
                 }
-                if ( value  == "sqrt" )
+                if ( value == "sqrt" )
                 {
                     epDefinitionAlgorithm = CexmcEntryPointBySqrtEDWeights;
                     break;
@@ -169,7 +169,7 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
                         epDepthDefinitionAlgorithm( CexmcEntryPointDepthPlain );
             do
             {
-                if ( value  == "sphere" )
+                if ( value == "sphere" )
                 {
                     epDepthDefinitionAlgorithm = CexmcEntryPointDepthSphere;
                     break;
@@ -185,7 +185,7 @@ void  CexmcReconstructorMessenger::SetNewValue( G4UIcommand *  cmd,
                                         csAlgorithm( CexmcSelectAllCrystals );
             do
             {
-                if ( value  == "adjacent" )
+                if ( value == "adjacent" )
                 {
                     csAlgorithm = CexmcSelectAdjacentCrystals;
                     break;

@@ -47,7 +47,8 @@ CexmcReconstructor::~CexmcReconstructor()
 }
 
 
-void  CexmcReconstructor::Reconstruct( const CexmcEnergyDepositStore * edStore )
+void  CexmcReconstructor::Reconstruct(
+                                    const CexmcEnergyDepositStore *  edStore )
 {
     ReconstructEntryPoints( edStore );
     if ( hasBasicTrigger )
@@ -64,7 +65,7 @@ G4bool  CexmcReconstructor::HasFullTrigger( void ) const
 
 
 void  CexmcReconstructor::ReconstructEntryPoints(
-                                    const CexmcEnergyDepositStore * edStore )
+                                    const CexmcEnergyDepositStore *  edStore )
 {
     G4int     nCrystalsInColumn( calorimeterGeometry.nCrystalsInColumn );
     G4int     nCrystalsInRow( calorimeterGeometry.nCrystalsInRow );

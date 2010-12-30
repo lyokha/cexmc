@@ -239,8 +239,8 @@ void  CexmcEventAction::PrintProductionModelData(
 
 
 void  CexmcEventAction::PrintReconstructedData(
-                        const CexmcAngularRangeList & triggeredRecAngularRanges,
-                        const CexmcAngularRange &  angularGap ) const
+                    const CexmcAngularRangeList &  triggeredRecAngularRanges,
+                    const CexmcAngularRange &  angularGap ) const
 {
     G4cout << " --- Reconstructed data: " << G4endl;
     G4cout << "       -- entry points:" << G4endl;
