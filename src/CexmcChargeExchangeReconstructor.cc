@@ -16,6 +16,7 @@
  * ============================================================================
  */
 
+#include <cmath>
 #include <G4ThreeVector.hh>
 #include <G4LorentzVector.hh>
 #include "CexmcChargeExchangeReconstructor.hh"

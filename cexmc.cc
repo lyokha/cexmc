@@ -45,6 +45,7 @@
 #include "CexmcSetup.hh"
 #include "CexmcPhysicsList.hh"
 #include "CexmcPhysicsManager.hh"
+#include "CexmcScenePrimitives.hh"
 #include "CexmcPrimaryGeneratorAction.hh"
 #include "CexmcTrackingAction.hh"
 #include "CexmcSteppingAction.hh"
@@ -314,11 +315,11 @@ int  main( int  argc, char **  argv )
     }
 
     CexmcRunManager *  runManager( NULL );
+    CexmcMessenger::Instance();
 #ifdef G4VIS_USE
     G4VisManager *     visManager( NULL );
+    CexmcScenePrimitives::Instance();
 #endif
-
-    CexmcMessenger::Instance();
 #ifdef CEXMC_USE_ROOT
     CexmcHistoManager::Instance();
 #endif
@@ -405,6 +406,7 @@ int  main( int  argc, char **  argv )
         {
             visManager = new G4VisExecutive( CexmcVisManagerVerboseLevel );
             visManager->Initialize();
+            CexmcScenePrimitives::Instance()->Initialize( visManager, setup );
         }
 #endif
 
@@ -484,11 +486,11 @@ int  main( int  argc, char **  argv )
 #ifdef CEXMC_USE_ROOT
     CexmcHistoManager::Destroy();
 #endif
-    CexmcMessenger::Destroy();
-
 #ifdef G4VIS_USE
+    CexmcScenePrimitives::Destroy();
     delete visManager;
 #endif
+    CexmcMessenger::Destroy();
     delete runManager;
 #ifdef G4UI_USE
     delete session;

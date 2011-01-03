@@ -103,7 +103,7 @@ CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
                                        CexmcHistoVector() ) );
     }
 
-    messenger = new CexmcHistoManagerMessenger;
+    messenger = new CexmcHistoManagerMessenger( this );
 }
 
 

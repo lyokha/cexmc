@@ -26,8 +26,9 @@
 #include "CexmcMessenger.hh"
 
 
-CexmcHistoManagerMessenger::CexmcHistoManagerMessenger() :
-    listHistos( NULL ), printHisto( NULL )
+CexmcHistoManagerMessenger::CexmcHistoManagerMessenger(
+                                        CexmcHistoManager *  histoManager ) :
+    histoManager( histoManager ), listHistos( NULL ), printHisto( NULL )
 #ifdef CEXMC_USE_ROOTQT
     , drawHisto( NULL )
 #endif
@@ -69,8 +70,6 @@ CexmcHistoManagerMessenger::~CexmcHistoManagerMessenger()
 void  CexmcHistoManagerMessenger::SetNewValue( G4UIcommand *  cmd,
                                                G4String  value )
 {
-    CexmcHistoManager *  histoManager( CexmcHistoManager::Instance() );
-
     do
     {
         if ( cmd == listHistos )
