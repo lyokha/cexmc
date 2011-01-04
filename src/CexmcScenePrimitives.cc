@@ -30,9 +30,12 @@
 
 namespace
 {
-    G4Colour  CexmcRadialLineColour( 1.0, 0.8, 0.0 );
+    G4double  CexmcDefaultRadialLineLength( 1 * m );
     G4double  CexmcRadialLineWidth( 2.0 );
     G4double  CexmcRadialLineCapScreenSize( 4.0 );
+    G4double  CexmcMarkerScreenSize( 2.0 );
+    G4Colour  CexmcRadialLineColour( 1.0, 0.8, 0.0 );
+    G4Colour  CexmcMarkerColour( CexmcRadialLineColour );
 }
 
 CexmcScenePrimitives *  CexmcScenePrimitives::instance( NULL );
@@ -55,7 +58,7 @@ void  CexmcScenePrimitives::Destroy( void )
 
 
 CexmcScenePrimitives::CexmcScenePrimitives() : visManager( NULL ),
-    radialLineLength( 1 * m ), radialLineOrigin( 0, 0, 0 ),
+    radialLineLength( CexmcDefaultRadialLineLength ), targetCenter( 0, 0, 0 ),
     isInitialized( false ), messenger( NULL )
 {
     messenger = new CexmcScenePrimitivesMessenger( this );
@@ -72,11 +75,8 @@ void  CexmcScenePrimitives::Initialize( G4VisManager *  visManager_,
                                         const CexmcSetup *  setup )
 {
     visManager = visManager_;
-    G4ThreeVector  vec( setup->GetTargetTransform().TransformPoint(
-                                                G4ThreeVector( 0, 0, 0 ) ) );
-    radialLineOrigin.setX( vec.x() );
-    radialLineOrigin.setY( vec.y() );
-    radialLineOrigin.setZ( vec.z() );
+    targetCenter = setup->GetTargetTransform().TransformPoint(
+                                                G4ThreeVector( 0, 0, 0 ) );
 }
 
 
@@ -85,8 +85,8 @@ void  CexmcScenePrimitives::DrawRadialLine( G4double  angle )
     G4Polyline       line;
     G4Point3D        radialLineEnd( - std::sin( angle ) * radialLineLength, 0,
                                     std::cos( angle ) * radialLineLength );
-    radialLineEnd += radialLineOrigin;
-    line.push_back( radialLineOrigin );
+    radialLineEnd += targetCenter;
+    line.push_back( targetCenter );
     line.push_back( radialLineEnd );
 
     G4VisAttributes  visAttributes( CexmcRadialLineColour );
@@ -94,11 +94,22 @@ void  CexmcScenePrimitives::DrawRadialLine( G4double  angle )
     line.SetVisAttributes( visAttributes );
     visManager->Draw( line );
 
-    G4Circle         circle;
+    G4Circle  circle;
     circle.SetScreenSize( CexmcRadialLineCapScreenSize );
     circle.SetFillStyle( G4Circle::filled );
-    circle.SetVisAttributes( visAttributes );
-    circle.SetPosition( G4ThreeVector( 0, 0, 0 ) );
+    circle.SetVisAttributes( CexmcRadialLineColour );
+    circle.SetPosition( targetCenter );
+    visManager->Draw( circle );
+}
+
+
+void  CexmcScenePrimitives::MarkTargetCenter( void )
+{
+    G4Circle  circle;
+    circle.SetScreenSize( CexmcMarkerScreenSize );
+    circle.SetFillStyle( G4Circle::filled );
+    circle.SetVisAttributes( CexmcMarkerColour );
+    circle.SetPosition( targetCenter );
     visManager->Draw( circle );
 }
 

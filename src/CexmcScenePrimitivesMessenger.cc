@@ -17,6 +17,7 @@
  */
 
 #include <G4UIcmdWithADoubleAndUnit.hh>
+#include <G4UIcmdWithoutParameter.hh>
 #include "CexmcScenePrimitives.hh"
 #include "CexmcScenePrimitivesMessenger.hh"
 #include "CexmcMessenger.hh"
@@ -43,6 +44,11 @@ CexmcScenePrimitivesMessenger::CexmcScenePrimitivesMessenger(
     drawRadialLine->SetDefaultUnit( "deg" );
     drawRadialLine->SetUnitCandidates( "deg rad" );
     drawRadialLine->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    markTargetCenter = new G4UIcmdWithoutParameter(
+        ( CexmcMessenger::visDirName + "markTargetCenter" ).c_str(), this );
+    markTargetCenter->SetGuidance( "Mark target center with a dot" );
+    markTargetCenter->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
 
@@ -50,6 +56,7 @@ CexmcScenePrimitivesMessenger::~CexmcScenePrimitivesMessenger()
 {
     delete setRadialLineLength;
     delete drawRadialLine;
+    delete markTargetCenter;
 }
 
 
@@ -68,6 +75,11 @@ void  CexmcScenePrimitivesMessenger::SetNewValue( G4UIcommand *  cmd,
         {
             scenePrimitives->DrawRadialLine(
                     G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
+        }
+        if ( cmd == markTargetCenter )
+        {
+            scenePrimitives->MarkTargetCenter();
             break;
         }
     } while ( false );

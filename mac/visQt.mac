@@ -53,6 +53,7 @@
 #/vis/scene/add/axes
 
 /cexmc/vis/drawTrajMarkers false
+/cexmc/vis/markTargetCenter
 
 /vis/viewer/flush
 

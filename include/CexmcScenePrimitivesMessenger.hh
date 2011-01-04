@@ -23,6 +23,7 @@
 
 class  G4UIcommand;
 class  G4UIcmdWithADoubleAndUnit;
+class  G4UIcmdWithoutParameter;
 class  CexmcScenePrimitives;
 
 
@@ -43,7 +44,10 @@ class  CexmcScenePrimitivesMessenger : public G4UImessenger
         G4UIcmdWithADoubleAndUnit *  setRadialLineLength;
 
         G4UIcmdWithADoubleAndUnit *  drawRadialLine;
+
+        G4UIcmdWithoutParameter *    markTargetCenter;
 };
+
 
 #endif
 

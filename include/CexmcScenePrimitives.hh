@@ -46,12 +46,14 @@ class  CexmcScenePrimitives
 
         void  DrawRadialLine( G4double  angle );
 
+        void  MarkTargetCenter( void );
+
     private:
         G4VisManager *  visManager;
 
         G4double        radialLineLength;
 
-        G4Point3D       radialLineOrigin;
+        G4Point3D       targetCenter;
 
         G4bool          isInitialized;
 
