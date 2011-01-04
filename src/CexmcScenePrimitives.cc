@@ -38,6 +38,7 @@ namespace
     G4Colour  CexmcMarkerColour( CexmcRadialLineColour );
 }
 
+
 CexmcScenePrimitives *  CexmcScenePrimitives::instance( NULL );
 
 
