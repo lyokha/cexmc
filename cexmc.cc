@@ -406,7 +406,7 @@ int  main( int  argc, char **  argv )
         {
             visManager = new G4VisExecutive( CexmcVisManagerVerboseLevel );
             visManager->Initialize();
-            CexmcScenePrimitives::Instance()->Initialize( visManager, setup );
+            CexmcScenePrimitives::Instance()->Initialize( setup );
         }
 #endif
 

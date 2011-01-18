@@ -21,7 +21,7 @@
 #include <G4Circle.hh>
 #include <G4ThreeVector.hh>
 #include <G4VisAttributes.hh>
-#include <G4VisManager.hh>
+#include <G4VVisManager.hh>
 #include <G4Colour.hh>
 #include "CexmcScenePrimitives.hh"
 #include "CexmcScenePrimitivesMessenger.hh"
@@ -58,7 +58,7 @@ void  CexmcScenePrimitives::Destroy( void )
 }
 
 
-CexmcScenePrimitives::CexmcScenePrimitives() : visManager( NULL ),
+CexmcScenePrimitives::CexmcScenePrimitives() :
     radialLineLength( CexmcDefaultRadialLineLength ), targetCenter( 0, 0, 0 ),
     isInitialized( false ), messenger( NULL )
 {
@@ -72,10 +72,8 @@ CexmcScenePrimitives::~CexmcScenePrimitives()
 }
 
 
-void  CexmcScenePrimitives::Initialize( G4VisManager *  visManager_,
-                                        const CexmcSetup *  setup )
+void  CexmcScenePrimitives::Initialize( const CexmcSetup *  setup )
 {
-    visManager = visManager_;
     targetCenter = setup->GetTargetTransform().TransformPoint(
                                                 G4ThreeVector( 0, 0, 0 ) );
 }
@@ -83,6 +81,11 @@ void  CexmcScenePrimitives::Initialize( G4VisManager *  visManager_,
 
 void  CexmcScenePrimitives::DrawRadialLine( G4double  angle )
 {
+    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
+
+    if ( ! visManager  )
+        return;
+
     G4Polyline       line;
     G4Point3D        radialLineEnd( - std::sin( angle ) * radialLineLength, 0,
                                     std::cos( angle ) * radialLineLength );
@@ -106,6 +109,11 @@ void  CexmcScenePrimitives::DrawRadialLine( G4double  angle )
 
 void  CexmcScenePrimitives::MarkTargetCenter( void )
 {
+    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
+
+    if ( ! visManager  )
+        return;
+
     G4Circle  circle;
     circle.SetScreenSize( CexmcMarkerScreenSize );
     circle.SetFillStyle( G4Circle::filled );

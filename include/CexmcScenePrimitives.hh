@@ -21,7 +21,6 @@
 
 #include <G4Point3D.hh>
 
-class  G4VisManager;
 class  CexmcSetup;
 class  CexmcScenePrimitivesMessenger;
 
@@ -39,8 +38,7 @@ class  CexmcScenePrimitives
         ~CexmcScenePrimitives();
 
     public:
-        void  Initialize( G4VisManager *  visManager_,
-                          const CexmcSetup *  setup );
+        void  Initialize( const CexmcSetup *  setup );
 
         void  SetRadialLineLength( G4double  value );
 
@@ -49,8 +47,6 @@ class  CexmcScenePrimitives
         void  MarkTargetCenter( void );
 
     private:
-        G4VisManager *  visManager;
-
         G4double        radialLineLength;
 
         G4Point3D       targetCenter;
