@@ -31,7 +31,7 @@ class  CexmcTrackPointsInCalorimeter : public CexmcTrackPointsInLeftRightSet
                                        const CexmcSetup *  setup );
 
     public:
-        void  PrintAll( void );
+        void   PrintAll( void );
 
     protected:
         G4int  GetIndex( G4Step *  step );
@@ -46,9 +46,9 @@ class  CexmcTrackPointsInCalorimeter : public CexmcTrackPointsInLeftRightSet
         static G4int  GetCopyDepth1BitsOffset( void );
 
     protected:
-        static G4int  copyDepth0BitsOffset;
+        static const G4int  copyDepth0BitsOffset = 8;
 
-        static G4int  copyDepth1BitsOffset;
+        static const G4int  copyDepth1BitsOffset = 16;
 };
 
 

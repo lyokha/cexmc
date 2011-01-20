@@ -33,7 +33,7 @@ class  CexmcTrackPointsInLeftRightSet : public CexmcTrackPoints
                                         const CexmcSetup *  setup );
 
     public:
-        void  PrintAll( void );
+        void   PrintAll( void );
 
     protected:
         G4int  GetIndex( G4Step *  step );
@@ -44,10 +44,10 @@ class  CexmcTrackPointsInLeftRightSet : public CexmcTrackPoints
     public:
         static CexmcSide  GetSide( G4int  index );
 
-        static G4int  GetLeftRightBitsOffset( void );
+        static G4int      GetLeftRightBitsOffset( void );
 
     protected:
-        static G4int  leftRightBitsOffset;
+        static const G4int  leftRightBitsOffset = 24;
 };
 
 

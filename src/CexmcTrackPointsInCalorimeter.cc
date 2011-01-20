@@ -26,10 +26,6 @@
 #include "CexmcSetup.hh"
 
 
-G4int  CexmcTrackPointsInCalorimeter::copyDepth0BitsOffset( 8 );
-G4int  CexmcTrackPointsInCalorimeter::copyDepth1BitsOffset( 16 );
-
-
 CexmcTrackPointsInCalorimeter::CexmcTrackPointsInCalorimeter(
                         const G4String &  name, const CexmcSetup *  setup ) :
     CexmcTrackPointsInLeftRightSet( name, setup )

@@ -26,9 +26,6 @@
 #include "CexmcSetup.hh"
 
 
-G4int  CexmcTrackPointsInLeftRightSet::leftRightBitsOffset( 24 );
-
-
 CexmcTrackPointsInLeftRightSet::CexmcTrackPointsInLeftRightSet(
                         const G4String &  name, const CexmcSetup *  setup ) :
     CexmcTrackPoints( name ), setup( setup )

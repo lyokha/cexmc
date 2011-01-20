@@ -31,7 +31,7 @@ class  CexmcEnergyDepositInCalorimeter : public CexmcEnergyDepositInLeftRightSet
                                          const CexmcSetup *  setup );
 
     public:
-        void  PrintAll( void );
+        void   PrintAll( void );
 
     protected:
         G4int  GetIndex( G4Step *  step );
@@ -44,7 +44,7 @@ class  CexmcEnergyDepositInCalorimeter : public CexmcEnergyDepositInLeftRightSet
         static G4int  GetCopyDepth1BitsOffset( void );
 
     protected:
-        static G4int  copyDepth1BitsOffset;
+        static const G4int  copyDepth1BitsOffset = 8;
 };
 
 

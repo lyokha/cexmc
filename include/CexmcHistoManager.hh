@@ -232,6 +232,5 @@ class  CexmcHistoManager
 
 #endif
 
-
 #endif
 

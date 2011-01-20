@@ -26,9 +26,6 @@
 #include "CexmcSetup.hh"
 
 
-G4int  CexmcEnergyDepositInLeftRightSet::leftRightBitsOffset( 16 );
-
-
 CexmcEnergyDepositInLeftRightSet::CexmcEnergyDepositInLeftRightSet(
                         const G4String &  name, const CexmcSetup *  setup ) :
     CexmcSimpleEnergyDeposit( name ), setup( setup )

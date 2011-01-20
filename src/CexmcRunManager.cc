@@ -1108,7 +1108,7 @@ void  CexmcRunManager::PrintReadRunData( void ) const
         G4cout << "     -- absorbed energy cut angle of the ellipse: " <<
                   sObject.aeCutAngle / deg << " deg" << G4endl;
     }
-    G4cout << "  -- Setup acceptances (real, rec): " << G4endl;
+    G4cout << G4endl;
     CexmcRunAction::PrintResults( sObject.nmbOfHitsSampled,
                                   sObject.nmbOfHitsSampledFull,
                                   sObject.nmbOfHitsTriggeredRealRange,
@@ -1117,7 +1117,6 @@ void  CexmcRunManager::PrintReadRunData( void ) const
                                   sObject.angularRanges,
                                   sObject.nmbOfFalseHitsTriggeredEDT,
                                   sObject.nmbOfFalseHitsTriggeredRec );
-
     G4cout << G4endl;
 }
 

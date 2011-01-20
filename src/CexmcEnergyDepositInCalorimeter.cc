@@ -26,9 +26,6 @@
 #include "CexmcSetup.hh"
 
 
-G4int  CexmcEnergyDepositInCalorimeter::copyDepth1BitsOffset( 8 );
-
-
 CexmcEnergyDepositInCalorimeter::CexmcEnergyDepositInCalorimeter(
                         const G4String &  name, const CexmcSetup *  setup ) :
     CexmcEnergyDepositInLeftRightSet( name, setup )

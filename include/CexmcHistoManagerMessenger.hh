@@ -54,6 +54,5 @@ class  CexmcHistoManagerMessenger : public G4UImessenger
 
 #endif
 
-
 #endif
 
