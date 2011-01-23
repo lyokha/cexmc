@@ -40,7 +40,7 @@ enum  CexmcHistoType
 {
     CexmcMomentumBP_TPT_Histo,
     CexmcMomentumBP_RT_Histo,
-    CexmcMomentumBPFinal_TPT_Histo,
+    CexmcMomentumIP_TPT_Histo,
     CexmcTPInMonitor_TPT_Histo,
     CexmcTPInTarget_TPT_Histo,
     CexmcTPInTarget_RT_Histo,

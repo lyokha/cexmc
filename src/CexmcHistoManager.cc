@@ -320,9 +320,9 @@ void  CexmcHistoManager::Initialize( void )
           false, CexmcRT, "mombp", "Beam momentum at the monitor", axes ) );
     if ( verboseLevel > 0 )
     {
-        AddHisto( CexmcHistoData( CexmcMomentumBPFinal_TPT_Histo, Cexmc_TH1F,
-            false, false, CexmcTPT, "mombpf",
-            "Beam momentum just before the interaction", axes ) );
+        AddHisto( CexmcHistoData( CexmcMomentumIP_TPT_Histo, Cexmc_TH1F, false,
+            false, CexmcTPT, "momip", "Momentum of the incident particle",
+            axes ) );
     }
 
     G4Box *   box( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );

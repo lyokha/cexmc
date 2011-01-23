@@ -327,7 +327,7 @@ void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
                            tpStore->targetTPOutputParticle.positionLocal.z() );
         if ( histoManager->GetVerboseLevel() > 0 )
         {
-            histoManager->Add( CexmcMomentumBPFinal_TPT_Histo, 0,
+            histoManager->Add( CexmcMomentumIP_TPT_Histo, 0,
                                pmData.incidentParticleLAB.rho() );
         }
     }
