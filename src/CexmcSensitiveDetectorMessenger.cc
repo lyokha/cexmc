@@ -37,6 +37,7 @@ CexmcSensitiveDetectorMessenger::CexmcSensitiveDetectorMessenger(
         detectorPath = new G4UIdirectory( detectorFullPath.c_str() );
         detectorPath->SetGuidance( "Settings for given sensitive detector" );
     }
+
     setVerboseLevel = new G4UIcmdWithAnInteger(
                             ( detectorFullPath + "verbose" ).c_str(), this );
     setVerboseLevel->SetGuidance( "0 - do not print messages, "

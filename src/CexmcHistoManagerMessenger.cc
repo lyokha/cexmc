@@ -19,6 +19,7 @@
 #ifdef CEXMC_USE_ROOT
 
 #include <G4UIcmdWithoutParameter.hh>
+#include <G4UIcmdWithAnInteger.hh>
 #include <G4UIcmdWithAString.hh>
 #include <G4String.hh>
 #include "CexmcHistoManagerMessenger.hh"
@@ -28,11 +29,20 @@
 
 CexmcHistoManagerMessenger::CexmcHistoManagerMessenger(
                                         CexmcHistoManager *  histoManager ) :
-    histoManager( histoManager ), listHistos( NULL ), printHisto( NULL )
+    histoManager( histoManager ), setVerboseLevel( NULL ), listHistos( NULL ),
+    printHisto( NULL )
 #ifdef CEXMC_USE_ROOTQT
     , drawHisto( NULL )
 #endif
 {
+    setVerboseLevel = new G4UIcmdWithAnInteger(
+        ( CexmcMessenger::histoDirName + "verbose" ).c_str(), this );
+    setVerboseLevel->SetGuidance( "0 - basic set of histograms created, "
+                                  "1 - extra histograms created" );
+    setVerboseLevel->SetParameterName( "Verbose", true );
+    setVerboseLevel->SetDefaultValue( 0 );
+    setVerboseLevel->AvailableForStates( G4State_PreInit );
+
     listHistos = new G4UIcmdWithoutParameter(
         ( CexmcMessenger::histoDirName + "list" ).c_str(), this );
     listHistos->SetGuidance( "List available histograms" );
@@ -59,6 +69,7 @@ CexmcHistoManagerMessenger::CexmcHistoManagerMessenger(
 
 CexmcHistoManagerMessenger::~CexmcHistoManagerMessenger()
 {
+    delete setVerboseLevel;
     delete listHistos;
     delete printHisto;
 #ifdef CEXMC_USE_ROOTQT
@@ -72,13 +83,21 @@ void  CexmcHistoManagerMessenger::SetNewValue( G4UIcommand *  cmd,
 {
     do
     {
+        if ( cmd == setVerboseLevel )
+        {
+            histoManager->SetVerboseLevel(
+                                G4UIcmdWithAnInteger::GetNewIntValue( value ) );
+            break;
+        }
         if ( cmd == listHistos )
         {
             histoManager->List();
+            break;
         }
         if ( cmd == printHisto )
         {
             histoManager->Print( value );
+            break;
         }
 #ifdef CEXMC_USE_ROOTQT
         if ( cmd == drawHisto )
@@ -90,6 +109,7 @@ void  CexmcHistoManagerMessenger::SetNewValue( G4UIcommand *  cmd,
             histoManager->Draw( std::string( value, 0, delimPos ),
                                 delimPosEnd == G4String::npos ? "" :
                                                 value.c_str() + delimPosEnd );
+            break;
         }
 #endif
     } while ( false );

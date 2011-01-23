@@ -25,6 +25,7 @@
 
 class  G4UIcommand;
 class  G4UIcmdWithoutParameter;
+class  G4UIcmdWithAnInteger;
 class  G4UIcmdWithAString;
 class  CexmcHistoManager;
 
@@ -42,6 +43,8 @@ class  CexmcHistoManagerMessenger : public G4UImessenger
 
     private:
         CexmcHistoManager *        histoManager;
+
+        G4UIcmdWithAnInteger *     setVerboseLevel;
 
         G4UIcmdWithoutParameter *  listHistos;
 

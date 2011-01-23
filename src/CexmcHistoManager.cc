@@ -91,7 +91,7 @@ void  CexmcHistoManager::Destroy( void )
 
 CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
     isInitialized( false ), opName( "" ), nopName( "" ), opMass( 0. ),
-    nopMass( 0. ),
+    nopMass( 0. ), verboseLevel( 0 ),
 #ifdef CEXMC_USE_ROOTQT
     rootCanvas( NULL ),
 #endif
@@ -318,6 +318,12 @@ void  CexmcHistoManager::Initialize( void )
           false, CexmcTPT, "mombp", "Beam momentum at the monitor", axes ) );
     AddHisto( CexmcHistoData( CexmcMomentumBP_RT_Histo, Cexmc_TH1F, false,
           false, CexmcRT, "mombp", "Beam momentum at the monitor", axes ) );
+    if ( verboseLevel > 0 )
+    {
+        AddHisto( CexmcHistoData( CexmcMomentumBPFinal_TPT_Histo, Cexmc_TH1F,
+            false, false, CexmcTPT, "mombpf",
+            "Beam momentum just before the interaction", axes ) );
+    }
 
     G4Box *   box( dynamic_cast< G4Box * >( lVolume->GetSolid() ) );
 

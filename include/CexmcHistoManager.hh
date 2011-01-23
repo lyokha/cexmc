@@ -40,6 +40,7 @@ enum  CexmcHistoType
 {
     CexmcMomentumBP_TPT_Histo,
     CexmcMomentumBP_RT_Histo,
+    CexmcMomentumBPFinal_TPT_Histo,
     CexmcTPInMonitor_TPT_Histo,
     CexmcTPInTarget_TPT_Histo,
     CexmcTPInTarget_RT_Histo,
@@ -192,6 +193,11 @@ class  CexmcHistoManager
                     const G4String &  histoDrawOptions = "" );
 #endif
 
+    public:
+        void   SetVerboseLevel( G4int  value );
+
+        G4int  GetVerboseLevel( void ) const;
+
     private:
         void  AddHisto( const CexmcHistoData &  data,
                     const CexmcAngularRange &  aRange = CexmcAngularRange() );
@@ -217,6 +223,8 @@ class  CexmcHistoManager
 
         G4double                      nopMass;
 
+        G4int                         verboseLevel;
+
 #ifdef CEXMC_USE_ROOTQT
     private:
 
@@ -229,6 +237,18 @@ class  CexmcHistoManager
     private:
         static CexmcHistoManager *    instance;
 };
+
+
+inline void  CexmcHistoManager::SetVerboseLevel( G4int  value )
+{
+    verboseLevel = value;
+}
+
+
+inline G4int  CexmcHistoManager::GetVerboseLevel( void ) const
+{
+    return verboseLevel;
+}
 
 #endif
 
