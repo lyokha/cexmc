@@ -33,16 +33,16 @@ CexmcScenePrimitivesMessenger::CexmcScenePrimitivesMessenger(
     setRadialLineLength->SetGuidance( "Radial line length" );
     setRadialLineLength->SetParameterName( "RadialLineLength", false );
     setRadialLineLength->SetRange( "RadialLineLength > 0" );
-    setRadialLineLength->SetDefaultUnit( "m" );
     setRadialLineLength->SetUnitCandidates( "cm m" );
+    setRadialLineLength->SetDefaultUnit( "m" );
     setRadialLineLength->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     drawRadialLine = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::visDirName + "drawRadialLine" ).c_str(), this );
     drawRadialLine->SetGuidance( "Draw radial line at specified direction" );
     drawRadialLine->SetParameterName( "DrawRadialLine", false );
-    drawRadialLine->SetDefaultUnit( "deg" );
     drawRadialLine->SetUnitCandidates( "deg rad" );
+    drawRadialLine->SetDefaultUnit( "deg" );
     drawRadialLine->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     markTargetCenter = new G4UIcmdWithoutParameter(

@@ -19,24 +19,21 @@
 #ifndef CEXMC_TRACK_POINTS_HH
 #define CEXMC_TRACK_POINTS_HH
 
-#include <G4VPrimitiveScorer.hh>
 #include <G4THitsMap.hh>
+#include "CexmcPrimitiveScorer.hh"
 #include "CexmcTrackPointInfo.hh"
 
 class  G4HCofThisEvent;
 class  G4Step;
-class  CexmcSensitiveDetectorMessenger;
 
 
 typedef G4THitsMap< CexmcTrackPointInfo >  CexmcTrackPointsCollection;
 
 
-class  CexmcTrackPoints : public G4VPrimitiveScorer
+class  CexmcTrackPoints : public CexmcPrimitiveScorer
 {
     public:
         explicit CexmcTrackPoints( const G4String &  name );
-
-        virtual ~CexmcTrackPoints();
 
     public:
         void   Initialize( G4HCofThisEvent *  hcOfThisEvent );
@@ -57,12 +54,10 @@ class  CexmcTrackPoints : public G4VPrimitiveScorer
         G4bool  ProcessHits( G4Step *  step, G4TouchableHistory *  tHistory );
 
     protected:
-        CexmcTrackPointsCollection *       eventMap;
+        CexmcTrackPointsCollection *  eventMap;
 
     private:
-        CexmcSensitiveDetectorMessenger *  messenger;
-
-        G4int                              hcId;
+        G4int                         hcId;
 };
 
 

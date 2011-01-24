@@ -33,8 +33,8 @@ CexmcPhysicsManagerMessenger::CexmcPhysicsManagerMessenger(
         "length in the\n    target; can be used for precise tuning of the "
         "center of\n    distribution of interaction vertices in the target" );
     setMaxILCorrection->SetParameterName( "MaxILCorrection", false );
-    setMaxILCorrection->SetDefaultUnit( "mm" );
     setMaxILCorrection->SetUnitCandidates( "mm cm m" );
+    setMaxILCorrection->SetDefaultUnit( "mm" );
     setMaxILCorrection->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 

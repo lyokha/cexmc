@@ -19,23 +19,20 @@
 #ifndef CEXMC_SIMPLE_ENERGY_DEPOSIT_HH
 #define CEXMC_SIMPLE_ENERGY_DEPOSIT_HH
 
-#include <G4VPrimitiveScorer.hh>
 #include <G4THitsMap.hh>
+#include "CexmcPrimitiveScorer.hh"
 
 class  G4HCofThisEvent;
 class  G4Step;
-class  CexmcSensitiveDetectorMessenger;
 
 
 typedef G4THitsMap< G4double >  CexmcEnergyDepositCollection;
 
 
-class  CexmcSimpleEnergyDeposit : public G4VPrimitiveScorer
+class  CexmcSimpleEnergyDeposit : public CexmcPrimitiveScorer
 {
     public:
         explicit CexmcSimpleEnergyDeposit( const G4String &  name );
-
-        virtual ~CexmcSimpleEnergyDeposit();
 
     public:
         void   Initialize( G4HCofThisEvent *  hcOfThisEvent );
@@ -54,12 +51,10 @@ class  CexmcSimpleEnergyDeposit : public G4VPrimitiveScorer
         G4bool  ProcessHits( G4Step *  step, G4TouchableHistory *  tHistory );
 
     protected:
-        CexmcEnergyDepositCollection *     eventMap;
+        CexmcEnergyDepositCollection *  eventMap;
 
     private:
-        CexmcSensitiveDetectorMessenger *  messenger;
-
-        G4int                              hcId;
+        G4int                           hcId;
 };
 
 

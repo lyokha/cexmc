@@ -31,8 +31,8 @@ class  G4String;
 class  CexmcSensitiveDetectorMessenger : public G4UImessenger
 {
     public:
-        CexmcSensitiveDetectorMessenger( G4VPrimitiveScorer *  scorer,
-                                         const G4String &  detectorName );
+        explicit CexmcSensitiveDetectorMessenger(
+                                            G4VPrimitiveScorer *  scorer );
 
         ~CexmcSensitiveDetectorMessenger();
 

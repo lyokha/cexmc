@@ -60,8 +60,8 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
             "    interaction - events with studied interaction triggered,\n"
             "    trigger - only events with trigger" );
     setEventCountPolicy->SetParameterName( "EventCountPolicy", false );
-    setEventCountPolicy->SetDefaultValue( "all" );
     setEventCountPolicy->SetCandidates( "all interaction trigger" );
+    setEventCountPolicy->SetDefaultValue( "all" );
     setEventCountPolicy->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setEventDataVerboseLevel = new G4UIcmdWithAString(
@@ -73,8 +73,8 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
             "    interaction - when studied interaction triggered (TPT)" );
     setEventDataVerboseLevel->SetParameterName( "EventDataVerboseLevel",
                                                 false );
-    setEventDataVerboseLevel->SetDefaultValue( "trigger" );
     setEventDataVerboseLevel->SetCandidates( "nosave trigger interaction" );
+    setEventDataVerboseLevel->SetDefaultValue( "trigger" );
     setEventDataVerboseLevel->AvailableForStates( G4State_PreInit,
                                                   G4State_Idle );
 
@@ -86,8 +86,8 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
            "\n    If number of events is 0 (or not specified) then all"
            "\n    run will be replayed" );
     replayEvents->SetParameterName( "ReplayEvents", true );
-    replayEvents->SetDefaultValue( 0 );
     replayEvents->SetRange( "ReplayEvents >= 0" );
+    replayEvents->SetDefaultValue( 0 );
     replayEvents->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     seekTo = new G4UIcmdWithAnInteger(
@@ -98,8 +98,8 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
            "\n    first recorded event with interaction after fourth recorded"
            "\n    event with trigger" );
     seekTo->SetParameterName( "SeekTo", false );
-    seekTo->SetDefaultValue( 0 );
     seekTo->SetRange( "SeekTo >= 0" );
+    seekTo->SetDefaultValue( 0 );
     seekTo->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     skipInteractionsWithoutEDT = new G4UIcmdWithABool(

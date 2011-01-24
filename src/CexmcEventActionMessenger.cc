@@ -40,8 +40,8 @@ CexmcEventActionMessenger::CexmcEventActionMessenger(
                                 "event\n        triggered,\n"
                         "    4 - print messages on every event" );
     setVerboseLevel->SetParameterName( "Verbose", false );
-    setVerboseLevel->SetDefaultValue( 0 );
     setVerboseLevel->SetRange( "Verbose >= 0 && Verbose <= 4" );
+    setVerboseLevel->SetDefaultValue( 0 );
     setVerboseLevel->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setVerboseDrawLevel = new G4UIcmdWithAnInteger(
@@ -59,16 +59,16 @@ CexmcEventActionMessenger::CexmcEventActionMessenger(
                         "    4 - draw trajectories and/or track points on "
                                 "every event" );
     setVerboseDrawLevel->SetParameterName( "VerboseDraw", false );
-    setVerboseDrawLevel->SetDefaultValue( 4 );
     setVerboseDrawLevel->SetRange( "VerboseDraw >= 0 && VerboseDraw <= 4" );
+    setVerboseDrawLevel->SetDefaultValue( 4 );
     setVerboseDrawLevel->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     drawTrajectoryMarkers = new G4UIcmdWithABool(
            ( CexmcMessenger::visDirName + "drawTrajMarkers" ).c_str() , this );
     drawTrajectoryMarkers->SetGuidance( "draw markers in places where "
                                         "trajectories change" );
-    drawTrajectoryMarkers->SetParameterName( "DrawTrajMarkers", false );
-    drawTrajectoryMarkers->SetDefaultValue( false );
+    drawTrajectoryMarkers->SetParameterName( "DrawTrajMarkers", true );
+    drawTrajectoryMarkers->SetDefaultValue( true );
     drawTrajectoryMarkers->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 

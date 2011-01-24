@@ -39,16 +39,16 @@ CexmcChargeExchangeReconstructorMessenger::
     useTableMass->SetGuidance( "\n    If true then reconstructor will use "
         "table mass of output\n    particle when building output particle "
         "energy,\n    otherwise reconstructed mass will be used" );
-    useTableMass->SetParameterName( "UseTableMass", false );
-    useTableMass->SetDefaultValue( false );
+    useTableMass->SetParameterName( "UseTableMass", true );
+    useTableMass->SetDefaultValue( true );
     useTableMass->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     useMassCut = new G4UIcmdWithABool(
         ( CexmcMessenger::reconstructorDirName + "useMassCut" ).c_str(), this );
     useMassCut->SetGuidance( "\n    Use elliptical cut for masses of output "
                              "particle\n    and nucleus output particle" );
-    useMassCut->SetParameterName( "UseMassCut", false );
-    useMassCut->SetDefaultValue( false );
+    useMassCut->SetParameterName( "UseMassCut", true );
+    useMassCut->SetDefaultValue( true );
     useMassCut->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     mCutOPCenter = new G4UIcmdWithADoubleAndUnit(
@@ -59,8 +59,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutOPCenter->SetParameterName( "MCutOPCenter", false );
     mCutOPCenter->SetDefaultValue( reconstructor->GetProductionModelData().
                                    outputParticle->GetPDGMass() );
-    mCutOPCenter->SetDefaultUnit( "MeV" );
     mCutOPCenter->SetUnitCandidates( "eV keV MeV GeV" );
+    mCutOPCenter->SetDefaultUnit( "MeV" );
     mCutOPCenter->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     mCutNOPCenter = new G4UIcmdWithADoubleAndUnit(
@@ -71,8 +71,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutNOPCenter->SetParameterName( "MCutNOPCenter", false );
     mCutNOPCenter->SetDefaultValue( reconstructor->GetProductionModelData().
                                     nucleusOutputParticle->GetPDGMass() );
-    mCutNOPCenter->SetDefaultUnit( "MeV" );
     mCutNOPCenter->SetUnitCandidates( "eV keV MeV GeV" );
+    mCutNOPCenter->SetDefaultUnit( "MeV" );
     mCutNOPCenter->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     mCutOPWidth = new G4UIcmdWithADoubleAndUnit(
@@ -83,8 +83,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutOPWidth->SetParameterName( "MCutOPWidth", false );
     mCutOPWidth->SetDefaultValue( reconstructor->GetProductionModelData().
                                   outputParticle->GetPDGMass() * 0.1 );
-    mCutOPWidth->SetDefaultUnit( "MeV" );
     mCutOPWidth->SetUnitCandidates( "eV keV MeV GeV" );
+    mCutOPWidth->SetDefaultUnit( "MeV" );
     mCutOPWidth->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     mCutNOPWidth = new G4UIcmdWithADoubleAndUnit(
@@ -95,8 +95,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutNOPWidth->SetParameterName( "MCutNOPWidth", false );
     mCutNOPWidth->SetDefaultValue( reconstructor->GetProductionModelData().
                                    nucleusOutputParticle->GetPDGMass() * 0.1 );
-    mCutNOPWidth->SetDefaultUnit( "MeV" );
     mCutNOPWidth->SetUnitCandidates( "eV keV MeV GeV" );
+    mCutNOPWidth->SetDefaultUnit( "MeV" );
     mCutNOPWidth->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     mCutAngle = new G4UIcmdWithADoubleAndUnit(
@@ -105,8 +105,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutAngle->SetGuidance( "Angle of the ellipse" );
     mCutAngle->SetParameterName( "MCutAngle", false );
     mCutAngle->SetDefaultValue( 0 );
-    mCutAngle->SetDefaultUnit( "deg" );
     mCutAngle->SetUnitCandidates( "deg rad" );
+    mCutAngle->SetDefaultUnit( "deg" );
     mCutAngle->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     useAbsorbedEnergyCut = new G4UIcmdWithABool(
@@ -114,8 +114,8 @@ CexmcChargeExchangeReconstructorMessenger::
             c_str(), this );
     useAbsorbedEnergyCut->SetGuidance( "Use elliptical cut for absorbed "
                                        "energies in\n     calorimeters" );
-    useAbsorbedEnergyCut->SetParameterName( "UseAbsorbedEnergyCut", false );
-    useAbsorbedEnergyCut->SetDefaultValue( false );
+    useAbsorbedEnergyCut->SetParameterName( "UseAbsorbedEnergyCut", true );
+    useAbsorbedEnergyCut->SetDefaultValue( true );
     useAbsorbedEnergyCut->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     aeCutCLCenter = new G4UIcmdWithADoubleAndUnit(
@@ -125,8 +125,8 @@ CexmcChargeExchangeReconstructorMessenger::
                                 "\n     absorbed energy coordinate" );
     aeCutCLCenter->SetParameterName( "AECutCLCenter", false );
     aeCutCLCenter->SetDefaultValue( 0 );
-    aeCutCLCenter->SetDefaultUnit( "MeV" );
     aeCutCLCenter->SetUnitCandidates( "eV keV MeV GeV" );
+    aeCutCLCenter->SetDefaultUnit( "MeV" );
     aeCutCLCenter->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     aeCutCRCenter = new G4UIcmdWithADoubleAndUnit(
@@ -136,8 +136,8 @@ CexmcChargeExchangeReconstructorMessenger::
                                 "\n     absorbed energy coordinate" );
     aeCutCRCenter->SetParameterName( "AECutCRCenter", false );
     aeCutCRCenter->SetDefaultValue( 0 );
-    aeCutCRCenter->SetDefaultUnit( "MeV" );
     aeCutCRCenter->SetUnitCandidates( "eV keV MeV GeV" );
+    aeCutCRCenter->SetDefaultUnit( "MeV" );
     aeCutCRCenter->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     aeCutCLWidth = new G4UIcmdWithADoubleAndUnit(
@@ -147,8 +147,8 @@ CexmcChargeExchangeReconstructorMessenger::
                                "\n     absorbed energy coordinate" );
     aeCutCLWidth->SetParameterName( "AECutCLWidth", false );
     aeCutCLWidth->SetDefaultValue( 0 );
-    aeCutCLWidth->SetDefaultUnit( "MeV" );
     aeCutCLWidth->SetUnitCandidates( "eV keV MeV GeV" );
+    aeCutCLWidth->SetDefaultUnit( "MeV" );
     aeCutCLWidth->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     aeCutCRWidth = new G4UIcmdWithADoubleAndUnit(
@@ -158,8 +158,8 @@ CexmcChargeExchangeReconstructorMessenger::
                                "\n     absorbed energy coordinate" );
     aeCutCRWidth->SetParameterName( "AECutCRWidth", false );
     aeCutCRWidth->SetDefaultValue( 0 );
-    aeCutCRWidth->SetDefaultUnit( "MeV" );
     aeCutCRWidth->SetUnitCandidates( "eV keV MeV GeV" );
+    aeCutCRWidth->SetDefaultUnit( "MeV" );
     aeCutCRWidth->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     aeCutAngle = new G4UIcmdWithADoubleAndUnit(
@@ -168,8 +168,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutAngle->SetGuidance( "Angle of the ellipse" );
     aeCutAngle->SetParameterName( "AECutAngle", false );
     aeCutAngle->SetDefaultValue( 0 );
-    aeCutAngle->SetDefaultUnit( "deg" );
     aeCutAngle->SetUnitCandidates( "deg rad" );
+    aeCutAngle->SetDefaultUnit( "deg" );
     aeCutAngle->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 

@@ -47,11 +47,11 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "             deposit in crystals,\n"
         "    sqrt - entry points defined by square root weights of\n"
         "           energy deposit in crystals" );
-    setCalorimeterEntryPointDefinitionAlgorithm->SetDefaultValue( "sqrt" );
     setCalorimeterEntryPointDefinitionAlgorithm->SetParameterName(
                                             "EntryPointDefinitionAlgo", false );
     setCalorimeterEntryPointDefinitionAlgorithm->SetCandidates(
                                             "center simple linear sqrt" );
+    setCalorimeterEntryPointDefinitionAlgorithm->SetDefaultValue( "sqrt" );
     setCalorimeterEntryPointDefinitionAlgorithm->AvailableForStates(
                                             G4State_PreInit, G4State_Idle );
 
@@ -68,12 +68,12 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "             with origin in the center of the target;\n"
         "             radius of the sphere is sum of distance to\n"
         "             the calorimeter and 'entryPointDepth' value" );
-    setCalorimeterEntryPointDepthDefinitionAlgorithm->SetDefaultValue(
-                                                                    "plain" );
     setCalorimeterEntryPointDepthDefinitionAlgorithm->SetParameterName(
                                     "EntryPointDepthDefinitionAlgo", false );
     setCalorimeterEntryPointDepthDefinitionAlgorithm->SetCandidates(
                                     "plain sphere" );
+    setCalorimeterEntryPointDepthDefinitionAlgorithm->SetDefaultValue(
+                                    "plain" );
     setCalorimeterEntryPointDepthDefinitionAlgorithm->AvailableForStates(
                                                 G4State_PreInit, G4State_Idle );
 
@@ -86,9 +86,9 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "    all - all,\n"
         "    adjacent - crystal with maximum energy deposit and\n"
         "               adjacent crystals" );
-    setCrystalSelectionAlgorithm->SetDefaultValue( "all" );
     setCrystalSelectionAlgorithm->SetParameterName( "CrystalSelAlgo", false );
     setCrystalSelectionAlgorithm->SetCandidates( "all adjacent" );
+    setCrystalSelectionAlgorithm->SetDefaultValue( "all" );
     setCrystalSelectionAlgorithm->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
@@ -102,8 +102,8 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "    algorithm and simple entry point definition algorithm.\n"
         "    If not set then the reference crystal will be found from all\n"
         "    crystals in calorimeter" );
-    useInnerRefCrystal->SetDefaultValue( false );
-    useInnerRefCrystal->SetParameterName( "UseInnerRefCrystal", false );
+    useInnerRefCrystal->SetParameterName( "UseInnerRefCrystal", true );
+    useInnerRefCrystal->SetDefaultValue( true );
     useInnerRefCrystal->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setCalorimeterEntryPointDepth = new G4UIcmdWithADoubleAndUnit(
@@ -114,8 +114,8 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "    between output particle decay products" );
     setCalorimeterEntryPointDepth->SetParameterName( "EntryPointDepth", false );
     setCalorimeterEntryPointDepth->SetDefaultValue( 0 );
-    setCalorimeterEntryPointDepth->SetDefaultUnit( "cm" );
     setCalorimeterEntryPointDepth->SetUnitCandidates( "mm cm m" );
+    setCalorimeterEntryPointDepth->SetDefaultUnit( "cm" );
     setCalorimeterEntryPointDepth->AvailableForStates( G4State_PreInit,
                                                        G4State_Idle );
 }

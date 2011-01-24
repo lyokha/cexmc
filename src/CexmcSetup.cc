@@ -18,7 +18,6 @@
 
 #include <G4GDMLParser.hh>
 #include <G4MultiFunctionalDetector.hh>
-#include <G4VPrimitiveScorer.hh>
 #include <G4SDManager.hh>
 #include <G4LogicalVolume.hh>
 #include <G4VPhysicalVolume.hh>
@@ -30,6 +29,7 @@
 #include <G4ProductionCuts.hh>
 #include <G4VUserPhysicsList.hh>
 #include "CexmcSetup.hh"
+#include "CexmcPrimitiveScorer.hh"
 #include "CexmcTrackPoints.hh"
 #include "CexmcTrackPointsInLeftRightSet.hh"
 #include "CexmcTrackPointsInCalorimeter.hh"
@@ -106,8 +106,8 @@ void  CexmcSetup::SetupSpecialVolumes( const G4GDMLParser &  gdmlParser )
 
         for( pair = auxInfo.begin(); pair != auxInfo.end(); ++pair )
         {
-            G4VPrimitiveScorer *  scorer( NULL );
-            G4String              detectorName( "uninitialized" );
+            CexmcPrimitiveScorer *  scorer( NULL );
+            G4String                detectorName( "uninitialized" );
             do
             {
                 if ( pair->type == "EnergyDepositDetector" )
@@ -282,6 +282,9 @@ void  CexmcSetup::SetupSpecialVolumes( const G4GDMLParser &  gdmlParser )
                                 new G4MultiFunctionalDetector( detectorName );
                 }
                 detector[ curDetectorRole ]->RegisterPrimitive( scorer );
+                /* now that scorer has initialized pointer to its detector, its
+                 * messenger's path shall be properly initialized as well */
+                scorer->InitializeMessenger();
                 /* NB: logical volumes in GDML file may not have multiple
                  * detector roles: for example volume Monitor may have only one
                  * role MonitorRole. This restriction arises from that fact that

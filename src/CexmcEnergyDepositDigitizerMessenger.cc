@@ -45,8 +45,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setMonitorThreshold->SetGuidance( "Monitor trigger threshold" );
     setMonitorThreshold->SetParameterName( "MonitorThreshold", false );
     setMonitorThreshold->SetDefaultValue( 0 );
-    setMonitorThreshold->SetDefaultUnit( "MeV" );
     setMonitorThreshold->SetUnitCandidates( "ev keV MeV GeV" );
+    setMonitorThreshold->SetDefaultUnit( "MeV" );
     setMonitorThreshold->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setVetoCountersThreshold = new G4UIcmdWithADoubleAndUnit(
@@ -56,8 +56,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setVetoCountersThreshold->SetParameterName( "VetoCountersThreshold",
                                                 false );
     setVetoCountersThreshold->SetDefaultValue( 0 );
-    setVetoCountersThreshold->SetDefaultUnit( "MeV" );
     setVetoCountersThreshold->SetUnitCandidates( "ev keV MeV GeV" );
+    setVetoCountersThreshold->SetDefaultUnit( "MeV" );
     setVetoCountersThreshold->AvailableForStates( G4State_PreInit,
                                                   G4State_Idle );
 
@@ -69,8 +69,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setLeftVetoCounterThreshold->SetParameterName( "LeftVetoCounterThreshold",
                                                    false );
     setLeftVetoCounterThreshold->SetDefaultValue( 0 );
-    setLeftVetoCounterThreshold->SetDefaultUnit( "MeV" );
     setLeftVetoCounterThreshold->SetUnitCandidates( "ev keV MeV GeV" );
+    setLeftVetoCounterThreshold->SetDefaultUnit( "MeV" );
     setLeftVetoCounterThreshold->AvailableForStates( G4State_PreInit,
                                                      G4State_Idle );
 
@@ -82,8 +82,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setRightVetoCounterThreshold->SetParameterName( "RightVetoCounterThreshold",
                                                     false );
     setRightVetoCounterThreshold->SetDefaultValue( 0 );
-    setRightVetoCounterThreshold->SetDefaultUnit( "MeV" );
     setRightVetoCounterThreshold->SetUnitCandidates( "ev keV MeV GeV" );
+    setRightVetoCounterThreshold->SetDefaultUnit( "MeV" );
     setRightVetoCounterThreshold->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
@@ -94,8 +94,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setCalorimetersThreshold->SetParameterName( "CalorimetersThreshold",
                                                 false );
     setCalorimetersThreshold->SetDefaultValue( 0 );
-    setCalorimetersThreshold->SetDefaultUnit( "MeV" );
     setCalorimetersThreshold->SetUnitCandidates( "ev keV MeV GeV" );
+    setCalorimetersThreshold->SetDefaultUnit( "MeV" );
     setCalorimetersThreshold->AvailableForStates( G4State_PreInit,
                                                   G4State_Idle );
 
@@ -107,8 +107,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setLeftCalorimeterThreshold->SetParameterName( "LeftCalorimeterThreshold",
                                                    false );
     setLeftCalorimeterThreshold->SetDefaultValue( 0 );
-    setLeftCalorimeterThreshold->SetDefaultUnit( "MeV" );
     setLeftCalorimeterThreshold->SetUnitCandidates( "ev keV MeV GeV" );
+    setLeftCalorimeterThreshold->SetDefaultUnit( "MeV" );
     setLeftCalorimeterThreshold->AvailableForStates( G4State_PreInit,
                                                      G4State_Idle );
 
@@ -120,8 +120,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     setRightCalorimeterThreshold->SetParameterName( "RightCalorimeterThreshold",
                                                     false );
     setRightCalorimeterThreshold->SetDefaultValue( 0 );
-    setRightCalorimeterThreshold->SetDefaultUnit( "MeV" );
     setRightCalorimeterThreshold->SetUnitCandidates( "ev keV MeV GeV" );
+    setRightCalorimeterThreshold->SetDefaultUnit( "MeV" );
     setRightCalorimeterThreshold->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
@@ -137,8 +137,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
                             "value" );
     setCalorimeterTriggerAlgorithm->SetParameterName(
                                         "CalorimeterTriggerAlgorithm", false );
-    setCalorimeterTriggerAlgorithm->SetDefaultValue( "inner" );
     setCalorimeterTriggerAlgorithm->SetCandidates( "all inner" );
+    setCalorimeterTriggerAlgorithm->SetDefaultValue( "inner" );
     setCalorimeterTriggerAlgorithm->AvailableForStates( G4State_PreInit,
                                                         G4State_Idle );
 
@@ -154,8 +154,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
                     "value of\n               'outerCrystalsVetoFraction'" );
     setOuterCrystalsVetoAlgorithm->SetParameterName(
                                         "OuterCrystalsVetoAlgorithm", false );
-    setOuterCrystalsVetoAlgorithm->SetDefaultValue( "none" );
     setOuterCrystalsVetoAlgorithm->SetCandidates( "none max fraction" );
+    setOuterCrystalsVetoAlgorithm->SetDefaultValue( "none" );
     setOuterCrystalsVetoAlgorithm->AvailableForStates( G4State_PreInit,
                                                        G4State_Idle );
 
@@ -179,8 +179,8 @@ CexmcEnergyDepositDigitizerMessenger::CexmcEnergyDepositDigitizerMessenger(
     applyFiniteCrystalResolution->SetGuidance( "\n     Specify if finite "
             "energy resolution of the crystals\n     will be accounted" );
     applyFiniteCrystalResolution->SetParameterName(
-                                        "ApplyFiniteCrystalResolution", false );
-    applyFiniteCrystalResolution->SetDefaultValue( false );
+                                        "ApplyFiniteCrystalResolution", true );
+    applyFiniteCrystalResolution->SetDefaultValue( true );
     applyFiniteCrystalResolution->AvailableForStates( G4State_PreInit,
                                                       G4State_Idle );
 
