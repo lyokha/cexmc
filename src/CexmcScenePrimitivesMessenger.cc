@@ -26,7 +26,7 @@
 CexmcScenePrimitivesMessenger::CexmcScenePrimitivesMessenger(
                                     CexmcScenePrimitives *  scenePrimitives ) :
     scenePrimitives( scenePrimitives ), setRadialLineLength( NULL ),
-    drawRadialLine( NULL )
+    drawRadialLine( NULL ), markTargetCenter( NULL )
 {
     setRadialLineLength = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::visDirName + "radialLineLength" ).c_str(), this );

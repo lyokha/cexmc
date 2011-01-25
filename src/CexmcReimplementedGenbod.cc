@@ -39,6 +39,16 @@ namespace
 
        return 0;
     }
+
+
+    G4double  PDK( G4double  a, G4double  b, G4double  c )
+    {
+        G4double  x( ( a - b - c ) * ( a + b + c ) * ( a - b + c ) *
+                     ( a + b - c ) );
+        x = std::sqrt( x ) / ( 2 * a );
+
+        return x;
+    }
 }
 
 
@@ -199,15 +209,5 @@ void  CexmcReimplementedGenbod::SetMaxWeight( void )
         }
         maxWeight = 1 / wtmax;
     }
-}
-
-
-G4double  CexmcReimplementedGenbod::PDK( G4double  a, G4double  b, G4double  c )
-{
-    G4double  x( ( a - b - c ) * ( a + b + c ) * ( a - b + c ) *
-                 ( a + b - c ) );
-    x = std::sqrt( x ) / ( 2 * a );
-
-    return x;
 }
 

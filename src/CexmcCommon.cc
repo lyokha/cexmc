@@ -21,6 +21,7 @@
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcTrackPointsStore.hh"
 
+
 G4Allocator< CexmcTrackPointInfo >      trackPointInfoAllocator;
 G4Allocator< CexmcEnergyDepositStore >  energyDepositStoreAllocator;
 G4Allocator< CexmcTrackPointsStore >    trackPointsStoreAllocator;

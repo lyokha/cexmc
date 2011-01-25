@@ -79,7 +79,7 @@ extern G4Allocator< CexmcTrackPointsStore >  trackPointsStoreAllocator;
 
 inline void *  CexmcTrackPointsStore::operator new( size_t )
 {
-  return trackPointsStoreAllocator.MallocSingle();
+    return trackPointsStoreAllocator.MallocSingle();
 }
 
 

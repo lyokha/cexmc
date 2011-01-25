@@ -91,6 +91,7 @@ typedef std::vector< CexmcEnergyRangeWithDoubleValue >
 std::ostream &  operator<<( std::ostream &  out,
                         const CexmcEnergyRangeWithDoubleValue &  range );
 
+
 std::ostream &  operator<<( std::ostream &  out,
                         const CexmcEnergyRangeWithDoubleValueList &  range );
 

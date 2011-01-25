@@ -22,7 +22,7 @@
 
 
 CexmcPrimitiveScorer::CexmcPrimitiveScorer( const G4String &  name ) :
-    G4VPrimitiveScorer( name )
+    G4VPrimitiveScorer( name ), messenger( NULL )
 {
 }
 
