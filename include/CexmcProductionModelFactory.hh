@@ -28,7 +28,7 @@
 
 namespace  CexmcPrivate
 {
-    template  < typename  BasePhysics >
+    template  < typename >
     class  CexmcBasePhysicsInstance
     {
         public:
@@ -36,14 +36,14 @@ namespace  CexmcPrivate
     };
 
 #ifdef CEXMC_USE_QGSP_BIC_EMY
-    template<>
+    template  <>
     class  CexmcBasePhysicsInstance< QGSP_BIC_EMY >
     {
         public:
             static const CexmcBasePhysicsUsed  value = Cexmc_QGSP_BIC_EMY;
     };
 #else
-    template<>
+    template  <>
     class  CexmcBasePhysicsInstance< QGSP_BERT >
     {
         public:
