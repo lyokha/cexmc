@@ -931,7 +931,9 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( edDigitizerHasTriggered )
             FillEDTHistos( edStore, triggeredAngularRanges );
 
-        if ( tpDigitizerHasTriggered )
+        /* fill TPT histos only when the monitor has triggered because events
+         * when it was missed have less value for us */
+        if ( tpDigitizerHasTriggered && edDigitizerMonitorHasTriggered )
             FillTPTHistos( tpStore, pmData, triggeredAngularRanges );
 
         if ( reconstructorHasBasicTrigger )
