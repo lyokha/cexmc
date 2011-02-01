@@ -789,7 +789,7 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
     CexmcEnergyDepositDigitizer *  energyDepositDigitizer(
             static_cast< CexmcEnergyDepositDigitizer* >( digiManager->
                                 FindDigitizerModule( CexmcEDDigitizerName ) ) );
-    CexmcTrackPointsDigitizer *  trackPointsDigitizer(
+    CexmcTrackPointsDigitizer *    trackPointsDigitizer(
             static_cast< CexmcTrackPointsDigitizer* >( digiManager->
                                 FindDigitizerModule( CexmcTPDigitizerName ) ) );
 
@@ -823,9 +823,9 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
         if ( ! productionModel )
             throw CexmcException( CexmcWeirdException );
 
-        const CexmcAngularRangeList &  angularRanges(
+        const CexmcAngularRangeList &     angularRanges(
                                 productionModel->GetAngularRanges() );
-        const CexmcAngularRangeList &  triggeredAngularRanges(
+        const CexmcAngularRangeList &     triggeredAngularRanges(
                                 productionModel->GetTriggeredAngularRanges() );
         const CexmcProductionModelData &  pmData(
                                 productionModel->GetProductionModelData() );

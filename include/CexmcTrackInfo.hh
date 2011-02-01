@@ -30,7 +30,7 @@ class  CexmcTrackInfo : public G4VUserTrackInformation
                                  G4int  copyNumber = 0 );
 
     public:
-        void  Print( void ) const;
+        void            Print( void ) const;
 
     public:
         virtual G4int   GetTypeInfo( void ) const;
