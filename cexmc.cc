@@ -24,7 +24,6 @@
 #include <boost/variant/get.hpp>
 #endif
 #endif
-#include <G4Version.hh>
 #include <G4UImanager.hh>
 #include <G4String.hh>
 #ifdef G4UI_USE
