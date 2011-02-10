@@ -81,7 +81,7 @@ void  CexmcStudiedPhysics< Process >::ConstructParticle( void )
 }
 
 
-template  <typename  Process >
+template  < typename  Process >
 void  CexmcStudiedPhysics< Process >::ConstructProcess( void )
 {
     if ( wasActivated )

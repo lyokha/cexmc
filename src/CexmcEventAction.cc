@@ -360,7 +360,7 @@ void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
             G4double  mass( tpStore->targetTPOutputParticle.particle->
                             GetPDGMass() );
             G4double  kinEnergy( std::sqrt( momentumAmp * momentumAmp +
-                                            mass * mass ) -mass );
+                                            mass * mass ) - mass );
             histoManager->Add( CexmcKinEnOP_LAB_ARReal_TPT_Histo,
                                k->index, kinEnergy );
             histoManager->Add( CexmcAngleOP_SCM_ARReal_TPT_Histo,
@@ -485,7 +485,7 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
             G4double  mass( tpStore->targetTPOutputParticle.particle->
                             GetPDGMass() );
             G4double  kinEnergy( std::sqrt( momentumAmp * momentumAmp +
-                                            mass * mass ) -mass );
+                                            mass * mass ) - mass );
             histoManager->Add( CexmcKinEnOP_LAB_ARReal_RT_Histo,
                                k->index, kinEnergy );
             histoManager->Add( CexmcAngleOP_SCM_ARReal_RT_Histo,
@@ -787,10 +787,10 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 {
     G4DigiManager *                digiManager( G4DigiManager::GetDMpointer() );
     CexmcEnergyDepositDigitizer *  energyDepositDigitizer(
-            static_cast< CexmcEnergyDepositDigitizer* >( digiManager->
+            static_cast< CexmcEnergyDepositDigitizer * >( digiManager->
                                 FindDigitizerModule( CexmcEDDigitizerName ) ) );
     CexmcTrackPointsDigitizer *    trackPointsDigitizer(
-            static_cast< CexmcTrackPointsDigitizer* >( digiManager->
+            static_cast< CexmcTrackPointsDigitizer * >( digiManager->
                                 FindDigitizerModule( CexmcTPDigitizerName ) ) );
 
     energyDepositDigitizer->Digitize();

@@ -62,7 +62,7 @@ void  CexmcTrackPointsInCalorimeter::PrintAll( void )
 
     PrintHeader( nmbOfEntries );
 
-    for( std::map< G4int, CexmcTrackPointInfo* >::iterator
+    for( std::map< G4int, CexmcTrackPointInfo * >::iterator
                                      itr( eventMap->GetMap()->begin() );
          itr != eventMap->GetMap()->end(); ++itr )
     {

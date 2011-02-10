@@ -87,7 +87,7 @@ void  CexmcSimpleEnergyDeposit::PrintAll( void )
     PrintHeader( nmbOfEntries );
 
     /* index is always 0 */
-    for( std::map< G4int, G4double* >::iterator
+    for( std::map< G4int, G4double * >::iterator
                                      itr( eventMap->GetMap()->begin() );
          itr != eventMap->GetMap()->end(); ++itr )
     {

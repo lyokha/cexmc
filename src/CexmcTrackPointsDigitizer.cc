@@ -69,12 +69,12 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
                     CexmcDetectorRoleName[ CexmcMonitorDetectorRole ] +
                     "/" + CexmcDetectorTypeName[ CexmcTPDetector ] ) );
     const CexmcTrackPointsCollection *
-             hitsCollection( static_cast< const CexmcTrackPointsCollection* >(
+             hitsCollection( static_cast< const CexmcTrackPointsCollection * >(
                                     digiManager->GetHitsCollection( hcId ) ) );
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo* >::iterator
+        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -86,12 +86,12 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
     hcId = digiManager->GetHitsCollectionID(
                     CexmcDetectorRoleName[ CexmcTargetDetectorRole ] +
                     "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
-    hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
+    hitsCollection = static_cast< const CexmcTrackPointsCollection * >(
                                     digiManager->GetHitsCollection( hcId ) );
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo* >::iterator
+        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -136,12 +136,12 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
     hcId = digiManager->GetHitsCollectionID(
                     CexmcDetectorRoleName[ CexmcVetoCounterDetectorRole ] +
                     "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
-    hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
+    hitsCollection = static_cast< const CexmcTrackPointsCollection * >(
                                     digiManager->GetHitsCollection( hcId ) );
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo* >::iterator
+        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -168,12 +168,12 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
     hcId = digiManager->GetHitsCollectionID(
                     CexmcDetectorRoleName[ CexmcCalorimeterDetectorRole ] +
                     "/" + CexmcDetectorTypeName[ CexmcTPDetector ] );
-    hitsCollection = static_cast< const CexmcTrackPointsCollection* >(
+    hitsCollection = static_cast< const CexmcTrackPointsCollection * >(
                                     digiManager->GetHitsCollection( hcId ) );
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo* >::iterator
+        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {

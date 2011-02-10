@@ -141,7 +141,7 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                     CexmcDetectorRoleName[ CexmcMonitorDetectorRole ] +
                     "/" + CexmcDetectorTypeName[ CexmcEDDetector ] ) );
     const CexmcEnergyDepositCollection *
-             hitsCollection( static_cast< const CexmcEnergyDepositCollection* >(
+         hitsCollection( static_cast< const CexmcEnergyDepositCollection * >(
                                     digiManager->GetHitsCollection( hcId ) ) );
 
     if ( hitsCollection )
@@ -154,11 +154,11 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
     hcId = digiManager->GetHitsCollectionID(
                     CexmcDetectorRoleName[ CexmcVetoCounterDetectorRole ] +
                     "/" + CexmcDetectorTypeName[ CexmcEDDetector ] );
-    hitsCollection = static_cast< const CexmcEnergyDepositCollection* >(
+    hitsCollection = static_cast< const CexmcEnergyDepositCollection * >(
                                     digiManager->GetHitsCollection( hcId ) );
     if ( hitsCollection )
     {
-        for ( std::map< G4int, G4double* >::iterator
+        for ( std::map< G4int, G4double * >::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -192,11 +192,11 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
     hcId = digiManager->GetHitsCollectionID(
                     CexmcDetectorRoleName[ CexmcCalorimeterDetectorRole ] +
                     "/" + CexmcDetectorTypeName[ CexmcEDDetector ] );
-    hitsCollection = static_cast< const CexmcEnergyDepositCollection* >(
+    hitsCollection = static_cast< const CexmcEnergyDepositCollection * >(
                                     digiManager->GetHitsCollection( hcId ) );
     if ( hitsCollection )
     {
-        for ( std::map< G4int, G4double* >::iterator
+        for ( std::map< G4int, G4double * >::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
