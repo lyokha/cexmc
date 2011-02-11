@@ -45,9 +45,9 @@ CexmcHadronicProcess::~CexmcHadronicProcess()
 
 
 void  CexmcHadronicProcess::RegisterProductionModel(
-                                    CexmcProductionModel *  productionModel_ )
+                                                CexmcProductionModel *  model )
 {
-    productionModel = productionModel_;
+    productionModel = model;
 
     interaction = dynamic_cast< G4HadronicInteraction * >( productionModel );
 

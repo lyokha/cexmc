@@ -16,6 +16,7 @@
  * ============================================================================
  */
 
+#include <cmath>
 #ifdef CEXMC_USE_PERSISTENCY
 #include <boost/archive/binary_oarchive.hpp>
 #endif
@@ -55,13 +56,19 @@ namespace
     G4double  CexmcBigCircleScreenSize( 10.0 );
     G4Colour  CexmcTrackPointsMarkerColour( 0.0, 1.0, 0.4 );
     G4Colour  CexmcRecTrackPointsMarkerColour( 1.0, 0.4, 0.0 );
+
+
+    inline G4double  CexmcGetKinEnergy( G4double  momentumAmp, G4double  mass )
+    {
+        return std::sqrt( momentumAmp * momentumAmp + mass * mass ) - mass;
+    }
 }
 
 
 CexmcEventAction::CexmcEventAction( CexmcPhysicsManager *  physicsManager,
                                     G4int  verbose ) :
-    physicsManager( physicsManager ), reconstructor( NULL ), verbose( verbose ),
-    verboseDraw( 4 ), messenger( NULL )
+    physicsManager( physicsManager ), reconstructor( NULL ), opKinEnergy( 0. ),
+    verbose( verbose ), verboseDraw( 4 ), messenger( NULL )
 {
     G4DigiManager *  digiManager( G4DigiManager::GetDMpointer() );
     digiManager->AddNewModule( new CexmcEnergyDepositDigitizer(
@@ -355,16 +362,10 @@ void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
                            tpStore->targetTPOutputParticle.positionLocal.x(),
                            tpStore->targetTPOutputParticle.positionLocal.y(),
                            tpStore->targetTPOutputParticle.positionLocal.z() );
-            G4double  momentumAmp(
-                                tpStore->targetTPOutputParticle.momentumAmp );
-            G4double  mass( tpStore->targetTPOutputParticle.particle->
-                            GetPDGMass() );
-            G4double  kinEnergy( std::sqrt( momentumAmp * momentumAmp +
-                                            mass * mass ) - mass );
-            histoManager->Add( CexmcKinEnOP_LAB_ARReal_TPT_Histo,
-                               k->index, kinEnergy );
-            histoManager->Add( CexmcAngleOP_SCM_ARReal_TPT_Histo,
-                               k->index, pmData.outputParticleSCM.cosTheta() );
+            histoManager->Add( CexmcKinEnOP_LAB_ARReal_TPT_Histo, k->index,
+                               opKinEnergy );
+            histoManager->Add( CexmcAngleOP_SCM_ARReal_TPT_Histo, k->index,
+                               pmData.outputParticleSCM.cosTheta() );
         }
         if ( tpStore->targetTPOutputParticleDecayProductParticle1.IsValid() &&
              tpStore->targetTPOutputParticleDecayProductParticle2.IsValid() )
@@ -374,8 +375,8 @@ void  CexmcEventAction::FillTPTHistos( const CexmcTrackPointsStore *  tpStore,
                         directionWorld.angle( tpStore->
                                 targetTPOutputParticleDecayProductParticle2.
                                         directionWorld ) / deg );
-            histoManager->Add( CexmcOpenAngle_ARReal_TPT_Histo,
-                               k->index, openAngle );
+            histoManager->Add( CexmcOpenAngle_ARReal_TPT_Histo, k->index,
+                               openAngle );
         }
     }
 }
@@ -480,20 +481,14 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
                            tpStore->targetTPOutputParticle.positionLocal.x(),
                            tpStore->targetTPOutputParticle.positionLocal.y(),
                            tpStore->targetTPOutputParticle.positionLocal.z() );
-            G4double  momentumAmp(
-                                tpStore->targetTPOutputParticle.momentumAmp );
-            G4double  mass( tpStore->targetTPOutputParticle.particle->
-                            GetPDGMass() );
-            G4double  kinEnergy( std::sqrt( momentumAmp * momentumAmp +
-                                            mass * mass ) - mass );
-            histoManager->Add( CexmcKinEnOP_LAB_ARReal_RT_Histo,
-                               k->index, kinEnergy );
-            histoManager->Add( CexmcAngleOP_SCM_ARReal_RT_Histo,
-                               k->index, pmData.outputParticleSCM.cosTheta() );
+            histoManager->Add( CexmcKinEnOP_LAB_ARReal_RT_Histo, k->index,
+                               opKinEnergy );
+            histoManager->Add( CexmcAngleOP_SCM_ARReal_RT_Histo, k->index,
+                               pmData.outputParticleSCM.cosTheta() );
             G4double  diffCosTheta( pmData.outputParticleSCM.cosTheta() -
                                     recCosTheta );
-            histoManager->Add( CexmcDiffAngleOP_SCM_ARReal_RT_Histo,
-                               k->index, diffCosTheta );
+            histoManager->Add( CexmcDiffAngleOP_SCM_ARReal_RT_Histo, k->index,
+                               diffCosTheta );
         }
         if ( tpStore->targetTPOutputParticleDecayProductParticle1.IsValid() &&
              tpStore->targetTPOutputParticleDecayProductParticle2.IsValid() )
@@ -503,12 +498,12 @@ void  CexmcEventAction::FillRTHistos( G4bool  reconstructorHasFullTrigger,
                         directionWorld.angle( tpStore->
                                 targetTPOutputParticleDecayProductParticle2.
                                         directionWorld ) / deg );
-            histoManager->Add( CexmcOpenAngle_ARReal_RT_Histo,
-                               k->index, openAngle );
+            histoManager->Add( CexmcOpenAngle_ARReal_RT_Histo, k->index,
+                               openAngle );
             G4double  diffOpenAngle( openAngle - reconstructor->GetTheAngle() /
                                      deg );
-            histoManager->Add( CexmcDiffOpenAngle_ARReal_RT_Histo,
-                               k->index, diffOpenAngle );
+            histoManager->Add( CexmcDiffOpenAngle_ARReal_RT_Histo, k->index,
+                               diffOpenAngle );
         }
         if ( tpStore->calorimeterTPLeft.IsValid() )
         {
@@ -928,6 +923,14 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
 #endif
 
 #ifdef CEXMC_USE_ROOT
+        /* opKinEnergy will be used in several histos */
+        if ( tpStore->targetTPOutputParticle.IsValid() )
+        {
+            opKinEnergy = CexmcGetKinEnergy(
+                    tpStore->targetTPOutputParticle.momentumAmp,
+                    tpStore->targetTPOutputParticle.particle->GetPDGMass() );
+        }
+
         if ( edDigitizerHasTriggered )
             FillEDTHistos( edStore, triggeredAngularRanges );
 

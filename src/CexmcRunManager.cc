@@ -879,7 +879,6 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
             std::ofstream   eventsDataFile(
                         ( projectsDir + "/" + projectId + ".edb" ).c_str() );
             boost::archive::binary_oarchive  eventsArchive_( eventsDataFile );
-            eventsArchive = &eventsArchive_;
             std::ofstream   fastEventsDataFile(
                         ( projectsDir + "/" + projectId + ".fdb" ).c_str() );
             boost::archive::binary_oarchive  fastEventsArchive_(
@@ -1220,6 +1219,7 @@ void  CexmcRunManager::PrintReadData(
         {
             etaDecayTable->GetDecayChannel( k->first )->SetBR( k->second );
         }
+
         PrintReadRunData();
     }
 }

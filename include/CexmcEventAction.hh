@@ -49,9 +49,9 @@ class  CexmcEventAction : public G4UserEventAction
     public:
         void      BeamParticleChangeHook( void );
 
-        void      SetVerboseOnCexmcLevel( G4int  verbose_ );
+        void      SetVerboseOnCexmcLevel( G4int  value );
 
-        void      SetVerboseDrawLevel( G4int  verboseDraw_ );
+        void      SetVerboseDrawLevel( G4int  value );
 
         void      DrawTrajectoryMarkers( G4bool  on );
 
@@ -126,8 +126,9 @@ class  CexmcEventAction : public G4UserEventAction
     private:
         CexmcPhysicsManager *               physicsManager;
 
-    private:
         CexmcChargeExchangeReconstructor *  reconstructor;
+
+        G4double                            opKinEnergy;
 
     private:
         G4int                               verbose;
@@ -140,15 +141,15 @@ class  CexmcEventAction : public G4UserEventAction
 };
 
 
-inline void  CexmcEventAction::SetVerboseOnCexmcLevel( G4int  verbose_ )
+inline void  CexmcEventAction::SetVerboseOnCexmcLevel( G4int  value )
 {
-    verbose = verbose_;
+    verbose = value;
 }
 
 
-inline void  CexmcEventAction::SetVerboseDrawLevel( G4int  verboseDraw_ )
+inline void  CexmcEventAction::SetVerboseDrawLevel( G4int  value )
 {
-    verboseDraw = verboseDraw_;
+    verboseDraw = value;
 }
 
 
