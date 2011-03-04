@@ -108,9 +108,8 @@ class  CexmcReconstructor
 
     private:
         void  CalculateWeightedEPPosition(
-                        const CexmcEnergyDepositCalorimeterCollection &  edHits,
-                        G4int  row, G4int  column, G4bool  isSqrtWeight,
-                        G4double &  x, G4double &  y ) const;
+                const CexmcEnergyDepositCalorimeterCollection &  edHits,
+                G4int  row, G4int  column, G4double &  x, G4double &  y ) const;
 
     protected:
         G4bool                               hasBasicTrigger;
