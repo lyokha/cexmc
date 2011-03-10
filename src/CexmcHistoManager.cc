@@ -391,9 +391,9 @@ void  CexmcHistoManager::Initialize( void )
     axes.push_back( CexmcHistoAxisData( nBinsX, nBinsMinX, nBinsMaxX ) );
     axes.push_back( CexmcHistoAxisData( nBinsY, nBinsMinY, nBinsMaxY ) );
     AddHisto( CexmcHistoData( CexmcAbsorbedEnergy_EDT_Histo, Cexmc_TH2F, false,
-        false, CexmcEDT, "ae", "Absorbed energy (rc vs. ls)", axes ) );
+        false, CexmcEDT, "ae", "Absorbed energy (rc vs. lc)", axes ) );
     AddHisto( CexmcHistoData( CexmcAbsorbedEnergy_RT_Histo, Cexmc_TH2F, false,
-        false, CexmcRT, "ae", "Absorbed energy (rc vs. ls)", axes ) );
+        false, CexmcRT, "ae", "Absorbed energy (rc vs. lc)", axes ) );
 
     SetupARHistos( runManager->GetPhysicsManager()->GetProductionModel()->
                    GetAngularRanges() );
