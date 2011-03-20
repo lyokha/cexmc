@@ -20,8 +20,9 @@
 #define CEXMC_SCENE_PRIMITIVES_HH
 
 #include <G4Point3D.hh>
+#include <G4AffineTransform.hh>
+#include "CexmcSetup.hh"
 
-class  CexmcSetup;
 class  CexmcScenePrimitivesMessenger;
 
 
@@ -46,18 +47,26 @@ class  CexmcScenePrimitives
 
         void  MarkTargetCenter( void );
 
-    private:
-        G4double        radialLineLength;
-
-        G4Point3D       targetCenter;
-
-        G4bool          isInitialized;
+        void  HighlightInnerCrystals( void );
 
     private:
-        CexmcScenePrimitivesMessenger *  messenger;
+        G4double                             radialLineLength;
+
+        G4Point3D                            targetCenter;
+
+        G4AffineTransform                    calorimeterLeftTransform;
+
+        G4AffineTransform                    calorimeterRightTransform;
+
+        CexmcSetup::CalorimeterGeometryData  calorimeterGeometry;
+
+        G4bool                               isInitialized;
 
     private:
-        static CexmcScenePrimitives *    instance;
+        CexmcScenePrimitivesMessenger *      messenger;
+
+    private:
+        static CexmcScenePrimitives *        instance;
 };
 
 

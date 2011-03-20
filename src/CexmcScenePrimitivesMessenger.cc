@@ -26,7 +26,8 @@
 CexmcScenePrimitivesMessenger::CexmcScenePrimitivesMessenger(
                                     CexmcScenePrimitives *  scenePrimitives ) :
     scenePrimitives( scenePrimitives ), setRadialLineLength( NULL ),
-    drawRadialLine( NULL ), markTargetCenter( NULL )
+    drawRadialLine( NULL ), markTargetCenter( NULL ),
+    highlightInnerCrystals( NULL )
 {
     setRadialLineLength = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::visDirName + "radialLineLength" ).c_str(), this );
@@ -49,6 +50,13 @@ CexmcScenePrimitivesMessenger::CexmcScenePrimitivesMessenger(
         ( CexmcMessenger::visDirName + "markTargetCenter" ).c_str(), this );
     markTargetCenter->SetGuidance( "Mark target center with a dot" );
     markTargetCenter->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    highlightInnerCrystals = new G4UIcmdWithoutParameter(
+        ( CexmcMessenger::visDirName + "highlightInnerCrystals" ).c_str(),
+        this );
+    highlightInnerCrystals->SetGuidance( "Highlight inner crystals in "
+                                         "calorimeters" );
+    highlightInnerCrystals->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
 
@@ -57,6 +65,7 @@ CexmcScenePrimitivesMessenger::~CexmcScenePrimitivesMessenger()
     delete setRadialLineLength;
     delete drawRadialLine;
     delete markTargetCenter;
+    delete highlightInnerCrystals;
 }
 
 
@@ -80,6 +89,11 @@ void  CexmcScenePrimitivesMessenger::SetNewValue( G4UIcommand *  cmd,
         if ( cmd == markTargetCenter )
         {
             scenePrimitives->MarkTargetCenter();
+            break;
+        }
+        if ( cmd == highlightInnerCrystals )
+        {
+            scenePrimitives->HighlightInnerCrystals();
             break;
         }
     } while ( false );

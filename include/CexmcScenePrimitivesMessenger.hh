@@ -46,6 +46,8 @@ class  CexmcScenePrimitivesMessenger : public G4UImessenger
         G4UIcmdWithADoubleAndUnit *  drawRadialLine;
 
         G4UIcmdWithoutParameter *    markTargetCenter;
+
+        G4UIcmdWithoutParameter *    highlightInnerCrystals;
 };
 
 
