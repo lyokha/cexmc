@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <vector>
 #include <fstream>
 #ifdef CEXMC_USE_PERSISTENCY
 #include <boost/archive/binary_iarchive.hpp>
@@ -34,6 +35,9 @@
 #include <G4Region.hh>
 #include <G4RegionStore.hh>
 #include <G4ProductionCuts.hh>
+#include <G4VisManager.hh>
+#include <G4Scene.hh>
+#include <G4VModel.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
 #include "CexmcRunAction.hh"
@@ -62,6 +66,7 @@
 #include "CexmcBasicPhysicsSettings.hh"
 #include "CexmcSensitiveDetectorsAttributes.hh"
 #include "CexmcCustomFilterEval.hh"
+#include "CexmcScenePrimitives.hh"
 
 
 namespace
@@ -1250,6 +1255,37 @@ void  CexmcRunManager::SetCustomFilter( const G4String &  cfFileName_ )
 #endif
 
 #endif
+
+
+void  CexmcRunManager::RegisterScenePrimitives( void )
+{
+    G4VisManager *  visManager( static_cast< G4VisManager * >(
+                                    G4VVisManager::GetConcreteInstance() ) );
+    if ( ! visManager )
+        return;
+
+    G4Scene *       curScene( visManager->GetCurrentScene() );
+    if ( ! curScene )
+        return;
+
+    /* G4Scene declarations lack this kind of typedef */
+    typedef std::vector< G4VModel * >  MList;
+    const MList &  mList( curScene->GetRunDurationModelList() );
+
+    for ( MList::const_iterator  k( mList.begin() ); k != mList.end(); ++k )
+    {
+        if ( ( *k )->GetGlobalDescription() == CexmcScenePrimitivesDescription )
+            return;
+    }
+
+    CexmcSetup *  setup( static_cast< CexmcSetup * >( userDetector ) );
+    if ( ! setup )
+        throw CexmcException( CexmcWeirdException );
+
+    /* BEWARE: looks like G4Scene won't delete models from its lists upon
+     * termination! Hence destructor of the new model won't be called */
+    curScene->AddRunDurationModel( new CexmcScenePrimitives( setup ) );
+}
 
 
 void  CexmcRunManager::BeamParticleChangeHook( void )

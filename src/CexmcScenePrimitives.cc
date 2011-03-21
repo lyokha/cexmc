@@ -22,48 +22,34 @@
 #include <G4Polyhedron.hh>
 #include <G4ThreeVector.hh>
 #include <G4VisAttributes.hh>
-#include <G4VVisManager.hh>
+#include <G4VGraphicsScene.hh>
 #include <G4Colour.hh>
+#include <G4AffineTransform.hh>
+#include <G4Transform3D.hh>
+#include <G4Point3D.hh>
 #include "CexmcScenePrimitives.hh"
 #include "CexmcScenePrimitivesMessenger.hh"
+#include "CexmcSetup.hh"
+#include "CexmcCommon.hh"
 
 
 namespace
 {
-    G4double  CexmcDefaultRadialLineLength( 1 * m );
     G4double  CexmcRadialLineWidth( 2.0 );
     G4double  CexmcRadialLineCapScreenSize( 4.0 );
     G4double  CexmcMarkerScreenSize( 2.0 );
     G4Colour  CexmcRadialLineColour( 1.0, 0.8, 0.0 );
     G4Colour  CexmcMarkerColour( CexmcRadialLineColour );
-    G4Colour  CexmcICHlAreaColour( 1.0, 0.2, 0.0, 0.2 );
+    G4Colour  CexmcICHlAreaColour( 1.0, 1.0, 0.0, 0.9 );
 }
 
 
-CexmcScenePrimitives *  CexmcScenePrimitives::instance( NULL );
-
-
-CexmcScenePrimitives *  CexmcScenePrimitives::Instance( void )
-{
-    if ( instance == NULL )
-        instance = new CexmcScenePrimitives;
-
-    return instance;
-}
-
-
-void  CexmcScenePrimitives::Destroy( void )
-{
-    delete instance;
-    instance = NULL;
-}
-
-
-CexmcScenePrimitives::CexmcScenePrimitives() :
-    radialLineLength( CexmcDefaultRadialLineLength ), targetCenter( 0, 0, 0 ),
-    isInitialized( false ), messenger( NULL )
+CexmcScenePrimitives::CexmcScenePrimitives( CexmcSetup *  setup ) :
+    setup( setup ), markTargetCenter( false ), highlightInnerCrystals( false ),
+    messenger( NULL )
 {
     messenger = new CexmcScenePrimitivesMessenger( this );
+    SetGlobalDescription( CexmcScenePrimitivesDescription );
 }
 
 
@@ -73,67 +59,75 @@ CexmcScenePrimitives::~CexmcScenePrimitives()
 }
 
 
-void  CexmcScenePrimitives::Initialize( const CexmcSetup *  setup )
+void  CexmcScenePrimitives::DescribeYourselfTo( G4VGraphicsScene &  scene )
 {
-    targetCenter = setup->GetTargetTransform().TransformPoint(
-                                                G4ThreeVector( 0, 0, 0 ) );
-    calorimeterLeftTransform = setup->GetCalorimeterLeftTransform();
-    calorimeterRightTransform = setup->GetCalorimeterRightTransform();
-    calorimeterGeometry = setup->GetCalorimeterGeometry();
+    if ( markTargetCenter )
+        MarkTargetCenter( scene );
+    if ( highlightInnerCrystals )
+        HighlightInnerCrystals( scene );
+    for ( CexmcRadialLines::const_iterator  k( radialLines.begin() );
+                                                k != radialLines.end(); ++k )
+    {
+        DrawRadialLine( scene, &*k );
+    }
 }
 
 
-void  CexmcScenePrimitives::DrawRadialLine( G4double  angle )
+void  CexmcScenePrimitives::DrawRadialLine( G4VGraphicsScene &  scene,
+                                            const CexmcRadialLine *  rLine )
 {
-    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
+    G4double    theta( rLine->theta * deg );
+    G4double    phi( rLine->phi * deg );
+    G4double    length( rLine->length * cm );
+    G4Point3D   radialLineEnd( - std::sin( theta ) * std::cos( phi ) * length,
+                               std::sin( theta ) * std::sin( phi ) * length,
+                               std::cos( theta ) * length );
 
-    if ( ! visManager  )
-        return;
-
-    G4Polyline       line;
-    G4Point3D        radialLineEnd( - std::sin( angle ) * radialLineLength, 0,
-                                    std::cos( angle ) * radialLineLength );
-    radialLineEnd += targetCenter;
-    line.push_back( targetCenter );
+    G4Polyline  line;
+    line.push_back( G4ThreeVector() );
     line.push_back( radialLineEnd );
 
     G4VisAttributes  visAttributes( CexmcRadialLineColour );
     visAttributes.SetLineWidth( CexmcRadialLineWidth );
     line.SetVisAttributes( visAttributes );
-    visManager->Draw( line );
 
     G4Circle  circle;
     circle.SetScreenSize( CexmcRadialLineCapScreenSize );
     circle.SetFillStyle( G4Circle::filled );
     circle.SetVisAttributes( CexmcRadialLineColour );
-    circle.SetPosition( targetCenter );
-    visManager->Draw( circle );
+
+    const G4AffineTransform &  transform( setup->GetTargetTransform() );
+    G4Transform3D              transform3D( G4RotationMatrix(),
+                                            transform.NetTranslation() );
+
+    scene.BeginPrimitives( transform3D );
+    scene.AddPrimitive( circle );
+    scene.AddPrimitive( line );
+    scene.EndPrimitives();
 }
 
 
-void  CexmcScenePrimitives::MarkTargetCenter( void )
+void  CexmcScenePrimitives::MarkTargetCenter( G4VGraphicsScene &  scene )
 {
-    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
-
-    if ( ! visManager  )
-        return;
-
     G4Circle  circle;
     circle.SetScreenSize( CexmcMarkerScreenSize );
     circle.SetFillStyle( G4Circle::filled );
     circle.SetVisAttributes( CexmcMarkerColour );
-    circle.SetPosition( targetCenter );
-    visManager->Draw( circle );
+
+    const G4AffineTransform &  transform( setup->GetTargetTransform() );
+    G4Transform3D              transform3D( G4RotationMatrix(),
+                                            transform.NetTranslation() );
+
+    scene.BeginPrimitives( transform3D );
+    scene.AddPrimitive( circle );
+    scene.EndPrimitives();
 }
 
 
-void  CexmcScenePrimitives::HighlightInnerCrystals( void )
+void  CexmcScenePrimitives::HighlightInnerCrystals( G4VGraphicsScene &  scene )
 {
-    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
-
-    if ( ! visManager  )
-        return;
-
+    const CexmcSetup::CalorimeterGeometryData &  calorimeterGeometry(
+                                            setup->GetCalorimeterGeometry() );
     G4double  icWidth( calorimeterGeometry.crystalWidth *
                        ( calorimeterGeometry.nCrystalsInRow - 2 ) / 2 );
     G4double  icHeight( calorimeterGeometry.crystalHeight *
@@ -145,11 +139,23 @@ void  CexmcScenePrimitives::HighlightInnerCrystals( void )
     G4PolyhedronBox  innerCrystals( icWidth, icHeight, icLength );
     G4VisAttributes  visAttributes( CexmcICHlAreaColour );
     innerCrystals.SetVisAttributes( visAttributes );
-    visManager->Draw( innerCrystals, G4Transform3D(
-                            calorimeterLeftTransform.NetRotation().inverse(),
-                            calorimeterLeftTransform.NetTranslation() ) );
-    visManager->Draw( innerCrystals, G4Transform3D(
-                            calorimeterRightTransform.NetRotation().inverse(),
-                            calorimeterRightTransform.NetTranslation() ) );
+
+    const G4AffineTransform &  transformLeft(
+                                        setup->GetCalorimeterLeftTransform() );
+    G4Transform3D              transform3DLeft(
+                                        transformLeft.NetRotation().inverse(),
+                                        transformLeft.NetTranslation() );
+    const G4AffineTransform &  transformRight(
+                                        setup->GetCalorimeterRightTransform() );
+    G4Transform3D              transform3DRight(
+                                        transformRight.NetRotation().inverse(),
+                                        transformRight.NetTranslation() );
+
+    scene.BeginPrimitives( transform3DLeft );
+    scene.AddPrimitive( innerCrystals );
+    scene.EndPrimitives();
+    scene.BeginPrimitives( transform3DRight );
+    scene.AddPrimitive( innerCrystals );
+    scene.EndPrimitives();
 }
 

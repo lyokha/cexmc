@@ -44,6 +44,8 @@ const G4String  CexmcChargeExchangeInteractionName( "Cexmc" +
 const G4String  CexmcEDDigitizerName( "EDDig" );
 const G4String  CexmcTPDigitizerName( "TPDig" );
 
+const G4String  CexmcScenePrimitivesDescription( "CexmcScenePrimitives" );
+
 const G4double  CexmcFwhmToStddev( 0.42466 );
 const G4double  CexmcInvalidCosTheta( 2.0 );
 

@@ -22,7 +22,8 @@
 #include <G4UImessenger.hh>
 
 class  G4UIcommand;
-class  G4UIcmdWithADoubleAndUnit;
+class  G4UIcmdWith3Vector;
+class  G4UIcmdWithABool;
 class  G4UIcmdWithoutParameter;
 class  CexmcScenePrimitives;
 
@@ -39,15 +40,15 @@ class  CexmcScenePrimitivesMessenger : public G4UImessenger
         void  SetNewValue( G4UIcommand *  cmd, G4String  value );
 
     private:
-        CexmcScenePrimitives *       scenePrimitives;
+        CexmcScenePrimitives *     scenePrimitives;
 
-        G4UIcmdWithADoubleAndUnit *  setRadialLineLength;
+        G4UIcmdWith3Vector *       drawRadialLine;
 
-        G4UIcmdWithADoubleAndUnit *  drawRadialLine;
+        G4UIcmdWithoutParameter *  clearRadialLines;
 
-        G4UIcmdWithoutParameter *    markTargetCenter;
+        G4UIcmdWithABool *         markTargetCenter;
 
-        G4UIcmdWithoutParameter *    highlightInnerCrystals;
+        G4UIcmdWithABool *         highlightInnerCrystals;
 };
 
 

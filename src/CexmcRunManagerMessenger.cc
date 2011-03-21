@@ -19,6 +19,7 @@
 #include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithAnInteger.hh>
 #include <G4UIcmdWithABool.hh>
+#include <G4UIcmdWithoutParameter.hh>
 #include "CexmcRunManager.hh"
 #include "CexmcRunManagerMessenger.hh"
 #include "CexmcMessenger.hh"
@@ -32,7 +33,7 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
 #ifdef CEXMC_USE_PERSISTENCY
     replayEvents( NULL ), seekTo( NULL ), skipInteractionsWithoutEDT( NULL ), 
 #endif
-    validateGdmlFile( NULL )
+    registerScenePrimitives( NULL ), validateGdmlFile( NULL )
 {
     setProductionModel = new G4UIcmdWithAString(
         ( CexmcMessenger::physicsDirName + "productionModel" ).c_str(), this );
@@ -116,6 +117,14 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
                                                     G4State_Idle );
 #endif
 
+    registerScenePrimitives = new G4UIcmdWithoutParameter(
+        ( CexmcMessenger::visDirName + "registerScenePrimitives" ).c_str(),
+        this );
+    registerScenePrimitives->SetGuidance( "Register custom scene primitives "
+        "(radial lines, inner crystals\n    highlights etc.)" );
+    registerScenePrimitives->AvailableForStates( G4State_PreInit,
+                                                 G4State_Idle );
+
     validateGdmlFile = new G4UIcmdWithABool(
         ( CexmcMessenger::geometryDirName + "validateGdmlFile" ).c_str(),
         this );
@@ -138,6 +147,7 @@ CexmcRunManagerMessenger::~CexmcRunManagerMessenger()
     delete seekTo;
     delete skipInteractionsWithoutEDT;
 #endif
+    delete registerScenePrimitives;
     delete validateGdmlFile;
 }
 
@@ -240,6 +250,11 @@ void  CexmcRunManagerMessenger::SetNewValue( G4UIcommand *  cmd,
             break;
         }
 #endif
+        if ( cmd == registerScenePrimitives )
+        {
+            runManager->RegisterScenePrimitives();
+            break;
+        }
         if ( cmd == validateGdmlFile )
         {
             runManager->SetGdmlFileValidation(

@@ -6,6 +6,11 @@
 /tracking/verbose 0
 
 /vis/scene/create
+/cexmc/vis/registerScenePrimitives
+
+# this will make whole scene smooth
+/cexmc/vis/markTargetCenter
+
 /vis/scene/add/volume WorldVisible
 
 # Create a scene handler for Qt OpenGL graphics
@@ -53,7 +58,6 @@
 #/vis/scene/add/axes
 
 /cexmc/vis/drawTrajMarkers false
-/cexmc/vis/markTargetCenter
 
 /vis/viewer/flush
 

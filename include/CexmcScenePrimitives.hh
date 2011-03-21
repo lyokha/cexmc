@@ -19,60 +19,109 @@
 #ifndef CEXMC_SCENE_PRIMITIVES_HH
 #define CEXMC_SCENE_PRIMITIVES_HH
 
-#include <G4Point3D.hh>
-#include <G4AffineTransform.hh>
-#include "CexmcSetup.hh"
+#include <vector>
+#include <G4ThreeVector.hh>
+#include <G4VModel.hh>
+#include <G4VVisManager.hh>
 
+class  G4VGraphicsScene;
+class  CexmcSetup;
 class  CexmcScenePrimitivesMessenger;
 
 
-class  CexmcScenePrimitives
+class  CexmcScenePrimitives : public G4VModel
 {
-    public:
-        static CexmcScenePrimitives *  Instance( void );
-
-        static void                    Destroy( void );
-
     private:
-        CexmcScenePrimitives();
+        struct  CexmcRadialLine
+        {
+            CexmcRadialLine( const G4ThreeVector &  line ) :
+                theta( line.x() ), phi( line.y() ), length( line.z() )
+            {}
+
+            G4double  theta;
+
+            G4double  phi;
+
+            G4double  length;
+        };
+
+        typedef std::vector< CexmcRadialLine >  CexmcRadialLines;
+
+    public:
+        explicit CexmcScenePrimitives( CexmcSetup *  setup );
 
         ~CexmcScenePrimitives();
 
     public:
-        void  Initialize( const CexmcSetup *  setup );
+        void  DescribeYourselfTo( G4VGraphicsScene &  scene );
 
-        void  SetRadialLineLength( G4double  value );
+    public:
+        void  DrawRadialLine( const G4ThreeVector &  line );
 
-        void  DrawRadialLine( G4double  angle );
+        void  MarkTargetCenter( G4bool  on = true );
 
-        void  MarkTargetCenter( void );
+        void  HighlightInnerCrystals( G4bool = true );
 
-        void  HighlightInnerCrystals( void );
-
-    private:
-        G4double                             radialLineLength;
-
-        G4Point3D                            targetCenter;
-
-        G4AffineTransform                    calorimeterLeftTransform;
-
-        G4AffineTransform                    calorimeterRightTransform;
-
-        CexmcSetup::CalorimeterGeometryData  calorimeterGeometry;
-
-        G4bool                               isInitialized;
+        void  ClearRadialLines( void );
 
     private:
-        CexmcScenePrimitivesMessenger *      messenger;
+        void  DrawRadialLine( G4VGraphicsScene &  scene,
+                              const CexmcRadialLine *  rLine );
+
+        void  MarkTargetCenter( G4VGraphicsScene &  scene );
+
+        void  HighlightInnerCrystals( G4VGraphicsScene &  scene );
 
     private:
-        static CexmcScenePrimitives *        instance;
+        void  UpdateScene( void );
+
+    private:
+        CexmcSetup *                     setup;
+
+        G4bool                           markTargetCenter;
+
+        G4bool                           highlightInnerCrystals;
+
+        CexmcRadialLines                 radialLines;
+
+    private:
+        CexmcScenePrimitivesMessenger *  messenger;
 };
 
 
-inline void  CexmcScenePrimitives::SetRadialLineLength( G4double  value )
+inline void  CexmcScenePrimitives::DrawRadialLine( const G4ThreeVector &  line )
 {
-    radialLineLength = value;
+    radialLines.push_back( line );
+    UpdateScene();
+}
+
+
+inline void  CexmcScenePrimitives::MarkTargetCenter( G4bool  on )
+{
+    markTargetCenter = on;
+    UpdateScene();
+}
+
+
+inline void  CexmcScenePrimitives::HighlightInnerCrystals( G4bool  on )
+{
+    highlightInnerCrystals = on;
+    UpdateScene();
+}
+
+
+inline void  CexmcScenePrimitives::ClearRadialLines( void )
+{
+    radialLines.clear();
+    UpdateScene();
+}
+
+
+inline void CexmcScenePrimitives::UpdateScene( void )
+{
+    G4VVisManager *  visManager( G4VVisManager::GetConcreteInstance() );
+    if ( visManager )
+        visManager->NotifyHandlers();
 }
 
 

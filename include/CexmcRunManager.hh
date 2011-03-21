@@ -65,6 +65,8 @@ class  CexmcRunManager : public G4RunManager
 
         void  SetEventDataVerboseLevel( CexmcEventDataVerboseLevel  value );
 
+        void  RegisterScenePrimitives( void );
+
 #ifdef CEXMC_USE_PERSISTENCY
         void  ReadProject( void );
 
