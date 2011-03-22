@@ -53,8 +53,6 @@ class  CexmcEventAction : public G4UserEventAction
 
         void      SetVerboseDrawLevel( G4int  value );
 
-        void      DrawTrajectoryMarkers( G4bool  on );
-
         CexmcChargeExchangeReconstructor *  GetReconstructor( void );
 
     private:
@@ -135,8 +133,6 @@ class  CexmcEventAction : public G4UserEventAction
 
         G4int                               verboseDraw;
 
-        G4bool                              drawTrajectoryMarkers;
-
         CexmcEventActionMessenger *         messenger;
 };
 
@@ -150,12 +146,6 @@ inline void  CexmcEventAction::SetVerboseOnCexmcLevel( G4int  value )
 inline void  CexmcEventAction::SetVerboseDrawLevel( G4int  value )
 {
     verboseDraw = value;
-}
-
-
-inline void  CexmcEventAction::DrawTrajectoryMarkers( G4bool  on )
-{
-    drawTrajectoryMarkers = on;
 }
 
 

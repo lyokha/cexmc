@@ -6,12 +6,15 @@
 /tracking/verbose 0
 
 /vis/scene/create
+
+/vis/scene/add/volume WorldVisible
+
+# adding custom scene primitives after world volume will make them shine
+# brighter which is most important for rendering inner crystal highligts
 /cexmc/vis/registerScenePrimitives
 
 # this will make whole scene smooth
 /cexmc/vis/markTargetCenter
-
-/vis/scene/add/volume WorldVisible
 
 # Create a scene handler for Qt OpenGL graphics
 /vis/open OGLSQt 600x600-0+0
@@ -56,8 +59,6 @@
 #/vis/scene/add/trajectories
 #/vis/scene/add/hits
 #/vis/scene/add/axes
-
-/cexmc/vis/drawTrajMarkers false
 
 /vis/viewer/flush
 

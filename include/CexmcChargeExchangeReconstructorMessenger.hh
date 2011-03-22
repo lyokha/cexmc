@@ -24,7 +24,6 @@
 class  G4UIcommand;
 class  G4UIcmdWithABool;
 class  G4UIcmdWithADoubleAndUnit;
-class  G4String;
 class  CexmcChargeExchangeReconstructor;
 
 

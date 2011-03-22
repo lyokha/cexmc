@@ -556,12 +556,10 @@ void  CexmcEventAction::DrawTrajectories( const G4Event *  event )
 
     nTraj = trajContainer->entries();
 
-    G4int  drawMode( drawTrajectoryMarkers ? 1000 : 0 );
-
     for ( int  i( 0 ); i < nTraj; ++i )
     {
         G4VTrajectory *  traj( ( *trajContainer )[ i ] );
-        traj->DrawTrajectory( drawMode );
+        traj->DrawTrajectory();
     }
 }
 

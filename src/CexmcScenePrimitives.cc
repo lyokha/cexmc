@@ -41,7 +41,7 @@ namespace
     G4double  CexmcICHlLineLineWidth( 1.0 );
     G4Colour  CexmcRadialLineColour( 1.0, 0.8, 0.0 );
     G4Colour  CexmcMarkerColour( CexmcRadialLineColour );
-    G4Colour  CexmcICHlAreaColour( 1.0, 1.0, 0.0, 0.9 );
+    G4Colour  CexmcICHlAreaColour( 1.0, 1.0, 0.0, 0.16 );
 }
 
 

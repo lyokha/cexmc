@@ -17,7 +17,6 @@
  */
 
 #include <G4UIcmdWithAnInteger.hh>
-#include <G4UIcmdWithABool.hh>
 #include "CexmcEventActionMessenger.hh"
 #include "CexmcEventAction.hh"
 #include "CexmcMessenger.hh"
@@ -26,7 +25,7 @@
 CexmcEventActionMessenger::CexmcEventActionMessenger(
                                             CexmcEventAction *  eventAction ) :
     eventAction( eventAction ), setVerboseLevel( NULL ),
-    setVerboseDrawLevel( NULL ), drawTrajectoryMarkers( NULL )
+    setVerboseDrawLevel( NULL )
 {
     setVerboseLevel = new G4UIcmdWithAnInteger(
            ( CexmcMessenger::eventDirName + "verbose" ).c_str() , this );
@@ -62,14 +61,6 @@ CexmcEventActionMessenger::CexmcEventActionMessenger(
     setVerboseDrawLevel->SetRange( "VerboseDraw >= 0 && VerboseDraw <= 4" );
     setVerboseDrawLevel->SetDefaultValue( 4 );
     setVerboseDrawLevel->AvailableForStates( G4State_PreInit, G4State_Idle );
-
-    drawTrajectoryMarkers = new G4UIcmdWithABool(
-           ( CexmcMessenger::visDirName + "drawTrajMarkers" ).c_str() , this );
-    drawTrajectoryMarkers->SetGuidance( "draw markers in places where "
-                                        "trajectories change" );
-    drawTrajectoryMarkers->SetParameterName( "DrawTrajMarkers", true );
-    drawTrajectoryMarkers->SetDefaultValue( true );
-    drawTrajectoryMarkers->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
 
@@ -77,7 +68,6 @@ CexmcEventActionMessenger::~CexmcEventActionMessenger()
 {
     delete setVerboseLevel;
     delete setVerboseDrawLevel;
-    delete drawTrajectoryMarkers;
 }
 
 
@@ -96,12 +86,6 @@ void  CexmcEventActionMessenger::SetNewValue( G4UIcommand *  cmd,
         {
             eventAction->SetVerboseDrawLevel(
                                 G4UIcmdWithAnInteger::GetNewIntValue( value ) );
-            break;
-        }
-        if ( cmd == drawTrajectoryMarkers )
-        {
-            eventAction->DrawTrajectoryMarkers(
-                                G4UIcmdWithABool::GetNewBoolValue( value ) );
             break;
         }
     } while ( false );
