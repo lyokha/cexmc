@@ -49,6 +49,8 @@ class  CexmcScenePrimitivesMessenger : public G4UImessenger
         G4UIcmdWithABool *         markTargetCenter;
 
         G4UIcmdWithABool *         highlightInnerCrystals;
+
+        G4UIcommand *              setColour;
 };
 
 

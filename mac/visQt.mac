@@ -48,6 +48,9 @@
 /vis/geometry/set/colour vTargetWindow 0 0.8 0.7 0.7 0.5
 /vis/geometry/set/colour vTargetWindowCap 0 0.8 0.7 0.7 0.5
 
+/cexmc/vis/setColour ic 1.0 1.0 0.0 0.16
+/cexmc/vis/setColour rl 0.8 0.2 0.4
+
 /vis/modeling/trajectories/create/drawByParticleID
 /vis/modeling/trajectories/select drawByParticleID-0
 /vis/modeling/trajectories/drawByParticleID-0/setRGBA gamma 0.8 0.8 1.0 1

@@ -16,9 +16,14 @@
  * =============================================================================
  */
 
+#include <sstream>
+#include <cctype>
+#include <G4UIparameter.hh>
+#include <G4UIcommand.hh>
 #include <G4UIcmdWith3Vector.hh>
 #include <G4UIcmdWithABool.hh>
 #include <G4UIcmdWithoutParameter.hh>
+#include <G4Colour.hh>
 #include "CexmcScenePrimitives.hh"
 #include "CexmcScenePrimitivesMessenger.hh"
 #include "CexmcMessenger.hh"
@@ -28,7 +33,7 @@ CexmcScenePrimitivesMessenger::CexmcScenePrimitivesMessenger(
                                     CexmcScenePrimitives *  scenePrimitives ) :
     scenePrimitives( scenePrimitives ), drawRadialLine( NULL ),
     clearRadialLines( NULL ), markTargetCenter( NULL ),
-    highlightInnerCrystals( NULL )
+    highlightInnerCrystals( NULL ), setColour( NULL )
 {
     drawRadialLine = new G4UIcmdWith3Vector(
         ( CexmcMessenger::visDirName + "drawRadialLine" ).c_str(), this );
@@ -59,6 +64,36 @@ CexmcScenePrimitivesMessenger::CexmcScenePrimitivesMessenger(
     highlightInnerCrystals->SetParameterName( "HighlightInnerCrystals", true );
     highlightInnerCrystals->SetDefaultValue( true );
     highlightInnerCrystals->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    setColour = new G4UIcommand(
+        ( CexmcMessenger::visDirName + "setColour" ).c_str(), this );
+    setColour->SetGuidance( "Set colour of specified scene primitive" );
+    G4UIparameter *  parameter( new G4UIparameter( "ScenePrimitive", 's',
+                                                   false ) );
+    parameter->SetGuidance( "Scene primitive, possible values:\n"
+        "    tc - target center mark,\n"
+        "    rl - radial lines,\n"
+        "    ic - inner crystal highlights" );
+    parameter->SetParameterCandidates( "tc rl ic" );
+    setColour->SetParameter( parameter );
+    parameter = new G4UIparameter( "red", 's', true );
+    parameter->SetGuidance( "Red component or string, e.g. \"blue\", in which "
+        "case succeeding colour\n    components are ignored" );
+    parameter->SetDefaultValue( "1.0" );
+    setColour->SetParameter( parameter );
+    parameter = new G4UIparameter( "green", 'd', true );
+    parameter->SetGuidance( "Green component" );
+    parameter->SetDefaultValue( 1.0 );
+    setColour->SetParameter( parameter );
+    parameter = new G4UIparameter( "blue", 'd', true );
+    parameter->SetGuidance( "Blue component" );
+    parameter->SetDefaultValue( 1.0 );
+    setColour->SetParameter( parameter );
+    parameter = new G4UIparameter( "opacity", 'd', true );
+    parameter->SetGuidance( "Opacity" );
+    parameter->SetDefaultValue( 1.0 );
+    setColour->SetParameter( parameter );
+    setColour->AvailableForStates( G4State_PreInit, G4State_Idle );
 }
 
 
@@ -68,6 +103,7 @@ CexmcScenePrimitivesMessenger::~CexmcScenePrimitivesMessenger()
     delete clearRadialLines;
     delete markTargetCenter;
     delete highlightInnerCrystals;
+    delete setColour;
 }
 
 
@@ -98,6 +134,54 @@ void  CexmcScenePrimitivesMessenger::SetNewValue( G4UIcommand *  cmd,
         {
             scenePrimitives->HighlightInnerCrystals(
                                 G4UIcmdWithABool::GetNewBoolValue( value ) );
+            break;
+        }
+        if ( cmd == setColour )
+        {
+            G4String            name;
+            G4String            redOrString;
+            G4double            green( 1 );
+            G4double            blue( 1 );
+            G4double            opacity( 1 );
+            G4Colour            colour( 1, green, blue, opacity );
+            std::istringstream  iss( value );
+
+            iss >> name >> redOrString >> green >> blue >> opacity;
+
+            if ( std::isalpha( redOrString[ 0 ] ) )
+            {
+                G4Colour::GetColour( redOrString, colour );
+            }
+            else
+            {
+                colour = G4Colour( G4UIcommand::ConvertToDouble( redOrString ),
+                                   green, blue );
+            }
+            colour = G4Colour( colour.GetRed(), colour.GetGreen(),
+                               colour.GetBlue(), opacity );
+
+            CexmcSPType  primitive( CexmcTargetCenterMark_SP );
+            do
+            {
+                if ( name == "tc" )
+                {
+                    primitive = CexmcTargetCenterMark_SP;
+                    break;
+                }
+                if ( name == "rl" )
+                {
+                    primitive = CexmcRadialLine_SP;
+                    break;
+                }
+                if ( name == "ic" )
+                {
+                    primitive = CexmcInnerCrystalsHl_SP;
+                    break;
+                }
+                return;
+            } while( false );
+
+            scenePrimitives->SetColour( primitive, colour );
             break;
         }
     } while ( false );
