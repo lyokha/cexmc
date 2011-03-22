@@ -38,6 +38,7 @@ namespace
     G4double  CexmcRadialLineWidth( 2.0 );
     G4double  CexmcRadialLineCapScreenSize( 4.0 );
     G4double  CexmcMarkerScreenSize( 2.0 );
+    G4double  CexmcICHlLineLineWidth( 1.0 );
     G4Colour  CexmcRadialLineColour( 1.0, 0.8, 0.0 );
     G4Colour  CexmcMarkerColour( CexmcRadialLineColour );
     G4Colour  CexmcICHlAreaColour( 1.0, 1.0, 0.0, 0.9 );
@@ -138,6 +139,7 @@ void  CexmcScenePrimitives::HighlightInnerCrystals( G4VGraphicsScene &  scene )
 
     G4PolyhedronBox  innerCrystals( icWidth, icHeight, icLength );
     G4VisAttributes  visAttributes( CexmcICHlAreaColour );
+    visAttributes.SetLineWidth( CexmcICHlLineLineWidth );
     innerCrystals.SetVisAttributes( visAttributes );
 
     const G4AffineTransform &  transformLeft(
