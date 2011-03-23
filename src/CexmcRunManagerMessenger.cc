@@ -121,7 +121,7 @@ CexmcRunManagerMessenger::CexmcRunManagerMessenger(
         ( CexmcMessenger::visDirName + "registerScenePrimitives" ).c_str(),
         this );
     registerScenePrimitives->SetGuidance( "Register custom scene primitives "
-        "(radial lines, inner crystals\n    highlights etc.)" );
+        "(radial lines,\n    inner crystals highlights etc.)" );
     registerScenePrimitives->AvailableForStates( G4State_PreInit,
                                                  G4State_Idle );
 
