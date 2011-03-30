@@ -33,7 +33,7 @@
 #include "CexmcCommon.hh"
 
 
-#define CEXMC_RUN_SOBJECT_VERSION 3
+#define CEXMC_RUN_SOBJECT_VERSION 4
 
 
 class  CexmcRunSObject
@@ -100,7 +100,8 @@ class  CexmcRunSObject
                          G4bool  interactionsWithoutEDTWereSkipped,
                          const std::string &  cfFileName,
                          CexmcEventDataVerboseLevel  evDataVerboseLevel,
-                         G4double  proposedMaxIL );
+                         G4double  proposedMaxIL,
+                         CexmcEDCollectionAlgoritm  edCollectionAlgorithm );
 
     private:
         template  < typename  Archive >
@@ -232,6 +233,8 @@ class  CexmcRunSObject
 
         G4double                     proposedMaxIL;
 
+        CexmcEDCollectionAlgoritm    edCollectionAlgorithm;
+
     private:
         unsigned int                 actualVersion;
 };
@@ -310,6 +313,8 @@ void  CexmcRunSObject::serialize( Archive &  archive,
     }
     if ( version > 2 )
         archive & proposedMaxIL;
+    if ( version > 3 )
+        archive & edCollectionAlgorithm;
 }
 
 

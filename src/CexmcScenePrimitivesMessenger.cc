@@ -148,7 +148,7 @@ void  CexmcScenePrimitivesMessenger::SetNewValue( G4UIcommand *  cmd,
 
             iss >> name >> redOrString >> green >> blue >> opacity;
 
-            if ( std::isalpha( redOrString[ 0 ] ) )
+            if ( std::isalpha( redOrString[ size_t( 0 ) ] ) )
             {
                 G4Colour::GetColour( redOrString, colour );
             }

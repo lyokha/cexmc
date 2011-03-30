@@ -290,6 +290,7 @@ void  CexmcRunManager::ReadProject( void )
     reconstructor->SetAbsorbedEnergyCutCLWidth( sObject.aeCutCLWidth );
     reconstructor->SetAbsorbedEnergyCutCRWidth( sObject.aeCutCRWidth );
     reconstructor->SetAbsorbedEnergyCutEllipseAngle( sObject.aeCutAngle );
+    reconstructor->SetEDCollectionAlgorithm( sObject.edCollectionAlgorithm );
 
     physicsManager->SetProposedMaxIL( sObject.proposedMaxIL );
 
@@ -415,7 +416,8 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfFalseHitsTriggeredRec, nmbOfSavedEvents, nmbOfSavedFastEvents,
         numberOfEventsProcessed, numberOfEventsProcessedEffective,
         numberOfEventToBeProcessed, rProject, skipInteractionsWithoutEDTonWrite,
-        cfFileName, evDataVerboseLevel, physicsManager->GetProposedMaxIL() );
+        cfFileName, evDataVerboseLevel, physicsManager->GetProposedMaxIL(),
+        reconstructor->GetEDCollectionAlgorithm() );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
@@ -951,6 +953,8 @@ void  CexmcRunManager::PrintReadRunData( void ) const
     if ( ! ProjectIsRead() )
         return;
 
+    G4bool  refCrystalInfoPrinted( false );
+
     G4cout << CEXMC_LINE_START << "Run data read from project '" << rProject <<
               "'" << G4endl;
     G4cout << "               (archive class version " <<
@@ -1049,6 +1053,15 @@ void  CexmcRunManager::PrintReadRunData( void ) const
                   sObject.crystalResolutionData;
     }
     G4cout << "  -- Reconstructor settings: " << G4endl;
+    G4cout << "     -- ed collection algorithm (0 - all, 1 - adjacent): " <<
+              sObject.edCollectionAlgorithm << G4endl;
+    if ( sObject.edCollectionAlgorithm == CexmcCollectEDInAdjacentCrystals )
+    {
+        G4cout <<
+            "     -- inner crystal used as reference (0 - no, 1 - yes): " <<
+            sObject.useInnerRefCrystal << G4endl;
+        refCrystalInfoPrinted = true;
+    }
     G4cout << "     -- entry point definition algorithm " << G4endl;
     G4cout << "        (0 - center of calorimeter, 1 - center of crystal with "
                        "max ED," << G4endl;
@@ -1066,12 +1079,13 @@ void  CexmcRunManager::PrintReadRunData( void ) const
             "     -- crystal selection algorithm (0 - all, 1 - adjacent): " <<
             sObject.csAlgorithm << G4endl;
     }
-    if ( sObject.epDefinitionAlgorithm ==
+    if ( ! refCrystalInfoPrinted &&
+         ( sObject.epDefinitionAlgorithm ==
                                 CexmcEntryPointInTheCenterOfCrystalWithMaxED ||
          ( ( sObject.epDefinitionAlgorithm == CexmcEntryPointBySqrtEDWeights ||
              sObject.epDefinitionAlgorithm ==
                                         CexmcEntryPointByLinearEDWeights ) &&
-               sObject.csAlgorithm == CexmcSelectAdjacentCrystals ) )
+               sObject.csAlgorithm == CexmcSelectAdjacentCrystals ) ) )
     {
         G4cout <<
             "     -- inner crystal used as reference (0 - no, 1 - yes): " <<

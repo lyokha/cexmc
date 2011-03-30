@@ -81,7 +81,7 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         ( CexmcMessenger::reconstructorDirName + "crystalSelectionAlgo" ).
                 c_str(), this );
     setCrystalSelectionAlgorithm->SetGuidance(
-        "\n    Choose which crystals will be selected in weighted entry point\n"
+        "\n    Choose crystals to be selected in weighted entry point\n"
         "    reconstruction algorithms\n"
         "    all - all,\n"
         "    adjacent - crystal with maximum energy deposit and\n"
@@ -99,9 +99,10 @@ CexmcReconstructorMessenger::CexmcReconstructorMessenger(
         "\n    Defines that if the crystal with maximum energy deposit in\n"
         "    calorimeter is an outer crystal then the closest inner crystal\n"
         "    will be chosen as the reference for adjacent crystal selection\n"
-        "    algorithm and simple entry point definition algorithm.\n"
-        "    If not set then the reference crystal will be found from all\n"
-        "    crystals in calorimeter" );
+        "    algorithm and simple entry point definition algorithm. It also\n"
+        "    affects energy deposit collection if adjacent crystals\n"
+        "    algorithm was chosen for that. If not set then the reference\n"
+        "    crystal will be found from all crystals in calorimeter" );
     useInnerRefCrystal->SetParameterName( "UseInnerRefCrystal", true );
     useInnerRefCrystal->SetDefaultValue( true );
     useInnerRefCrystal->AvailableForStates( G4State_PreInit, G4State_Idle );

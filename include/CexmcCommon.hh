@@ -146,6 +146,13 @@ enum  CexmcCrystalSelectionAlgorithm
 };
 
 
+enum  CexmcEDCollectionAlgoritm
+{
+    CexmcCollectEDInAllCrystals,
+    CexmcCollectEDInAdjacentCrystals
+};
+
+
 enum  CexmcEventDataVerboseLevel
 {
     CexmcWriteNoEventData,

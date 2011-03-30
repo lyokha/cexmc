@@ -105,8 +105,7 @@ class  CexmcEventAction : public G4UserEventAction
 
     public:
         static CexmcEnergyDepositStore *  MakeEnergyDepositStore(
-                            const CexmcEnergyDepositDigitizer *  digitizer,
-                            G4bool  useInnerRefCrystal );
+                            const CexmcEnergyDepositDigitizer *  digitizer );
 
         static CexmcTrackPointsStore *  MakeTrackPointsStore(
                             const CexmcTrackPointsDigitizer *  digitizer );

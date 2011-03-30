@@ -23,6 +23,7 @@
 
 class  G4UIcommand;
 class  G4UIcmdWithABool;
+class  G4UIcmdWithAString;
 class  G4UIcmdWithADoubleAndUnit;
 class  CexmcChargeExchangeReconstructor;
 
@@ -66,6 +67,8 @@ class  CexmcChargeExchangeReconstructorMessenger : public G4UImessenger
         G4UIcmdWithADoubleAndUnit *         aeCutCRWidth;
 
         G4UIcmdWithADoubleAndUnit *         aeCutAngle;
+
+        G4UIcmdWithAString *                setEDCollectionAlgorithm;
 };
 
 

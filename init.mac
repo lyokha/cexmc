@@ -62,9 +62,10 @@
 #/cexmc/physics/addAngularRange -0.5 -0.8 2
 /cexmc/physics/setAngularRange 1.0 -1.0 10
 
+/cexmc/reconstructor/edCollectionAlgo all
+/cexmc/reconstructor/useInnerRefCrystal true
 /cexmc/reconstructor/entryPointDefinitionAlgo sqrt
 /cexmc/reconstructor/crystalSelectionAlgo all
-/cexmc/reconstructor/useInnerRefCrystal true
 /cexmc/reconstructor/entryPointDepthDefinitionAlgo plain
 /cexmc/reconstructor/entryPointDepth 0 cm
 /cexmc/reconstructor/useTableMass false

@@ -17,6 +17,7 @@
  */
 
 #include <G4UIcmdWithABool.hh>
+#include <G4UIcmdWithAString.hh>
 #include <G4UIcmdWithADoubleAndUnit.hh>
 #include "CexmcChargeExchangeReconstructorMessenger.hh"
 #include "CexmcChargeExchangeReconstructor.hh"
@@ -31,7 +32,7 @@ CexmcChargeExchangeReconstructorMessenger::
             mCutOPWidth( NULL ), mCutNOPWidth( NULL ), mCutAngle( NULL ),
             useAbsorbedEnergyCut( NULL ), aeCutCLCenter( NULL ),
             aeCutCRCenter( NULL ), aeCutCLWidth( NULL ), aeCutCRWidth( NULL ),
-            aeCutAngle( NULL )
+            aeCutAngle( NULL ), setEDCollectionAlgorithm( NULL )
 {
     useTableMass = new G4UIcmdWithABool(
         ( CexmcMessenger::reconstructorDirName + "useTableMass" ).c_str(),
@@ -54,8 +55,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutOPCenter = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "mCutOPCenter" ).c_str(),
         this );
-    mCutOPCenter->SetGuidance( "Center of the ellipse in output particle mass "
-                               "coordinate" );
+    mCutOPCenter->SetGuidance( "\n    Center of the ellipse in output particle "
+                               "mass coordinate" );
     mCutOPCenter->SetParameterName( "MCutOPCenter", false );
     mCutOPCenter->SetDefaultValue( reconstructor->GetProductionModelData().
                                    outputParticle->GetPDGMass() );
@@ -66,7 +67,7 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutNOPCenter = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "mCutNOPCenter" ).c_str(),
         this );
-    mCutNOPCenter->SetGuidance( "Center of the ellipse in nucleus output "
+    mCutNOPCenter->SetGuidance( "\n    Center of the ellipse in nucleus output "
                                 "particle mass\n    coordinate" );
     mCutNOPCenter->SetParameterName( "MCutNOPCenter", false );
     mCutNOPCenter->SetDefaultValue( reconstructor->GetProductionModelData().
@@ -78,8 +79,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutOPWidth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "mCutOPWidth" ).c_str(),
         this );
-    mCutOPWidth->SetGuidance( "Width of the ellipse in output particle mass "
-                               "coordinate" );
+    mCutOPWidth->SetGuidance( "\n    Width of the ellipse in output particle "
+                               "mass coordinate" );
     mCutOPWidth->SetParameterName( "MCutOPWidth", false );
     mCutOPWidth->SetDefaultValue( reconstructor->GetProductionModelData().
                                   outputParticle->GetPDGMass() * 0.1 );
@@ -90,8 +91,8 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutNOPWidth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "mCutNOPWidth" ).c_str(),
         this );
-    mCutNOPWidth->SetGuidance( "Width of the ellipse in nucleus output "
-                               "particle mass\n     coordinate" );
+    mCutNOPWidth->SetGuidance( "\n    Width of the ellipse in nucleus output "
+                               "particle mass\n    coordinate" );
     mCutNOPWidth->SetParameterName( "MCutNOPWidth", false );
     mCutNOPWidth->SetDefaultValue( reconstructor->GetProductionModelData().
                                    nucleusOutputParticle->GetPDGMass() * 0.1 );
@@ -102,7 +103,7 @@ CexmcChargeExchangeReconstructorMessenger::
     mCutAngle = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "mCutAngle" ).c_str(),
         this );
-    mCutAngle->SetGuidance( "Angle of the ellipse" );
+    mCutAngle->SetGuidance( "\n    Angle of the ellipse" );
     mCutAngle->SetParameterName( "MCutAngle", false );
     mCutAngle->SetDefaultValue( 0 );
     mCutAngle->SetUnitCandidates( "deg rad" );
@@ -112,8 +113,8 @@ CexmcChargeExchangeReconstructorMessenger::
     useAbsorbedEnergyCut = new G4UIcmdWithABool(
         ( CexmcMessenger::reconstructorDirName + "useAbsorbedEnergyCut" ).
             c_str(), this );
-    useAbsorbedEnergyCut->SetGuidance( "Use elliptical cut for absorbed "
-                                       "energies in\n     calorimeters" );
+    useAbsorbedEnergyCut->SetGuidance( "\n    Use elliptical cut for absorbed "
+                                       "energies in\n    calorimeters" );
     useAbsorbedEnergyCut->SetParameterName( "UseAbsorbedEnergyCut", true );
     useAbsorbedEnergyCut->SetDefaultValue( true );
     useAbsorbedEnergyCut->AvailableForStates( G4State_PreInit, G4State_Idle );
@@ -121,8 +122,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCLCenter = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCLCenter" ).c_str(),
         this );
-    aeCutCLCenter->SetGuidance( "Center of the ellipse in left calorimeter"
-                                "\n     absorbed energy coordinate" );
+    aeCutCLCenter->SetGuidance( "\n    Center of the ellipse in left "
+                                "calorimeter\n    absorbed energy coordinate" );
     aeCutCLCenter->SetParameterName( "AECutCLCenter", false );
     aeCutCLCenter->SetDefaultValue( 0 );
     aeCutCLCenter->SetUnitCandidates( "eV keV MeV GeV" );
@@ -132,8 +133,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCRCenter = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCRCenter" ).c_str(),
         this );
-    aeCutCRCenter->SetGuidance( "Center of the ellipse in right calorimeter"
-                                "\n     absorbed energy coordinate" );
+    aeCutCRCenter->SetGuidance( "\n    Center of the ellipse in right "
+                                "calorimeter\n    absorbed energy coordinate" );
     aeCutCRCenter->SetParameterName( "AECutCRCenter", false );
     aeCutCRCenter->SetDefaultValue( 0 );
     aeCutCRCenter->SetUnitCandidates( "eV keV MeV GeV" );
@@ -143,8 +144,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCLWidth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCLWidth" ).c_str(),
         this );
-    aeCutCLWidth->SetGuidance( "Width of the ellipse in left calorimeter"
-                               "\n     absorbed energy coordinate" );
+    aeCutCLWidth->SetGuidance( "\n    Width of the ellipse in left calorimeter"
+                               "\n    absorbed energy coordinate" );
     aeCutCLWidth->SetParameterName( "AECutCLWidth", false );
     aeCutCLWidth->SetDefaultValue( 0 );
     aeCutCLWidth->SetUnitCandidates( "eV keV MeV GeV" );
@@ -154,8 +155,8 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutCRWidth = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutCRWidth" ).c_str(),
         this );
-    aeCutCRWidth->SetGuidance( "Width of the ellipse in right calorimeter"
-                               "\n     absorbed energy coordinate" );
+    aeCutCRWidth->SetGuidance( "\n    Width of the ellipse in right calorimeter"
+                               "\n    absorbed energy coordinate" );
     aeCutCRWidth->SetParameterName( "AECutCRWidth", false );
     aeCutCRWidth->SetDefaultValue( 0 );
     aeCutCRWidth->SetUnitCandidates( "eV keV MeV GeV" );
@@ -165,12 +166,26 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutAngle = new G4UIcmdWithADoubleAndUnit(
         ( CexmcMessenger::reconstructorDirName + "aeCutAngle" ).c_str(),
         this );
-    aeCutAngle->SetGuidance( "Angle of the ellipse" );
+    aeCutAngle->SetGuidance( "\n    Angle of the ellipse" );
     aeCutAngle->SetParameterName( "AECutAngle", false );
     aeCutAngle->SetDefaultValue( 0 );
     aeCutAngle->SetUnitCandidates( "deg rad" );
     aeCutAngle->SetDefaultUnit( "deg" );
     aeCutAngle->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    setEDCollectionAlgorithm = new G4UIcmdWithAString(
+        ( CexmcMessenger::reconstructorDirName + "edCollectionAlgo" ).c_str(),
+        this );
+    setEDCollectionAlgorithm->SetGuidance(
+        "\n    Choose crystals to be selected when energy deposit collected\n"
+        "    all - all,\n"
+        "    adjacent - crystal with maximum energy deposit and\n"
+        "               adjacent crystals" );
+    setEDCollectionAlgorithm->SetParameterName( "EDCollectionAlgo", false );
+    setEDCollectionAlgorithm->SetCandidates( "all adjacent" );
+    setEDCollectionAlgorithm->SetDefaultValue( "all" );
+    setEDCollectionAlgorithm->AvailableForStates( G4State_PreInit,
+                                                  G4State_Idle );
 }
 
 
@@ -190,6 +205,7 @@ CexmcChargeExchangeReconstructorMessenger::
     delete aeCutCLWidth;
     delete aeCutCRWidth;
     delete aeCutAngle;
+    delete setEDCollectionAlgorithm;
 }
 
 
@@ -274,6 +290,21 @@ void  CexmcChargeExchangeReconstructorMessenger::SetNewValue(
         {
             reconstructor->SetAbsorbedEnergyCutEllipseAngle(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
+        }
+        if ( cmd == setEDCollectionAlgorithm )
+        {
+            CexmcEDCollectionAlgoritm
+                        edCollectionAlgorithm( CexmcCollectEDInAllCrystals );
+            do
+            {
+                if ( value == "adjacent" )
+                {
+                    edCollectionAlgorithm = CexmcCollectEDInAdjacentCrystals;
+                    break;
+                }
+            } while ( false );
+            reconstructor->SetEDCollectionAlgorithm( edCollectionAlgorithm );
             break;
         }
     } while ( false );

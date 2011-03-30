@@ -108,7 +108,7 @@ void  CexmcEventAction::BeginOfEventAction( const G4Event * )
 
 
 CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
-    const CexmcEnergyDepositDigitizer *  digitizer, G4bool  useInnerRefCrystal )
+                                const CexmcEnergyDepositDigitizer *  digitizer )
 {
     G4double  monitorED( digitizer->GetMonitorED() );
     G4double  vetoCounterEDLeft( digitizer->GetVetoCounterEDLeft() );
@@ -119,18 +119,12 @@ CexmcEnergyDepositStore *  CexmcEventAction::MakeEnergyDepositStore(
     G4int     calorimeterEDLeftMaxY( digitizer->GetCalorimeterEDLeftMaxY() );
     G4int     calorimeterEDRightMaxX( digitizer->GetCalorimeterEDRightMaxX() );
     G4int     calorimeterEDRightMaxY( digitizer->GetCalorimeterEDRightMaxY() );
-    if ( useInnerRefCrystal )
-    {
-        digitizer->TransformToAdjacentInnerCrystal( calorimeterEDLeftMaxX,
-                                                    calorimeterEDLeftMaxY );
-        digitizer->TransformToAdjacentInnerCrystal( calorimeterEDRightMaxX,
-                                                    calorimeterEDRightMaxY );
-    }
+
     const CexmcEnergyDepositCalorimeterCollection &
-                calorimeterEDLeftCollection(
+              calorimeterEDLeftCollection(
                             digitizer->GetCalorimeterEDLeftCollection() );
     const CexmcEnergyDepositCalorimeterCollection &
-                calorimeterEDRightCollection(
+              calorimeterEDRightCollection(
                             digitizer->GetCalorimeterEDRightCollection() );
 
     /* ATTENTION: return object in heap - must be freed by caller! */
@@ -803,10 +797,9 @@ void  CexmcEventAction::EndOfEventAction( const G4Event *  event )
     G4bool  reconstructorHasFullTrigger( false );
 
     CexmcEnergyDepositStore *  edStore( MakeEnergyDepositStore(
-                                    energyDepositDigitizer,
-                                    reconstructor->IsInnerRefCrystalUsed() ) );
+                                                    energyDepositDigitizer ) );
     CexmcTrackPointsStore *    tpStore( MakeTrackPointsStore(
-                                    trackPointsDigitizer ) );
+                                                    trackPointsDigitizer ) );
 
     try
     {

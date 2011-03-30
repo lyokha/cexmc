@@ -22,8 +22,8 @@
 #include <G4UImessenger.hh>
 
 class  G4UIcommand;
-class  G4UIcmdWithAString;
 class  G4UIcmdWithABool;
+class  G4UIcmdWithAString;
 class  G4UIcmdWithADoubleAndUnit;
 class  CexmcReconstructor;
 

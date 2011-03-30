@@ -21,6 +21,7 @@
 
 #include "CexmcReconstructor.hh"
 #include "CexmcProductionModelData.hh"
+#include "CexmcCommon.hh"
 
 class  CexmcChargeExchangeReconstructorMessenger;
 class  CexmcEnergyDepositStore;
@@ -31,7 +32,7 @@ class  CexmcParticleGun;
 class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 {
     public:
-        explicit CexmcChargeExchangeReconstructor(
+        CexmcChargeExchangeReconstructor(
                                 const CexmcProductionModel *  productionModel );
 
         ~CexmcChargeExchangeReconstructor();
@@ -72,6 +73,8 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 
         void      SetAbsorbedEnergyCutEllipseAngle( G4double  value );
 
+        void      SetEDCollectionAlgorithm( CexmcEDCollectionAlgoritm  value );
+
         void      SetupBeamParticle( void );
 
         G4bool    IsTableMassUsed( void ) const;
@@ -102,49 +105,53 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 
         G4double  GetAbsorbedEnergyCutEllipseAngle( void ) const;
 
+        CexmcEDCollectionAlgoritm  GetEDCollectionAlgorithm( void ) const;
+
         G4bool    HasAbsorbedEnergyCutTriggered( void ) const;
 
         G4bool    HasFullTrigger( void ) const;
 
     private:
-        G4double  outputParticleMass;
+        G4double                   outputParticleMass;
 
-        G4double  nucleusOutputParticleMass;
-
-    private:
-        CexmcProductionModelData  productionModelData;
+        G4double                   nucleusOutputParticleMass;
 
     private:
-        G4bool    useTableMass;
-
-        G4bool    useMassCut;
-
-        G4double  massCutOPCenter;
-
-        G4double  massCutNOPCenter;
-
-        G4double  massCutOPWidth;
-
-        G4double  massCutNOPWidth;
-
-        G4double  massCutEllipseAngle;
-
-        G4bool    useAbsorbedEnergyCut;
-
-        G4double  absorbedEnergyCutCLCenter;
-
-        G4double  absorbedEnergyCutCRCenter;
-
-        G4double  absorbedEnergyCutCLWidth;
-
-        G4double  absorbedEnergyCutCRWidth;
-
-        G4double  absorbedEnergyCutEllipseAngle;
+        CexmcProductionModelData   productionModelData;
 
     private:
-        G4bool    hasMassCutTriggered;
+        G4bool                     useTableMass;
 
-        G4bool    hasAbsorbedEnergyCutTriggered;
+        G4bool                     useMassCut;
+
+        G4double                   massCutOPCenter;
+
+        G4double                   massCutNOPCenter;
+
+        G4double                   massCutOPWidth;
+
+        G4double                   massCutNOPWidth;
+
+        G4double                   massCutEllipseAngle;
+
+        G4bool                     useAbsorbedEnergyCut;
+
+        G4double                   absorbedEnergyCutCLCenter;
+
+        G4double                   absorbedEnergyCutCRCenter;
+
+        G4double                   absorbedEnergyCutCLWidth;
+
+        G4double                   absorbedEnergyCutCRWidth;
+
+        G4double                   absorbedEnergyCutEllipseAngle;
+
+        CexmcEDCollectionAlgoritm  edCollectionAlgorithm;
+
+    private:
+        G4bool                     hasMassCutTriggered;
+
+        G4bool                     hasAbsorbedEnergyCutTriggered;
 
     private:
         G4bool                                       beamParticleIsInitialized;
@@ -265,6 +272,13 @@ inline void  CexmcChargeExchangeReconstructor::SetAbsorbedEnergyCutEllipseAngle(
 }
 
 
+inline void  CexmcChargeExchangeReconstructor::SetEDCollectionAlgorithm(
+                                            CexmcEDCollectionAlgoritm  value )
+{
+    edCollectionAlgorithm = value;
+}
+
+
 inline G4bool  CexmcChargeExchangeReconstructor::IsTableMassUsed( void ) const
 {
     return useTableMass;
@@ -358,6 +372,13 @@ inline G4double  CexmcChargeExchangeReconstructor::
                                 GetAbsorbedEnergyCutEllipseAngle( void ) const
 {
     return absorbedEnergyCutEllipseAngle;
+}
+
+
+inline CexmcEDCollectionAlgoritm  CexmcChargeExchangeReconstructor::
+                                GetEDCollectionAlgorithm( void ) const
+{
+    return edCollectionAlgorithm;
 }
 
 

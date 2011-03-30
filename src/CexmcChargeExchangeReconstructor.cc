@@ -27,20 +27,20 @@
 #include "CexmcProductionModel.hh"
 #include "CexmcRunManager.hh"
 #include "CexmcException.hh"
-#include "CexmcCommon.hh"
 
 
 CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor(
                             const CexmcProductionModel *  productionModel ) :
-    outputParticleMass( 0 ),  nucleusOutputParticleMass( 0 ),
+    outputParticleMass( 0 ), nucleusOutputParticleMass( 0 ),
     useTableMass( false ), useMassCut( false ), massCutOPCenter( 0 ),
     massCutNOPCenter( 0 ), massCutOPWidth( 0 ), massCutNOPWidth( 0 ),
     massCutEllipseAngle( 0 ), useAbsorbedEnergyCut( false ),
     absorbedEnergyCutCLCenter( 0 ), absorbedEnergyCutCRCenter( 0 ),
     absorbedEnergyCutCLWidth( 0 ), absorbedEnergyCutCRWidth( 0 ),
-    absorbedEnergyCutEllipseAngle( 0 ), hasMassCutTriggered( false ),
-    hasAbsorbedEnergyCutTriggered( false ), beamParticleIsInitialized( false ),
-    particleGun( NULL ), messenger( NULL )
+    absorbedEnergyCutEllipseAngle( 0 ),
+    edCollectionAlgorithm( CexmcCollectEDInAllCrystals ),
+    hasMassCutTriggered( false ), hasAbsorbedEnergyCutTriggered( false ),
+    beamParticleIsInitialized( false ), particleGun( NULL ), messenger( NULL )
 {
     if ( ! productionModel )
         throw CexmcException( CexmcWeirdException );
@@ -97,6 +97,9 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
         beamParticleIsInitialized = true;
     }
 
+    if ( edCollectionAlgorithm == CexmcCollectEDInAdjacentCrystals )
+        collectEDInAdjacentCrystals = true;
+
     ReconstructEntryPoints( edStore );
     if ( hasBasicTrigger )
         ReconstructTargetPoint();
@@ -111,6 +114,12 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     G4double  cosTheAngle( std::cos( theAngle ) );
     G4double  calorimeterEDLeft( edStore->calorimeterEDLeft );
     G4double  calorimeterEDRight( edStore->calorimeterEDRight );
+
+    if ( edCollectionAlgorithm == CexmcCollectEDInAdjacentCrystals )
+    {
+        calorimeterEDLeft = calorimeterEDLeftAdjacent;
+        calorimeterEDRight = calorimeterEDRightAdjacent;
+    }
 
     //G4double  cosOutputParticleLAB(
         //( calorimeterEDLeft * cosAngleLeft +
