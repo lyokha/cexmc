@@ -100,7 +100,7 @@ class  CexmcRunSObject
                          G4bool  interactionsWithoutEDTWereSkipped,
                          const std::string &  cfFileName,
                          CexmcEventDataVerboseLevel  evDataVerboseLevel,
-                         G4double  proposedMaxIL,
+                         G4double  proposedMaxIL, G4double  expectedMomentumAmp,
                          CexmcEDCollectionAlgoritm  edCollectionAlgorithm );
 
     private:
@@ -233,6 +233,8 @@ class  CexmcRunSObject
 
         G4double                     proposedMaxIL;
 
+        G4double                     expectedMomentumAmp;
+
         CexmcEDCollectionAlgoritm    edCollectionAlgorithm;
 
     private:
@@ -314,7 +316,10 @@ void  CexmcRunSObject::serialize( Archive &  archive,
     if ( version > 2 )
         archive & proposedMaxIL;
     if ( version > 3 )
+    {
+        archive & expectedMomentumAmp;
         archive & edCollectionAlgorithm;
+    }
 }
 
 

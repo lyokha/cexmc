@@ -37,7 +37,7 @@ CexmcChargeExchangeReconstructor::CexmcChargeExchangeReconstructor(
     massCutEllipseAngle( 0 ), useAbsorbedEnergyCut( false ),
     absorbedEnergyCutCLCenter( 0 ), absorbedEnergyCutCRCenter( 0 ),
     absorbedEnergyCutCLWidth( 0 ), absorbedEnergyCutCRWidth( 0 ),
-    absorbedEnergyCutEllipseAngle( 0 ),
+    absorbedEnergyCutEllipseAngle( 0 ), expectedMomentumAmp( -1 ),
     edCollectionAlgorithm( CexmcCollectEDInAllCrystals ),
     hasMassCutTriggered( false ), hasAbsorbedEnergyCutTriggered( false ),
     beamParticleIsInitialized( false ), particleGun( NULL ), messenger( NULL )
@@ -146,8 +146,8 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
                                                              opEnergy );
 
     G4ThreeVector  incidentParticleMomentum( particleGun->GetOrigDirection() );
-    G4double       incidentParticleMomentumAmp(
-                                            particleGun->GetOrigMomentumAmp() );
+    G4double       incidentParticleMomentumAmp( expectedMomentumAmp > 0 ?
+                    expectedMomentumAmp : particleGun->GetOrigMomentumAmp() );
     incidentParticleMomentum *= incidentParticleMomentumAmp;
 
     G4double       incidentParticlePDGMass(
@@ -275,5 +275,12 @@ G4bool  CexmcChargeExchangeReconstructor::HasFullTrigger( void ) const
         return false;
 
     return true;
+}
+
+
+void  CexmcChargeExchangeReconstructor::SetExpectedMomentumAmpDiff(
+                                                            G4double  value )
+{
+    expectedMomentumAmp = particleGun->GetOrigMomentumAmp() + value;
 }
 

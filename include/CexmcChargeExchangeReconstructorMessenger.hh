@@ -68,6 +68,10 @@ class  CexmcChargeExchangeReconstructorMessenger : public G4UImessenger
 
         G4UIcmdWithADoubleAndUnit *         aeCutAngle;
 
+        G4UIcmdWithADoubleAndUnit *         setExpectedMomentumAmp;
+
+        G4UIcmdWithADoubleAndUnit *         setExpectedMomentumAmpDiff;
+
         G4UIcmdWithAString *                setEDCollectionAlgorithm;
 };
 

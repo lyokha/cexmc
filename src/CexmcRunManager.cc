@@ -290,6 +290,7 @@ void  CexmcRunManager::ReadProject( void )
     reconstructor->SetAbsorbedEnergyCutCLWidth( sObject.aeCutCLWidth );
     reconstructor->SetAbsorbedEnergyCutCRWidth( sObject.aeCutCRWidth );
     reconstructor->SetAbsorbedEnergyCutEllipseAngle( sObject.aeCutAngle );
+    reconstructor->SetExpectedMomentumAmp( sObject.expectedMomentumAmp );
     reconstructor->SetEDCollectionAlgorithm( sObject.edCollectionAlgorithm );
 
     physicsManager->SetProposedMaxIL( sObject.proposedMaxIL );
@@ -417,6 +418,7 @@ void  CexmcRunManager::SaveProject( void )
         numberOfEventsProcessed, numberOfEventsProcessedEffective,
         numberOfEventToBeProcessed, rProject, skipInteractionsWithoutEDTonWrite,
         cfFileName, evDataVerboseLevel, physicsManager->GetProposedMaxIL(),
+        reconstructor->GetExpectedMomentumAmp(),
         reconstructor->GetEDCollectionAlgorithm() );
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
@@ -1053,6 +1055,11 @@ void  CexmcRunManager::PrintReadRunData( void ) const
                   sObject.crystalResolutionData;
     }
     G4cout << "  -- Reconstructor settings: " << G4endl;
+    if ( sObject.expectedMomentumAmp > 0 )
+    {
+        G4cout << "     -- expected momentum at the center of the target: " <<
+                  G4BestUnit( sObject.expectedMomentumAmp, "Energy" ) << G4endl;
+    }
     G4cout << "     -- ed collection algorithm (0 - all, 1 - adjacent): " <<
               sObject.edCollectionAlgorithm << G4endl;
     if ( sObject.edCollectionAlgorithm == CexmcCollectEDInAdjacentCrystals )

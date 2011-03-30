@@ -32,7 +32,8 @@ CexmcChargeExchangeReconstructorMessenger::
             mCutOPWidth( NULL ), mCutNOPWidth( NULL ), mCutAngle( NULL ),
             useAbsorbedEnergyCut( NULL ), aeCutCLCenter( NULL ),
             aeCutCRCenter( NULL ), aeCutCLWidth( NULL ), aeCutCRWidth( NULL ),
-            aeCutAngle( NULL ), setEDCollectionAlgorithm( NULL )
+            aeCutAngle( NULL ), setExpectedMomentumAmp( NULL ),
+            setExpectedMomentumAmpDiff( NULL ), setEDCollectionAlgorithm( NULL )
 {
     useTableMass = new G4UIcmdWithABool(
         ( CexmcMessenger::reconstructorDirName + "useTableMass" ).c_str(),
@@ -173,6 +174,35 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutAngle->SetDefaultUnit( "deg" );
     aeCutAngle->AvailableForStates( G4State_PreInit, G4State_Idle );
 
+    setExpectedMomentumAmp = new G4UIcmdWithADoubleAndUnit(
+        ( CexmcMessenger::reconstructorDirName + "recMomentumAmp" ).c_str(),
+        this );
+    setExpectedMomentumAmp->SetGuidance( "\n    Momentum amplitude expected in "
+        "the center of the target;\n    it can differ from original momentum "
+        "amplitude\n    of the beam as far as profile data of the beam is "
+        "given\n    in place where it starts. This parameter is used only\n"
+        "    in reconstruction procedure");
+    setExpectedMomentumAmp->SetParameterName( "RecMomentumAmp", false );
+    setExpectedMomentumAmp->SetRange( "RecMomentumAmp > 0" );
+    setExpectedMomentumAmp->SetUnitCandidates( "eV keV MeV GeV" );
+    setExpectedMomentumAmp->SetDefaultUnit( "MeV" );
+    setExpectedMomentumAmp->AvailableForStates( G4State_PreInit, G4State_Idle );
+
+    setExpectedMomentumAmpDiff = new G4UIcmdWithADoubleAndUnit(
+        ( CexmcMessenger::reconstructorDirName + "recMomentumAmpDiff" ).c_str(),
+        this );
+    setExpectedMomentumAmpDiff->SetGuidance( "\n    Expected difference "
+        "between momentum amplitudes\n    of the beam on its start and at the "
+        "center of the target;\n    this parameter can be used instead "
+        "'recMomentumAmp'\n    and makes sense only in reconstruction "
+        "procedure" );
+    setExpectedMomentumAmpDiff->SetParameterName( "RecMomentumAmp", false );
+    setExpectedMomentumAmpDiff->SetDefaultValue( 0 );
+    setExpectedMomentumAmpDiff->SetUnitCandidates( "eV keV MeV GeV" );
+    setExpectedMomentumAmpDiff->SetDefaultUnit( "MeV" );
+    setExpectedMomentumAmpDiff->AvailableForStates( G4State_PreInit,
+                                                    G4State_Idle );
+
     setEDCollectionAlgorithm = new G4UIcmdWithAString(
         ( CexmcMessenger::reconstructorDirName + "edCollectionAlgo" ).c_str(),
         this );
@@ -205,6 +235,8 @@ CexmcChargeExchangeReconstructorMessenger::
     delete aeCutCLWidth;
     delete aeCutCRWidth;
     delete aeCutAngle;
+    delete setExpectedMomentumAmp;
+    delete setExpectedMomentumAmpDiff;
     delete setEDCollectionAlgorithm;
 }
 
@@ -289,6 +321,18 @@ void  CexmcChargeExchangeReconstructorMessenger::SetNewValue(
         if ( cmd == aeCutAngle )
         {
             reconstructor->SetAbsorbedEnergyCutEllipseAngle(
+                        G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
+        }
+        if ( cmd == setExpectedMomentumAmp )
+        {
+            reconstructor->SetExpectedMomentumAmp(
+                        G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
+            break;
+        }
+        if ( cmd == setExpectedMomentumAmpDiff )
+        {
+            reconstructor->SetExpectedMomentumAmpDiff(
                         G4UIcmdWithADoubleAndUnit::GetNewDoubleValue( value ) );
             break;
         }

@@ -68,6 +68,7 @@ CexmcRunSObject::CexmcRunSObject(
         G4bool  interactionsWithoutEDTWereSkipped,
         const std::string &  cfFileName,
         CexmcEventDataVerboseLevel  evDataVerboseLevel, G4double  proposedMaxIL,
+        G4double  expectedMomentumAmp,
         CexmcEDCollectionAlgoritm  edCollectionAlgorithm ) :
     basePhysicsUsed( basePhysicsUsed ),
     productionModelType( productionModelType ), gdmlFileName( gdmlFileName ),
@@ -113,7 +114,7 @@ CexmcRunSObject::CexmcRunSObject(
     rProject( rProject ),
     interactionsWithoutEDTWereSkipped( interactionsWithoutEDTWereSkipped ),
     cfFileName( cfFileName ), evDataVerboseLevel( evDataVerboseLevel ),
-    proposedMaxIL( proposedMaxIL ),
+    proposedMaxIL( proposedMaxIL ), expectedMomentumAmp( expectedMomentumAmp ),
     edCollectionAlgorithm( edCollectionAlgorithm ),
     actualVersion( CEXMC_RUN_SOBJECT_VERSION )
 {

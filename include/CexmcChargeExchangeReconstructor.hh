@@ -73,6 +73,10 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
 
         void      SetAbsorbedEnergyCutEllipseAngle( G4double  value );
 
+        void      SetExpectedMomentumAmp( G4double );
+
+        void      SetExpectedMomentumAmpDiff( G4double );
+
         void      SetEDCollectionAlgorithm( CexmcEDCollectionAlgoritm  value );
 
         void      SetupBeamParticle( void );
@@ -104,6 +108,8 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
         G4double  GetAbsorbedEnergyCutCRWidth( void ) const;
 
         G4double  GetAbsorbedEnergyCutEllipseAngle( void ) const;
+
+        G4double  GetExpectedMomentumAmp( void ) const;
 
         CexmcEDCollectionAlgoritm  GetEDCollectionAlgorithm( void ) const;
 
@@ -145,6 +151,8 @@ class  CexmcChargeExchangeReconstructor : public CexmcReconstructor
         G4double                   absorbedEnergyCutCRWidth;
 
         G4double                   absorbedEnergyCutEllipseAngle;
+
+        G4double                   expectedMomentumAmp;
 
         CexmcEDCollectionAlgoritm  edCollectionAlgorithm;
 
@@ -272,6 +280,13 @@ inline void  CexmcChargeExchangeReconstructor::SetAbsorbedEnergyCutEllipseAngle(
 }
 
 
+inline void  CexmcChargeExchangeReconstructor::SetExpectedMomentumAmp(
+                                                            G4double  value )
+{
+    expectedMomentumAmp = value;
+}
+
+
 inline void  CexmcChargeExchangeReconstructor::SetEDCollectionAlgorithm(
                                             CexmcEDCollectionAlgoritm  value )
 {
@@ -372,6 +387,13 @@ inline G4double  CexmcChargeExchangeReconstructor::
                                 GetAbsorbedEnergyCutEllipseAngle( void ) const
 {
     return absorbedEnergyCutEllipseAngle;
+}
+
+
+inline G4double  CexmcChargeExchangeReconstructor::GetExpectedMomentumAmp(
+                                                                    void ) const
+{
+    return expectedMomentumAmp;
 }
 
 
