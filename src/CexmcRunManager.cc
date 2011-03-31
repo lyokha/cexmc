@@ -1057,7 +1057,7 @@ void  CexmcRunManager::PrintReadRunData( void ) const
     G4cout << "  -- Reconstructor settings: " << G4endl;
     if ( sObject.expectedMomentumAmp > 0 )
     {
-        G4cout << "     -- expected momentum at the center of the target: " <<
+        G4cout << "     -- expected momentum in the target: " <<
                   G4BestUnit( sObject.expectedMomentumAmp, "Energy" ) << G4endl;
     }
     G4cout << "     -- ed collection algorithm (0 - all, 1 - adjacent): " <<

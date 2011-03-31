@@ -175,12 +175,12 @@ CexmcChargeExchangeReconstructorMessenger::
     aeCutAngle->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setExpectedMomentumAmp = new G4UIcmdWithADoubleAndUnit(
-        ( CexmcMessenger::reconstructorDirName + "recMomentumAmp" ).c_str(),
+        ( CexmcMessenger::reconstructorDirName + "momentumAmp" ).c_str(),
         this );
-    setExpectedMomentumAmp->SetGuidance( "\n    Momentum amplitude expected in "
-        "the center of the target;\n    it can differ from original momentum "
-        "amplitude\n    of the beam as far as profile data of the beam is "
-        "given\n    in place where it starts. This parameter is used only\n"
+    setExpectedMomentumAmp->SetGuidance( "\n    Momentum of a beam particle "
+        "expected in the target;\n    this value may differ from original "
+        "momentum\n    of the beam as far as profile data of the beam refer\n"
+        "    to the place where it starts. This parameter is used only\n"
         "    in reconstruction procedure");
     setExpectedMomentumAmp->SetParameterName( "RecMomentumAmp", false );
     setExpectedMomentumAmp->SetRange( "RecMomentumAmp > 0" );
@@ -189,14 +189,13 @@ CexmcChargeExchangeReconstructorMessenger::
     setExpectedMomentumAmp->AvailableForStates( G4State_PreInit, G4State_Idle );
 
     setExpectedMomentumAmpDiff = new G4UIcmdWithADoubleAndUnit(
-        ( CexmcMessenger::reconstructorDirName + "recMomentumAmpDiff" ).c_str(),
+        ( CexmcMessenger::reconstructorDirName + "momentumAmpDiff" ).c_str(),
         this );
     setExpectedMomentumAmpDiff->SetGuidance( "\n    Expected difference "
-        "between momentum amplitudes\n    of the beam on its start and at the "
-        "center of the target;\n    this parameter can be used instead "
-        "'recMomentumAmp'\n    and makes sense only in reconstruction "
-        "procedure" );
-    setExpectedMomentumAmpDiff->SetParameterName( "RecMomentumAmp", false );
+        "between momenta of the beam\n    on its start and in the target. This "
+        "parameter can\n    be used to automatically calculate value of the\n"
+        "    previous parameter 'momentumAmp'" );
+    setExpectedMomentumAmpDiff->SetParameterName( "RecMomentumAmpDiff", false );
     setExpectedMomentumAmpDiff->SetDefaultValue( 0 );
     setExpectedMomentumAmpDiff->SetUnitCandidates( "eV keV MeV GeV" );
     setExpectedMomentumAmpDiff->SetDefaultUnit( "MeV" );
