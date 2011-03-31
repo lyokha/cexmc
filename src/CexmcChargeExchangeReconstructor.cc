@@ -142,6 +142,8 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     G4double         opMass( useTableMass ?
                              productionModelData.outputParticle->GetPDGMass() :
                              outputParticleMass );
+    /* the formula below is equivalent to
+     * calorimeterEDLeft + calorimeterEDRight if opMass = outputParticleMass */
     G4double         opEnergy( std::sqrt( opMomentum.mag2() +
                                           opMass * opMass ) );
     productionModelData.outputParticleLAB = G4LorentzVector( opMomentum,
