@@ -137,11 +137,13 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     opdpRightMomentum.setMag( calorimeterEDRight );
     G4ThreeVector    opMomentum( opdpLeftMomentum + opdpRightMomentum );
 
+    /* opMass will be used only in calculation of output particle's total
+     * energy, in other places outputParticleMass should be used instead */
     G4double         opMass( useTableMass ?
                              productionModelData.outputParticle->GetPDGMass() :
                              outputParticleMass );
-    G4double         opEnergy( std::sqrt(
-                                    opMomentum.mag2() + opMass * opMass ) );
+    G4double         opEnergy( std::sqrt( opMomentum.mag2() +
+                                          opMass * opMass ) );
     productionModelData.outputParticleLAB = G4LorentzVector( opMomentum,
                                                              opEnergy );
 
@@ -164,6 +166,7 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
                         productionModelData.nucleusParticle->GetPDGMass() );
     productionModelData.nucleusParticleLAB = G4LorentzVector(
                         G4ThreeVector( 0, 0, 0 ), nucleusParticlePDGMass );
+
     G4LorentzVector  lVecSum( productionModelData.incidentParticleLAB +
                         productionModelData.nucleusParticleLAB );
     G4ThreeVector    boostVec( lVecSum.boostVector() );
@@ -185,19 +188,9 @@ void  CexmcChargeExchangeReconstructor::Reconstruct(
     productionModelData.outputParticleSCM.boost( -boostVec );
     productionModelData.nucleusOutputParticleSCM.boost( -boostVec );
 
-    G4double       edDelta2(
-                        std::pow( ( calorimeterEDLeft - calorimeterEDRight ) /
-                                  ( calorimeterEDLeft + calorimeterEDRight ),
-                                  2 ) );
-    G4double       outputParticleKinEnergy(
-                        std::sqrt( 2 * opMass * opMass / ( 1 - cosTheAngle ) /
-                                   ( 1 - edDelta2 ) ) - opMass );
     G4ThreeVector  nopMomentum( incidentParticleMomentum - opMomentum );
-    G4double       nopEnergy(
-                        std::sqrt( incidentParticleMomentum.mag2() +
-                                   incidentParticlePDGMass2 ) +
-                        nucleusParticlePDGMass -
-                        ( outputParticleKinEnergy + opMass ) );
+    G4double       nopEnergy( incidentParticleEnergy + nucleusParticlePDGMass -
+                              opEnergy );
     nucleusOutputParticleMass = std::sqrt( nopEnergy * nopEnergy -
                                            nopMomentum.mag2() );
 
