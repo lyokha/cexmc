@@ -192,6 +192,8 @@ void  CexmcReconstructor::ReconstructEntryPoints(
                                          calorimeterEPRightPositionZOffset );
         }
         break;
+    default :
+        break;
     }
 
     calorimeterEPLeftWorldPosition = calorimeterLeftTransform.TransformPoint(

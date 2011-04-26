@@ -174,10 +174,8 @@ inline const G4LogicalVolume *  CexmcSetup::GetVolume(
     case Target :
         return targetVolume;
     default :
-        break;
+        return NULL;
     }
-
-    return NULL;
 }
 
 
