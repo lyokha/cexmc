@@ -43,7 +43,7 @@ namespace  CexmcCustomFilter
         {
             ast = boost::get< Subtree >( node );
         }
-        catch( const boost::bad_get & )
+        catch ( const boost::bad_get & )
         {
             ast.type = Operator( Top );
             ast.children.push_back( node );

@@ -62,9 +62,9 @@ void  CexmcEnergyDepositInCalorimeter::PrintAll( void )
 
     PrintHeader( nmbOfEntries );
 
-    for( std::map< G4int, G4double * >::iterator
-                                     itr( eventMap->GetMap()->begin() );
-         itr != eventMap->GetMap()->end(); ++itr )
+    for ( CexmcEnergyDepositCollectionData::iterator
+                         itr( eventMap->GetMap()->begin() );
+                                     itr != eventMap->GetMap()->end(); ++itr )
     {
         G4bool  isRightDetector( itr->first >> leftRightBitsOffset );
         G4int   index( itr->first &

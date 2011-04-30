@@ -31,7 +31,7 @@ void  CexmcRun::IncrementNmbOfHitsSampled( G4int  index )
     CexmcNmbOfHitsInRanges::iterator  found(
                                         nmbOfHitsSampled.find( index ) );
     if ( found == nmbOfHitsSampled.end() )
-        nmbOfHitsSampled.insert( std::pair< int, int >( index, 1 ) );
+        nmbOfHitsSampled.insert( CexmcNmbOfHitsInRangesData( index, 1 ) );
     else
         ++found->second;
 }
@@ -42,7 +42,7 @@ void  CexmcRun::IncrementNmbOfHitsSampledFull( G4int  index )
     CexmcNmbOfHitsInRanges::iterator  found(
                                         nmbOfHitsSampledFull.find( index ) );
     if ( found == nmbOfHitsSampledFull.end() )
-        nmbOfHitsSampledFull.insert( std::pair< int, int >( index, 1 ) );
+        nmbOfHitsSampledFull.insert( CexmcNmbOfHitsInRangesData( index, 1 ) );
     else
         ++found->second;
 }
@@ -53,7 +53,8 @@ void  CexmcRun::IncrementNmbOfHitsTriggeredRealRange( G4int  index )
     CexmcNmbOfHitsInRanges::iterator  found(
                                     nmbOfHitsTriggeredRealRange.find( index ) );
     if ( found == nmbOfHitsTriggeredRealRange.end() )
-        nmbOfHitsTriggeredRealRange.insert( std::pair< int, int >( index, 1 ) );
+        nmbOfHitsTriggeredRealRange.insert(
+                                    CexmcNmbOfHitsInRangesData( index, 1 ) );
     else
         ++found->second;
 }
@@ -64,7 +65,8 @@ void  CexmcRun::IncrementNmbOfHitsTriggeredRecRange( G4int  index )
     CexmcNmbOfHitsInRanges::iterator  found(
                                     nmbOfHitsTriggeredRecRange.find( index ) );
     if ( found == nmbOfHitsTriggeredRecRange.end() )
-        nmbOfHitsTriggeredRecRange.insert( std::pair< int, int >( index, 1 ) );
+        nmbOfHitsTriggeredRecRange.insert(
+                                    CexmcNmbOfHitsInRangesData( index, 1 ) );
     else
         ++found->second;
 }
@@ -75,7 +77,7 @@ void  CexmcRun::IncrementNmbOfOrphanHits( G4int  index )
     CexmcNmbOfHitsInRanges::iterator  found(
                                         nmbOfOrphanHits.find( index ) );
     if ( found == nmbOfOrphanHits.end() )
-        nmbOfOrphanHits.insert( std::pair< int, int >( index, 1 ) );
+        nmbOfOrphanHits.insert( CexmcNmbOfHitsInRangesData( index, 1 ) );
     else
         ++found->second;
 }

@@ -158,7 +158,7 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                                     digiManager->GetHitsCollection( hcId ) );
     if ( hitsCollection )
     {
-        for ( std::map< G4int, G4double * >::iterator
+        for ( CexmcEnergyDepositCollectionData::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -196,7 +196,7 @@ void  CexmcEnergyDepositDigitizer::Digitize( void )
                                     digiManager->GetHitsCollection( hcId ) );
     if ( hitsCollection )
     {
-        for ( std::map< G4int, G4double * >::iterator
+        for ( CexmcEnergyDepositCollectionData::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {

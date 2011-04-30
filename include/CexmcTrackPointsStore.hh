@@ -38,7 +38,7 @@ struct  CexmcTrackPointsStore
         monitorTP( monitorTP ), targetTPBeamParticle( targetTPBeamParticle ),
         targetTPOutputParticle( targetTPOutputParticle ),
         targetTPNucleusParticle( targetTPNucleusParticle ),
-        targetTPOutputParticleDecayProductParticle1 (
+        targetTPOutputParticleDecayProductParticle1(
                                 targetTPOutputParticleDecayProductParticle1 ),
         targetTPOutputParticleDecayProductParticle2(
                                 targetTPOutputParticleDecayProductParticle2 ),

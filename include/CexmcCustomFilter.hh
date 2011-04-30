@@ -160,8 +160,8 @@ namespace  CexmcCustomFilter
                 ( lit( "tpt" )[ _val = KeepTPT ] |
                   lit( "edt" )[ _val = KeepEDT ] ) |
                 lit( "delete" ) >>
-                ( lit ( "tpt" )[ _val = DeleteTPT ] |
-                  lit ( "edt" )[ _val = DeleteEDT ] );
+                ( lit( "tpt" )[ _val = DeleteTPT ] |
+                  lit( "edt" )[ _val = DeleteEDT ] );
 
         condition = lit( "if" ) >> expression[ op( _val, _1 ) ];
 

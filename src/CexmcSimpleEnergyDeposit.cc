@@ -52,7 +52,7 @@ void  CexmcSimpleEnergyDeposit::Initialize( G4HCofThisEvent *  hcOfEvent )
     eventMap = new CexmcEnergyDepositCollection( detector->GetName(),
                                                  primitiveName );
 
-    if( hcId < 0 )
+    if ( hcId < 0 )
         hcId = GetCollectionID( 0 );
 
     hcOfEvent->AddHitsCollection( hcId, eventMap );
@@ -87,9 +87,9 @@ void  CexmcSimpleEnergyDeposit::PrintAll( void )
     PrintHeader( nmbOfEntries );
 
     /* index is always 0 */
-    for( std::map< G4int, G4double * >::iterator
-                                     itr( eventMap->GetMap()->begin() );
-         itr != eventMap->GetMap()->end(); ++itr )
+    for ( CexmcEnergyDepositCollectionData::iterator
+                         itr( eventMap->GetMap()->begin() );
+                                     itr != eventMap->GetMap()->end(); ++itr )
     {
         G4cout << "       energy deposit: " <<
                 G4BestUnit( *( itr->second ), "Energy" ) << G4endl;

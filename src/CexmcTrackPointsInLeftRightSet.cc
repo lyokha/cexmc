@@ -55,9 +55,9 @@ void  CexmcTrackPointsInLeftRightSet::PrintAll( void )
 
     PrintHeader( nmbOfEntries );
 
-    for( std::map< G4int, CexmcTrackPointInfo * >::iterator
-                                     itr( eventMap->GetMap()->begin() );
-         itr != eventMap->GetMap()->end(); ++itr )
+    for ( CexmcTrackPointsCollectionData::iterator
+                         itr( eventMap->GetMap()->begin() );
+                                     itr != eventMap->GetMap()->end(); ++itr )
     {
         G4bool  isRightDetector( itr->first >> leftRightBitsOffset );
         const G4String  detectorSide( isRightDetector ? "right" : "left" );

@@ -74,7 +74,7 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
+        for ( CexmcTrackPointsCollectionData::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -91,7 +91,7 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
+        for ( CexmcTrackPointsCollectionData::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -141,7 +141,7 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
+        for ( CexmcTrackPointsCollectionData::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {
@@ -173,7 +173,7 @@ void  CexmcTrackPointsDigitizer::Digitize( void )
 
     if ( hitsCollection )
     {
-        for ( std::map< G4int, CexmcTrackPointInfo * >::iterator
+        for ( CexmcTrackPointsCollectionData::iterator
                   k( hitsCollection->GetMap()->begin() );
                       k != hitsCollection->GetMap()->end(); ++k )
         {

@@ -94,17 +94,16 @@ void  CexmcSetup::SetupSpecialVolumes( const G4GDMLParser &  gdmlParser )
                                                                     { NULL };
     const G4LogicalVolumeStore *  lvs( G4LogicalVolumeStore::GetInstance() );
 
-    for( std::vector< G4LogicalVolume * >::const_iterator
+    for ( std::vector< G4LogicalVolume * >::const_iterator
                         lvIter( lvs->begin() ); lvIter != lvs->end(); ++lvIter )
     {
         G4String           volumeName( G4String( ( *lvIter )->GetName() ) );
         G4GDMLAuxListType  auxInfo( gdmlParser.GetVolumeAuxiliaryInformation(
                                                                     *lvIter ) );
-        std::vector< G4GDMLAuxPairType >::const_iterator  pair(
-                                                            auxInfo.begin() );
         CexmcDetectorRole  curDetectorRole( CexmcNumberOfDetectorRoles );
 
-        for( pair = auxInfo.begin(); pair != auxInfo.end(); ++pair )
+        for ( G4GDMLAuxListType::const_iterator  pair( auxInfo.begin() );
+                                              pair != auxInfo.end(); ++pair )
         {
             CexmcPrimitiveScorer *  scorer( NULL );
             G4String                detectorName( "uninitialized" );

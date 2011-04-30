@@ -62,9 +62,9 @@ void  CexmcTrackPointsInCalorimeter::PrintAll( void )
 
     PrintHeader( nmbOfEntries );
 
-    for( std::map< G4int, CexmcTrackPointInfo * >::iterator
-                                     itr( eventMap->GetMap()->begin() );
-         itr != eventMap->GetMap()->end(); ++itr )
+    for ( CexmcTrackPointsCollectionData::iterator
+                         itr( eventMap->GetMap()->begin() );
+                                     itr != eventMap->GetMap()->end(); ++itr )
     {
         G4bool  isRightDetector( itr->first >> leftRightBitsOffset );
         G4int   index( itr->first &

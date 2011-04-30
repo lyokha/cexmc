@@ -29,6 +29,9 @@ class  G4Step;
 
 typedef G4THitsMap< CexmcTrackPointInfo >  CexmcTrackPointsCollection;
 
+typedef std::map< G4int, CexmcTrackPointInfo * >
+                                           CexmcTrackPointsCollectionData;
+
 
 class  CexmcTrackPoints : public CexmcPrimitiveScorer
 {

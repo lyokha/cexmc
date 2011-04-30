@@ -179,7 +179,7 @@ void  CexmcScenePrimitivesMessenger::SetNewValue( G4UIcommand *  cmd,
                     break;
                 }
                 return;
-            } while( false );
+            } while ( false );
 
             scenePrimitives->SetColour( primitive, colour );
             break;

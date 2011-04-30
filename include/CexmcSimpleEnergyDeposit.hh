@@ -26,7 +26,9 @@ class  G4HCofThisEvent;
 class  G4Step;
 
 
-typedef G4THitsMap< G4double >  CexmcEnergyDepositCollection;
+typedef G4THitsMap< G4double >         CexmcEnergyDepositCollection;
+
+typedef std::map< G4int, G4double * >  CexmcEnergyDepositCollectionData;
 
 
 class  CexmcSimpleEnergyDeposit : public CexmcPrimitiveScorer

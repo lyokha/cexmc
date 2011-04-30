@@ -439,7 +439,7 @@ void  CexmcRunManager::DoCommonEventLoop( G4int  nEvent, const G4String &  cmd,
     G4int  iEvent( 0 );
     G4int  iEventEffective( 0 );
 
-    for( iEvent = 0; iEventEffective < nEvent; ++iEvent )
+    for ( iEvent = 0; iEventEffective < nEvent; ++iEvent )
     {
         currentEvent = GenerateEvent( iEvent );
         eventManager->ProcessOneEvent( currentEvent );
@@ -464,11 +464,11 @@ void  CexmcRunManager::DoCommonEventLoop( G4int  nEvent, const G4String &  cmd,
         }
         AnalyzeEvent( currentEvent );
         UpdateScoring();
-        if( iEvent < nSelect )
+        if ( iEvent < nSelect )
             G4UImanager::GetUIpointer()->ApplyCommand( cmd );
         StackPreviousEvent( currentEvent );
         currentEvent = 0;
-        if( runAborted )
+        if ( runAborted )
             break;
     }
 
@@ -927,12 +927,12 @@ void  CexmcRunManager::DoEventLoop( G4int  nEvent, const char *  macroFile,
     DoCommonEventLoop( nEvent, cmd, nSelect );
 #endif
 
-    if( verboseLevel > 0 )
+    if ( verboseLevel > 0 )
     {
         timer->Stop();
         G4cout << "Run terminated." << G4endl;
         G4cout << "Run Summary" << G4endl;
-        if( runAborted )
+        if ( runAborted )
         {
             G4cout << "  Run Aborted after " << numberOfEventsProcessed <<
                       " events processed." << G4endl;

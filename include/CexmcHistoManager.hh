@@ -89,11 +89,11 @@ enum  CexmcHistoType
 class  CexmcHistoManager
 {
     private:
-        typedef std::vector< TH1 * >                           CexmcHistoVector;
+        typedef std::vector< TH1 * >                          CexmcHistoVector;
 
-        typedef std::map< CexmcHistoType, CexmcHistoVector >   CexmcHistosMap;
+        typedef std::map< CexmcHistoType, CexmcHistoVector >  CexmcHistosMap;
 
-        typedef std::pair< CexmcHistoType, CexmcHistoVector >  CexmcHistoPair;
+        typedef CexmcHistosMap::value_type                    CexmcHistoPair;
 
         struct  CexmcHistoAxisData
         {
@@ -112,7 +112,7 @@ class  CexmcHistoManager
             Double_t  nBinsMax;
         };
 
-        typedef std::vector< CexmcHistoAxisData >              CexmcHistoAxes;
+        typedef std::vector< CexmcHistoAxisData >             CexmcHistoAxes;
 
         enum  CexmcHistoImpl
         {

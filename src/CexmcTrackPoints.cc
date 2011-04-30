@@ -92,7 +92,7 @@ void  CexmcTrackPoints::Initialize( G4HCofThisEvent *  hcOfEvent )
     eventMap = new CexmcTrackPointsCollection( detector->GetName(),
                                                primitiveName );
 
-    if( hcId < 0 )
+    if ( hcId < 0 )
         hcId = GetCollectionID( 0 );
 
     hcOfEvent->AddHitsCollection( hcId, eventMap );
@@ -126,9 +126,9 @@ void  CexmcTrackPoints::PrintAll( void )
 
     PrintHeader( nmbOfEntries );
 
-    for( std::map< G4int, CexmcTrackPointInfo * >::iterator
-                                     itr( eventMap->GetMap()->begin() );
-         itr != eventMap->GetMap()->end(); ++itr )
+    for ( CexmcTrackPointsCollectionData::iterator
+                         itr( eventMap->GetMap()->begin() );
+                                     itr != eventMap->GetMap()->end(); ++itr )
     {
         G4cout << "       track id " << itr->first << G4endl;
         G4cout << "         , position: " <<
