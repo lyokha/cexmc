@@ -57,7 +57,7 @@ G4VPhysicalVolume *  CexmcSetup::Construct( void )
     if ( world )
         return world;
 
-    G4GDMLParser gdmlParser;
+    G4GDMLParser  gdmlParser;
 
     gdmlParser.Read( gdmlFile, validateGDMLFile );
     world = gdmlParser.GetWorldVolume();
