@@ -21,10 +21,10 @@
 
 #ifdef CEXMC_USE_PERSISTENCY
 
-#include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/string.hpp>
+#include <boost/serialization/version.hpp>
 #include "CexmcSimpleDecayTableStore.hh"
 #include "CexmcSimpleThreeVectorStore.hh"
 #include "CexmcAngularRange.hh"
@@ -36,289 +36,225 @@
 #define CEXMC_RUN_SOBJECT_VERSION 4
 
 
-class  CexmcRunSObject
+struct  CexmcRunSObject
 {
-    friend class  boost::serialization::access;
-    friend class  CexmcRunManager;
-
-    public:
-        CexmcRunSObject();
-
-        CexmcRunSObject( CexmcBasePhysicsUsed  basePhysicsUsed,
-                         CexmcProductionModelType  productionModelType,
-                         const std::string &  gdmlFileName,
-                         const CexmcSimpleDecayTableStore &  etaDecayTable,
-                         const CexmcAngularRangeList &  angularRanges,
-                         G4bool  fermiMotionIsOn,
-                         const std::vector< G4double > &  calorimeterRegCuts,
-                         CexmcEventCountPolicy  eventCountPolicy,
-                         const std::string &  beamParticle,
-                         const CexmcSimpleThreeVectorStore &  beamPos,
-                         const CexmcSimpleThreeVectorStore &  beamDir,
-                         G4double  beamMomentumAmp, G4double  beamFwhmPosX,
-                         G4double  beamFwhmPosY, G4double  beamFwhmDirX,
-                         G4double  beamFwhmDirY,
-                         G4double  beamFwhmMomentumAmp,
-                         G4double  monitorEDThreshold,
-                         G4double  vetoCounterEDLeftThreshold,
-                         G4double  vetoCounterEDRightThreshold,
-                         G4double  calorimeterEDLeftThreshold,
-                         G4double  calorimeterEDRightThreshold,
-                         CexmcCalorimeterTriggerAlgorithm
-                                                    calorimeterTriggerAlgorithm,
-                         CexmcOuterCrystalsVetoAlgorithm
-                                                    outerCrystalsVetoAlgorithm,
-                         G4double  outerCrystalsVetoFraction,
-                         G4bool  applyFiniteCrystalResolution,
-                         const CexmcEnergyRangeWithDoubleValueList &
-                                                    crystalResolutionData,
-                         CexmcCalorimeterEntryPointDefinitionAlgorithm
-                                                    epDefinitionAlgorithm,
-                         CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
-                                                    epDepthDefinitionAlgorithm,
-                         CexmcCrystalSelectionAlgorithm  csAlgorithm,
-                         G4bool  useInnerRefCrystal, G4double  epDepth,
-                         G4bool  useTableMass, G4bool  useMassCut,
-                         G4double  mCutOPCenter, G4double  mCutNOPCenter,
-                         G4double  mCutOPWidth, G4double  mCutNOPWidth,
-                         G4double  mCutAngle, G4bool  useAbsorbedEnergyCut,
-                         G4double  aeCutCLCenter, G4double  aeCutCRCenter,
-                         G4double  aeCutCLWidth, G4double  aeCutCRWidth,
-                         G4double  aeCutAngle,
-                         CexmcNmbOfHitsInRanges  nmbOfHitsSampled,
-                         CexmcNmbOfHitsInRanges  nmbOfHitsSampledFull,
-                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRealRange,
-                         CexmcNmbOfHitsInRanges  nmbOfHitsTriggeredRecRange,
-                         CexmcNmbOfHitsInRanges  nmbOfOrphanHits,
-                         G4int  nmbOfFalseHitsTriggeredEDT,
-                         G4int  nmbOfFalseHitsTriggeredRec,
-                         G4int  nmbOfSavedEvents, G4int  nmbOfSavedFastEvents,
-                         G4int  numberOfEventsProcessed,
-                         G4int  numberOfEventsProcessedEffective,
-                         G4int  numberOfEventsToBeProcessed,
-                         const std::string &  rProject,
-                         G4bool  interactionsWithoutEDTWereSkipped,
-                         const std::string &  cfFileName,
-                         CexmcEventDataVerboseLevel  evDataVerboseLevel,
-                         G4double  proposedMaxIL, G4double  expectedMomentumAmp,
-                         CexmcEDCollectionAlgoritm  edCollectionAlgorithm );
+    CexmcBasePhysicsUsed                 basePhysicsUsed;
 
-    private:
-        template  < typename  Archive >
-        void  serialize( Archive &  archive, const unsigned int  version );
+    CexmcProductionModelType             productionModelType;
 
-    private:
-        CexmcBasePhysicsUsed         basePhysicsUsed;
+    std::string                          gdmlFileName;
 
-        CexmcProductionModelType     productionModelType;
+    CexmcSimpleDecayTableStore           etaDecayTable;
 
-        std::string                  gdmlFileName;
+    CexmcAngularRangeList                angularRanges;
 
-        CexmcSimpleDecayTableStore   etaDecayTable;
+    G4bool                               fermiMotionIsOn;
 
-        CexmcAngularRangeList        angularRanges;
+    std::vector< G4double >              calorimeterRegCuts;
 
-        G4bool                       fermiMotionIsOn;
+    CexmcEventCountPolicy                eventCountPolicy;
 
-        std::vector< G4double >      calorimeterRegCuts;
+    std::string                          beamParticle;
 
-        CexmcEventCountPolicy        eventCountPolicy;
+    CexmcSimpleThreeVectorStore          beamPos;
 
-        std::string                  beamParticle;
+    CexmcSimpleThreeVectorStore          beamDir;
 
-        CexmcSimpleThreeVectorStore  beamPos;
+    G4double                             beamMomentumAmp;
 
-        CexmcSimpleThreeVectorStore  beamDir;
+    G4double                             beamFwhmPosX;
 
-        G4double                     beamMomentumAmp;
+    G4double                             beamFwhmPosY;
 
-        G4double                     beamFwhmPosX;
+    G4double                             beamFwhmDirX;
 
-        G4double                     beamFwhmPosY;
+    G4double                             beamFwhmDirY;
 
-        G4double                     beamFwhmDirX;
+    G4double                             beamFwhmMomentumAmp;
 
-        G4double                     beamFwhmDirY;
+    G4double                             monitorEDThreshold;
 
-        G4double                     beamFwhmMomentumAmp;
+    G4double                             vetoCounterEDLeftThreshold;
 
-        G4double                     monitorEDThreshold;
+    G4double                             vetoCounterEDRightThreshold;
 
-        G4double                     vetoCounterEDLeftThreshold;
+    G4double                             calorimeterEDLeftThreshold;
 
-        G4double                     vetoCounterEDRightThreshold;
+    G4double                             calorimeterEDRightThreshold;
 
-        G4double                     calorimeterEDLeftThreshold;
+    CexmcCalorimeterTriggerAlgorithm     calorimeterTriggerAlgorithm;
 
-        G4double                     calorimeterEDRightThreshold;
+    CexmcOuterCrystalsVetoAlgorithm      outerCrystalsVetoAlgorithm;
 
-        CexmcCalorimeterTriggerAlgorithm  calorimeterTriggerAlgorithm;
+    G4double                             outerCrystalsVetoFraction;
 
-        CexmcOuterCrystalsVetoAlgorithm  outerCrystalsVetoAlgorithm;
+    G4bool                               applyFiniteCrystalResolution;
 
-        G4double                     outerCrystalsVetoFraction;
+    CexmcEnergyRangeWithDoubleValueList  crystalResolutionData;
 
-        G4bool                       applyFiniteCrystalResolution;
+    CexmcCalorimeterEntryPointDefinitionAlgorithm
+                                         epDefinitionAlgorithm;
 
-        CexmcEnergyRangeWithDoubleValueList  crystalResolutionData;
+    CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
+                                         epDepthDefinitionAlgorithm;
 
-        CexmcCalorimeterEntryPointDefinitionAlgorithm  epDefinitionAlgorithm;
+    CexmcCrystalSelectionAlgorithm       csAlgorithm;
 
-        CexmcCalorimeterEntryPointDepthDefinitionAlgorithm
-                                                    epDepthDefinitionAlgorithm;
+    G4bool                               useInnerRefCrystal;
 
-        CexmcCrystalSelectionAlgorithm  csAlgorithm;
+    G4double                             epDepth;
 
-        G4bool                       useInnerRefCrystal;
+    G4bool                               useTableMass;
 
-        G4double                     epDepth;
+    G4bool                               useMassCut;
 
-        G4bool                       useTableMass;
+    G4double                             mCutOPCenter;
 
-        G4bool                       useMassCut;
+    G4double                             mCutNOPCenter;
 
-        G4double                     mCutOPCenter;
+    G4double                             mCutOPWidth;
 
-        G4double                     mCutNOPCenter;
+    G4double                             mCutNOPWidth;
 
-        G4double                     mCutOPWidth;
+    G4double                             mCutAngle;
 
-        G4double                     mCutNOPWidth;
+    G4bool                               useAbsorbedEnergyCut;
 
-        G4double                     mCutAngle;
+    G4double                             aeCutCLCenter;
 
-        G4bool                       useAbsorbedEnergyCut;
+    G4double                             aeCutCRCenter;
 
-        G4double                     aeCutCLCenter;
+    G4double                             aeCutCLWidth;
 
-        G4double                     aeCutCRCenter;
+    G4double                             aeCutCRWidth;
 
-        G4double                     aeCutCLWidth;
+    G4double                             aeCutAngle;
 
-        G4double                     aeCutCRWidth;
+    CexmcNmbOfHitsInRanges               nmbOfHitsSampled;
 
-        G4double                     aeCutAngle;
+    CexmcNmbOfHitsInRanges               nmbOfHitsSampledFull;
 
-        CexmcNmbOfHitsInRanges       nmbOfHitsSampled;
+    CexmcNmbOfHitsInRanges               nmbOfHitsTriggeredRealRange;
 
-        CexmcNmbOfHitsInRanges       nmbOfHitsSampledFull;
+    CexmcNmbOfHitsInRanges               nmbOfHitsTriggeredRecRange;
 
-        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRealRange;
+    CexmcNmbOfHitsInRanges               nmbOfOrphanHits;
 
-        CexmcNmbOfHitsInRanges       nmbOfHitsTriggeredRecRange;
+    G4int                                nmbOfFalseHitsTriggeredEDT;
 
-        CexmcNmbOfHitsInRanges       nmbOfOrphanHits;
+    G4int                                nmbOfFalseHitsTriggeredRec;
 
-        G4int                        nmbOfFalseHitsTriggeredEDT;
+    G4int                                nmbOfSavedEvents;
 
-        G4int                        nmbOfFalseHitsTriggeredRec;
+    G4int                                nmbOfSavedFastEvents;
 
-        G4int                        nmbOfSavedEvents;
+    G4int                                numberOfEventsProcessed;
 
-        G4int                        nmbOfSavedFastEvents;
+    G4int                                numberOfEventsProcessedEffective;
 
-        G4int                        numberOfEventsProcessed;
+    G4int                                numberOfEventsToBeProcessed;
 
-        G4int                        numberOfEventsProcessedEffective;
+    std::string                          rProject;
 
-        G4int                        numberOfEventsToBeProcessed;
+    G4bool                               interactionsWithoutEDTWereSkipped;
 
-        std::string                  rProject;
+    std::string                          cfFileName;
 
-        G4bool                       interactionsWithoutEDTWereSkipped;
+    CexmcEventDataVerboseLevel           evDataVerboseLevel;
 
-        std::string                  cfFileName;
+    G4double                             proposedMaxIL;
 
-        CexmcEventDataVerboseLevel   evDataVerboseLevel;
+    G4double                             expectedMomentumAmp;
 
-        G4double                     proposedMaxIL;
+    CexmcEDCollectionAlgoritm            edCollectionAlgorithm;
 
-        G4double                     expectedMomentumAmp;
-
-        CexmcEDCollectionAlgoritm    edCollectionAlgorithm;
-
-    private:
-        unsigned int                 actualVersion;
+    unsigned int                         actualVersion;
 };
 
 
-template  < typename  Archive >
-void  CexmcRunSObject::serialize( Archive &  archive,
-                                  const unsigned int  version )
+namespace  boost
 {
-    actualVersion = version;
+    namespace  serialization
+    {
+        template  < typename  Archive >
+        void  serialize( Archive &  archive, CexmcRunSObject &  s,
+                         const unsigned int  version )
+        {
+            archive & s.basePhysicsUsed;
+            archive & s.productionModelType;
+            archive & s.gdmlFileName;
+            archive & s.etaDecayTable;
+            archive & s.angularRanges;
+            archive & s.fermiMotionIsOn;
+            archive & s.calorimeterRegCuts;
+            archive & s.eventCountPolicy;
+            archive & s.beamParticle;
+            archive & s.beamPos;
+            archive & s.beamDir;
+            archive & s.beamMomentumAmp;
+            archive & s.beamFwhmPosX;
+            archive & s.beamFwhmPosY;
+            archive & s.beamFwhmDirX;
+            archive & s.beamFwhmDirY;
+            archive & s.beamFwhmMomentumAmp;
+            archive & s.monitorEDThreshold;
+            archive & s.vetoCounterEDLeftThreshold;
+            archive & s.vetoCounterEDRightThreshold;
+            archive & s.calorimeterEDLeftThreshold;
+            archive & s.calorimeterEDRightThreshold;
+            archive & s.calorimeterTriggerAlgorithm;
+            archive & s.outerCrystalsVetoAlgorithm;
+            archive & s.outerCrystalsVetoFraction;
+            archive & s.applyFiniteCrystalResolution;
+            archive & s.crystalResolutionData;
+            archive & s.epDefinitionAlgorithm;
+            archive & s.epDepthDefinitionAlgorithm;
+            archive & s.csAlgorithm;
+            if ( version > 0 )
+                archive & s.useInnerRefCrystal;
+            archive & s.epDepth;
+            archive & s.useTableMass;
+            archive & s.useMassCut;
+            archive & s.mCutOPCenter;
+            archive & s.mCutNOPCenter;
+            archive & s.mCutOPWidth;
+            archive & s.mCutNOPWidth;
+            archive & s.mCutAngle;
+            archive & s.useAbsorbedEnergyCut;
+            archive & s.aeCutCLCenter;
+            archive & s.aeCutCRCenter;
+            archive & s.aeCutCLWidth;
+            archive & s.aeCutCRWidth;
+            archive & s.aeCutAngle;
+            archive & s.nmbOfHitsSampled;
+            archive & s.nmbOfHitsSampledFull;
+            archive & s.nmbOfHitsTriggeredRealRange;
+            archive & s.nmbOfHitsTriggeredRecRange;
+            archive & s.nmbOfOrphanHits;
+            archive & s.nmbOfFalseHitsTriggeredEDT;
+            archive & s.nmbOfFalseHitsTriggeredRec;
+            archive & s.nmbOfSavedEvents;
+            archive & s.nmbOfSavedFastEvents;
+            archive & s.numberOfEventsProcessed;
+            archive & s.numberOfEventsProcessedEffective;
+            archive & s.numberOfEventsToBeProcessed;
+            if ( version > 1 )
+            {
+                archive & s.rProject;
+                archive & s.interactionsWithoutEDTWereSkipped;
+                archive & s.cfFileName;
+                archive & s.evDataVerboseLevel;
+            }
+            if ( version > 2 )
+                archive & s.proposedMaxIL;
+            if ( version > 3 )
+            {
+                archive & s.expectedMomentumAmp;
+                archive & s.edCollectionAlgorithm;
+            }
 
-    archive & basePhysicsUsed;
-    archive & productionModelType;
-    archive & gdmlFileName;
-    archive & etaDecayTable;
-    archive & angularRanges;
-    archive & fermiMotionIsOn;
-    archive & calorimeterRegCuts;
-    archive & eventCountPolicy;
-    archive & beamParticle;
-    archive & beamPos;
-    archive & beamDir;
-    archive & beamMomentumAmp;
-    archive & beamFwhmPosX;
-    archive & beamFwhmPosY;
-    archive & beamFwhmDirX;
-    archive & beamFwhmDirY;
-    archive & beamFwhmMomentumAmp;
-    archive & monitorEDThreshold;
-    archive & vetoCounterEDLeftThreshold;
-    archive & vetoCounterEDRightThreshold;
-    archive & calorimeterEDLeftThreshold;
-    archive & calorimeterEDRightThreshold;
-    archive & calorimeterTriggerAlgorithm;
-    archive & outerCrystalsVetoAlgorithm;
-    archive & outerCrystalsVetoFraction;
-    archive & applyFiniteCrystalResolution;
-    archive & crystalResolutionData;
-    archive & epDefinitionAlgorithm;
-    archive & epDepthDefinitionAlgorithm;
-    archive & csAlgorithm;
-    if ( version > 0 )
-        archive & useInnerRefCrystal;
-    archive & epDepth;
-    archive & useTableMass;
-    archive & useMassCut;
-    archive & mCutOPCenter;
-    archive & mCutNOPCenter;
-    archive & mCutOPWidth;
-    archive & mCutNOPWidth;
-    archive & mCutAngle;
-    archive & useAbsorbedEnergyCut;
-    archive & aeCutCLCenter;
-    archive & aeCutCRCenter;
-    archive & aeCutCLWidth;
-    archive & aeCutCRWidth;
-    archive & aeCutAngle;
-    archive & nmbOfHitsSampled;
-    archive & nmbOfHitsSampledFull;
-    archive & nmbOfHitsTriggeredRealRange;
-    archive & nmbOfHitsTriggeredRecRange;
-    archive & nmbOfOrphanHits;
-    archive & nmbOfFalseHitsTriggeredEDT;
-    archive & nmbOfFalseHitsTriggeredRec;
-    archive & nmbOfSavedEvents;
-    archive & nmbOfSavedFastEvents;
-    archive & numberOfEventsProcessed;
-    archive & numberOfEventsProcessedEffective;
-    archive & numberOfEventsToBeProcessed;
-    if ( version > 1 )
-    {
-        archive & rProject;
-        archive & interactionsWithoutEDTWereSkipped;
-        archive & cfFileName;
-        archive & evDataVerboseLevel;
-    }
-    if ( version > 2 )
-        archive & proposedMaxIL;
-    if ( version > 3 )
-    {
-        archive & expectedMomentumAmp;
-        archive & edCollectionAlgorithm;
+            s.actualVersion = version;
+        }
     }
 }
 

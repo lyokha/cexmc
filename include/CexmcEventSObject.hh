@@ -21,121 +21,86 @@
 
 #ifdef CEXMC_USE_PERSISTENCY
 
-#include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include "CexmcSimpleTrackPointInfoStore.hh"
 #include "CexmcSimpleProductionModelDataStore.hh"
 #include "CexmcCommon.hh"
 
-class  CexmcTrackPointInfo;
-class  CexmcProductionModelData;
 
-
-class  CexmcEventSObject
+struct  CexmcEventSObject
 {
-    friend class  boost::serialization::access;
-    friend class  CexmcRunManager;
-#ifdef CEXMC_USE_CUSTOM_FILTER
-    friend class  CexmcASTEval;
-#endif
+    G4int                                    eventId;
 
-    public:
-        CexmcEventSObject();
+    G4bool                                   edDigitizerMonitorHasTriggered;
 
-        CexmcEventSObject( G4int  eventId,
-                G4bool  edDigitizerMonitorHasTriggered, G4double  monitorED,
-                G4double  vetoCounterEDLeft, G4double  vetoCounterEDRight,
-                G4double  calorimeterEDLeft, G4double  calorimeterEDRight,
-                const CexmcEnergyDepositCalorimeterCollection &
-                                                calorimeterEDLeftCollection,
-                const CexmcEnergyDepositCalorimeterCollection &
-                                                calorimeterEDRightCollection,
-                const CexmcTrackPointInfo &  monitorTP,
-                const CexmcTrackPointInfo &  targetTPBeamParticle,
-                const CexmcTrackPointInfo &  targetTPOutputParticle,
-                const CexmcTrackPointInfo &  targetTPNucleusParticle,
-                const CexmcTrackPointInfo &
-                                    targetTPOutputParticleDecayProductParticle1,
-                const CexmcTrackPointInfo &
-                                    targetTPOutputParticleDecayProductParticle2,
-                const CexmcTrackPointInfo &  vetoCounterTPLeft,
-                const CexmcTrackPointInfo &  vetoCounterTPRight,
-                const CexmcTrackPointInfo &  calorimeterTPLeft,
-                const CexmcTrackPointInfo &  calorimeterTPRight,
-                const CexmcProductionModelData &  productionModelData );
+    G4double                                 monitorED;
 
-    private:
-        template  < typename  Archive >
-        void  serialize( Archive &  archive, const unsigned int  version );
+    G4double                                 vetoCounterEDLeft;
 
-    private:
-        G4int                                    eventId;
+    G4double                                 vetoCounterEDRight;
 
-        G4bool                                   edDigitizerMonitorHasTriggered;
+    G4double                                 calorimeterEDLeft;
 
-        G4double                                 monitorED;
+    G4double                                 calorimeterEDRight;
 
-        G4double                                 vetoCounterEDLeft;
+    CexmcEnergyDepositCalorimeterCollection  calorimeterEDLeftCollection;
 
-        G4double                                 vetoCounterEDRight;
+    CexmcEnergyDepositCalorimeterCollection  calorimeterEDRightCollection;
 
-        G4double                                 calorimeterEDLeft;
+    CexmcSimpleTrackPointInfoStore           monitorTP;
 
-        G4double                                 calorimeterEDRight;
+    CexmcSimpleTrackPointInfoStore           targetTPBeamParticle;
 
-        CexmcEnergyDepositCalorimeterCollection  calorimeterEDLeftCollection;
+    CexmcSimpleTrackPointInfoStore           targetTPOutputParticle;
 
-        CexmcEnergyDepositCalorimeterCollection  calorimeterEDRightCollection;
+    CexmcSimpleTrackPointInfoStore           targetTPNucleusParticle;
 
-        CexmcSimpleTrackPointInfoStore           monitorTP;
+    CexmcSimpleTrackPointInfoStore  targetTPOutputParticleDecayProductParticle1;
 
-        CexmcSimpleTrackPointInfoStore           targetTPBeamParticle;
+    CexmcSimpleTrackPointInfoStore  targetTPOutputParticleDecayProductParticle2;
 
-        CexmcSimpleTrackPointInfoStore           targetTPOutputParticle;
+    CexmcSimpleTrackPointInfoStore           vetoCounterTPLeft;
 
-        CexmcSimpleTrackPointInfoStore           targetTPNucleusParticle;
+    CexmcSimpleTrackPointInfoStore           vetoCounterTPRight;
 
-        CexmcSimpleTrackPointInfoStore
-                                    targetTPOutputParticleDecayProductParticle1;
+    CexmcSimpleTrackPointInfoStore           calorimeterTPLeft;
 
-        CexmcSimpleTrackPointInfoStore
-                                    targetTPOutputParticleDecayProductParticle2;
+    CexmcSimpleTrackPointInfoStore           calorimeterTPRight;
 
-        CexmcSimpleTrackPointInfoStore           vetoCounterTPLeft;
-
-        CexmcSimpleTrackPointInfoStore           vetoCounterTPRight;
-
-        CexmcSimpleTrackPointInfoStore           calorimeterTPLeft;
-
-        CexmcSimpleTrackPointInfoStore           calorimeterTPRight;
-
-        CexmcSimpleProductionModelDataStore      productionModelData;
+    CexmcSimpleProductionModelDataStore      productionModelData;
 };
 
 
-template  < typename  Archive >
-void  CexmcEventSObject::serialize( Archive &  archive, const unsigned int )
+namespace  boost
 {
-    archive & eventId;
-    archive & edDigitizerMonitorHasTriggered;
-    archive & monitorED;
-    archive & vetoCounterEDLeft;
-    archive & vetoCounterEDRight;
-    archive & calorimeterEDLeft;
-    archive & calorimeterEDRight;
-    archive & calorimeterEDLeftCollection;
-    archive & calorimeterEDRightCollection;
-    archive & monitorTP;
-    archive & targetTPBeamParticle;
-    archive & targetTPOutputParticle;
-    archive & targetTPNucleusParticle;
-    archive & targetTPOutputParticleDecayProductParticle1;
-    archive & targetTPOutputParticleDecayProductParticle2;
-    archive & vetoCounterTPLeft;
-    archive & vetoCounterTPRight;
-    archive & calorimeterTPLeft;
-    archive & calorimeterTPRight;
-    archive & productionModelData;
+    namespace  serialization
+    {
+        template  < typename  Archive >
+        void  serialize( Archive &  archive, CexmcEventSObject &  s,
+                         const unsigned int )
+        {
+            archive & s.eventId;
+            archive & s.edDigitizerMonitorHasTriggered;
+            archive & s.monitorED;
+            archive & s.vetoCounterEDLeft;
+            archive & s.vetoCounterEDRight;
+            archive & s.calorimeterEDLeft;
+            archive & s.calorimeterEDRight;
+            archive & s.calorimeterEDLeftCollection;
+            archive & s.calorimeterEDRightCollection;
+            archive & s.monitorTP;
+            archive & s.targetTPBeamParticle;
+            archive & s.targetTPOutputParticle;
+            archive & s.targetTPNucleusParticle;
+            archive & s.targetTPOutputParticleDecayProductParticle1;
+            archive & s.targetTPOutputParticleDecayProductParticle2;
+            archive & s.vetoCounterTPLeft;
+            archive & s.vetoCounterTPRight;
+            archive & s.calorimeterTPLeft;
+            archive & s.calorimeterTPRight;
+            archive & s.productionModelData;
+        }
+    }
 }
 
 #endif

@@ -714,7 +714,7 @@ void  CexmcEventAction::SaveEvent( const G4Event *  event,
                                             runManager->GetEventsArchive() );
     if ( archive )
     {
-        CexmcEventSObject  sObject( event->GetEventID(),
+        CexmcEventSObject  sObject = { event->GetEventID(),
             edDigitizerHasTriggered, edStore->monitorED,
             edStore->vetoCounterEDLeft, edStore->vetoCounterEDRight,
             edStore->calorimeterEDLeft, edStore->calorimeterEDRight,
@@ -725,7 +725,7 @@ void  CexmcEventAction::SaveEvent( const G4Event *  event,
             tpStore->targetTPOutputParticleDecayProductParticle1,
             tpStore->targetTPOutputParticleDecayProductParticle2,
             tpStore->vetoCounterTPLeft, tpStore->vetoCounterTPRight,
-            tpStore->calorimeterTPLeft, tpStore->calorimeterTPRight, pmData );
+            tpStore->calorimeterTPLeft, tpStore->calorimeterTPRight, pmData };
         archive->operator<<( sObject );
         const CexmcRun *  run( static_cast< const CexmcRun * >(
                                                 runManager->GetCurrentRun() ) );
@@ -756,9 +756,9 @@ void  CexmcEventAction::SaveEventFast( const G4Event *  event,
         if ( ! tpDigitizerHasTriggered )
             opCosThetaSCM = CexmcInvalidCosTheta;
 
-        CexmcEventFastSObject  sObject( event->GetEventID(), opCosThetaSCM,
-                                        edDigitizerHasTriggered,
-                                        edDigitizerMonitorHasTriggered );
+        CexmcEventFastSObject  sObject = { event->GetEventID(), opCosThetaSCM,
+                                           edDigitizerHasTriggered,
+                                           edDigitizerMonitorHasTriggered };
         archive->operator<<( sObject );
         const CexmcRun *  run( static_cast< const CexmcRun * >(
                                                 runManager->GetCurrentRun() ) );

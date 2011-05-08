@@ -20,7 +20,7 @@
 #define CEXMC_SIMPLE_RANGE_WITH_VALUE_HH
 
 #include <vector>
-#include <iostream>
+#include <iosfwd>
 #include <G4Types.hh>
 
 

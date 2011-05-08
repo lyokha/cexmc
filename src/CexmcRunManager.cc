@@ -373,7 +373,7 @@ void  CexmcRunManager::SaveProject( void )
         nmbOfSavedFastEvents = run->GetNmbOfSavedFastEvents();
     }
 
-    CexmcRunSObject  sObjectToWrite(
+    CexmcRunSObject  sObjectToWrite = {
         basePhysicsUsed, productionModelType, gdmlFileName, etaDecayTable,
         physicsManager->GetProductionModel()->GetAngularRanges(),
         physicsManager->GetProductionModel()->IsFermiMotionOn(),
@@ -419,7 +419,7 @@ void  CexmcRunManager::SaveProject( void )
         numberOfEventToBeProcessed, rProject, skipInteractionsWithoutEDTonWrite,
         cfFileName, evDataVerboseLevel, physicsManager->GetProposedMaxIL(),
         reconstructor->GetExpectedMomentumAmp(),
-        reconstructor->GetEDCollectionAlgorithm() );
+        reconstructor->GetEDCollectionAlgorithm(), 0 };
 
     std::ofstream   runDataFile( ( projectsDir + "/" + projectId + ".rdb" ).
                                         c_str() );
