@@ -169,93 +169,90 @@ struct  CexmcRunSObject
     CexmcEDCollectionAlgoritm            edCollectionAlgorithm;
 
     unsigned int                         actualVersion;
+
+    template  < typename  Archive >
+    void  serialize( Archive &  archive, const unsigned int  version );
 };
 
 
-namespace  boost
+template  < typename  Archive >
+void  CexmcRunSObject::serialize( Archive &  archive,
+                                  const unsigned int  version )
 {
-    namespace  serialization
+    archive & basePhysicsUsed;
+    archive & productionModelType;
+    archive & gdmlFileName;
+    archive & etaDecayTable;
+    archive & angularRanges;
+    archive & fermiMotionIsOn;
+    archive & calorimeterRegCuts;
+    archive & eventCountPolicy;
+    archive & beamParticle;
+    archive & beamPos;
+    archive & beamDir;
+    archive & beamMomentumAmp;
+    archive & beamFwhmPosX;
+    archive & beamFwhmPosY;
+    archive & beamFwhmDirX;
+    archive & beamFwhmDirY;
+    archive & beamFwhmMomentumAmp;
+    archive & monitorEDThreshold;
+    archive & vetoCounterEDLeftThreshold;
+    archive & vetoCounterEDRightThreshold;
+    archive & calorimeterEDLeftThreshold;
+    archive & calorimeterEDRightThreshold;
+    archive & calorimeterTriggerAlgorithm;
+    archive & outerCrystalsVetoAlgorithm;
+    archive & outerCrystalsVetoFraction;
+    archive & applyFiniteCrystalResolution;
+    archive & crystalResolutionData;
+    archive & epDefinitionAlgorithm;
+    archive & epDepthDefinitionAlgorithm;
+    archive & csAlgorithm;
+    if ( version > 0 )
+        archive & useInnerRefCrystal;
+    archive & epDepth;
+    archive & useTableMass;
+    archive & useMassCut;
+    archive & mCutOPCenter;
+    archive & mCutNOPCenter;
+    archive & mCutOPWidth;
+    archive & mCutNOPWidth;
+    archive & mCutAngle;
+    archive & useAbsorbedEnergyCut;
+    archive & aeCutCLCenter;
+    archive & aeCutCRCenter;
+    archive & aeCutCLWidth;
+    archive & aeCutCRWidth;
+    archive & aeCutAngle;
+    archive & nmbOfHitsSampled;
+    archive & nmbOfHitsSampledFull;
+    archive & nmbOfHitsTriggeredRealRange;
+    archive & nmbOfHitsTriggeredRecRange;
+    archive & nmbOfOrphanHits;
+    archive & nmbOfFalseHitsTriggeredEDT;
+    archive & nmbOfFalseHitsTriggeredRec;
+    archive & nmbOfSavedEvents;
+    archive & nmbOfSavedFastEvents;
+    archive & numberOfEventsProcessed;
+    archive & numberOfEventsProcessedEffective;
+    archive & numberOfEventsToBeProcessed;
+    if ( version > 1 )
     {
-        template  < typename  Archive >
-        void  serialize( Archive &  archive, CexmcRunSObject &  s,
-                         const unsigned int  version )
-        {
-            archive & s.basePhysicsUsed;
-            archive & s.productionModelType;
-            archive & s.gdmlFileName;
-            archive & s.etaDecayTable;
-            archive & s.angularRanges;
-            archive & s.fermiMotionIsOn;
-            archive & s.calorimeterRegCuts;
-            archive & s.eventCountPolicy;
-            archive & s.beamParticle;
-            archive & s.beamPos;
-            archive & s.beamDir;
-            archive & s.beamMomentumAmp;
-            archive & s.beamFwhmPosX;
-            archive & s.beamFwhmPosY;
-            archive & s.beamFwhmDirX;
-            archive & s.beamFwhmDirY;
-            archive & s.beamFwhmMomentumAmp;
-            archive & s.monitorEDThreshold;
-            archive & s.vetoCounterEDLeftThreshold;
-            archive & s.vetoCounterEDRightThreshold;
-            archive & s.calorimeterEDLeftThreshold;
-            archive & s.calorimeterEDRightThreshold;
-            archive & s.calorimeterTriggerAlgorithm;
-            archive & s.outerCrystalsVetoAlgorithm;
-            archive & s.outerCrystalsVetoFraction;
-            archive & s.applyFiniteCrystalResolution;
-            archive & s.crystalResolutionData;
-            archive & s.epDefinitionAlgorithm;
-            archive & s.epDepthDefinitionAlgorithm;
-            archive & s.csAlgorithm;
-            if ( version > 0 )
-                archive & s.useInnerRefCrystal;
-            archive & s.epDepth;
-            archive & s.useTableMass;
-            archive & s.useMassCut;
-            archive & s.mCutOPCenter;
-            archive & s.mCutNOPCenter;
-            archive & s.mCutOPWidth;
-            archive & s.mCutNOPWidth;
-            archive & s.mCutAngle;
-            archive & s.useAbsorbedEnergyCut;
-            archive & s.aeCutCLCenter;
-            archive & s.aeCutCRCenter;
-            archive & s.aeCutCLWidth;
-            archive & s.aeCutCRWidth;
-            archive & s.aeCutAngle;
-            archive & s.nmbOfHitsSampled;
-            archive & s.nmbOfHitsSampledFull;
-            archive & s.nmbOfHitsTriggeredRealRange;
-            archive & s.nmbOfHitsTriggeredRecRange;
-            archive & s.nmbOfOrphanHits;
-            archive & s.nmbOfFalseHitsTriggeredEDT;
-            archive & s.nmbOfFalseHitsTriggeredRec;
-            archive & s.nmbOfSavedEvents;
-            archive & s.nmbOfSavedFastEvents;
-            archive & s.numberOfEventsProcessed;
-            archive & s.numberOfEventsProcessedEffective;
-            archive & s.numberOfEventsToBeProcessed;
-            if ( version > 1 )
-            {
-                archive & s.rProject;
-                archive & s.interactionsWithoutEDTWereSkipped;
-                archive & s.cfFileName;
-                archive & s.evDataVerboseLevel;
-            }
-            if ( version > 2 )
-                archive & s.proposedMaxIL;
-            if ( version > 3 )
-            {
-                archive & s.expectedMomentumAmp;
-                archive & s.edCollectionAlgorithm;
-            }
-
-            s.actualVersion = version;
-        }
+        archive & rProject;
+        archive & interactionsWithoutEDTWereSkipped;
+        archive & cfFileName;
+        archive & evDataVerboseLevel;
     }
+    if ( version > 2 )
+        archive & proposedMaxIL;
+    if ( version > 3 )
+    {
+        archive & expectedMomentumAmp;
+        archive & edCollectionAlgorithm;
+    }
+
+    actualVersion = version;
 }
 
 

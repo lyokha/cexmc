@@ -68,39 +68,35 @@ struct  CexmcEventSObject
     CexmcSimpleTrackPointInfoStore           calorimeterTPRight;
 
     CexmcSimpleProductionModelDataStore      productionModelData;
+
+    template  < typename  Archive >
+    void  serialize( Archive &  archive, const unsigned int  version );
 };
 
 
-namespace  boost
+template  < typename  Archive >
+void  CexmcEventSObject::serialize( Archive &  archive, const unsigned int )
 {
-    namespace  serialization
-    {
-        template  < typename  Archive >
-        void  serialize( Archive &  archive, CexmcEventSObject &  s,
-                         const unsigned int )
-        {
-            archive & s.eventId;
-            archive & s.edDigitizerMonitorHasTriggered;
-            archive & s.monitorED;
-            archive & s.vetoCounterEDLeft;
-            archive & s.vetoCounterEDRight;
-            archive & s.calorimeterEDLeft;
-            archive & s.calorimeterEDRight;
-            archive & s.calorimeterEDLeftCollection;
-            archive & s.calorimeterEDRightCollection;
-            archive & s.monitorTP;
-            archive & s.targetTPBeamParticle;
-            archive & s.targetTPOutputParticle;
-            archive & s.targetTPNucleusParticle;
-            archive & s.targetTPOutputParticleDecayProductParticle1;
-            archive & s.targetTPOutputParticleDecayProductParticle2;
-            archive & s.vetoCounterTPLeft;
-            archive & s.vetoCounterTPRight;
-            archive & s.calorimeterTPLeft;
-            archive & s.calorimeterTPRight;
-            archive & s.productionModelData;
-        }
-    }
+    archive & eventId;
+    archive & edDigitizerMonitorHasTriggered;
+    archive & monitorED;
+    archive & vetoCounterEDLeft;
+    archive & vetoCounterEDRight;
+    archive & calorimeterEDLeft;
+    archive & calorimeterEDRight;
+    archive & calorimeterEDLeftCollection;
+    archive & calorimeterEDRightCollection;
+    archive & monitorTP;
+    archive & targetTPBeamParticle;
+    archive & targetTPOutputParticle;
+    archive & targetTPNucleusParticle;
+    archive & targetTPOutputParticleDecayProductParticle1;
+    archive & targetTPOutputParticleDecayProductParticle2;
+    archive & vetoCounterTPLeft;
+    archive & vetoCounterTPRight;
+    archive & calorimeterTPLeft;
+    archive & calorimeterTPRight;
+    archive & productionModelData;
 }
 
 #endif

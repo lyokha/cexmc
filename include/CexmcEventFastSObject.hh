@@ -33,23 +33,19 @@ struct  CexmcEventFastSObject
     G4bool    edDigitizerHasTriggered;
 
     G4bool    edDigitizerMonitorHasTriggered;
+
+    template  < typename  Archive >
+    void  serialize( Archive &  archive, const unsigned int  version );
 };
 
 
-namespace  boost
+template  < typename  Archive >
+void  CexmcEventFastSObject::serialize( Archive &  archive, const unsigned int )
 {
-    namespace  serialization
-    {
-        template  < typename  Archive >
-        void  serialize( Archive &  archive, CexmcEventFastSObject &  s,
-                         const unsigned int )
-        {
-            archive & s.eventId;
-            archive & s.opCosThetaSCM;
-            archive & s.edDigitizerHasTriggered;
-            archive & s.edDigitizerMonitorHasTriggered;
-        }
-    }
+    archive & eventId;
+    archive & opCosThetaSCM;
+    archive & edDigitizerHasTriggered;
+    archive & edDigitizerMonitorHasTriggered;
 }
 
 #endif
