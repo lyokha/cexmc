@@ -28,8 +28,10 @@
 
 
 typedef std::vector< G4double >  CexmcEnergyDepositCrystalRowCollection;
+
 typedef std::vector< CexmcEnergyDepositCrystalRowCollection >
                                  CexmcEnergyDepositCalorimeterCollection;
+
 
 const G4double  CexmcDblMax( std::numeric_limits< double >::max() );
 

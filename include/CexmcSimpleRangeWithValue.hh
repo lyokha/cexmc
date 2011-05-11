@@ -83,7 +83,8 @@ inline bool  operator<(
 
 
 typedef CexmcSimpleRangeWithValue< CexmcEnergyValueCategory >
-                                                CexmcEnergyRangeWithDoubleValue;
+                                            CexmcEnergyRangeWithDoubleValue;
+
 typedef std::vector< CexmcEnergyRangeWithDoubleValue >
                                             CexmcEnergyRangeWithDoubleValueList;
 

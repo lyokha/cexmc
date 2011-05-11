@@ -26,7 +26,6 @@
 #include "CexmcException.hh"
 #include "CexmcCommon.hh"
 
-
 class  G4String;
 class  CexmcEnergyDepositDigitizerMessenger;
 

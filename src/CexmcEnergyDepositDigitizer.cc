@@ -29,7 +29,6 @@
 #include "CexmcSetup.hh"
 #include "CexmcRunManager.hh"
 #include "CexmcSensitiveDetectorsAttributes.hh"
-#include "CexmcCommon.hh"
 
 
 CexmcEnergyDepositDigitizer::CexmcEnergyDepositDigitizer(
