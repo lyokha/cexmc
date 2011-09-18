@@ -22,6 +22,7 @@
 #include <G4VPhysicsConstructor.hh>
 #include <G4ProcessManager.hh>
 #include <G4ParticleDefinition.hh>
+#include "CexmcFakeCrossSectionData.hh"
 #include "CexmcStudiedProcess.hh"
 #include "CexmcPhysicsManager.hh"
 #include "CexmcProductionModel.hh"
@@ -90,6 +91,8 @@ void  CexmcStudiedPhysics< Process >::ConstructProcess( void )
     wasActivated = true;
 
     Process *  process( new Process );
+
+    process->AddDataSet( new CexmcFakeCrossSectionData );
 
     CexmcStudiedProcess *  studiedProcess( new CexmcStudiedProcess(
                                 physicsManager, process->GetProcessType() ) );
