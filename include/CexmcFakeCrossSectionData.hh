@@ -29,7 +29,7 @@ class  G4ParticleDefinition;
 class  CexmcFakeCrossSectionData : public G4VCrossSectionDataSet
 {
     public:
-        G4bool  IsApplicable( const G4DynamicParticle *, const G4Element * )
+        G4bool    IsApplicable( const G4DynamicParticle *, const G4Element * )
         {
             return false;
         }
