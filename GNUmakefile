@@ -1,4 +1,4 @@
-name := cexmc
+name := ChargeExchangeMC
 G4TARGET := $(name)
 G4EXLIB := true
 
@@ -10,7 +10,7 @@ CEXMC_USE_PERSISTENCY := yes
 # if CEXMC_USE_CUSTOM_FILTER is 'yes' then Custom filter can be used for
 # existing events data; requires boost::spirit 2.x headers. Notice: if
 # CEXMC_USE_PERSISTENCY is not 'yes' then Custom Filter will not be used anyway
-CEXMC_USE_CUSTOM_FILTER := yes
+CEXMC_USE_CUSTOM_FILTER := no
 # if CEXMC_DEBUG_CUSTOM_FILTER is 'yes' then AST trees will be printed out
 CEXMC_DEBUG_CUSTOM_FILTER := no
 # if CEXMC_USE_HISTOGRAMING is 'yes' then ROOT histograming framework will be
