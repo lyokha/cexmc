@@ -23,6 +23,7 @@
 
 #include <string>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/spirit/include/version.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
@@ -41,6 +42,11 @@ namespace  CexmcCustomFilter
     using boost::spirit::ascii::space_type;
     using boost::spirit::ascii::alpha;
     using boost::spirit::ascii::alnum;
+#if SPIRIT_VERSION < 0x2042
+    using boost::fusion::unused_type;
+#else
+    using boost::spirit::unused_type;
+#endif
 
 
     enum  Action
@@ -72,9 +78,8 @@ namespace  CexmcCustomFilter
 
     struct  Compiler
     {
-        template  < typename  A, typename  B = boost::fusion::unused_type,
-                    typename  C = boost::fusion::unused_type,
-                    typename  D = boost::fusion::unused_type >
+        template  < typename  A, typename  B = unused_type,
+                    typename  C = unused_type, typename  D = unused_type >
         struct  result { typedef void  type; };
 
         void  operator()( ParseResult &  parseResult, Action  value ) const;

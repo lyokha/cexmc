@@ -832,7 +832,7 @@ void  CexmcRunManager::SaveCurrentTPTEvent(
                                 const CexmcAngularRangeList &  angularRanges,
                                 G4bool  writeToDatabase )
 {
-    CexmcRun *  run( static_cast< const CexmcRun * >( currentRun ) );
+    CexmcRun *  run( static_cast< CexmcRun * >( currentRun ) );
 
     if ( ! run )
         return;
