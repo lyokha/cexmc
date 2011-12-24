@@ -23,11 +23,9 @@
 
 #include <string>
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/version.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
-#include <boost/spirit/include/phoenix_fusion.hpp>
 #include "CexmcAST.hh"
 
 
@@ -42,11 +40,7 @@ namespace  CexmcCustomFilter
     using boost::spirit::ascii::space_type;
     using boost::spirit::ascii::alpha;
     using boost::spirit::ascii::alnum;
-#if SPIRIT_VERSION < 0x2042
-    using boost::fusion::unused_type;
-#else
     using boost::spirit::unused_type;
-#endif
 
 
     enum  Action
@@ -172,7 +166,7 @@ namespace  CexmcCustomFilter
 
         expression %= or_expr;
 
-        identifier %= lexeme[ alpha >> *( alnum | lit( '_' ) ) ];
+        identifier %= raw[ lexeme[ alpha >> *( alnum | '_' ) ] ];
 
         primary_expr = function1[ _val = _1 ] |
                 lit( '(' ) >> expression[ op( _val, _1 ) ] >> lit( ')' ) |

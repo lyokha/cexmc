@@ -44,6 +44,9 @@ CexmcCustomFilterEval::CexmcCustomFilterEval( const G4String &  sourceFileName,
         if ( commentStartPos != std::string::npos )
             line.erase( commentStartPos );
 
+        if ( line.find_first_not_of( " \t" ) == std::string::npos )
+            continue;
+
         command += line;
 
         if ( ! command.empty() )
