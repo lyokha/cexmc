@@ -14,7 +14,7 @@ CEXMC_USE_CUSTOM_FILTER := yes
 # if CEXMC_DEBUG_CUSTOM_FILTER is 'yes' then AST trees will be printed out
 CEXMC_DEBUG_CUSTOM_FILTER := no
 # if CEXMC_USE_HISTOGRAMING is 'yes' then ROOT histograming framework will be
-# compiled. Notice: if ROOT CERN is not installed in tour system then the
+# compiled. Notice: if ROOT CERN is not installed in your system then the
 # histograming module won't compile anyway
 CEXMC_USE_HISTOGRAMING := yes
 # if CEXMC_USE_QGSP_BIC_EMY is 'yes' then QGSP_BIC_EMY will be used as basic
