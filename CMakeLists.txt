@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 include(CMakeDependentOption)
 
-set(name cexmc)
+set(name ChargeExchangeMC)
 project(${name})
 
 # the project requires Geant4 GDML support!
@@ -39,7 +39,7 @@ endif()
 # CEXMC_USE_PERSISTENCY is not 'yes' then Custom Filter will not be used anyway
 cmake_dependent_option(CEXMC_USE_CUSTOM_FILTER
     "Build ${name} with custom filter support
-    (requires Boost Spirit library)" ON
+    (requires Boost Spirit library)" OFF
     "CEXMC_USE_PERSISTENCY" OFF)
 if(CEXMC_USE_CUSTOM_FILTER)
     add_definitions(-DCEXMC_USE_CUSTOM_FILTER)
