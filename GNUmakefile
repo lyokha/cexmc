@@ -17,8 +17,11 @@ CEXMC_DEBUG_CUSTOM_FILTER := no
 # compiled. Notice: if ROOT CERN is not installed in your system then the
 # histograming module won't compile anyway
 CEXMC_USE_HISTOGRAMING := yes
+# if CEXMC_USE_QGSP_BERT is 'yes' then QGSP_BERT will be used as basic physics,
+# otherwise - FTFP_BERT or QGSP_BIC_EMY
+CEXMC_USE_QGSP_BERT := no
 # if CEXMC_USE_QGSP_BIC_EMY is 'yes' then QGSP_BIC_EMY will be used as basic
-# physics, otherwise - QGSP_BERT
+# physics, otherwise - FTFP_BERT or QGSP_BERT
 CEXMC_USE_QGSP_BIC_EMY := no
 # if CEXMC_USE_GENBOD is 'yes' then original FORTRAN routine GENBOD() will be
 # used as phase space generator
@@ -87,8 +90,12 @@ ifeq ($(CEXMC_USE_HISTOGRAMING),yes)
   endif
 endif
 
-ifeq ($(CEXMC_USE_QGSP_BIC_EMY),yes)
-  CPPFLAGS += -DCEXMC_USE_QGSP_BIC_EMY
+ifeq ($(CEXMC_USE_QGSP_BERT),yes)
+  CPPFLAGS += -DCEXMC_USE_QGSP_BERT
+else
+  ifeq ($(CEXMC_USE_QGSP_BIC_EMY),yes)
+    CPPFLAGS += -DCEXMC_USE_QGSP_BIC_EMY
+  endif
 endif
 
 ifeq ($(CEXMC_DEBUG_TP),yes)

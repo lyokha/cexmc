@@ -76,11 +76,21 @@ if(CEXMC_USE_CUSTOM_FILTER)
     add_definitions(-DCEXMC_DEBUG_CF)
 endif()
 
+# if CEXMC_USE_QGSP_BERT is 'yes' then QGSP_BERT will be used as basic physics,
+# otherwise - FTFP_BERT or QGSP_BIC_EMY
+option(CEXMC_USE_QGSP_BERT
+    "Build ${name} with QGSP_BERT physics list
+    (default physics list is FTFP_BERT)" OFF)
+if(CEXMC_USE_QGSP_BERT)
+        add_definitions(-DCEXMC_USE_QGSP_BERT)
+endif()
+
 # if CEXMC_USE_QGSP_BIC_EMY is 'yes' then QGSP_BIC_EMY will be used as basic
-# physics, otherwise - QGSP_BERT
-option(CEXMC_USE_QGSP_BIC_EMY
+# physics, otherwise - FTFP_BERT or QGSP_BERT
+cmake_dependent_option(CEXMC_USE_QGSP_BIC_EMY
     "Build ${name} with QGSP_BIC_EMY physics list
-    (default physics list is QGSP_BERT)" OFF)
+    (default physics list is FTFP_BERT)" OFF
+    "NOT CEXMC_USE_QGSP_BERT" OFF)
 if(CEXMC_USE_QGSP_BIC_EMY)
     add_definitions(-DCEXMC_USE_QGSP_BIC_EMY)
 endif()
