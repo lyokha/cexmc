@@ -77,7 +77,7 @@ endif
 ifeq ($(CEXMC_USE_HISTOGRAMING),yes)
   # try to determine if ROOT will be used automatically
   USE_ROOT := $(shell which root-config 2>/dev/null)
-  ifneq ($(USE_ROOT)),)
+  ifneq ($(USE_ROOT),)
     CPPFLAGS += -I`root-config --incdir`
     EXTRALIBS += `root-config --libs`
     CPPFLAGS += -DCEXMC_USE_ROOT
