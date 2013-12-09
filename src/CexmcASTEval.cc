@@ -20,6 +20,7 @@
 
 #include <numeric>
 #include <boost/variant/get.hpp>
+#include <G4SystemOfUnits.hh>
 #include "CexmcASTEval.hh"
 
 

@@ -26,6 +26,7 @@
 #include <G4AffineTransform.hh>
 #include <G4Transform3D.hh>
 #include <G4Point3D.hh>
+#include <G4SystemOfUnits.hh>
 #include "CexmcScenePrimitives.hh"
 #include "CexmcScenePrimitivesMessenger.hh"
 #include "CexmcSetup.hh"

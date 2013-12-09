@@ -21,6 +21,7 @@
 
 #include <iosfwd>
 #include <G4VDigitizerModule.hh>
+#include <G4SystemOfUnits.hh>
 #include "CexmcEnergyDepositStore.hh"
 #include "CexmcSimpleRangeWithValue.hh"
 #include "CexmcException.hh"
