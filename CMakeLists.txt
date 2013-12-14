@@ -166,10 +166,15 @@ if(CEXMC_USE_GENBOD)
     endif()
 endif()
 
+# all classes in this project have same member names as their formal constructor
+# parameters, so -Wno-shadow option is mandatory to prevent multiple warnings!
+add_definitions(-Wno-shadow)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR})
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
-add_executable(${name} EXCLUDE_FROM_ALL ${name}.cc ${sources})
+add_executable(${name} ${name}.cc ${sources})
 target_link_libraries(${name} ${Geant4_LIBRARIES} ${EXTRA_LIBRARIES})
+
+install(TARGETS ${name} DESTINATION bin)
 
