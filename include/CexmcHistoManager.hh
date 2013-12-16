@@ -32,6 +32,9 @@ class  TFile;
 class  TH1;
 #ifdef CEXMC_USE_ROOTQT
 class  TQtWidget;
+class  TList;
+class  G4UIsession;
+class  G4UIQt;
 #endif
 class  CexmcHistoManagerMessenger;
 
@@ -191,6 +194,16 @@ class  CexmcHistoManager
 #ifdef CEXMC_USE_ROOTQT
         void  Draw( const G4String &  histoName,
                     const G4String &  histoDrawOptions = "" );
+
+        void  EnableLiveHistograms( G4UIsession *  session, G4bool  on = true );
+
+        void  EnableHistoMenu( G4bool  on = true );
+
+        void  SetDrawOptions1D( const G4String &  value );
+
+        void  SetDrawOptions2D( const G4String &  value );
+
+        void  SetDrawOptions3D( const G4String &  value );
 #endif
 
     public:
@@ -206,6 +219,11 @@ class  CexmcHistoManager
                            CexmcHistoImpl  histoImpl, const G4String &  name,
                            const G4String &  title,
                            const CexmcHistoAxes &  axes );
+
+#ifdef CEXMC_USE_ROOTQT
+        void  BuildMenuTree( G4UIQt *  session, const G4String &  menu,
+                             TList *  ls );
+#endif
 
     private:
         TFile *                       outFile;
@@ -227,8 +245,21 @@ class  CexmcHistoManager
 
 #ifdef CEXMC_USE_ROOTQT
     private:
-
         TQtWidget *                   rootCanvas;
+
+        G4bool                        areLiveHistogramsEnabled;
+
+        G4bool                        isHistoMenuEnabled;
+
+        G4bool                        isHistoMenuInitialized;
+
+        G4String                      drawOptions1D;
+
+        G4String                      drawOptions2D;
+
+        G4String                      drawOptions3D;
+
+        TList *                       menuHistos;
 #endif
 
     private:
@@ -248,6 +279,30 @@ inline void  CexmcHistoManager::SetVerboseLevel( G4int  value )
 inline G4int  CexmcHistoManager::GetVerboseLevel( void ) const
 {
     return verboseLevel;
+}
+
+
+inline void  CexmcHistoManager::EnableHistoMenu( G4bool  on )
+{
+    isHistoMenuEnabled = on;
+}
+
+
+inline void  CexmcHistoManager::SetDrawOptions1D( const G4String &  value )
+{
+    drawOptions1D = value;
+}
+
+
+inline void  CexmcHistoManager::SetDrawOptions2D( const G4String &  value )
+{
+    drawOptions2D = value;
+}
+
+
+inline void  CexmcHistoManager::SetDrawOptions3D( const G4String &  value )
+{
+    drawOptions3D = value;
 }
 
 #endif

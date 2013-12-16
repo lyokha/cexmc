@@ -21,6 +21,7 @@
 #include <G4UIcmdWithoutParameter.hh>
 #include <G4UIcmdWithAnInteger.hh>
 #include <G4UIcmdWithAString.hh>
+#include <G4UIcmdWithABool.hh>
 #include <G4String.hh>
 #include "CexmcHistoManagerMessenger.hh"
 #include "CexmcHistoManager.hh"
@@ -32,7 +33,8 @@ CexmcHistoManagerMessenger::CexmcHistoManagerMessenger(
     histoManager( histoManager ), setVerboseLevel( NULL ), listHistos( NULL ),
     printHisto( NULL )
 #ifdef CEXMC_USE_ROOTQT
-    , drawHisto( NULL )
+    , drawHisto( NULL ), enableHistoMenu( NULL ), drawHistoOptions1D( NULL ),
+    drawHistoOptions2D( NULL ), drawHistoOptions3D( NULL )
 #endif
 {
     setVerboseLevel = new G4UIcmdWithAnInteger(
@@ -58,11 +60,44 @@ CexmcHistoManagerMessenger::CexmcHistoManagerMessenger(
     drawHisto = new G4UIcmdWithAString(
         ( CexmcMessenger::histoDirName + "draw" ).c_str(), this );
     drawHisto->SetGuidance( "Draw specified histogram. The first parameter is\n"
-                            "    the histogram name, the second is draw "
+                            "    the histogram name, the rest is draw "
                             "options.\n    Available only if the program was "
                             "launched\n    in graphical mode" );
     drawHisto->SetParameterName( "DrawHisto", false );
     drawHisto->AvailableForStates( G4State_Idle );
+
+    enableHistoMenu = new G4UIcmdWithABool(
+        ( CexmcMessenger::histoDirName + "enableHistoMenu" ).c_str(), this );
+    enableHistoMenu->SetGuidance( "Enable histogram menu in GUI menu bar."
+                                  "\n    The menu cannot be enabled or "
+                                  "disabled in runtime" );
+    enableHistoMenu->SetParameterName( "EnableHistoMenu", true );
+    enableHistoMenu->SetDefaultValue( true );
+    enableHistoMenu->AvailableForStates( G4State_Idle );
+
+    drawHistoOptions1D = new G4UIcmdWithAString(
+        ( CexmcMessenger::histoDirName + "drawOptions1D" ).c_str(), this );
+    drawHistoOptions1D->SetGuidance( "Set draw options for 1D histograms drawn "
+                                     "from the menu.\n    The options cannot "
+                                     "be changed after the menu was built");
+    drawHistoOptions1D->SetParameterName( "DrawOptions1D", false );
+    drawHistoOptions1D->AvailableForStates( G4State_Idle );
+
+    drawHistoOptions2D = new G4UIcmdWithAString(
+        ( CexmcMessenger::histoDirName + "drawOptions2D" ).c_str(), this );
+    drawHistoOptions2D->SetGuidance( "Set draw options for 2D histograms drawn "
+                                     "from the menu.\n    The options cannot "
+                                     "be changed after the menu was built");
+    drawHistoOptions2D->SetParameterName( "DrawOptions2D", false );
+    drawHistoOptions2D->AvailableForStates( G4State_Idle );
+
+    drawHistoOptions3D = new G4UIcmdWithAString(
+        ( CexmcMessenger::histoDirName + "drawOptions3D" ).c_str(), this );
+    drawHistoOptions3D->SetGuidance( "Set draw options for 3D histograms drawn "
+                                     "from the menu.\n    The options cannot "
+                                     "be changed after the menu was built");
+    drawHistoOptions3D->SetParameterName( "DrawOptions3D", false );
+    drawHistoOptions3D->AvailableForStates( G4State_Idle );
 #endif
 }
 
@@ -74,6 +109,10 @@ CexmcHistoManagerMessenger::~CexmcHistoManagerMessenger()
     delete printHisto;
 #ifdef CEXMC_USE_ROOTQT
     delete drawHisto;
+    delete enableHistoMenu;
+    delete drawHistoOptions1D;
+    delete drawHistoOptions2D;
+    delete drawHistoOptions3D;
 #endif
 }
 
@@ -110,6 +149,23 @@ void  CexmcHistoManagerMessenger::SetNewValue( G4UIcommand *  cmd,
                                 delimPosEnd == G4String::npos ? "" :
                                                 value.c_str() + delimPosEnd );
             break;
+        }
+        if ( cmd == enableHistoMenu )
+        {
+            histoManager->EnableHistoMenu(
+                                G4UIcmdWithABool::GetNewBoolValue( value ) );
+        }
+        if ( cmd == drawHistoOptions1D )
+        {
+            histoManager->SetDrawOptions1D( value );
+        }
+        if ( cmd == drawHistoOptions2D )
+        {
+            histoManager->SetDrawOptions2D( value );
+        }
+        if ( cmd == drawHistoOptions3D )
+        {
+            histoManager->SetDrawOptions3D( value );
         }
 #endif
     } while ( false );

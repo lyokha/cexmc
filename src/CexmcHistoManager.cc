@@ -34,6 +34,8 @@
 #include <TCanvas.h>
 #include <QApplication>
 #include <QFont>
+#include <G4UIQt.hh>
+#include "CexmcMessenger.hh"
 #endif
 #include <G4LogicalVolume.hh>
 #include <G4Box.hh>
@@ -66,6 +68,8 @@ namespace
     const G4double  CexmcHistoAngularCResolution( 0.001 );
     const G4int     CexmcHistoCanvasWidth( 800 );
     const G4int     CexmcHistoCanvasHeight( 600 );
+    const G4String  CexmcHistoMenuDescr( "histo" );
+    const G4String  CexmcHistoMenuLabel( "Histo" );
 }
 
 
@@ -92,7 +96,10 @@ CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
     isInitialized( false ), opName( "" ), nopName( "" ), opMass( 0. ),
     nopMass( 0. ), verboseLevel( 0 ),
 #ifdef CEXMC_USE_ROOTQT
-    rootCanvas( NULL ),
+    rootCanvas( NULL ), areLiveHistogramsEnabled( false ),
+    isHistoMenuEnabled( false ), isHistoMenuInitialized( false ),
+    drawOptions1D( "" ), drawOptions2D( "" ), drawOptions3D( "" ),
+    menuHistos( NULL ),
 #endif
     messenger( NULL )
 {
@@ -118,6 +125,7 @@ CexmcHistoManager::~CexmcHistoManager()
     delete outFile;
 #ifdef CEXMC_USE_ROOTQT
     delete rootCanvas;
+    delete menuHistos;
 #endif
     delete messenger;
 }
@@ -171,7 +179,7 @@ void  CexmcHistoManager::AddHisto( const CexmcHistoData &  data,
     }
 
     CexmcHistosMap::iterator  found( histos.find( data.type ) );
-    
+
     if ( found == histos.end() )
         throw CexmcException( CexmcWeirdException );
 
@@ -731,9 +739,7 @@ void  CexmcHistoManager::Print( const G4String &  value )
 void  CexmcHistoManager::Draw( const G4String &  histoName,
                                const G4String &  histoDrawOptions )
 {
-    CexmcRunManager *  runManager( static_cast< CexmcRunManager * >(
-                                            G4RunManager::GetRunManager() ) );
-    if ( ! runManager->AreLiveHistogramsEnabled() )
+    if ( ! areLiveHistogramsEnabled )
     {
         G4cout << "Live histograms option is disabled" << G4endl;
         return;
@@ -760,6 +766,88 @@ void  CexmcHistoManager::Draw( const G4String &  histoName,
     histo->Draw( histoDrawOptions );
     rootCanvas->show();
     rootCanvas->GetCanvas()->Update();
+}
+
+
+void  CexmcHistoManager::EnableLiveHistograms( G4UIsession *  session,
+                                               G4bool  on )
+{
+    areLiveHistogramsEnabled = on;
+
+    if ( ! isInitialized )
+        return;
+
+    G4UIQt *  qtSession( dynamic_cast< G4UIQt * >( session ) );
+
+    if ( ! qtSession )
+        return;
+
+    if ( isHistoMenuEnabled && ! isHistoMenuInitialized )
+    {
+        qtSession->AddMenu( CexmcHistoMenuDescr, CexmcHistoMenuLabel );
+
+        menuHistos = new TList;
+
+        TIter      objs( gDirectory->GetList() );
+        TObject *  obj( NULL );
+
+        while ( ( obj = ( TObject * )objs() ) )
+            menuHistos->Add( obj );
+
+        menuHistos->Sort();
+
+        BuildMenuTree( qtSession, CexmcHistoMenuDescr, menuHistos );
+
+        isHistoMenuInitialized = true;
+    }
+}
+
+
+void  CexmcHistoManager::BuildMenuTree( G4UIQt *  session,
+                                        const G4String &  menu, TList *  ls )
+{
+    TIter      objs( ls );
+    TObject *  obj( NULL );
+
+    while ( ( obj = ( TObject * )objs() ) )
+    {
+        if ( obj->InheritsFrom( TDirectory::Class() ) )
+        {
+            BuildMenuTree( session, menu, ( ( TDirectory * )obj )->GetList() );
+        }
+        else
+        {
+            G4String  name( obj->GetName() );
+            G4String  options( name );
+
+            do
+            {
+                if ( obj->InheritsFrom( TH3::Class() ) &&
+                     ! drawOptions3D.empty() )
+                {
+                    name = G4String( "3:" ) + name;
+                    options += G4String( " " ) + drawOptions3D;
+                    break;
+                }
+                if ( obj->InheritsFrom( TH2::Class() ) &&
+                     ! drawOptions2D.empty() )
+                {
+                    name = G4String( "2:" ) + name;
+                    options += G4String( " " ) + drawOptions2D;
+                    break;
+                }
+                if ( obj->InheritsFrom( TH1::Class() ) &&
+                     ! drawOptions1D.empty() )
+                {
+                    options += G4String( " " ) + drawOptions1D;
+                    break;
+                }
+            } while ( false );
+
+            G4String  cmd( CexmcMessenger::histoDirName + "draw " + options );
+            session->AddButton( menu, name.c_str(), cmd );
+        }
+    }
 }
 
 #endif

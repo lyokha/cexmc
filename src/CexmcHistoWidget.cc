@@ -50,7 +50,7 @@ void  CexmcHistoWidget::contextMenuEvent( QContextMenuEvent *  event )
         TListIter  curPrimitive( fCanvas->GetListOfPrimitives() );
         while ( ( object = curPrimitive.Next() ) )
         {
-            if ( ! object->InheritsFrom( "TH1" ) )
+            if ( ! object->InheritsFrom( TH1::Class() ) )
                 continue;
             TH1 *    histo( static_cast< TH1 * >( object ) );
             TAxis *  axis( histo->GetXaxis() );
