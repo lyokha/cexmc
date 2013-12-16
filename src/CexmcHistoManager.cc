@@ -32,6 +32,7 @@
 #include <TRegexp.h>
 #ifdef CEXMC_USE_ROOTQT
 #include <TCanvas.h>
+#include <TList.h>
 #include <QApplication>
 #include <QFont>
 #include <G4UIQt.hh>
