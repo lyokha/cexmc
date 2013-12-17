@@ -28,7 +28,7 @@
 #include "CexmcAngularRange.hh"
 #include "CexmcCommon.hh"
 
-class  TFile;
+class  TDirectoryFile;
 class  TH1;
 #ifdef CEXMC_USE_ROOTQT
 class  TQtWidget;
@@ -223,10 +223,13 @@ class  CexmcHistoManager
 #ifdef CEXMC_USE_ROOTQT
         void  BuildMenuTree( G4UIQt *  session, const G4String &  menu,
                              TList *  ls );
+
+        void  AddSubmenu( G4UIQt *  session, const G4String &  parent,
+                          const G4String &  name, const G4String &  label );
 #endif
 
     private:
-        TFile *                       outFile;
+        TDirectoryFile *              outFile;
 
     private:
         CexmcHistosMap                histos;
@@ -258,8 +261,6 @@ class  CexmcHistoManager
         G4String                      drawOptions2D;
 
         G4String                      drawOptions3D;
-
-        TList *                       menuHistos;
 #endif
 
     private:
