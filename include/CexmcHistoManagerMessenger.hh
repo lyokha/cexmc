@@ -27,7 +27,6 @@ class  G4UIcommand;
 class  G4UIcmdWithoutParameter;
 class  G4UIcmdWithAnInteger;
 class  G4UIcmdWithAString;
-class  G4UIcmdWithABool;
 class  CexmcHistoManager;
 
 
@@ -54,7 +53,7 @@ class  CexmcHistoManagerMessenger : public G4UImessenger
 #ifdef CEXMC_USE_ROOTQT
         G4UIcmdWithAString *       drawHisto;
 
-        G4UIcmdWithABool *         enableHistoMenu;
+        G4UIcmdWithAString *       addHistoMenu;
 
         G4UIcmdWithAString *       drawHistoOptions1D;
 

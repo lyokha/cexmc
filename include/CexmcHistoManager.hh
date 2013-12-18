@@ -197,7 +197,8 @@ class  CexmcHistoManager
 
         void  EnableLiveHistograms( G4UIsession *  session, G4bool  on = true );
 
-        void  EnableHistoMenu( G4bool  on = true );
+        void  AddHistoMenu( const G4String &  handle,
+                            const G4String &  label = "Histograms" );
 
         void  SetDrawOptions1D( const G4String &  value );
 
@@ -252,8 +253,6 @@ class  CexmcHistoManager
 
         G4bool                        areLiveHistogramsEnabled;
 
-        G4bool                        isHistoMenuEnabled;
-
         G4bool                        isHistoMenuInitialized;
 
         G4String                      drawOptions1D;
@@ -261,6 +260,10 @@ class  CexmcHistoManager
         G4String                      drawOptions2D;
 
         G4String                      drawOptions3D;
+
+        G4String                      histoMenuHandle;
+
+        G4String                      histoMenuLabel;
 #endif
 
     private:
@@ -283,9 +286,11 @@ inline G4int  CexmcHistoManager::GetVerboseLevel( void ) const
 }
 
 
-inline void  CexmcHistoManager::EnableHistoMenu( G4bool  on )
+inline void  CexmcHistoManager::AddHistoMenu( const G4String &  handle,
+                                              const G4String &  label )
 {
-    isHistoMenuEnabled = on;
+    histoMenuHandle = handle;
+    histoMenuLabel = label;
 }
 
 

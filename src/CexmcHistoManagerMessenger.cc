@@ -21,7 +21,6 @@
 #include <G4UIcmdWithoutParameter.hh>
 #include <G4UIcmdWithAnInteger.hh>
 #include <G4UIcmdWithAString.hh>
-#include <G4UIcmdWithABool.hh>
 #include <G4String.hh>
 #include "CexmcHistoManagerMessenger.hh"
 #include "CexmcHistoManager.hh"
@@ -33,7 +32,7 @@ CexmcHistoManagerMessenger::CexmcHistoManagerMessenger(
     histoManager( histoManager ), setVerboseLevel( NULL ), listHistos( NULL ),
     printHisto( NULL )
 #ifdef CEXMC_USE_ROOTQT
-    , drawHisto( NULL ), enableHistoMenu( NULL ), drawHistoOptions1D( NULL ),
+    , drawHisto( NULL ), addHistoMenu( NULL ), drawHistoOptions1D( NULL ),
     drawHistoOptions2D( NULL ), drawHistoOptions3D( NULL )
 #endif
 {
@@ -66,14 +65,14 @@ CexmcHistoManagerMessenger::CexmcHistoManagerMessenger(
     drawHisto->SetParameterName( "DrawHisto", false );
     drawHisto->AvailableForStates( G4State_Idle );
 
-    enableHistoMenu = new G4UIcmdWithABool(
-        ( CexmcMessenger::histoDirName + "enableHistoMenu" ).c_str(), this );
-    enableHistoMenu->SetGuidance( "Enable histogram menu in GUI menu bar."
-                                  "\n    The menu cannot be enabled or "
-                                  "disabled in runtime" );
-    enableHistoMenu->SetParameterName( "EnableHistoMenu", true );
-    enableHistoMenu->SetDefaultValue( true );
-    enableHistoMenu->AvailableForStates( G4State_Idle );
+    addHistoMenu = new G4UIcmdWithAString(
+        ( CexmcMessenger::histoDirName + "addHistoMenu" ).c_str(), this );
+    addHistoMenu->SetGuidance( "Add histogram menu in GUI menu bar. The first "
+                               "parameter is\n    the menu handle, the rest is "
+                               "the menu label.\n    The menu cannot be added "
+                               "or disabled in runtime" );
+    addHistoMenu->SetParameterName( "AddHistoMenu", true );
+    addHistoMenu->AvailableForStates( G4State_Idle );
 
     drawHistoOptions1D = new G4UIcmdWithAString(
         ( CexmcMessenger::histoDirName + "drawOptions1D" ).c_str(), this );
@@ -109,7 +108,7 @@ CexmcHistoManagerMessenger::~CexmcHistoManagerMessenger()
     delete printHisto;
 #ifdef CEXMC_USE_ROOTQT
     delete drawHisto;
-    delete enableHistoMenu;
+    delete addHistoMenu;
     delete drawHistoOptions1D;
     delete drawHistoOptions2D;
     delete drawHistoOptions3D;
@@ -150,22 +149,31 @@ void  CexmcHistoManagerMessenger::SetNewValue( G4UIcommand *  cmd,
                                                 value.c_str() + delimPosEnd );
             break;
         }
-        if ( cmd == enableHistoMenu )
+        if ( cmd == addHistoMenu )
         {
-            histoManager->EnableHistoMenu(
-                                G4UIcmdWithABool::GetNewBoolValue( value ) );
+            size_t  delimPos( value.find_first_of( " \t" ) );
+            size_t  delimPosEnd( G4String::npos );
+            if ( delimPos != G4String::npos )
+                delimPosEnd = value.find_first_not_of( " \t", delimPos );
+            histoManager->AddHistoMenu( std::string( value, 0, delimPos ),
+                                        delimPosEnd == G4String::npos ? "" :
+                                                value.c_str() + delimPosEnd );
+            break;
         }
         if ( cmd == drawHistoOptions1D )
         {
             histoManager->SetDrawOptions1D( value );
+            break;
         }
         if ( cmd == drawHistoOptions2D )
         {
             histoManager->SetDrawOptions2D( value );
+            break;
         }
         if ( cmd == drawHistoOptions3D )
         {
             histoManager->SetDrawOptions3D( value );
+            break;
         }
 #endif
     } while ( false );

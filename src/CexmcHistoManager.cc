@@ -29,7 +29,6 @@
 #include <TCollection.h>
 #include <TDirectory.h>
 #include <TString.h>
-#include <TRegexp.h>
 #ifdef CEXMC_USE_ROOTQT
 #include <TCanvas.h>
 #include <TList.h>
@@ -70,9 +69,7 @@ namespace
     const G4double  CexmcHistoAngularCResolution( 0.001 );
     const G4int     CexmcHistoCanvasWidth( 800 );
     const G4int     CexmcHistoCanvasHeight( 600 );
-    const G4String  CexmcHistoMenuDescr( "histo" );
-    const G4String  CexmcHistoMenuLabel( "Histo" );
-    const G4String  CexmcHistoDirectoryDescr( "histograms" );
+    const G4String  CexmcHistoDirectoryHandle( "histograms" );
     const G4String  CexmcHistoDirectoryTitle( "Histograms" );
 }
 
@@ -101,8 +98,8 @@ CexmcHistoManager::CexmcHistoManager() : outFile( NULL ),
     nopMass( 0. ), verboseLevel( 0 ),
 #ifdef CEXMC_USE_ROOTQT
     rootCanvas( NULL ), areLiveHistogramsEnabled( false ),
-    isHistoMenuEnabled( false ), isHistoMenuInitialized( false ),
-    drawOptions1D( "" ), drawOptions2D( "" ), drawOptions3D( "" ),
+    isHistoMenuInitialized( false ), drawOptions1D( "" ), drawOptions2D( "" ),
+    drawOptions3D( "" ), histoMenuHandle( "" ), histoMenuLabel( "" ),
 #endif
     messenger( NULL )
 {
@@ -303,9 +300,9 @@ void  CexmcHistoManager::Initialize( void )
     }
     else
     {
-        outFile = new TDirectoryFile( CexmcHistoDirectoryDescr,
+        outFile = new TDirectoryFile( CexmcHistoDirectoryHandle,
                                       CexmcHistoDirectoryTitle );
-        gDirectory->cd( CexmcHistoDirectoryDescr );
+        gDirectory->cd( CexmcHistoDirectoryHandle );
     }
 
     if ( ! outFile )
@@ -779,10 +776,10 @@ void  CexmcHistoManager::EnableLiveHistograms( G4UIsession *  session,
     if ( ! qtSession )
         return;
 
-    if ( isHistoMenuEnabled && ! isHistoMenuInitialized )
+    if ( ! histoMenuHandle.empty() && ! isHistoMenuInitialized )
     {
-        qtSession->AddMenu( CexmcHistoMenuDescr, CexmcHistoMenuLabel );
-        BuildMenuTree( qtSession, CexmcHistoMenuDescr, gDirectory->GetList() );
+        qtSession->AddMenu( histoMenuHandle, histoMenuLabel );
+        BuildMenuTree( qtSession, histoMenuHandle, gDirectory->GetList() );
         isHistoMenuInitialized = true;
     }
 }
