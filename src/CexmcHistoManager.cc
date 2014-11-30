@@ -807,18 +807,18 @@ void  CexmcHistoManager::BuildMenuTree( G4UIQt *  session,
 
             do
             {
-                if ( obj->InheritsFrom( TH3::Class() ) &&
-                     ! drawOptions3D.empty() )
+                if ( obj->InheritsFrom( TH3::Class() ) )
                 {
                     title = G4String( "3: " ) + title;
-                    options += G4String( " " ) + drawOptions3D;
+                    if ( ! drawOptions3D.empty() )
+                        options += G4String( " " ) + drawOptions3D;
                     break;
                 }
-                if ( obj->InheritsFrom( TH2::Class() ) &&
-                     ! drawOptions2D.empty() )
+                if ( obj->InheritsFrom( TH2::Class() ) )
                 {
                     title = G4String( "2: " ) + title;
-                    options += G4String( " " ) + drawOptions2D;
+                    if ( ! drawOptions2D.empty() )
+                        options += G4String( " " ) + drawOptions2D;
                     break;
                 }
                 if ( obj->InheritsFrom( TH1::Class() ) &&
