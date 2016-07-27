@@ -286,6 +286,8 @@ inline G4int  CexmcHistoManager::GetVerboseLevel( void ) const
 }
 
 
+#ifdef CEXMC_USE_ROOTQT
+
 inline void  CexmcHistoManager::AddHistoMenu( const G4String &  handle,
                                               const G4String &  label )
 {
@@ -310,6 +312,8 @@ inline void  CexmcHistoManager::SetDrawOptions3D( const G4String &  value )
 {
     drawOptions3D = value;
 }
+
+#endif
 
 #endif
 
