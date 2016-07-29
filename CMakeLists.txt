@@ -112,6 +112,14 @@ option(CEXMC_USE_HISTOGRAMING
 if(CEXMC_USE_HISTOGRAMING)
     find_package(ROOT QUIET)
     if(ROOT_FOUND)
+        execute_process(
+            COMMAND ${ROOT_CONFIG_EXECUTABLE} --cflags
+            COMMAND grep std=c++1y
+            OUTPUT_VARIABLE ROOT_REQUIRES_CXX14)
+        if(ROOT_REQUIRES_CXX14)
+            message(STATUS "Enabled support for C++14 (needed by ROOT)")
+            set(CMAKE_CXX_STANDARD 14)
+        endif()
         add_definitions(-DCEXMC_USE_ROOT)
         include_directories(${ROOT_INCLUDE_DIR})
         list(APPEND EXTRA_LIBRARIES ${ROOT_LIBRARIES})
@@ -134,9 +142,24 @@ if(CEXMC_USE_ROOTQT AND ROOT_FOUND)
         PATHS ${ROOT_LIBRARY_DIR} ${ROOT_LIBRARY_DIR}/root
         NO_DEFAULT_PATH)
     if(ROOTQT_LIBRARY)
-        add_definitions(-DCEXMC_USE_ROOTQT)
-        list(APPEND EXTRA_LIBRARIES -lGQt)
-        message(STATUS "Library -lGQt was added to the linkage list")
+        if(Geant4_USES_QT5)
+            message(WARNING
+                "Geant4 uses Qt5 libraries, skip GUI histograming support")
+        else()
+            find_package(Qt4 REQUIRED COMPONENTS QtCore QtGui)
+            if (Qt4_FOUND)
+                include(${QT_USE_FILE})
+                add_definitions(-DCEXMC_USE_ROOTQT)
+                list(APPEND EXTRA_LIBRARIES ${QT_LIBRARIES})
+                message(STATUS
+                    "Libraries ${QT_LIBRARIES} were added to the linkage list")
+                list(APPEND EXTRA_LIBRARIES -lGQt)
+                message(STATUS "Library -lGQt was added to the linkage list")
+            else()
+                message(WARNING
+                    "Could not find Qt4 package, skip GUI histograming support")
+            endif()
+        endif()
     else()
         message(WARNING
             "Could not find ROOT Qt library, skip GUI histograming support")
@@ -154,7 +177,7 @@ if(CEXMC_USE_GENBOD)
     if(CERNLIB_CONFIG_EXE)
         execute_process(
             COMMAND ${CERNLIB_CONFIG_EXE} geant321 phtools packlib kernlib
-            OUTPUT_VARIABLE CERNLIB_LIBRARIES 
+            OUTPUT_VARIABLE CERNLIB_LIBRARIES
             OUTPUT_STRIP_TRAILING_WHITESPACE)
         add_definitions(-DCEXMC_USE_GENBOD)
         list(APPEND EXTRA_LIBRARIES ${CERNLIB_LIBRARIES})
@@ -170,7 +193,7 @@ endif()
 # parameters, so -Wno-shadow option is mandatory to prevent multiple warnings!
 add_definitions(-Wno-shadow)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
 add_executable(${name} ${name}.cc ${sources})
