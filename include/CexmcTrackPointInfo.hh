@@ -30,7 +30,10 @@
 
 struct  CexmcTrackPointInfo
 {
-    CexmcTrackPointInfo() : trackId( CexmcInvalidTrackId )
+    // explicit argument is only needed by G4THitsMap template,
+    // it has no actual use here
+    explicit CexmcTrackPointInfo( G4double  unused = 0. ) :
+                        momentumAmp ( unused ), trackId( CexmcInvalidTrackId )
     {}
 
     CexmcTrackPointInfo( const G4ThreeVector &  positionLocal,
