@@ -114,7 +114,7 @@ if(CEXMC_USE_HISTOGRAMING)
     if(ROOT_FOUND)
         execute_process(
             COMMAND ${ROOT_CONFIG_EXECUTABLE} --cflags
-            COMMAND grep std=c++1y
+            COMMAND grep "std=c++1\\(y\\|4\\)"
             OUTPUT_VARIABLE ROOT_REQUIRES_CXX14)
         if(ROOT_REQUIRES_CXX14)
             message(STATUS "Enabled support for C++14 (needed by ROOT)")

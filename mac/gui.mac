@@ -16,11 +16,11 @@
 /gui/addMenu viewer Viewer
 /gui/addButton viewer "Draw world" "/control/execute mac/visQt.mac"
 #/gui/addButton viewer "Draw world (OI)" "/control/execute mac/visOI.mac"
-/gui/addButton viewer "Set style solid" "/vis/viewer/set/style solid"
-/gui/addButton viewer "Set style wireframe" "/vis/viewer/set/style wire"
+/gui/addButton viewer "Set style surface" "/vis/viewer/set/style surface"
+/gui/addButton viewer "Set style wireframe" "/vis/viewer/set/style wireframe"
 /gui/addButton viewer "Highlight inner crystals" "/cexmc/vis/hlIC true"
 /gui/addButton viewer "Unhighlight inner crystals" "/cexmc/vis/hlIC false"
-/gui/addButton viewer "Update scene" "/vis/scene/notifyHandlers"
+/gui/addButton viewer "Update scene" "/vis/scene/notifyHandlers refresh"
 
 /cexmc/histo/addHistoMenu histo Histo
 /cexmc/histo/drawOptions2D contz
