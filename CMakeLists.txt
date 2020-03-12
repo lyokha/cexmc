@@ -112,16 +112,23 @@ option(CEXMC_USE_HISTOGRAMING
 if(CEXMC_USE_HISTOGRAMING)
     find_package(ROOT QUIET)
     if(ROOT_FOUND)
-        execute_process(
-            COMMAND ${ROOT_CONFIG_EXECUTABLE} --cflags
-            COMMAND grep "std=c++1\\(y\\|4\\)"
-            OUTPUT_VARIABLE ROOT_REQUIRES_CXX14)
-        if(ROOT_REQUIRES_CXX14)
-            message(STATUS "Enabled support for C++14 (needed by ROOT)")
-            set(CMAKE_CXX_STANDARD 14)
+        find_program(ROOT_CONFIG_EXE root-config
+            PATHS $ENV{ROOTSYS}/bin)
+        if(ROOT_CONFIG_EXE)
+            execute_process(
+                COMMAND ${ROOT_CONFIG_EXE} --cflags
+                COMMAND grep "std=c++1\\(y\\|4\\)"
+                OUTPUT_VARIABLE ROOT_REQUIRES_CXX14)
+            if(ROOT_REQUIRES_CXX14)
+                message(STATUS "Enabled support for C++14 (needed by ROOT)")
+                set(CMAKE_CXX_STANDARD 14)
+            endif()
+        else()
+            message(WARNING
+                "Could not find root-config, unable to define C++ std spec")
         endif()
         add_definitions(-DCEXMC_USE_ROOT)
-        include_directories(${ROOT_INCLUDE_DIR})
+        include_directories(${ROOT_INCLUDE_DIRS})
         list(APPEND EXTRA_LIBRARIES ${ROOT_LIBRARIES})
         message(STATUS
             "Libraries ${ROOT_LIBRARIES} were added to the linkage list")
